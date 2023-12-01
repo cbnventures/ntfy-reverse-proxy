@@ -1,0 +1,15 @@
+name = "ntfy-reverse-proxy"
+main = "src/index.ts"
+compatibility_date = "2023-11-21"
+
+[vars]
+ALLOWED_COUNTRIES = [
+  "US",
+  "CA",
+]
+NTFY_SERVER_ALERT = ""
+NTFY_SERVER_LINK = ""
+NTFY_SERVER_TOKEN = ""
+NTFY_TOPICS = [
+  "sample-ntfy-topic || a1b2c3d4e5",
+]

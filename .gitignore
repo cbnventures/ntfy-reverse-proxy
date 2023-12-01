@@ -1,0 +1,80 @@
+###############
+#### macOS ####
+###############
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+Icon
+
+###############
+#### Linux ####
+###############
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+#################
+#### Windows ####
+#################
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+################
+#### NodeJS ####
+################
+node_modules/
+build/
+package-lock.json
+.dev.vars
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+#################
+#### Next.js ####
+#################
+.next/
+
+##################
+#### Firebase ####
+##################
+**/.firebase
+**/.firebaserc
+
+###################
+#### JetBrains ####
+###################
+.idea/
+
+##########################
+#### Project Excludes ####
+##########################
+.wrangler/
+wrangler.toml
