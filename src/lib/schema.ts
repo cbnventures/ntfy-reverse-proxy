@@ -3,12 +3,13 @@ import z from 'zod';
 import { countryCodeArray, httpsUrl, ntfyTopicArray } from '@/lib/regex';
 
 /**
- * Environment variables.
+ * Env schema.
  *
  * @since 1.0.0
  */
-export const environmentVariables = z.object({
+export const envSchema = z.object({
   ALLOWED_COUNTRIES: z.array(z.string().refine((country) => countryCodeArray.test(country))).min(1),
+  DISALLOWED_IP_ADDRESSES: z.array(z.string()),
   NTFY_SERVER_ALERT: z.string().min(1),
   NTFY_SERVER_LINK: z.string().refine((url) => httpsUrl.test(url)),
   NTFY_SERVER_TOKEN: z.string().min(1),
@@ -16,22 +17,22 @@ export const environmentVariables = z.object({
 });
 
 /**
- * Request body.
+ * Request body schema.
  *
  * @since 1.0.0
  */
-export const incomingRequestBody = z.object({
+export const requestBodySchema = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
   content: z.string().min(1),
 });
 
 /**
- * Request cf.
+ * Request cf schema.
  *
  * @since 1.0.0
  */
-export const incomingRequestCf = z.object({
+export const requestCfSchema = z.object({
   asn: z.number(),
   asOrganization: z.string(),
   botManagement: z.object({
@@ -57,8 +58,22 @@ export const incomingRequestCf = z.object({
 });
 
 /**
- * Request method.
+ * Request header cf connecting ip schema.
  *
  * @since 1.0.0
  */
-export const incomingRequestMethod = z.enum(['PUT', 'POST']);
+export const requestHeaderCfConnectingIpSchema = z.string();
+
+/**
+ * Request header content type.
+ *
+ * @since 1.0.0
+ */
+export const requestHeaderContentTypeSchema = z.enum(['application/json']);
+
+/**
+ * Request method schema.
+ *
+ * @since 1.0.0
+ */
+export const requestMethodSchema = z.enum(['PUT', 'POST']);

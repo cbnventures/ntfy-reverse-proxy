@@ -1,11 +1,14 @@
 import { ntfyTopicArray } from '@/lib/regex';
 import {
-  environmentVariables,
-  incomingRequestBody,
-  incomingRequestCf,
-  incomingRequestMethod,
+  envSchema,
+  requestBodySchema,
+  requestCfSchema,
+  requestHeaderCfConnectingIpSchema,
+  requestHeaderContentTypeSchema,
+  requestMethodSchema,
 } from '@/lib/schema';
 import { sendNtfyAlert, sendNtfyRequest } from '@/lib/send';
+import { fetchRequestJson } from '@/lib/utility';
 import type { FetchEnv, FetchRequest, FetchReturns } from '@/types';
 
 /**
@@ -19,22 +22,12 @@ import type { FetchEnv, FetchRequest, FetchReturns } from '@/types';
  * @since 1.0.0
  */
 export async function fetch(request: FetchRequest, env: FetchEnv): FetchReturns {
-  let requestBody;
-
-  try {
-    requestBody = await request.clone().json();
-  } catch {
-    return new Response('Bad Request', {
-      status: 400,
-    });
-  }
-
-  const requestContentType = request.headers.get('content-type');
+  const requestBody = await fetchRequestJson(request);
+  const requestCf = request.cf;
+  const requestHeaderCfConnectingIp = request.headers.get('cf-connecting-ip');
+  const requestHeaderContentType = request.headers.get('content-type');
+  const requestMethod = request.method;
   const requestUrl = new URL(request.url);
-  const parsedEnv = environmentVariables.safeParse(env);
-  const parsedRequestBody = incomingRequestBody.safeParse(requestBody);
-  const parsedRequestCf = incomingRequestCf.safeParse(request.cf);
-  const parsedRequestMethod = incomingRequestMethod.safeParse(request.method);
 
   // Redirect to HTTPS if not in development mode.
   if (requestUrl.hostname !== 'localhost' && requestUrl.protocol === 'http:') {
@@ -43,6 +36,13 @@ export async function fetch(request: FetchRequest, env: FetchEnv): FetchReturns 
     return Response.redirect(requestUrl.href, 301);
   }
 
+  const parsedEnv = envSchema.safeParse(env);
+  const parsedRequestBody = requestBodySchema.safeParse(requestBody);
+  const parsedRequestCf = requestCfSchema.safeParse(requestCf);
+  const parsedRequestHeaderCfConnectingIp = requestHeaderCfConnectingIpSchema.safeParse(requestHeaderCfConnectingIp);
+  const parsedRequestHeaderContentType = requestHeaderContentTypeSchema.safeParse(requestHeaderContentType);
+  const parsedRequestMethod = requestMethodSchema.safeParse(requestMethod);
+
   // If environment variables are not defined correctly.
   if (!parsedEnv.success) {
     return new Response('Internal Server Error', {
@@ -50,12 +50,55 @@ export async function fetch(request: FetchRequest, env: FetchEnv): FetchReturns 
     });
   }
 
-  // If the incoming request Cloudflare properties are invalid.
-  if (!parsedRequestCf.success) {
+  // If the incoming request is invalid.
+  if (
+    !parsedRequestBody.success
+    || !parsedRequestCf.success
+    || !parsedRequestHeaderCfConnectingIp.success
+    || !parsedRequestHeaderContentType.success
+    || !parsedRequestMethod.success
+  ) {
     await sendNtfyAlert(
       [
-        'Incoming Cloudflare properties appear to be invalid. Please review the errors below:\n',
-        JSON.stringify(parsedRequestCf.error.errors, null, 2),
+        'The incoming request appears to be invalid. Please review the errors below:\n',
+        ...(!parsedRequestBody.success) ? [
+          '__parsedRequestBody:__',
+          '```',
+          JSON.stringify(parsedRequestBody.error.errors, null, 2),
+          '```',
+          '\r',
+        ] : [],
+        ...(!parsedRequestCf.success) ? [
+          '__parsedRequestCf:__',
+          '```',
+          JSON.stringify(parsedRequestCf.error.errors, null, 2),
+          '```',
+          '\r',
+        ] : [],
+        ...(!parsedRequestHeaderCfConnectingIp.success) ? [
+          '__parsedRequestHeaderCfConnectingIp:__',
+          '```',
+          JSON.stringify(parsedRequestHeaderCfConnectingIp.error.errors, null, 2),
+          '```',
+          '\r',
+        ] : [],
+        ...(!parsedRequestHeaderContentType.success) ? [
+          '__parsedRequestHeaderContentType:__',
+          '```',
+          JSON.stringify(parsedRequestHeaderContentType.error.errors, null, 2),
+          '```',
+          '\r',
+        ] : [],
+        ...(!parsedRequestMethod.success) ? [
+          '__parsedRequestMethod:__',
+          '```',
+          JSON.stringify(parsedRequestMethod.error.errors, null, 2),
+          '```',
+          '\r',
+        ] : [],
+        ...(parsedRequestHeaderCfConnectingIp.success) ? [
+          `Failed request originally initiated by user with IP address of ${parsedRequestHeaderCfConnectingIp.data}.`,
+        ] : [],
       ].join('\n'),
       parsedEnv.data.NTFY_SERVER_LINK,
       parsedEnv.data.NTFY_SERVER_ALERT,
@@ -67,13 +110,11 @@ export async function fetch(request: FetchRequest, env: FetchEnv): FetchReturns 
     });
   }
 
-  // If the incoming request is valid and allowed.
+  // If the incoming request is blocked.
   if (
-    !parsedRequestBody.success
-    || !parsedRequestMethod.success
-    || parsedRequestCf.data.country === undefined
+    parsedRequestCf.data.country === undefined
     || !parsedEnv.data.ALLOWED_COUNTRIES.includes(parsedRequestCf.data.country)
-    || requestContentType !== 'application/json'
+    || parsedEnv.data.DISALLOWED_IP_ADDRESSES.includes(parsedRequestHeaderCfConnectingIp.data)
   ) {
     return new Response('Forbidden', {
       status: 403,
@@ -91,8 +132,8 @@ export async function fetch(request: FetchRequest, env: FetchEnv): FetchReturns 
   if (currentTopic === undefined) {
     // Return a "Bad Request" if not in development mode.
     if (requestUrl.hostname !== 'localhost') {
-      return new Response('Bad Request', {
-        status: 400,
+      return new Response('Unprocessable Content', {
+        status: 422,
       });
     }
 
@@ -105,6 +146,7 @@ export async function fetch(request: FetchRequest, env: FetchEnv): FetchReturns 
       title: parsedRequestBody.data.title,
       description: parsedRequestBody.data.description,
       content: parsedRequestBody.data.content,
+      ip: parsedRequestHeaderCfConnectingIp.data,
     },
     parsedEnv.data.NTFY_SERVER_LINK,
     currentTopic.replace(ntfyTopicArray, '$1'),

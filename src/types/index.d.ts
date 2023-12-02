@@ -10,6 +10,17 @@ export type FetchEnv = unknown;
 export type FetchReturns = Promise<Response>;
 
 /**
+ * Fetch request json.
+ *
+ * @since 1.0.0
+ */
+export type FetchRequestJsonRequest = Request;
+
+export type FetchRequestJsonReturns = Promise<JSON | null>;
+
+export type FetchRequestJsonJson = JSON;
+
+/**
  * Send ntfy alert.
  *
  * @since 1.0.0
@@ -35,10 +46,13 @@ export type SendNtfyRequestContentDescription = string;
 
 export type SendNtfyRequestContentContent = string;
 
+export type SendNtfyRequestContentIp = string;
+
 export type SendNtfyRequestContent = {
   title: SendNtfyRequestContentTitle;
   description: SendNtfyRequestContentDescription;
   content: SendNtfyRequestContentContent;
+  ip: SendNtfyRequestContentIp;
 };
 
 export type SendNtfyRequestServer = string;

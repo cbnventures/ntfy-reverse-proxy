@@ -34,7 +34,8 @@ export async function sendNtfyAlert(content: SendNtfyAlertContent, server: SendN
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'text/plain',
-          'X-Title': 'Error occurred on "ntfy-reverse-proxy"',
+          Markdown: 'yes',
+          'X-Title': 'Error on "ntfy-reverse-proxy"',
         },
         method: 'POST',
       },
@@ -66,12 +67,14 @@ export async function sendNtfyRequest(content: SendNtfyRequestContent, server: S
       `${server}/${topic}`,
       {
         body: [
-          `${content.description}\n`,
-          `${content.content}\n`,
-        ].join('\n'),
+          `${content.description}`,
+          `${content.content}`,
+          `Successful request originally initiated by user with IP address of ${content.ip}`,
+        ].join('\n\n'),
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'text/plain',
+          Markdown: 'yes',
           'X-Title': content.title,
         },
         method: 'POST',
