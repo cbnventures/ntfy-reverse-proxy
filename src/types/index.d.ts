@@ -21,21 +21,6 @@ export type FetchRequestJsonReturns = Promise<JSON | null>;
 export type FetchRequestJsonJson = JSON;
 
 /**
- * Send ntfy alert.
- *
- * @since 1.0.0
- */
-export type SendNtfyAlertContent = string;
-
-export type SendNtfyAlertServer = string;
-
-export type SendNtfyAlertTopic = string;
-
-export type SendNtfyAlertToken = string;
-
-export type SendNtfyAlertReturns = Promise<boolean>;
-
-/**
  * Send ntfy request.
  *
  * @since 1.0.0
@@ -46,7 +31,7 @@ export type SendNtfyRequestContentDescription = string;
 
 export type SendNtfyRequestContentContent = string;
 
-export type SendNtfyRequestContentIp = string;
+export type SendNtfyRequestContentIp = string | null;
 
 export type SendNtfyRequestContent = {
   title: SendNtfyRequestContentTitle;

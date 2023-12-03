@@ -7,7 +7,7 @@ import {
   requestHeaderContentTypeSchema,
   requestMethodSchema,
 } from '@/lib/schema';
-import { sendNtfyAlert, sendNtfyRequest } from '@/lib/send';
+import { sendNtfyRequest } from '@/lib/send';
 import { fetchRequestJson } from '@/lib/utility';
 import type { FetchEnv, FetchRequest, FetchReturns } from '@/types';
 
@@ -58,52 +58,55 @@ export async function fetch(request: FetchRequest, env: FetchEnv): FetchReturns 
     || !parsedRequestHeaderContentType.success
     || !parsedRequestMethod.success
   ) {
-    await sendNtfyAlert(
-      [
-        'The incoming request appears to be invalid. Please review the errors below:\n',
-        ...(!parsedRequestBody.success) ? [
-          '__parsedRequestBody:__',
-          '```',
-          JSON.stringify(parsedRequestBody.error.errors, null, 2),
-          '```',
-          '\r',
-        ] : [],
-        ...(!parsedRequestCf.success) ? [
-          '__parsedRequestCf:__',
-          '```',
-          JSON.stringify(parsedRequestCf.error.errors, null, 2),
-          '```',
-          '\r',
-        ] : [],
-        ...(!parsedRequestHeaderCfConnectingIp.success) ? [
-          '__parsedRequestHeaderCfConnectingIp:__',
-          '```',
-          JSON.stringify(parsedRequestHeaderCfConnectingIp.error.errors, null, 2),
-          '```',
-          '\r',
-        ] : [],
-        ...(!parsedRequestHeaderContentType.success) ? [
-          '__parsedRequestHeaderContentType:__',
-          '```',
-          JSON.stringify(parsedRequestHeaderContentType.error.errors, null, 2),
-          '```',
-          '\r',
-        ] : [],
-        ...(!parsedRequestMethod.success) ? [
-          '__parsedRequestMethod:__',
-          '```',
-          JSON.stringify(parsedRequestMethod.error.errors, null, 2),
-          '```',
-          '\r',
-        ] : [],
-        ...(parsedRequestHeaderCfConnectingIp.success) ? [
-          `Failed request originally initiated by user with IP address of ${parsedRequestHeaderCfConnectingIp.data}.`,
-        ] : [],
-      ].join('\n'),
-      parsedEnv.data.NTFY_SERVER_LINK,
-      parsedEnv.data.NTFY_SERVER_ALERT,
-      parsedEnv.data.NTFY_SERVER_TOKEN,
-    );
+    // Only send alert if the Cloudflare request information is invalid.
+    if (!parsedRequestCf.success || !parsedRequestHeaderCfConnectingIp.success) {
+      await sendNtfyRequest(
+        {
+          title: 'Invalid Incoming Request Alert',
+          description: 'The incoming request appears to be invalid. Please review the errors below:',
+          content: [
+            ...(!parsedRequestBody.success) ? [
+              '__parsedRequestBody:__',
+              '```',
+              JSON.stringify(parsedRequestBody.error.errors, null, 2),
+              '```',
+              '\r',
+            ] : [],
+            ...(!parsedRequestCf.success) ? [
+              '__parsedRequestCf:__',
+              '```',
+              JSON.stringify(parsedRequestCf.error.errors, null, 2),
+              '```',
+              '\r',
+            ] : [],
+            ...(!parsedRequestHeaderCfConnectingIp.success) ? [
+              '__parsedRequestHeaderCfConnectingIp:__',
+              '```',
+              JSON.stringify(parsedRequestHeaderCfConnectingIp.error.errors, null, 2),
+              '```',
+              '\r',
+            ] : [],
+            ...(!parsedRequestHeaderContentType.success) ? [
+              '__parsedRequestHeaderContentType:__',
+              '```',
+              JSON.stringify(parsedRequestHeaderContentType.error.errors, null, 2),
+              '```',
+              '\r',
+            ] : [],
+            ...(!parsedRequestMethod.success) ? [
+              '__parsedRequestMethod:__',
+              '```',
+              JSON.stringify(parsedRequestMethod.error.errors, null, 2),
+              '```',
+            ] : [],
+          ].join('\n'),
+          ip: (parsedRequestHeaderCfConnectingIp.success) ? parsedRequestHeaderCfConnectingIp.data : null,
+        },
+        parsedEnv.data.NTFY_SERVER_LINK,
+        parsedEnv.data.NTFY_SERVER_ALERT,
+        parsedEnv.data.NTFY_SERVER_TOKEN,
+      );
+    }
 
     return new Response('Service Unavailable', {
       status: 503,
@@ -137,7 +140,7 @@ export async function fetch(request: FetchRequest, env: FetchEnv): FetchReturns 
       });
     }
 
-    // Replace the topic with the default topic and fake subdomain.
+    // Replace with default topic (under original format so regex can replace).
     currentTopic = `${parsedEnv.data.NTFY_SERVER_ALERT} || a1b2c3d4e5`;
   }
 
