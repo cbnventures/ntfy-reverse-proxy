@@ -44,7 +44,7 @@ export const requestCfSchema = z.object({
   continent: z.string().optional(),
   country: z.string().optional(),
   httpProtocol: z.string(),
-  isEUCountry: z.enum(['1']).optional(),
+  isEUCountry: z.literal('1').optional(),
   latitude: z.string().optional(),
   longitude: z.string().optional(),
   metroCode: z.string().optional(),
@@ -69,11 +69,14 @@ export const requestHeaderCfConnectingIpSchema = z.string();
  *
  * @since 1.0.0
  */
-export const requestHeaderContentTypeSchema = z.enum(['application/json']);
+export const requestHeaderContentTypeSchema = z.literal('application/json');
 
 /**
  * Request method schema.
  *
  * @since 1.0.0
  */
-export const requestMethodSchema = z.enum(['PUT', 'POST']);
+export const requestMethodSchema = z.union([
+  z.literal('POST'),
+  z.literal('PUT'),
+]);
