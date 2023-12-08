@@ -1,4 +1,4 @@
-import type { FetchRequestJsonJson, FetchRequestJsonRequest, FetchRequestJsonReturns } from '@/types';
+import type { FetchRequestJsonJson, FetchRequestJsonRequest, FetchRequestJsonReturns } from '@/types/index.d.ts';
 
 /**
  * Fetch request json.

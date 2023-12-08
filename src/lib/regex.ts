@@ -18,3 +18,10 @@ export const httpsUrl = /^https:\/\//;
  * @since 1.0.0
  */
 export const ntfyTopicArray = /^([a-z-0-9]+) \|\| ([a-z0-9]+)$/;
+
+/**
+ * User agent format.
+ *
+ * @since 1.0.0
+ */
+export const userAgentFormat = /^([a-z-]+)(\/)([0-9.]+)$/;

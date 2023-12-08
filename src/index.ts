@@ -1,15 +1,16 @@
-import { ntfyTopicArray } from '@/lib/regex';
+import { ntfyTopicArray } from '@/lib/regex.js';
 import {
   envSchema,
   requestBodySchema,
   requestCfSchema,
   requestHeaderCfConnectingIpSchema,
   requestHeaderContentTypeSchema,
+  requestHeaderUserAgentSchema,
   requestMethodSchema,
-} from '@/lib/schema';
-import { sendNtfyRequest } from '@/lib/send';
-import { fetchRequestJson } from '@/lib/utility';
-import type { FetchEnv, FetchRequest, FetchReturns } from '@/types';
+} from '@/lib/schema.js';
+import { sendNtfyRequest } from '@/lib/send.js';
+import { fetchRequestJson } from '@/lib/utility.js';
+import type { FetchEnv, FetchRequest, FetchReturns } from '@/types/index.d.ts';
 
 /**
  * Fetch.
@@ -26,6 +27,7 @@ export async function fetch(request: FetchRequest, env: FetchEnv): FetchReturns 
   const requestCf = request.cf;
   const requestHeaderCfConnectingIp = request.headers.get('cf-connecting-ip');
   const requestHeaderContentType = request.headers.get('content-type');
+  const requestHeaderUserAgent = request.headers.get('user-agent');
   const requestMethod = request.method;
   const requestUrl = new URL(request.url);
 
@@ -41,6 +43,7 @@ export async function fetch(request: FetchRequest, env: FetchEnv): FetchReturns 
   const parsedRequestCf = requestCfSchema.safeParse(requestCf);
   const parsedRequestHeaderCfConnectingIp = requestHeaderCfConnectingIpSchema.safeParse(requestHeaderCfConnectingIp);
   const parsedRequestHeaderContentType = requestHeaderContentTypeSchema.safeParse(requestHeaderContentType);
+  const parsedRequestHeaderUserAgent = requestHeaderUserAgentSchema.safeParse(requestHeaderUserAgent);
   const parsedRequestMethod = requestMethodSchema.safeParse(requestMethod);
 
   // If environment variables are not defined correctly.
@@ -56,6 +59,7 @@ export async function fetch(request: FetchRequest, env: FetchEnv): FetchReturns 
     || !parsedRequestCf.success
     || !parsedRequestHeaderCfConnectingIp.success
     || !parsedRequestHeaderContentType.success
+    || !parsedRequestHeaderUserAgent.success
     || !parsedRequestMethod.success
   ) {
     // Only send alert if the Cloudflare request information is invalid.
@@ -93,6 +97,13 @@ export async function fetch(request: FetchRequest, env: FetchEnv): FetchReturns 
               '```',
               '\r',
             ] : [],
+            ...(!parsedRequestHeaderUserAgent.success) ? [
+              '__parsedRequestHeaderUserAgent:__',
+              '```',
+              JSON.stringify(parsedRequestHeaderUserAgent.error.errors, null, 2),
+              '```',
+              '\r',
+            ] : [],
             ...(!parsedRequestMethod.success) ? [
               '__parsedRequestMethod:__',
               '```',
@@ -117,6 +128,7 @@ export async function fetch(request: FetchRequest, env: FetchEnv): FetchReturns 
   if (
     parsedRequestCf.data.country === undefined
     || !parsedEnv.data.ALLOWED_COUNTRIES.includes(parsedRequestCf.data.country)
+    || !parsedEnv.data.ALLOWED_USER_AGENTS.includes(parsedRequestHeaderUserAgent.data.split('/')[0])
     || parsedEnv.data.DISALLOWED_IP_ADDRESSES.includes(parsedRequestHeaderCfConnectingIp.data)
   ) {
     return new Response('Forbidden', {

@@ -1,6 +1,11 @@
 import z from 'zod';
 
-import { countryCodeArray, httpsUrl, ntfyTopicArray } from '@/lib/regex';
+import {
+  countryCodeArray,
+  httpsUrl,
+  ntfyTopicArray,
+  userAgentFormat,
+} from '@/lib/regex.js';
 
 /**
  * Env schema.
@@ -9,6 +14,7 @@ import { countryCodeArray, httpsUrl, ntfyTopicArray } from '@/lib/regex';
  */
 export const envSchema = z.object({
   ALLOWED_COUNTRIES: z.array(z.string().refine((country) => countryCodeArray.test(country))).min(1),
+  ALLOWED_USER_AGENTS: z.string().refine((userAgent) => userAgentFormat.test(userAgent)),
   DISALLOWED_IP_ADDRESSES: z.array(z.string()),
   NTFY_SERVER_ALERT: z.string().min(1),
   NTFY_SERVER_LINK: z.string().refine((url) => httpsUrl.test(url)),
@@ -65,11 +71,18 @@ export const requestCfSchema = z.object({
 export const requestHeaderCfConnectingIpSchema = z.string();
 
 /**
- * Request header content type.
+ * Request header content type schema.
  *
  * @since 1.0.0
  */
 export const requestHeaderContentTypeSchema = z.literal('application/json');
+
+/**
+ * Request header user agent schema.
+ *
+ * @since 1.0.0
+ */
+export const requestHeaderUserAgentSchema = z.string().refine((userAgent) => userAgentFormat.test(userAgent));
 
 /**
  * Request method schema.
