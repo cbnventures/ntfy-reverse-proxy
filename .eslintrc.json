@@ -36,6 +36,9 @@
     "max-len": [
       "off"
     ],
+    "no-await-in-loop": [
+      "off"
+    ],
     "no-console": [
       "off"
     ],

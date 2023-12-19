@@ -20,8 +20,15 @@ export const httpsUrl = /^https:\/\//;
 export const ntfyTopicArray = /^([a-z-0-9]+) \|\| ([a-z0-9]+)$/;
 
 /**
- * User agent format.
+ * User agent header.
  *
  * @since 1.0.0
  */
-export const userAgentFormat = /^([a-z-]+)(\/)([0-9.]+)$/;
+export const userAgentHeader = /^([a-z-]+)(\/)(.+)$/;
+
+/**
+ * User agent name.
+ *
+ * @since 1.0.0
+ */
+export const userAgentName = /^([a-z-]+)$/;

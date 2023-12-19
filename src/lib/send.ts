@@ -36,6 +36,9 @@ export async function sendNtfyRequest(content: SendNtfyRequestContent, server: S
           Authorization: `Bearer ${token}`,
           'Content-Type': 'text/plain',
           Markdown: 'yes',
+          ...(content.ip !== null) ? {
+            'X-Forwarded-For': content.ip,
+          } : {},
           'X-Title': content.title,
         },
         method: 'POST',

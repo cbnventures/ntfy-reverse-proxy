@@ -8,7 +8,7 @@ ALLOWED_COUNTRIES = [
   "CA",
 ]
 ALLOWED_USER_AGENTS = [
-  "user-agent"
+  "user-agent",
 ]
 DISALLOWED_IP_ADDRESSES = [
   "0.0.0.0",
