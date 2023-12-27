@@ -1,49 +1,114 @@
 /**
- * Fetch.
+ * Fetch request header.
  *
  * @since 1.0.0
  */
-export type FetchRequest = Request;
+export type FetchRequestHeaderRequest = Request;
 
-export type FetchEnv = unknown;
+export type FetchRequestHeaderName = string;
 
-export type FetchReturns = Promise<Response>;
+export type FetchRequestHeaderReturns = string | null;
 
 /**
- * Fetch request json.
+ * Fetch request text.
  *
  * @since 1.0.0
  */
-export type FetchRequestJsonRequest = Request;
+export type FetchRequestTextRequest = Request;
 
-export type FetchRequestJsonReturns = Promise<JSON | null>;
-
-export type FetchRequestJsonJson = JSON;
+export type FetchRequestTextReturns = Promise<string | null>;
 
 /**
- * Send ntfy request.
+ * Initialize.
  *
  * @since 1.0.0
  */
-export type SendNtfyRequestContentTitle = string;
+export type InitializeRequest = Request;
 
-export type SendNtfyRequestContentDescription = string;
+export type InitializeEnv = unknown;
 
-export type SendNtfyRequestContentContent = string;
+export type InitializeReturns = Promise<Response>;
 
-export type SendNtfyRequestContentIp = string | null;
+/**
+ * Is input valid.
+ *
+ * @since 1.0.0
+ */
+export type IsInputValidMode = 'allow' | 'disabled' | 'disallow';
 
-export type SendNtfyRequestContent = {
-  title: SendNtfyRequestContentTitle;
-  description: SendNtfyRequestContentDescription;
-  content: SendNtfyRequestContentContent;
-  ip: SendNtfyRequestContentIp;
+export type IsInputValidList = Array<string>;
+
+export type IsInputValidInput = string | null;
+
+export type IsInputValidReturns = boolean;
+
+/**
+ * Pretty print.
+ *
+ * @since 1.0.0
+ */
+export type PrettyPrintData = object | object[];
+
+export type PrettyPrintReturns = string | null;
+
+/**
+ * Send ntfy requests.
+ *
+ * @since 1.0.0
+ */
+export type SendNtfyRequestsRequestContent = string;
+
+export type SendNtfyRequestsRequestHeaders = Headers;
+
+export type SendNtfyRequestsRequestMethod = string;
+
+export type SendNtfyRequestsRequestCfProperties = CfProperties<unknown> | undefined;
+
+export type SendNtfyRequestsRequestHostname = string;
+
+export type SendNtfyRequestsRequestShowVisitorInfo = boolean;
+
+export type SendNtfyRequestsRequestMode = 'send-all' | 'send-once';
+
+export type SendNtfyRequestsRequestServerSubdomain = string;
+
+export type SendNtfyRequestsRequestServerTopic = string;
+
+export type SendNtfyRequestsRequestServerServer = string;
+
+export type SendNtfyRequestsRequestServerToken = string;
+
+export type SendNtfyRequestsRequestServer = {
+  subdomain: SendNtfyRequestsRequestServerSubdomain;
+  topic: SendNtfyRequestsRequestServerTopic;
+  server: SendNtfyRequestsRequestServerServer;
+  token: SendNtfyRequestsRequestServerToken;
 };
 
-export type SendNtfyRequestServer = string;
+export type SendNtfyRequestsRequestServers = SendNtfyRequestsRequestServer[];
 
-export type SendNtfyRequestTopic = string;
+export type SendNtfyRequestsRequest = {
+  content: SendNtfyRequestsRequestContent;
+  headers: SendNtfyRequestsRequestHeaders;
+  method: SendNtfyRequestsRequestMethod;
+  cfProperties: SendNtfyRequestsRequestCfProperties;
+  hostname: SendNtfyRequestsRequestHostname;
+  showVisitorInfo: SendNtfyRequestsRequestShowVisitorInfo;
+  mode: SendNtfyRequestsRequestMode;
+  servers: SendNtfyRequestsRequestServers;
+};
 
-export type SendNtfyRequestToken = string;
+export type SendNtfyRequestsReturns = Promise<SendNtfyRequestsResponses>;
 
-export type SendNtfyRequestReturns = Promise<boolean>;
+export type SendNtfyRequestsResponseSuccess = boolean;
+
+export type SendNtfyRequestsResponseResponse = object;
+
+export type SendNtfyRequestsResponse = {
+  success: SendNtfyRequestsResponseSuccess;
+  response: SendNtfyRequestsResponseResponse;
+};
+
+export type SendNtfyRequestsResponses = SendNtfyRequestsResponse[];
+
+export type SendNtfyRequestsLastResponseSuccess = boolean | null;

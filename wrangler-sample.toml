@@ -2,21 +2,59 @@ name = "ntfy-reverse-proxy"
 main = "src/index.ts"
 compatibility_date = "2023-11-21"
 
-[vars]
-ALLOWED_COUNTRIES = [
+############
+## Routes ##
+############
+routes = [
+  { pattern = "abcde.ntfy.example.com", custom_domain = true },
+  { pattern = "12345.ntfy.example.com", custom_domain = true },
+]
+
+#####################
+## Vars: Countries ##
+#####################
+[vars.countries]
+mode = "disallow"
+list = [
   "US",
   "CA",
 ]
-ALLOWED_USER_AGENTS = [
-  "user-agent",
-]
-DISALLOWED_IP_ADDRESSES = [
-  "0.0.0.0",
+
+########################
+## Vars: IP addresses ##
+########################
+[vars.ip_addresses]
+mode = "disallow"
+list = [
   "127.0.0.1",
+  "::1",
 ]
-NTFY_SERVER_ALERT = ""
-NTFY_SERVER_LINK = ""
-NTFY_SERVER_TOKEN = ""
-NTFY_TOPICS = [
-  "sample-ntfy-topic || a1b2c3d4e5",
+
+###################
+## Vars: Servers ##
+###################
+[vars.servers]
+mode = "send-once"
+list = [
+  { subdomain = "abcde", topic = "topic-1", server = "https://server-1-ntfy.sh", token = "tk_m61tag95tx" },
+  { subdomain = "abcde", topic = "topic-1", server = "https://server-2-ntfy.sh", token = "tk_mdo4e750xv" },
+  { subdomain = "12345", topic = "topic-2", server = "https://server-1-ntfy.sh", token = "tk_3m6p0o830s" },
+  { subdomain = "12345", topic = "topic-2", server = "https://server-2-ntfy.sh", token = "tk_ecpoh2t79b" },
+]
+
+####################
+## Vars: Settings ##
+####################
+[vars.settings]
+force_https = true
+show_response_output = false
+show_visitor_info = true
+
+#######################
+## Vars: User agents ##
+#######################
+[vars.user_agents]
+mode = "disallow"
+list = [
+  "user-agent",
 ]

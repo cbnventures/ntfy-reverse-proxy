@@ -1,22 +1,100 @@
-import type { FetchRequestJsonJson, FetchRequestJsonRequest, FetchRequestJsonReturns } from '@/types/index.d.ts';
+import type {
+  FetchRequestHeaderName,
+  FetchRequestHeaderRequest,
+  FetchRequestHeaderReturns,
+  FetchRequestTextRequest,
+  FetchRequestTextReturns,
+  IsInputValidInput,
+  IsInputValidList,
+  IsInputValidMode,
+  IsInputValidReturns,
+  PrettyPrintData,
+  PrettyPrintReturns,
+} from '@/types/index.d.ts';
 
 /**
- * Fetch request json.
+ * Fetch request header.
  *
- * @param {FetchRequestJsonRequest} request - Request.
+ * @param {FetchRequestHeaderRequest} request - Request.
+ * @param {FetchRequestHeaderName}    name    - Name.
  *
- * @returns {FetchRequestJsonReturns}
+ * @returns {FetchRequestHeaderReturns}
  *
  * @since 1.0.0
  */
-export async function fetchRequestJson(request: FetchRequestJsonRequest): FetchRequestJsonReturns {
-  let json;
+export function fetchRequestHeader(request: FetchRequestHeaderRequest, name: FetchRequestHeaderName): FetchRequestHeaderReturns {
+  return request.headers.get(name);
+}
 
+/**
+ * Fetch request text.
+ *
+ * @param {FetchRequestTextRequest} request - Request.
+ *
+ * @returns {FetchRequestTextReturns}
+ *
+ * @since 1.0.0
+ */
+export async function fetchRequestText(request: FetchRequestTextRequest): FetchRequestTextReturns {
   try {
-    json = await request.json<FetchRequestJsonJson>();
+    const text = await request.text();
+
+    // If empty body, return "null" instead of empty body.
+    if (text === '') {
+      return null;
+    }
+
+    return text;
   } catch {
-    json = null;
+    return null;
+  }
+}
+
+/**
+ * Is input valid.
+ *
+ * @param {IsInputValidMode}  mode  - Mode.
+ * @param {IsInputValidList}  list  - List.
+ * @param {IsInputValidInput} input - Input.
+ *
+ * @returns {IsInputValidReturns}
+ *
+ * @since 1.0.0
+ */
+export function isInputValid(mode: IsInputValidMode, list: IsInputValidList, input: IsInputValidInput): IsInputValidReturns {
+  // If mode is disabled, skip the check.
+  if (mode === 'disabled') {
+    return true;
   }
 
-  return json;
+  // If input is "null", request is invalid.
+  if (input === null) {
+    return false;
+  }
+
+  return (
+    mode === 'allow'
+    && list.includes(input)
+  )
+  || (
+    mode === 'disallow'
+    && !list.includes(input)
+  );
+}
+
+/**
+ * Pretty print.
+ *
+ * @param {PrettyPrintData} data - Data.
+ *
+ * @returns {PrettyPrintReturns}
+ *
+ * @since 1.0.0
+ */
+export function prettyPrint(data: PrettyPrintData): PrettyPrintReturns {
+  try {
+    return JSON.stringify(data, null, 2);
+  } catch {
+    return null;
+  }
 }
