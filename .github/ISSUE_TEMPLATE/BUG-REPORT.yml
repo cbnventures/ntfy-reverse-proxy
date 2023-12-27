@@ -20,7 +20,7 @@ body:
       options:
         - label: I have provided a descriptive title for the bug I am having.
           required: true
-        - label: I have not changed the title prefix __"[Bug]: "__.
+        - label: "I have kept the original title prefix, __\"[Bug]: \"__."
           required: true
         - label: I have done my research, and this is __NOT__ a duplicate bug report.
           required: true
