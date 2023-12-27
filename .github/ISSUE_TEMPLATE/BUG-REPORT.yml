@@ -24,8 +24,6 @@ body:
           required: true
         - label: I am __NOT__ requesting a new feature.
           required: true
-        - label: I am using the latest version of the plugin.
-          required: true
   - type: input
     id: email
     attributes:
@@ -43,22 +41,6 @@ body:
     validations:
       required: true
   - type: input
-    id: plugin-version
-    attributes:
-      label: Plugin version
-      description: What version of the plugin are you using? If you are using the Homebridge Config UI, you may find this information in the "Plugins" tab, or inside the logs similar to `[1/1/2024, 12:00:00 AM] [ADT Pulse] running on` (shown when Homebridge starts).
-      placeholder: e.g. 3.0.0
-    validations:
-      required: true
-  - type: input
-    id: homebridge-version
-    attributes:
-      label: Homebridge version
-      description: What version of Homebridge are you using? You may find this information in the "System Information" widget when using the Homebridge Config UI or by running the `homebridge -V` command.
-      placeholder: e.g. 1.7.0
-    validations:
-      required: true
-  - type: input
     id: node-version
     attributes:
       label: Node.js® version
@@ -67,18 +49,10 @@ body:
     validations:
       required: true
   - type: textarea
-    id: test-api-logs
+    id: logs
     attributes:
-      label: Log output of the `test-api` command
-      description: From the Homebridge plugin path, most likely will be `/var/lib/homebridge/node_modules`, run this command `cd homebridge-adt-pulse && npm run test-api` and paste in the results below. __Do not include logs from other plugins or commands.__ This block will be automatically formatted into code, so __no need for backticks__.
-      render: shell
-    validations:
-      required: true
-  - type: textarea
-    id: more-logs
-    attributes:
-      label: More logs relevant to this issue
-      description: Please copy and paste all logs related to this bug. __Do not include logs from other plugins or commands.__ This block will be automatically formatted into code, so __no need for backticks__.
+      label: Logs relevant to this issue
+      description: Please copy and paste all logs related to this bug. __Do not include logs unrelated to this project.__ This block will be automatically formatted into code, so __no need for backticks__.
       render: shell
     validations:
       required: true
