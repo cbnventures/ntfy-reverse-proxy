@@ -25,7 +25,9 @@
     "strict": true,
     "target": "ESNext",
     "types": [
-      "@cloudflare/workers-types"
+      "@cloudflare/workers-types",
+      "lodash",
+      "node"
     ]
   },
   "include": [
