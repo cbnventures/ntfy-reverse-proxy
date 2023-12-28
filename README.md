@@ -13,8 +13,8 @@ To use this reverse proxy, here are some steps to follow:
 1. Run `npm install` inside the project directory.
 2. Rename the `wrangler-sample.toml` file to `wrangler.toml`.
 3. Read these [instructions](#configuration) to customize the proxy.
-4. Run `npm authorize` to authorize your Cloudflare connection.
-5. Finally, run `npm deploy` to deploy your changes.
+4. Run `npm run authorize` to authorize your Cloudflare connection.
+5. Finally, run `npm run deploy` to deploy your changes.
 
 ## Configuration
 Here is an example of how the `wrangler.toml` file for this reverse proxy should be configured:
@@ -98,21 +98,11 @@ Additionally, be mindful of the limits imposed by [Cloudflare](https://developer
 ## Supported Headers
 The proxy seamlessly integrates with the following headers. These headers, each serving a specific purpose, will be forwarded to the ntfy servers when making requests. For in-depth configuration instructions, consult the ntfy documentation using the links provided below:
 
-- [X-Actions](https://docs.ntfy.sh/publish/#using-a-header)
-- [X-Attach](https://docs.ntfy.sh/publish/#attach-file-from-a-url)
-- [X-Cache](https://docs.ntfy.sh/publish/#message-caching)
-- [X-Call](https://docs.ntfy.sh/publish/#phone-calls)
-- [X-Click](https://docs.ntfy.sh/publish/#click-action)
-- [X-Delay](https://docs.ntfy.sh/publish/#scheduled-delivery)
-- [X-Email](https://docs.ntfy.sh/publish/#e-mail-notifications)
-- [X-Filename](https://docs.ntfy.sh/publish/#attach-local-file)
-- [X-Firebase](https://docs.ntfy.sh/publish/#disable-firebase)
-- [X-Icon](https://docs.ntfy.sh/publish/#icons)
-- [X-Markdown](https://docs.ntfy.sh/publish/#markdown-formatting)
-- [X-Priority](https://docs.ntfy.sh/publish/#message-priority)
-- [X-Tags](https://docs.ntfy.sh/publish/#tags-emojis)
-- [X-Title](https://docs.ntfy.sh/publish/#message-title)
-- [X-UnifiedPush](https://docs.ntfy.sh/publish/#unifiedpush)
+| Headers (A to C)                                                 | Headers (C to D)                                            | Headers (E to F)                                                | Headers (I to P)                                             | Headers (T to U)                                           |
+|------------------------------------------------------------------|-------------------------------------------------------------|-----------------------------------------------------------------|--------------------------------------------------------------|------------------------------------------------------------|
+| [X-Actions](https://docs.ntfy.sh/publish/#using-a-header)        | [X-Call](https://docs.ntfy.sh/publish/#phone-calls)         | [X-Icon](https://docs.ntfy.sh/publish/#icons)                   | [X-Call](https://docs.ntfy.sh/publish/#phone-calls)          | [X-Tags](https://docs.ntfy.sh/publish/#tags-emojis)        |
+| [X-Attach](https://docs.ntfy.sh/publish/#attach-file-from-a-url) | [X-Click](https://docs.ntfy.sh/publish/#click-action)       | [X-Markdown](https://docs.ntfy.sh/publish/#markdown-formatting) | [X-Firebase](https://docs.ntfy.sh/publish/#disable-firebase) | [X-Title](https://docs.ntfy.sh/publish/#message-title)     |
+| [X-Cache](https://docs.ntfy.sh/publish/#message-caching)         | [X-Delay](https://docs.ntfy.sh/publish/#scheduled-delivery) | [X-Priority](https://docs.ntfy.sh/publish/#message-priority)    | [X-Title](https://docs.ntfy.sh/publish/#message-title)       | [X-UnifiedPush](https://docs.ntfy.sh/publish/#unifiedpush) |
 
 __Important:__ If the `show_visitor_info` setting is set to `false` and you attempt to send a request that includes both the `X-Attach` header and a binary file in the body (like a JPEG image), an error will occur. Please be aware that this is considered a user error, not an implementation bug.
 
@@ -213,7 +203,7 @@ Customizations made using headers will not be reflected in the second message to
 This ensures that, for example, you do not receive repeated calls (if the `X-Call` header is set) or multiple long vibration bursts (if the `X-Priority` header is set to `5`).
 
 ## Configuration for Cloudflare
-After deploying the proxy, make sure to create a [configuration rule](https://developers.cloudflare.com/rules/configuration-rules/create-dashboard/) to match the user agents specified in the `wrangler.toml` file, disable "Browser Integrity Check", and set the "Security Level" to "Essentially Off" to prevent legitimate traffic (e.g. API) from being mistakenly flagged with a 403 response.
+After deploying the proxy, make sure to create a [configuration rule](https://developers.cloudflare.com/rules/configuration-rules/create-dashboard/) to match the user agents or subdomains specified in the `wrangler.toml` file, disable "Browser Integrity Check", and set the "Security Level" to "Essentially Off" to prevent legitimate traffic (e.g. APIs) from being mistakenly flagged with a 403 response.
 
 A domain name is also required. You can conveniently [register domains](https://www.cloudflare.com/products/registrar/) within Cloudflare at cost, without markup fees as seen with other domain registrars.
 
