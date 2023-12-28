@@ -55,7 +55,7 @@ body:
     attributes:
       label: Logs relevant to this bug
       description: Copy and paste all logs related to this bug. __Do not include logs unrelated to this project.__ This block will be automatically formatted into code, so __no need for backticks__ or special markup.
-      render: shell
+      render: Shell
     validations:
       required: true
   - type: checkboxes
