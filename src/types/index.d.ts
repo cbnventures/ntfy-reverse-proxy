@@ -1,4 +1,57 @@
 /**
+ * Create ntfy headers.
+ *
+ * @since 1.0.0
+ */
+export type CreateNtfyHeadersFetchStage = 1 | 2;
+
+export type CreateNtfyHeadersContentType = 'binary' | 'text';
+
+export type CreateNtfyHeadersHeaders = Headers;
+
+export type CreateNtfyHeadersShowVisitorInfo = boolean;
+
+export type CreateNtfyHeadersReturns = {
+  [key: string]: string;
+};
+
+/**
+ * Fetch request body.
+ *
+ * @since 1.0.0
+ */
+export type FetchRequestBodyRequest = Request;
+
+export type FetchRequestBodyReturnsBinaryType = 'binary';
+
+export type FetchRequestBodyReturnsBinaryData = Uint8Array;
+
+export type FetchRequestBodyReturnsBinary = {
+  type: FetchRequestBodyReturnsBinaryType;
+  data: FetchRequestBodyReturnsBinaryData;
+};
+
+export type FetchRequestBodyReturnsTextType = 'text';
+
+export type FetchRequestBodyReturnsTextData = string;
+
+export type FetchRequestBodyReturnsText = {
+  type: FetchRequestBodyReturnsTextType;
+  data: FetchRequestBodyReturnsTextData;
+};
+
+export type FetchRequestBodyReturnsUnknownType = 'unknown';
+
+export type FetchRequestBodyReturnsUnknownData = undefined;
+
+export type FetchRequestBodyReturnsUnknown = {
+  type: FetchRequestBodyReturnsUnknownType;
+  data: FetchRequestBodyReturnsUnknownData;
+};
+
+export type FetchRequestBodyReturns = Promise<FetchRequestBodyReturnsBinary | FetchRequestBodyReturnsText | FetchRequestBodyReturnsUnknown>;
+
+/**
  * Fetch request header.
  *
  * @since 1.0.0
@@ -8,15 +61,6 @@ export type FetchRequestHeaderRequest = Request;
 export type FetchRequestHeaderName = string;
 
 export type FetchRequestHeaderReturns = string | null;
-
-/**
- * Fetch request text.
- *
- * @since 1.0.0
- */
-export type FetchRequestTextRequest = Request;
-
-export type FetchRequestTextReturns = Promise<string | null>;
 
 /**
  * Initialize.
@@ -56,11 +100,16 @@ export type PrettyPrintReturns = string | null;
  *
  * @since 1.0.0
  */
-export type SendNtfyRequestsRequestContent = string;
+export type SendNtfyRequestsRequestBodyType = 'binary' | 'text';
+
+export type SendNtfyRequestsRequestBodyData = Uint8Array | string | null;
+
+export type SendNtfyRequestsRequestBody = {
+  type: SendNtfyRequestsRequestBodyType;
+  data: SendNtfyRequestsRequestBodyData;
+};
 
 export type SendNtfyRequestsRequestHeaders = Headers;
-
-export type SendNtfyRequestsRequestMethod = string;
 
 export type SendNtfyRequestsRequestCfProperties = CfProperties<unknown> | undefined;
 
@@ -88,9 +137,8 @@ export type SendNtfyRequestsRequestServer = {
 export type SendNtfyRequestsRequestServers = SendNtfyRequestsRequestServer[];
 
 export type SendNtfyRequestsRequest = {
-  content: SendNtfyRequestsRequestContent;
+  body: SendNtfyRequestsRequestBody;
   headers: SendNtfyRequestsRequestHeaders;
-  method: SendNtfyRequestsRequestMethod;
   cfProperties: SendNtfyRequestsRequestCfProperties;
   hostname: SendNtfyRequestsRequestHostname;
   showVisitorInfo: SendNtfyRequestsRequestShowVisitorInfo;

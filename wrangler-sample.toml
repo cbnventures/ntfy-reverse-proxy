@@ -14,7 +14,7 @@ routes = [
 ## Vars: Countries ##
 #####################
 [vars.countries]
-mode = "disallow"
+mode = "allow"
 list = [
   "US",
   "CA",
@@ -47,14 +47,14 @@ list = [
 ####################
 [vars.settings]
 force_https = true
-show_response_output = false
+show_response_output = true
 show_visitor_info = true
 
 #######################
 ## Vars: User agents ##
 #######################
 [vars.user_agents]
-mode = "disallow"
+mode = "allow"
 list = [
-  "user-agent",
+  "custom-user-agent",
 ]

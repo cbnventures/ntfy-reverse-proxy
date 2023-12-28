@@ -78,3 +78,4 @@ package-lock.json
 build/
 .wrangler/
 wrangler.toml
+wrangler-test.toml

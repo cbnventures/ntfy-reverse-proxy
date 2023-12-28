@@ -9,7 +9,8 @@
   "scripts": {
     "start": "wrangler dev",
     "authorize": "wrangler login",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "deploy-test": "wrangler deploy --config wrangler-test.toml"
   },
   "repository": {
     "type": "git",
@@ -42,7 +43,7 @@
     "node": "18"
   },
   "dependencies": {
-    "lodash": "^4.17.21",
+    "lodash": "4.17.21",
     "zod": "3.22.4"
   },
   "devDependencies": {

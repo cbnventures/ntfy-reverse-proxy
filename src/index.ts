@@ -3,8 +3,8 @@ import _ from 'lodash';
 import { envSchema } from '@/lib/schema.js';
 import { sendNtfyRequests } from '@/lib/send.js';
 import {
+  fetchRequestBody,
   fetchRequestHeader,
-  fetchRequestText,
   isInputValid,
   prettyPrint,
 } from '@/lib/utility.js';
@@ -52,22 +52,22 @@ export async function initialize(request: InitializeRequest, env: InitializeEnv)
       return Response.redirect(requestUrl.href, 301);
     }
 
+    const requestBody = await fetchRequestBody(request);
     const requestIp = fetchRequestHeader(request, 'cf-connecting-ip');
     const requestIpCountry = fetchRequestHeader(request, 'cf-ipcountry');
     const requestMethod = request.method;
-    const requestText = await fetchRequestText(request);
     const requestUserAgent = fetchRequestHeader(request, 'user-agent');
 
     // Validate the inputs.
+    const validBody = requestBody.type !== 'unknown';
     const validIp = isInputValid(ipAddresses.mode, ipAddresses.list, requestIp);
     const validIpCountry = isInputValid(countries.mode, countries.list, requestIpCountry);
-    const validMethod = ['POST'].includes(requestMethod);
-    const validText = requestText !== null;
+    const validMethod = ['POST', 'PUT'].includes(requestMethod);
     const validUserAgent = isInputValid(userAgents.mode, userAgents.list, requestUserAgent);
 
     // If the request is invalid based on the requirements.
     if (
-      !validText
+      !validBody
       || !validIp
       || !validIpCountry
       || !validMethod
@@ -76,7 +76,7 @@ export async function initialize(request: InitializeRequest, env: InitializeEnv)
       return new Response([
         'Forbidden',
         ...(settings.show_response_output) ? [prettyPrint({
-          validText,
+          validBody,
           validIp,
           validIpCountry,
           validMethod,
@@ -89,9 +89,8 @@ export async function initialize(request: InitializeRequest, env: InitializeEnv)
 
     // Send request to defined ntfy servers.
     const ntfyResponses = await sendNtfyRequests({
-      content: requestText,
+      body: requestBody,
       headers: request.headers,
-      method: request.method,
       cfProperties: request.cf,
       hostname: requestUrl.hostname,
       showVisitorInfo: settings.show_visitor_info,
