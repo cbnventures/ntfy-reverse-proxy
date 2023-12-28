@@ -15,10 +15,16 @@
     "type": "git",
     "url": "git://github.com/cbnventures/ntfy-reverse-proxy.git"
   },
-  "funding": {
-    "type": "paypal",
-    "url": "https://www.cbnventures.io/paypal/"
-  },
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/cbnventures"
+    },
+    {
+      "type": "paypal",
+      "url": "https://www.cbnventures.io/paypal/"
+    }
+  ],
   "keywords": [
     "ntfy",
     "push-notification",
