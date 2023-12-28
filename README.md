@@ -82,7 +82,7 @@ list = [
 ```
 
 ## Sending Messages to the Proxy
-To route messages through the proxy back to your local ntfy servers, initiate a `POST` or `PUT` request with the specified configuration. Please note that sending via the `GET` method or using a JSON body is not supported. Here's an example using the [default settings](#configuration):
+To route messages through the proxy back to your local ntfy servers, initiate a `POST` or `PUT` request with the specified configuration. Please note that sending via the `GET` method or using a JSON body is not supported. Here's an example using the [default configuration](#configuration) shown above:
 
 ```http request
 POST https://abcde.ntfy.example.com
@@ -114,10 +114,10 @@ The proxy seamlessly integrates with the following headers. These headers, each 
 - [X-Title](https://docs.ntfy.sh/publish/#message-title)
 - [X-UnifiedPush](https://docs.ntfy.sh/publish/#unifiedpush)
 
-__Important:__ If the `show_visitor_info` setting is set to `false` and you attempt to send a request that includes both the `X-Attach` header and a binary file in the body, such as a JPEG image, an error will occur. Please be aware that this is considered a user error, not an implementation bug.
+__Important:__ If the `show_visitor_info` setting is set to `false` and you attempt to send a request that includes both the `X-Attach` header and a binary file in the body (like a JPEG image), an error will occur. Please be aware that this is considered a user error, not an implementation bug.
 
 ## Configuration for Your Local Servers
-For optimal functionality, ensure that each ntfy server is defined with the `base-url` setting, the `behind-proxy` setting (must be `true`). Additionally, set the `attachment-cache-dir` even if you do not intend to send attachments (due to the maximum message size limit of 4,096 bytes).
+For optimal functionality, ensure that each ntfy server is defined with a `base-url`, the `behind-proxy` setting is set to `true`. Additionally, set the `attachment-cache-dir` even if you do not intend to send attachments (due to the maximum message size limit of 4,096 bytes).
 
 If you would like to enforce text-only requests, customize the `attachment-file-size-limit` to a smaller value of [your preference](https://docs.ntfy.sh/config/?h=attachments#attachments). This ensures that any file exceeding this limit will fail to send.
 
@@ -126,24 +126,44 @@ For your convenience, you may also refer to the default [server.yml](https://git
 ## Specify Local Servers
 To specify a destination ntfy server, use the following settings:
 
-- To send a single message to one of the matched server, set `mode` to `"send-once"`.
+- To send a single message to the first server with a success response, set `mode` to `"send-once"`.
 - To send a single message to all matched servers, set `mode` to `"send-all"`.
 
 You have the flexibility to define multiple servers for redundancy or opt for a single ntfy server. For a server to match, the URL should begin with the `subdomain` listed in the `servers` list. For example:
 
 A URL with `abcde.ntfy.example.com` would match servers that have the `abcde` in the `subdomain` value:
-```toml
-list = [
-  { subdomain = "abcde", topic = "topic-1", server = "https://server-1-ntfy.sh", token = "tk_m61tag95tx" },
-  { subdomain = "abcde", topic = "topic-1", server = "https://server-2-ntfy.sh", token = "tk_mdo4e750xv" },
+```json
+[
+  {
+    "subdomain": "abcde",
+    "topic": "topic-1",
+    "server": "https://server-1-ntfy.sh",
+    "token": "tk_m61tag95tx"
+  },
+  {
+    "subdomain": "abcde",
+    "topic": "topic-1",
+    "server": "https://server-2-ntfy.sh",
+    "token": "tk_mdo4e750xv"
+  }
 ]
 ```
 
 A URL with `12345.ntfy.example.com` would match servers that have the `12345` in the `subdomain` value:
-```toml
-list = [
-  { subdomain = "12345", topic = "topic-2", server = "https://server-1-ntfy.sh", token = "tk_3m6p0o830s" },
-  { subdomain = "12345", topic = "topic-2", server = "https://server-2-ntfy.sh", token = "tk_ecpoh2t79b" },
+```json
+[
+  {
+    "subdomain": "12345",
+    "topic": "topic-2",
+    "server": "https://server-1-ntfy.sh",
+    "token": "tk_3m6p0o830s"
+  },
+  {
+    "subdomain": "12345",
+    "topic": "topic-2",
+    "server": "https://server-2-ntfy.sh",
+    "token": "tk_ecpoh2t79b"
+  }
 ]
 ```
 
@@ -173,27 +193,31 @@ Keep in mind that you can only specify a single mode for each setting (e.g. `cou
 ## Additional Settings
 The proxy offers additional settings that might be of interest to you. Here are the available settings:
 
-- To enforce HTTPS, set the `force_https` setting to `true` (recommended).
-- To display response output, set the `show_response_output` to `true` (useful for debugging).
-- To reveal visitor information, set the `show_visitor_info` to `true` (provides details about the sender).
+- To enforce HTTPS, set the `force_https` setting to `true`.
+- To display response output, set the `show_response_output` to `true`.
+- To reveal visitor information, set the `show_visitor_info` to `true`.
 
-By default, the `show_response_output` is set to `true` to assist with initial setup, but please __exercise caution__ as it is designed _primarily for debugging purposes_. It is recommended to set this to `false` to avoid exposing excessive information that could compromise the proxy's protections.
+By default, the `show_response_output` setting is set to `true` to assist with initial setup, but please __exercise caution__ as this setting is designed _primarily for debugging purposes_. It is recommended to set this to `false` to avoid exposing excessive information that could compromise the proxy's protections.
 
-When the `show_visitor_info` is set to `true`, a section called __« Incoming Request Details »__ will appear. This section shows the user's IP address, location (region, country, and colo code), approximate GPS coordinates, and Internet Service Provider (ISP) details (provider name and ASN).
+When the `show_visitor_info` is set to `true`, a section called __« Incoming Request Details »__ will appear. This section shows the user's IP address, location (region, country, and colo code¹), approximate GPS coordinates, and Internet Service Provider (ISP) details (provider name and ASN).
+
+¹ A colo code is a code used to mark Cloudflare data center locations.
 
 ## Show Visitor Info when Sending Attachments
 If the `show_visitor_info` is set to `true` and you send a binary file, you will receive two messages on every matched server for each request.
 
 For instance, if you send one attachment, set the servers `mode` to `send-all`, and have two ntfy servers, you will receive four messages in total. One message shows visitor information, and the second message is reserved solely for the binary file. Both messages are duplicated for each matched server.
 
-Customizations made using headers will not be reflected in the second message to prevent intentional duplication of message content and preferences. This ensures that, for example, you do not receive repeated calls (if the `X-Call` header is set) or multiple long vibration bursts (if the `X-Priority` header is set to `5`).
+Customizations made using headers will not be reflected in the second message to prevent intentional duplication of message content and preferences.
+
+This ensures that, for example, you do not receive repeated calls (if the `X-Call` header is set) or multiple long vibration bursts (if the `X-Priority` header is set to `5`).
 
 ## Configuration for Cloudflare
-After deploying the proxy, make sure to create a [configuration rule](https://developers.cloudflare.com/rules/configuration-rules/create-dashboard/) to match the custom domain specified in the `routes` section within the `wrangler.toml` file, disable "Browser Integrity Check", and set the "Security Level" to "Essentially Off" to prevent legitimate traffic from being mistakenly flagged with a 403 response, especially in scenarios involving automated requests (e.g. API).
+After deploying the proxy, make sure to create a [configuration rule](https://developers.cloudflare.com/rules/configuration-rules/create-dashboard/) to match the user agents specified in the `wrangler.toml` file, disable "Browser Integrity Check", and set the "Security Level" to "Essentially Off" to prevent legitimate traffic (e.g. API) from being mistakenly flagged with a 403 response.
 
-A domain name is also required. You can conveniently register domains within Cloudflare at cost, without markup fees as seen with other domain registrars.
+A domain name is also required. You can conveniently [register domains](https://www.cloudflare.com/products/registrar/) within Cloudflare at cost, without markup fees as seen with other domain registrars.
 
 __Important:__ Routes are not supported when `custom_domain` is set to `false`. This is because the proxy matches the subdomain of the pattern URL (e.g. `abcde.ntfy.example.com`) with the subdomain value (e.g. `abcde`) on the servers list in your `wrangler.toml` file.
 
 ## Credits and Appreciation
-If you find value in the ongoing development of this proxy and wish to express your appreciation, you have the option to become our supporter on [GitHub Sponsors](https://github.com/sponsors/cbnventures) or make a donation through [PayPal](https://www.cbnventures.io/paypal/).
+If you find value in the ongoing development of this proxy and wish to express your appreciation, you have the option to become our supporter on [GitHub Sponsors](https://github.com/sponsors/cbnventures) or make a one-time donation through [PayPal](https://www.cbnventures.io/paypal/).
