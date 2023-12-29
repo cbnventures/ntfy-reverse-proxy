@@ -1,11 +1,11 @@
 Reverse Proxy for ntfy
 =======================
 
-[![GitHub Releases](https://img.shields.io/github/v/release/cbnventures/ntfy-reverse-proxy?style=flat-square&color=blue&sort=semver)](https://github.com/cbnventures/ntfy-reverse-proxy/releases)
-[![GitHub Top Languages](https://img.shields.io/github/languages/top/cbnventures/ntfy-reverse-proxy?style=flat-square&color=success)](https://github.com/cbnventures/ntfy-reverse-proxy)
-[![GitHub License](https://img.shields.io/github/license/cbnventures/ntfy-reverse-proxy?style=flat-square&color=yellow)](https://github.com/cbnventures/ntfy-reverse-proxy/blob/master/LICENSE)
-[![Become a GitHub Sponsor](https://img.shields.io/badge/sponsor-github-black?style=flat-square&color=orange)](https://github.com/sponsors/cbnventures)
-[![Donate via PayPal](https://img.shields.io/badge/donate-paypal-black?style=flat-square&color=blue)](https://www.cbnventures.io/paypal/)
+[![GitHub Releases](https://img.shields.io/github/v/release/cbnventures/ntfy-reverse-proxy?style=for-the-badge&logo=github&logoColor=%23ffffff&color=%23b25da6)](https://github.com/cbnventures/ntfy-reverse-proxy/releases)
+[![GitHub Top Languages](https://img.shields.io/github/languages/top/cbnventures/ntfy-reverse-proxy?style=for-the-badge&logo=typescript&logoColor=%23ffffff&color=%236688c3)](https://github.com/cbnventures/ntfy-reverse-proxy)
+[![GitHub License](https://img.shields.io/github/license/cbnventures/ntfy-reverse-proxy?style=for-the-badge&logo=googledocs&logoColor=%23ffffff&color=%2348a56a)](https://github.com/cbnventures/ntfy-reverse-proxy/blob/main/LICENSE)
+[![Become a GitHub Sponsor](https://img.shields.io/badge/github-sponsor-gray?style=for-the-badge&logo=githubsponsors&logoColor=%23ffffff&color=%23eaaf41)](https://github.com/sponsors/cbnventures)
+[![Donate via PayPal](https://img.shields.io/badge/paypal-donate-gray?style=for-the-badge&logo=paypal&logoColor=%23ffffff&color=%23ce4a4a)](https://www.cbnventures.io/paypal/)
 
 Receive push notifications on one or more [ntfy](https://ntfy.sh) server instances, ensuring redundancy and synchronized communications, all fortified with the added security layer provided by Cloudflare.
 
