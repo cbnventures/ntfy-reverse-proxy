@@ -32,15 +32,19 @@
     "reverse-proxy",
     "cloudflare"
   ],
-  "author": "Jacky Liang",
-  "license": "ISC",
+  "author": {
+    "name": "Jacky Liang",
+    "email": "hello@mrjackyliang.com",
+    "url": "https://www.mrjackyliang.com"
+  },
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/cbnventures/ntfy-reverse-proxy/issues"
   },
   "files": [],
   "homepage": "https://github.com/cbnventures/ntfy-reverse-proxy",
   "engines": {
-    "node": "18"
+    "node": ">=18"
   },
   "dependencies": {
     "lodash": "4.17.21",
