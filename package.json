@@ -1,7 +1,7 @@
 {
   "name": "ntfy-reverse-proxy",
   "displayName": "ntfy Reverse Proxy",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A reverse proxy for ntfy running on Cloudflare Workers",
   "exports": "./build/src/index.js",
   "type": "module",

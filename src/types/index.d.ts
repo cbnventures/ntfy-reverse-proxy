@@ -11,9 +11,7 @@ export type CreateNtfyHeadersHeaders = Headers;
 
 export type CreateNtfyHeadersShowVisitorInfo = boolean;
 
-export type CreateNtfyHeadersReturns = {
-  [key: string]: string;
-};
+export type CreateNtfyHeadersReturns = Record<string, string>;
 
 /**
  * Fetch request body.
