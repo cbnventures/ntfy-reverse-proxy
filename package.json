@@ -1,7 +1,7 @@
 {
   "name": "ntfy-reverse-proxy",
   "displayName": "ntfy Reverse Proxy",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A reverse proxy for ntfy running on Cloudflare Workers",
   "exports": "./build/src/index.js",
   "type": "module",
@@ -9,7 +9,7 @@
   "scripts": {
     "start": "wrangler dev",
     "authorize": "wrangler login",
-    "deploy": "wrangler deploy",
+    "deploy": "wrangler deploy --config wrangler.toml",
     "deploy-test": "wrangler deploy --config wrangler-test.toml"
   },
   "repository": {
