@@ -15,7 +15,7 @@ import type {
   IsInputValidReturns,
   PrettyPrintData,
   PrettyPrintReturns,
-} from '@/types/index.d.ts';
+} from '@/types';
 
 /**
  * Create ntfy headers.

@@ -11,13 +11,13 @@ Receive push notifications on one or more [ntfy](https://ntfy.sh) server instanc
 
 To use this reverse proxy, here are some steps to follow:
 1. Run `npm install` inside the project directory.
-2. Rename the `wrangler-sample.toml` file to `wrangler.toml`.
+2. Rename the `wrangler-sample.toml` file to `wrangler-prod.toml`.
 3. Read these [instructions](#configuration) to customize the proxy.
 4. Run `npm run authorize` to authorize your Cloudflare connection.
-5. Finally, run `npm run deploy` to deploy your changes.
+5. Finally, run `npm run deploy-prod` to deploy your changes.
 
 ## Configuration
-Here is an example of how the `wrangler.toml` file for this reverse proxy should be configured:
+Here is an example of how the `wrangler-prod.toml` file for this reverse proxy should be configured:
 ```toml
 name = "ntfy-reverse-proxy"
 main = "src/index.ts"
@@ -157,7 +157,7 @@ A URL with `12345.ntfy.example.com` would match servers that have the `12345` in
 ]
 ```
 
-__Important:__ Do not forget to set the `routes` in the `wrangler.toml` configuration as well. This will help automate the creation of the subdomain when deploying the proxy to Cloudflare.
+__Important:__ Do not forget to set the `routes` in the `wrangler-prod.toml` configuration as well. This will help automate the creation of the subdomain when deploying the proxy to Cloudflare.
 
 __Note:__ Only token authentication is supported. You may create tokens using the [ntfy command line](https://docs.ntfy.sh/config/?h=token#access-tokens).
 
@@ -203,11 +203,11 @@ Customizations made using headers will not be reflected in the second message to
 This ensures that, for example, you do not receive repeated calls (if the `X-Call` header is set) or multiple long vibration bursts (if the `X-Priority` header is set to `5`).
 
 ## Configuration for Cloudflare
-After deploying the proxy, make sure to create a [configuration rule](https://developers.cloudflare.com/rules/configuration-rules/create-dashboard/) to match the user agents or subdomains specified in the `wrangler.toml` file, disable "Browser Integrity Check", and set the "Security Level" to "Essentially Off" to prevent legitimate traffic (e.g. APIs) from being mistakenly flagged with a 403 response.
+After deploying the proxy, make sure to create a [configuration rule](https://developers.cloudflare.com/rules/configuration-rules/create-dashboard/) to match the user agents or subdomains specified in the `wrangler-prod.toml` file, disable "Browser Integrity Check", and set the "Security Level" to "Essentially Off" to prevent legitimate traffic (e.g. APIs) from being mistakenly flagged with a 403 response.
 
 A domain name is also required. You can conveniently [register domains](https://www.cloudflare.com/products/registrar/) within Cloudflare at cost, without markup fees as seen with other domain registrars.
 
-__Important:__ Routes are not supported when `custom_domain` is set to `false`. This is because the proxy matches the subdomain of the pattern URL (e.g. `abcde.ntfy.example.com`) with the subdomain value (e.g. `abcde`) on the servers list in your `wrangler.toml` file.
+__Important:__ Routes are not supported when `custom_domain` is set to `false`. This is because the proxy matches the subdomain of the pattern URL (e.g. `abcde.ntfy.example.com`) with the subdomain value (e.g. `abcde`) on the servers list in your `wrangler-prod.toml` file.
 
 ## Credits and Appreciation
 If you find value in the ongoing development of this proxy and wish to express your appreciation, you have the option to become our supporter on [GitHub Sponsors](https://github.com/sponsors/cbnventures) or make a one-time donation through [PayPal](https://www.cbnventures.io/paypal/).

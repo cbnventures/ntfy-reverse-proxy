@@ -8,7 +8,7 @@ import {
   isInputValid,
   prettyPrint,
 } from '@/lib/utility.js';
-import type { InitializeEnv, InitializeRequest, InitializeReturns } from '@/types/index.d.ts';
+import type { InitializeEnv, InitializeRequest, InitializeReturns } from '@/types';
 
 /**
  * Initialize.

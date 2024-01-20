@@ -2,54 +2,101 @@
   "env": {
     "node": true
   },
-  "extends": [
-    "airbnb-base",
-    "airbnb-typescript/base"
-  ],
-  "ignorePatterns": [
-    "/build/**/*"
-  ],
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaVersion": "latest",
-    "project": "./tsconfig.json",
-    "sourceType": "module"
-  },
-  "plugins": [
-    "@typescript-eslint"
-  ],
-  "root": true,
-  "rules": {
-    "import/extensions": [
-      "error",
-      "ignorePackages",
-      {
-        "": "never"
+  "extends": [],
+  "overrides": [
+    {
+      "excludedFiles": [],
+      "extends": [
+        "airbnb-base"
+      ],
+      "files": [
+        "./**/*.js"
+      ],
+      "rules": {
+        "import/extensions": [
+          "error",
+          "ignorePackages",
+          {
+            "": "never"
+          }
+        ],
+        "import/no-default-export": [
+          "off"
+        ],
+        "import/prefer-default-export": [
+          "off"
+        ],
+        "max-len": [
+          "off"
+        ],
+        "no-await-in-loop": [
+          "off"
+        ],
+        "no-console": [
+          "off"
+        ],
+        "no-continue": [
+          "off"
+        ],
+        "no-irregular-whitespace": [
+          "error",
+          {
+            "skipComments": true
+          }
+        ]
       }
-    ],
-    "import/no-default-export": [
-      "off"
-    ],
-    "import/prefer-default-export": [
-      "off"
-    ],
-    "max-len": [
-      "off"
-    ],
-    "no-await-in-loop": [
-      "off"
-    ],
-    "no-console": [
-      "off"
-    ],
-    "no-continue": [
-      "off"
-    ],
-    "no-irregular-whitespace": [
-      "error",
-      {
-        "skipComments": true
+    },
+    {
+      "excludedFiles": [],
+      "extends": [
+        "airbnb-base",
+        "airbnb-typescript/base"
+      ],
+      "files": [
+        "./**/*.ts"
+      ],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "ecmaVersion": "latest",
+        "project": "./tsconfig.json",
+        "sourceType": "module"
+      },
+      "plugins": [
+        "@typescript-eslint"
+      ],
+      "rules": {
+        "import/extensions": [
+          "error",
+          "ignorePackages",
+          {
+            "ts": "never"
+          }
+        ],
+        "import/no-default-export": [
+          "off"
+        ],
+        "import/prefer-default-export": [
+          "off"
+        ],
+        "max-len": [
+          "off"
+        ],
+        "no-await-in-loop": [
+          "off"
+        ],
+        "no-console": [
+          "off"
+        ],
+        "no-continue": [
+          "off"
+        ],
+        "no-irregular-whitespace": [
+          "error",
+          {
+            "skipComments": true
+          }
+        ]
       }
-    ]
-  }
+    }
+  ]
 }
