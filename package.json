@@ -3,7 +3,7 @@
   "displayName": "ntfy Reverse Proxy",
   "version": "1.0.4",
   "description": "A reverse proxy for ntfy running on Cloudflare Workers",
-  "exports": "./build/src/index.js",
+  "main": "",
   "type": "module",
   "private": true,
   "scripts": {
