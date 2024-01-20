@@ -5,8 +5,6 @@
     "baseUrl": "./",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "incremental": true,
-    "isolatedModules": true,
     "lib": [
       "ESNext"
     ],

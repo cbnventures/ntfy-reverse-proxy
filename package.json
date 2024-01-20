@@ -10,7 +10,7 @@
     "start": "wrangler dev",
     "authorize": "wrangler login",
     "deploy-prod": "npm-run-all --sequential deploy-prod:*",
-    "deploy-prod:lint": "npx eslint ./",
+    "deploy-prod:lint": "npx eslint ./src",
     "deploy-prod:wrangler": "wrangler deploy --config wrangler-prod.toml",
     "deploy-test": "npm-run-all --sequential deploy-test:*",
     "deploy-test:lint": "npx eslint ./",

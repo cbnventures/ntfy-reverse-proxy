@@ -69,7 +69,7 @@
           "error",
           "ignorePackages",
           {
-            "ts": "never"
+            "": "never"
           }
         ],
         "import/no-default-export": [
