@@ -8,7 +8,7 @@ body:
       value: We truly appreciate you taking the time to share this bug report with us.
   - type: markdown
     attributes:
-      value: Please __fill out the form with as much detail as possible__ so the contributors can easily recreate the bug and work swiftly to assist you in resolving it. Thank you for your cooperation!
+      value: Please __fill out the form with as much detail as possible__ so we can easily recreate the bug and work swiftly to assist you in resolving it. Thank you for your cooperation!
   - type: markdown
     attributes:
       value: ---
@@ -16,7 +16,7 @@ body:
     id: pre-check
     attributes:
       label: Pre-check confirmation
-      description: Before proceeding further, please confirm the following by checking each box. This confirmation is crucial for contributors to effectively identify and address the bug. __All boxes MUST be checked; failure to comply will result in the immediate closure of this bug report.__
+      description: Before proceeding further, please confirm the following by checking each box. This confirmation is crucial for us to effectively identify and address the bug. __All boxes MUST be checked; failure to comply will result in the immediate closure of this bug report.__
       options:
         - label: I have provided a descriptive title for the bug I am having
           required: true
@@ -26,11 +26,13 @@ body:
           required: true
         - label: I am __NOT__ requesting a new feature
           required: true
+        - label: I have read the __README__, and this is __NOT__ a technical support request
+          required: true
   - type: input
     id: email
     attributes:
       label: Your email address
-      description: Help the contributors easily get in touch with you if they need more information. __If possible, please consider using an alias you have access to as this information is publicly visible.__
+      description: Help us easily get in touch with you if we need more information. __If possible, please consider using an alias you have access to as this information is publicly visible.__
       placeholder: e.g. user@example.com
     validations:
       required: true
@@ -58,6 +60,14 @@ body:
       render: Shell
     validations:
       required: true
+  - type: checkboxes
+    id: post-check
+    attributes:
+      label: Post-check confirmation
+      description: Before proceeding further, please confirm the following by checking each box. This confirmation is crucial for the consideration of your request. __All boxes MUST be checked; failure to comply will result in your request being closed.__
+      options:
+        - label: I have filled in the form __exactly as requested__ and did not attempt to circumvent form validation.
+          required: true
   - type: checkboxes
     id: legal
     attributes:

@@ -4,6 +4,7 @@
   "version": "1.0.4",
   "description": "A reverse proxy for ntfy running on Cloudflare Workers",
   "main": "",
+  "exports": "",
   "type": "module",
   "private": true,
   "scripts": {
@@ -16,6 +17,7 @@
     "deploy-test:lint": "npx eslint ./",
     "deploy-test:wrangler": "wrangler deploy --config wrangler-test.toml"
   },
+  "types": "",
   "repository": {
     "type": "git",
     "url": "git://github.com/cbnventures/ntfy-reverse-proxy.git"
