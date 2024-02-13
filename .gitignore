@@ -50,7 +50,7 @@ $RECYCLE.BIN/
 ################
 node_modules/
 package-lock.json
-.dev.vars
+.env
 .env.development.local
 .env.test.local
 .env.production.local
@@ -60,6 +60,20 @@ package-lock.json
 #### Next.js ####
 #################
 .next/
+
+#####################
+#### AWS Amplify ####
+#####################
+amplify/.config/local-*
+amplify/backend/.temp
+amplify/backend/amplify-meta.json
+amplify/\#current-cloud-backend
+amplify/hooks/*.sample
+amplify/logs
+amplify/mock-api-resources
+amplify/mock-data
+src/amplifyconfiguration.json
+src/aws-exports.js
 
 ##################
 #### Firebase ####
