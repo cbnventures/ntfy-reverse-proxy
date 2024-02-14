@@ -78,8 +78,9 @@ src/aws-exports.js
 ##################
 #### Firebase ####
 ##################
-**/.firebase
-**/.firebaserc
+.firebase
+.firebaserc
+firebase-debug.log
 
 ###################
 #### JetBrains ####
