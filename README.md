@@ -11,17 +11,17 @@ Receive push notifications on one or more [ntfy](https://ntfy.sh) server instanc
 
 To use this reverse proxy, here are some steps to follow:
 1. Run `npm install` inside the project directory.
-2. Rename the `wrangler-sample.toml` file to `wrangler-prod.toml`.
+2. Rename the `wrangler-sample.toml` file to `wrangler.toml`.
 3. Read these [instructions](#configuration) to customize the proxy.
 4. Run `npm run authorize` to authorize your Cloudflare connection.
-5. Finally, run `npm run deploy-prod` to deploy your changes.
+5. Finally, run `npm run deploy` to deploy your changes.
 
 ## Configuration
-Here is an example of how the `wrangler-prod.toml` file for this reverse proxy should be configured:
+Here is an example of how the `wrangler.toml` file for this reverse proxy should be configured:
 ```toml
 name = "ntfy-reverse-proxy"
 main = "src/index.ts"
-compatibility_date = "2023-11-21"
+compatibility_date = "2024-02-22"
 
 ############
 ## Routes ##
@@ -59,8 +59,8 @@ mode = "send-once"
 list = [
   { subdomain = "abcde", topic = "topic-1", server = "https://server-1-ntfy.sh", token = "tk_m61tag95tx" },
   { subdomain = "abcde", topic = "topic-1", server = "https://server-2-ntfy.sh", token = "tk_mdo4e750xv" },
-  { subdomain = "12345", topic = "topic-2", server = "https://server-1-ntfy.sh", token = "tk_3m6p0o830s" },
-  { subdomain = "12345", topic = "topic-2", server = "https://server-2-ntfy.sh", token = "tk_ecpoh2t79b" },
+  { subdomain = "12345", topic = "topic-2", server = "https://server-1-ntfy.sh", token = "tk_m61tag95tx" },
+  { subdomain = "12345", topic = "topic-2", server = "https://server-2-ntfy.sh", token = "tk_mdo4e750xv" },
 ]
 
 ####################
@@ -77,12 +77,13 @@ show_visitor_info = true
 [vars.user_agents]
 mode = "allow"
 list = [
-  "custom-user-agent",
+  "custom-user-agent-1",
+  "custom-user-agent-2",
 ]
 ```
 
 ## Sending Messages to the Proxy
-To route messages through the proxy back to your local ntfy servers, initiate a `POST` or `PUT` request with the specified configuration. Please note that sending via the `GET` method or using a JSON body is not supported. Here's an example using the [default configuration](#configuration) shown above:
+To route messages through the proxy back to your local ntfy servers, initiate a `POST` or `PUT` request with the specified configuration. Please note that sending via the `GET` method or using a body with JSON is not supported. Here's an example using the [default configuration](#configuration) shown above:
 
 ```http request
 POST https://abcde.ntfy.example.com
@@ -91,12 +92,19 @@ User-Agent: custom-user-agent
 body - can be plain text or a binary file
 ```
 
-This request will succeed only if the user is within the United States (`US`) or Canada (`CA`), does not match the IP addresses `127.0.0.1` or `::1`, and the user agent is set to `custom-user-agent`. If these conditions are not met, the request will fail. Learn how to configure this by reading the [Limit Visitor Access](#limit-visitor-access) section.
+Using the sample configuration above, this request will succeed only if:
+- The user is within the United States (`US`) or Canada (`CA`)
+- Does not match the IP addresses `127.0.0.1` or `::1`
+- The user agent is set to `custom-user-agent-1` or `custom-user-agent-2`
+
+If these conditions are not met, the request will fail. Learn how to configure this by reading the [Limit Visitor Access](#limit-visitor-access) section.
 
 Additionally, be mindful of the limits imposed by [Cloudflare](https://developers.cloudflare.com/workers/platform/limits/#request-limits), which are subject to your account's plan.
 
 ## Supported Headers
-The proxy seamlessly integrates with the following headers. These headers, each serving a specific purpose, will be forwarded to the ntfy servers when making requests. For in-depth configuration instructions, consult the ntfy documentation using the links provided below:
+The proxy seamlessly integrates with the following headers. These headers, each serving a specific purpose, will be forwarded to the ntfy servers when making requests.
+
+For in-depth configuration instructions, consult the ntfy documentation using the links provided below:
 
 | Headers (A to C)                                                 | Headers (C to D)                                            | Headers (E to F)                                              | Headers (I to P)                                                | Headers (T to U)                                           |
 |------------------------------------------------------------------|-------------------------------------------------------------|---------------------------------------------------------------|-----------------------------------------------------------------|------------------------------------------------------------|
@@ -146,18 +154,18 @@ A URL with `12345.ntfy.example.com` would match servers that have the `12345` in
     "subdomain": "12345",
     "topic": "topic-2",
     "server": "https://server-1-ntfy.sh",
-    "token": "tk_3m6p0o830s"
+    "token": "tk_m61tag95tx"
   },
   {
     "subdomain": "12345",
     "topic": "topic-2",
     "server": "https://server-2-ntfy.sh",
-    "token": "tk_ecpoh2t79b"
+    "token": "tk_mdo4e750xv"
   }
 ]
 ```
 
-__Important:__ Do not forget to set the `routes` in the `wrangler-prod.toml` configuration as well. This will help automate the creation of the subdomain when deploying the proxy to Cloudflare.
+__Important:__ Do not forget to set the `routes` in the `wrangler.toml` configuration as well. This will help automate the creation of the subdomain when deploying the proxy to Cloudflare.
 
 __Note:__ Only token authentication is supported. You may create tokens using the [ntfy command line](https://docs.ntfy.sh/config/?h=token#access-tokens).
 
@@ -191,23 +199,25 @@ By default, the `show_response_output` setting is set to `true` to assist with i
 
 When the `show_visitor_info` is set to `true`, a section called __« Incoming Request Details »__ will appear. This section shows the user's IP address, location (region, country, and colo code¹), approximate GPS coordinates, and Internet Service Provider (ISP) details (provider name and ASN).
 
-¹ A colo code is a code used to mark Cloudflare data center locations.
+¹ A colo code is used to mark which Cloudflare data center location served the traffic.
 
 ## Show Visitor Info when Sending Attachments
 If the `show_visitor_info` is set to `true` and you send a binary file, you will receive two messages on every matched server for each request.
 
-For instance, if you send one attachment, set the servers `mode` to `send-all`, and have two ntfy servers, you will receive four messages in total. One message shows visitor information, and the second message is reserved solely for the binary file. Both messages are duplicated for each matched server.
+For instance, if you send one attachment, set the servers `mode` to `send-all`, and have two ntfy servers, you will receive four messages in total. To break it down:
+- 1st message shows visitor information (2 copies, one for each matched server).
+- 2nd message is reserved solely for the binary file (2 copies, one for each matched server).
 
-Customizations made using headers will not be reflected in the second message to prevent intentional duplication of message content and preferences.
+Customizations made using headers will not be reflected in the 2nd message to prevent intentional duplication of message content and preferences.
 
 This ensures that, for example, you do not receive repeated calls (if the `X-Call` header is set) or multiple long vibration bursts (if the `X-Priority` header is set to `5`).
 
 ## Configuration for Cloudflare
-After deploying the proxy, make sure to create a [configuration rule](https://developers.cloudflare.com/rules/configuration-rules/create-dashboard/) to match the user agents or subdomains specified in the `wrangler-prod.toml` file, disable "Browser Integrity Check", and set the "Security Level" to "Essentially Off" to prevent legitimate traffic (e.g. APIs) from being mistakenly flagged with a 403 response.
+After deploying the proxy, make sure to create a [configuration rule](https://developers.cloudflare.com/rules/configuration-rules/create-dashboard/) to match the user agents and subdomains specified in the `wrangler.toml` file, disable "Browser Integrity Check", and set the "Security Level" to "Essentially Off" to prevent legitimate traffic (e.g. APIs) from being mistakenly flagged with a 403 response.
 
 A domain name is also required. You can conveniently [register domains](https://www.cloudflare.com/products/registrar/) within Cloudflare at cost, without markup fees as seen with other domain registrars.
 
-__Important:__ Routes are not supported when `custom_domain` is set to `false`. This is because the proxy matches the subdomain of the pattern URL (e.g. `abcde.ntfy.example.com`) with the subdomain value (e.g. `abcde`) on the servers list in your `wrangler-prod.toml` file.
+__Important:__ Routes are not supported when `custom_domain` is set to `false`. This is because the proxy matches the subdomain of the pattern URL (e.g. `abcde.ntfy.example.com`) with the subdomain value (e.g. `abcde`) on the servers list in your `wrangler.toml` file.
 
 ## Credits and Appreciation
 If you find value in the ongoing development of this proxy and wish to express your appreciation, you have the option to become our supporter on [GitHub Sponsors](https://github.com/sponsors/cbnventures) or make a one-time donation through [PayPal](https://www.cbnventures.io/paypal/).

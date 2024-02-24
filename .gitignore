@@ -92,5 +92,4 @@ firebase-debug.log
 ##########################
 build/
 .wrangler/
-wrangler-*.toml
-!wrangler-sample.toml
+wrangler.toml

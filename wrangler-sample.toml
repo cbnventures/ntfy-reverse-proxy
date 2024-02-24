@@ -1,6 +1,6 @@
 name = "ntfy-reverse-proxy"
 main = "src/index.ts"
-compatibility_date = "2024-01-17"
+compatibility_date = "2024-02-22"
 
 ############
 ## Routes ##
@@ -38,8 +38,8 @@ mode = "send-once"
 list = [
   { subdomain = "abcde", topic = "topic-1", server = "https://server-1-ntfy.sh", token = "tk_m61tag95tx" },
   { subdomain = "abcde", topic = "topic-1", server = "https://server-2-ntfy.sh", token = "tk_mdo4e750xv" },
-  { subdomain = "12345", topic = "topic-2", server = "https://server-1-ntfy.sh", token = "tk_3m6p0o830s" },
-  { subdomain = "12345", topic = "topic-2", server = "https://server-2-ntfy.sh", token = "tk_ecpoh2t79b" },
+  { subdomain = "12345", topic = "topic-2", server = "https://server-1-ntfy.sh", token = "tk_m61tag95tx" },
+  { subdomain = "12345", topic = "topic-2", server = "https://server-2-ntfy.sh", token = "tk_mdo4e750xv" },
 ]
 
 ####################
@@ -56,5 +56,6 @@ show_visitor_info = true
 [vars.user_agents]
 mode = "allow"
 list = [
-  "custom-user-agent",
+  "custom-user-agent-1",
+  "custom-user-agent-2",
 ]
