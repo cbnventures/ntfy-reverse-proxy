@@ -2,12 +2,7 @@ import _ from 'lodash';
 
 import { envSchema } from '@/lib/schema.js';
 import { sendNtfyRequests } from '@/lib/send.js';
-import {
-  fetchRequestBody,
-  fetchRequestHeader,
-  isInputValid,
-  prettyPrint,
-} from '@/lib/utility.js';
+import { fetchRequestBody, prettyPrint } from '@/lib/utility.js';
 import type { InitializeEnv, InitializeRequest, InitializeReturns } from '@/types';
 
 /**
@@ -34,13 +29,7 @@ export async function initialize(request: InitializeRequest, env: InitializeEnv)
   }
 
   const { data } = parsedEnv;
-  const {
-    countries,
-    ip_addresses: ipAddresses,
-    servers,
-    settings,
-    user_agents: userAgents,
-  } = data;
+  const { servers, settings } = data;
 
   try {
     const requestUrl = new URL(request.url);
@@ -53,34 +42,19 @@ export async function initialize(request: InitializeRequest, env: InitializeEnv)
     }
 
     const requestBody = await fetchRequestBody(request);
-    const requestIp = fetchRequestHeader(request, 'cf-connecting-ip');
-    const requestIpCountry = fetchRequestHeader(request, 'cf-ipcountry');
     const requestMethod = request.method;
-    const requestUserAgent = fetchRequestHeader(request, 'user-agent');
 
     // Validate the inputs.
     const validBody = requestBody.type !== 'unknown';
-    const validIp = isInputValid(ipAddresses.mode, ipAddresses.list, requestIp);
-    const validIpCountry = isInputValid(countries.mode, countries.list, requestIpCountry);
     const validMethod = ['POST', 'PUT'].includes(requestMethod);
-    const validUserAgent = isInputValid(userAgents.mode, userAgents.list, requestUserAgent);
 
     // If the request is invalid based on the requirements.
-    if (
-      !validBody
-      || !validIp
-      || !validIpCountry
-      || !validMethod
-      || !validUserAgent
-    ) {
+    if (!validBody || !validMethod) {
       return new Response([
         'Forbidden',
         ...(settings.show_response_output) ? [prettyPrint({
           validBody,
-          validIp,
-          validIpCountry,
           validMethod,
-          validUserAgent,
         })] : [],
       ].join('\n\n'), {
         status: 403,

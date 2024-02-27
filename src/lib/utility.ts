@@ -6,13 +6,6 @@ import type {
   CreateNtfyHeadersShowVisitorInfo,
   FetchRequestBodyRequest,
   FetchRequestBodyReturns,
-  FetchRequestHeaderName,
-  FetchRequestHeaderRequest,
-  FetchRequestHeaderReturns,
-  IsInputValidInput,
-  IsInputValidList,
-  IsInputValidMode,
-  IsInputValidReturns,
   PrettyPrintData,
   PrettyPrintReturns,
 } from '@/types';
@@ -128,47 +121,6 @@ export async function fetchRequestBody(request: FetchRequestBodyRequest): FetchR
       data: undefined,
     };
   }
-}
-
-/**
- * Fetch request header.
- *
- * @param {FetchRequestHeaderRequest} request - Request.
- * @param {FetchRequestHeaderName}    name    - Name.
- *
- * @returns {FetchRequestHeaderReturns}
- *
- * @since 1.0.0
- */
-export function fetchRequestHeader(request: FetchRequestHeaderRequest, name: FetchRequestHeaderName): FetchRequestHeaderReturns {
-  return request.headers.get(name);
-}
-
-/**
- * Is input valid.
- *
- * @param {IsInputValidMode}  mode  - Mode.
- * @param {IsInputValidList}  list  - List.
- * @param {IsInputValidInput} input - Input.
- *
- * @returns {IsInputValidReturns}
- *
- * @since 1.0.0
- */
-export function isInputValid(mode: IsInputValidMode, list: IsInputValidList, input: IsInputValidInput): IsInputValidReturns {
-  // If mode is "disabled", skip the check.
-  if (mode === 'disabled') {
-    return true;
-  }
-
-  // If mode is not "disabled" and input is "null", request is invalid.
-  if (input === null) {
-    return false;
-  }
-
-  // If mode is "allow", input should be listed in "list" for input to be valid.
-  // If mode is "disallow", input should not be listed in "list" for input to be valid.
-  return (mode === 'allow' && list.includes(input)) || (mode === 'disallow' && !list.includes(input));
 }
 
 /**

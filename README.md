@@ -31,26 +31,6 @@ routes = [
   { pattern = "12345.ntfy.example.com", custom_domain = true },
 ]
 
-#####################
-## Vars: Countries ##
-#####################
-[vars.countries]
-mode = "allow"
-list = [
-  "US",
-  "CA",
-]
-
-########################
-## Vars: IP addresses ##
-########################
-[vars.ip_addresses]
-mode = "disallow"
-list = [
-  "127.0.0.1",
-  "::1",
-]
-
 ###################
 ## Vars: Servers ##
 ###################
@@ -70,16 +50,6 @@ list = [
 force_https = true
 show_response_output = true
 show_visitor_info = true
-
-#######################
-## Vars: User agents ##
-#######################
-[vars.user_agents]
-mode = "allow"
-list = [
-  "custom-user-agent-1",
-  "custom-user-agent-2",
-]
 ```
 
 ## Sending Messages to the Proxy
@@ -92,14 +62,7 @@ User-Agent: custom-user-agent
 body - can be plain text or a binary file
 ```
 
-Using the sample configuration above, this request will succeed only if:
-- The user is within the United States (`US`) or Canada (`CA`)
-- Does not match the IP addresses `127.0.0.1` or `::1`
-- The user agent is set to `custom-user-agent-1` or `custom-user-agent-2`
-
-If these conditions are not met, the request will fail. Learn how to configure this by reading the [Limit Visitor Access](#limit-visitor-access) section.
-
-Additionally, be mindful of the limits imposed by [Cloudflare](https://developers.cloudflare.com/workers/platform/limits/#request-limits), which are subject to your account's plan.
+__Note:__ Please be mindful of the limits imposed by [Cloudflare](https://developers.cloudflare.com/workers/platform/limits/#request-limits), which are subject to your account's plan. To learn how to filter out unwanted spam and bad traffic, read the [Limiting Bad Traffic](#limiting-bad-traffic) section below.
 
 ## Supported Headers
 The proxy seamlessly integrates with the following headers. These headers, each serving a specific purpose, will be forwarded to the ntfy servers when making requests.
@@ -112,14 +75,18 @@ For in-depth configuration instructions, consult the ntfy documentation using th
 | [X-Attach](https://docs.ntfy.sh/publish/#attach-file-from-a-url) | [X-Click](https://docs.ntfy.sh/publish/#click-action)       | [X-Filename](https://docs.ntfy.sh/publish/#attach-local-file) | [X-Markdown](https://docs.ntfy.sh/publish/#markdown-formatting) | [X-Title](https://docs.ntfy.sh/publish/#message-title)     |
 | [X-Cache](https://docs.ntfy.sh/publish/#message-caching)         | [X-Delay](https://docs.ntfy.sh/publish/#scheduled-delivery) | [X-Firebase](https://docs.ntfy.sh/publish/#disable-firebase)  | [X-Priority](https://docs.ntfy.sh/publish/#message-priority)    | [X-UnifiedPush](https://docs.ntfy.sh/publish/#unifiedpush) |
 
-__Important:__ If the `show_visitor_info` setting is set to `false` and you attempt to send a request that includes both the `X-Attach` header and a binary file in the body (like a JPEG image), an error will occur. Please be aware that this is considered a user error, not an implementation bug.
+__Note:__ If the `show_visitor_info` setting is set to `false` and an attempt to send requests that includes both the `X-Attach` header and binary in the body (e.g. an image file), an error will be returned. Please be aware that this is a user error, not an implementation bug.
 
 ## Configuration for Your Local Servers
-For optimal functionality, ensure that each ntfy server is defined with a `base-url`, the `behind-proxy` setting is set to `true`. Additionally, set the `attachment-cache-dir` even if you do not intend to send attachments (due to the maximum message size limit of 4,096 bytes).
+For optimal functionality, ensure that each ntfy server is defined with these settings below:
 
-If you would like to enforce text-only requests, customize the `attachment-file-size-limit` to a smaller value of [your preference](https://docs.ntfy.sh/config/?h=attachments#attachments). This ensures that any file exceeding this limit will fail to send.
+1. The `base-url` setting.
+2. The `behind-proxy` setting is set to `true`.
+3. The `attachment-cache-dir` setting.
+   - Any message with a size limit of more than 4,096 bytes will be sent as attachments.
+   - If you would like to enforce text-only requests, customize the `attachment-file-size-limit` to a smaller value of [your preference](https://docs.ntfy.sh/config/?h=attachments#attachments). This ensures that any file exceeding this limit will fail to send.
 
-For your convenience, you may also refer to the default [server.yml](https://github.com/binwiederhier/ntfy/blob/main/server/server.yml) configuration, the [ntfy Publishing](https://docs.ntfy.sh/publish/) documentation, and the [ntfy Self-hosting Configuration](https://docs.ntfy.sh/config/) documentation.
+__Note:__ For your convenience, you may also refer to the default [server.yml](https://github.com/binwiederhier/ntfy/blob/main/server/server.yml) configuration, the [ntfy Publishing](https://docs.ntfy.sh/publish/) documentation, and the [ntfy Self-hosting Configuration](https://docs.ntfy.sh/config/) documentation.
 
 ## Specify Local Servers
 To specify a destination ntfy server, use the following settings:
@@ -130,63 +97,28 @@ To specify a destination ntfy server, use the following settings:
 You have the flexibility to define multiple servers for redundancy or opt for a single ntfy server. For a server to match, the URL should begin with the `subdomain` listed in the `servers` list. For example:
 
 A URL with `abcde.ntfy.example.com` would match servers that have the `abcde` in the `subdomain` value:
-```json
-[
-  {
-    "subdomain": "abcde",
-    "topic": "topic-1",
-    "server": "https://server-1-ntfy.sh",
-    "token": "tk_m61tag95tx"
-  },
-  {
-    "subdomain": "abcde",
-    "topic": "topic-1",
-    "server": "https://server-2-ntfy.sh",
-    "token": "tk_mdo4e750xv"
-  }
+```toml
+[vars.servers]
+mode = "send-once"
+list = [
+  { subdomain = "abcde", topic = "topic-1", server = "https://server-1-ntfy.sh", token = "tk_m61tag95tx" },
+  { subdomain = "abcde", topic = "topic-1", server = "https://server-2-ntfy.sh", token = "tk_mdo4e750xv" },
 ]
 ```
 
 A URL with `12345.ntfy.example.com` would match servers that have the `12345` in the `subdomain` value:
-```json
-[
-  {
-    "subdomain": "12345",
-    "topic": "topic-2",
-    "server": "https://server-1-ntfy.sh",
-    "token": "tk_m61tag95tx"
-  },
-  {
-    "subdomain": "12345",
-    "topic": "topic-2",
-    "server": "https://server-2-ntfy.sh",
-    "token": "tk_mdo4e750xv"
-  }
+```toml
+[vars.servers]
+mode = "send-once"
+list = [
+  { subdomain = "12345", topic = "topic-2", server = "https://server-1-ntfy.sh", token = "tk_m61tag95tx" },
+  { subdomain = "12345", topic = "topic-2", server = "https://server-2-ntfy.sh", token = "tk_mdo4e750xv" },
 ]
 ```
 
 __Important:__ Do not forget to set the `routes` in the `wrangler.toml` configuration as well. This will help automate the creation of the subdomain when deploying the proxy to Cloudflare.
 
 __Note:__ Only token authentication is supported. You may create tokens using the [ntfy command line](https://docs.ntfy.sh/config/?h=token#access-tokens).
-
-## Limit Visitor Access
-To control access, you can specify which countries, IP addresses, or user agents are allowed to pass traffic to your local ntfy servers:
-
-- To permit __only__ traffic specified in the list, set `mode` to `"allow"`.
-- To restrict __only__ traffic specified in the list, set `mode` to `"disallow"`.
-- To disable the setting entirely, set `mode` to `"disabled"`.
-
-Proceed to configure the list based on your preferences. Using the `countries` setting as an example, this would allow __only__ the countries specified:
-```toml
-[vars.countries]
-mode = "allow"
-list = [
-  "US",
-  "CA",
-]
-```
-
-Keep in mind that you can only specify a single mode for each setting (e.g. `countries` is one setting, `user_agents` is another setting). __You cannot allow and disallow at the same time.__
 
 ## Additional Settings
 The proxy offers additional settings that might be of interest to you. Here are the available settings:
@@ -212,12 +144,22 @@ Customizations made using headers will not be reflected in the 2nd message to pr
 
 This ensures that, for example, you do not receive repeated calls (if the `X-Call` header is set) or multiple long vibration bursts (if the `X-Priority` header is set to `5`).
 
+## Limiting Bad Traffic
+After deploying the proxy, there are a few more things to make sure your deployment is secure:
+
+1. Create a [configuration rule](https://developers.cloudflare.com/rules/configuration-rules/create-dashboard/).
+   - Set a custom filter expression to "partial match" your hostnames set in the `routes` section, toggle off the __Browser Integrity Check__, and set __Security Level__ to "Essentially Off".
+   - This will help prevent legitimate API traffic from being mistakenly flagged with a 403 response. You will also need to create a WAF rule as well.
+2. Create a [WAF rule](https://developers.cloudflare.com/waf/custom-rules/create-dashboard/).
+   - Set the incoming traffic to "partial match" your hostnames set in the `routes` section, and another rule to match what you would like to limit ("Country" and "User Agent" is a good starter).
+
 ## Configuration for Cloudflare
-After deploying the proxy, make sure to create a [configuration rule](https://developers.cloudflare.com/rules/configuration-rules/create-dashboard/) to match the user agents and subdomains specified in the `wrangler.toml` file, disable "Browser Integrity Check", and set the "Security Level" to "Essentially Off" to prevent legitimate traffic (e.g. APIs) from being mistakenly flagged with a 403 response.
+When deploying, there are a few things you need to be aware of:
 
-A domain name is also required. You can conveniently [register domains](https://www.cloudflare.com/products/registrar/) within Cloudflare at cost, without markup fees as seen with other domain registrars.
-
-__Important:__ Routes are not supported when `custom_domain` is set to `false`. This is because the proxy matches the subdomain of the pattern URL (e.g. `abcde.ntfy.example.com`) with the subdomain value (e.g. `abcde`) on the servers list in your `wrangler.toml` file.
+1. A domain name is required.
+   - You can conveniently [register domains](https://www.cloudflare.com/products/registrar/) within Cloudflare at cost, without markup fees as seen with other domain registrars.
+2. Routes are not supported (when `custom_domain` is set to `false`).
+   - This is because the proxy matches the first part of the hostname with the subdomain value (e.g. `abcde.ntfy.example.com` will match `abcde`) defined in the servers list in your `wrangler.toml` file.
 
 ## Credits and Appreciation
 If you find value in the ongoing development of this proxy and wish to express your appreciation, you have the option to become our supporter on [GitHub Sponsors](https://github.com/sponsors/cbnventures) or make a one-time donation through [PayPal](https://www.cbnventures.io/paypal/).

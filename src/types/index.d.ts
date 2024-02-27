@@ -50,17 +50,6 @@ export type FetchRequestBodyReturnsUnknown = {
 export type FetchRequestBodyReturns = Promise<FetchRequestBodyReturnsBinary | FetchRequestBodyReturnsText | FetchRequestBodyReturnsUnknown>;
 
 /**
- * Fetch request header.
- *
- * @since 1.0.0
- */
-export type FetchRequestHeaderRequest = Request;
-
-export type FetchRequestHeaderName = string;
-
-export type FetchRequestHeaderReturns = string | null;
-
-/**
  * Initialize.
  *
  * @since 1.0.0
@@ -70,19 +59,6 @@ export type InitializeRequest = Request;
 export type InitializeEnv = unknown;
 
 export type InitializeReturns = Promise<Response>;
-
-/**
- * Is input valid.
- *
- * @since 1.0.0
- */
-export type IsInputValidMode = 'allow' | 'disabled' | 'disallow';
-
-export type IsInputValidList = Array<string>;
-
-export type IsInputValidInput = string | null;
-
-export type IsInputValidReturns = boolean;
 
 /**
  * Pretty print.

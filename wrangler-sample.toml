@@ -10,26 +10,6 @@ routes = [
   { pattern = "12345.ntfy.example.com", custom_domain = true },
 ]
 
-#####################
-## Vars: Countries ##
-#####################
-[vars.countries]
-mode = "allow"
-list = [
-  "US",
-  "CA",
-]
-
-########################
-## Vars: IP addresses ##
-########################
-[vars.ip_addresses]
-mode = "disallow"
-list = [
-  "127.0.0.1",
-  "::1",
-]
-
 ###################
 ## Vars: Servers ##
 ###################
@@ -49,13 +29,3 @@ list = [
 force_https = true
 show_response_output = true
 show_visitor_info = true
-
-#######################
-## Vars: User agents ##
-#######################
-[vars.user_agents]
-mode = "allow"
-list = [
-  "custom-user-agent-1",
-  "custom-user-agent-2",
-]
