@@ -1,3 +1,5 @@
+import { CfProperties } from '@cloudflare/workers-types';
+
 /**
  * Create ntfy headers.
  *
@@ -85,7 +87,7 @@ export type SendNtfyRequestsRequestBody = {
 
 export type SendNtfyRequestsRequestHeaders = Headers;
 
-export type SendNtfyRequestsRequestCfProperties = CfProperties<unknown> | undefined;
+export type SendNtfyRequestsRequestCfProperties = CfProperties | undefined;
 
 export type SendNtfyRequestsRequestHostname = string;
 

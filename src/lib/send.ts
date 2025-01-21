@@ -6,7 +6,7 @@ import type {
   SendNtfyRequestsRequest,
   SendNtfyRequestsResponses,
   SendNtfyRequestsReturns,
-} from '@/types';
+} from '@/types/index.d.ts';
 
 /**
  * Send ntfy requests.

@@ -21,7 +21,7 @@ Here is an example of how the `wrangler.toml` file for this reverse proxy should
 ```toml
 name = "ntfy-reverse-proxy"
 main = "src/index.ts"
-compatibility_date = "2024-02-22"
+compatibility_date = "2025-01-21"
 
 ############
 ## Routes ##

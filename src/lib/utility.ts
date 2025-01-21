@@ -8,7 +8,7 @@ import type {
   FetchRequestBodyReturns,
   PrettyPrintData,
   PrettyPrintReturns,
-} from '@/types';
+} from '@/types/index.d.ts';
 
 /**
  * Create ntfy headers.

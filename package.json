@@ -1,7 +1,7 @@
 {
   "name": "ntfy-reverse-proxy",
   "displayName": "ntfy Reverse Proxy",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A reverse proxy for ntfy running on Cloudflare Workers",
   "main": "",
   "exports": "./",
@@ -51,19 +51,22 @@
   },
   "dependencies": {
     "lodash": "4.17.21",
-    "zod": "3.22.4"
+    "zod": "3.24.1"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "4.20240222.0",
-    "@types/lodash": "4.14.202",
-    "@types/node": "20.11.20",
-    "@typescript-eslint/eslint-plugin": "6.21.0",
-    "@typescript-eslint/parser": "6.21.0",
-    "eslint": "8.57.0",
-    "eslint-config-airbnb-base": "15.0.0",
-    "eslint-config-airbnb-typescript": "17.1.0",
+    "@cloudflare/workers-types": "4.20250121.0",
+    "@eslint/js": "9.18.0",
+    "@stylistic/eslint-plugin": "2.13.0",
+    "@types/lodash": "4.17.14",
+    "@types/node": "22.10.7",
+    "@typescript-eslint/eslint-plugin": "8.21.0",
+    "@typescript-eslint/parser": "8.21.0",
+    "eslint": "9.18.0",
+    "eslint-import-resolver-typescript": "3.7.0",
+    "eslint-plugin-import": "2.31.0",
+    "globals": "15.14.0",
     "npm-run-all": "4.1.5",
-    "typescript": "5.3.3",
-    "wrangler": "3.29.0"
+    "typescript": "5.7.3",
+    "wrangler": "3.103.2"
   }
 }

@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { envSchema } from '@/lib/schema.js';
 import { sendNtfyRequests } from '@/lib/send.js';
 import { fetchRequestBody, prettyPrint } from '@/lib/utility.js';
-import type { InitializeEnv, InitializeRequest, InitializeReturns } from '@/types';
+import type { InitializeEnv, InitializeRequest, InitializeReturns } from '@/types/index.d.ts';
 
 /**
  * Initialize.
