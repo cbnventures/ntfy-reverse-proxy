@@ -46,9 +46,6 @@ const eslintConfig = [
           project: './tsconfig.json',
         },
       },
-      react: {
-        version: 'detect',
-      },
     },
     rules: {
       ...importPlugin.configs.recommended.rules,
