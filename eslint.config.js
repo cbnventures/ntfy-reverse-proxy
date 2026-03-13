@@ -127,6 +127,7 @@ const eslintConfig = [
       ...typescriptPlugin.configs.recommended.rules,
       '@typescript-eslint/no-explicit-any': ['off'],
       '@typescript-eslint/no-unused-vars': ['error'],
+      'no-undef': ['off'],
       'no-unused-vars': ['off'],
     },
   },

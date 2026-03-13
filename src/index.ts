@@ -15,7 +15,7 @@ import type { InitializeEnv, InitializeRequest, InitializeReturns } from '@/type
  *
  * @since 1.0.0
  */
-export async function initialize(request: InitializeRequest, env: InitializeEnv): InitializeReturns {
+async function initialize(request: InitializeRequest, env: InitializeEnv): InitializeReturns {
   const parsedEnv = envSchema.safeParse(env);
 
   // If the environment variables are not defined correctly.

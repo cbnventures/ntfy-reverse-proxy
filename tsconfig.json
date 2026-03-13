@@ -27,13 +27,12 @@
     "strict": true,
     "target": "ESNext",
     "types": [
-      "@cloudflare/workers-types",
-      "lodash",
-      "node"
+      "lodash"
     ]
   },
   "include": [
-    "./src"
+    "./src",
+    "./worker-configuration.d.ts"
   ],
   "exclude": [
     "node_modules"

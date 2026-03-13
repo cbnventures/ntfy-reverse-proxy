@@ -1,7 +1,7 @@
 {
   "name": "ntfy-reverse-proxy",
   "displayName": "ntfy Reverse Proxy",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "A reverse proxy for ntfy running on Cloudflare Workers",
   "main": "",
   "exports": "./",
@@ -14,7 +14,6 @@
     "deploy:lint": "npx eslint ./src",
     "deploy:wrangler": "wrangler deploy"
   },
-  "types": "",
   "repository": {
     "type": "git",
     "url": "git://github.com/cbnventures/ntfy-reverse-proxy.git"
@@ -47,26 +46,25 @@
   "files": [],
   "homepage": "https://github.com/cbnventures/ntfy-reverse-proxy",
   "engines": {
-    "node": ">=18"
+    "node": "^22 || ^24"
   },
   "dependencies": {
-    "lodash": "4.17.21",
-    "zod": "3.24.1"
+    "lodash": "4.17.23",
+    "zod": "4.3.6"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "4.20250121.0",
-    "@eslint/js": "9.18.0",
-    "@stylistic/eslint-plugin": "2.13.0",
-    "@types/lodash": "4.17.14",
-    "@types/node": "22.10.7",
-    "@typescript-eslint/eslint-plugin": "8.21.0",
-    "@typescript-eslint/parser": "8.21.0",
-    "eslint": "9.18.0",
-    "eslint-import-resolver-typescript": "3.7.0",
-    "eslint-plugin-import": "2.31.0",
-    "globals": "15.14.0",
+    "@eslint/js": "9.22.0",
+    "@stylistic/eslint-plugin": "4.2.0",
+    "@types/lodash": "4.17.24",
+    "@types/node": "22.10.10",
+    "@typescript-eslint/eslint-plugin": "8.57.0",
+    "@typescript-eslint/parser": "8.57.0",
+    "eslint": "9.22.0",
+    "eslint-import-resolver-typescript": "4.4.4",
+    "eslint-plugin-import": "2.32.0",
+    "globals": "17.4.0",
     "npm-run-all": "4.1.5",
-    "typescript": "5.7.3",
-    "wrangler": "3.103.2"
+    "typescript": "5.9.3",
+    "wrangler": "4.73.0"
   }
 }

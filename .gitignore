@@ -51,10 +51,15 @@ $RECYCLE.BIN/
 node_modules/
 package-lock.json
 .env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
+.env.*
+!.env.sample
+
+################
+#### Python ####
+################
+.venv/
+__pycache__/
+*.pyc
 
 #################
 #### Next.js ####
@@ -92,4 +97,5 @@ firebase-debug.log
 ##########################
 build/
 .wrangler/
+worker-configuration.d.ts
 wrangler.toml

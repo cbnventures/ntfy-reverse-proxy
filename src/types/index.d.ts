@@ -1,5 +1,3 @@
-import { CfProperties } from '@cloudflare/workers-types';
-
 /**
  * Create ntfy headers.
  *
