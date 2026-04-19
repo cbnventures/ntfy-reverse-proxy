@@ -1,5 +1,5 @@
 import { execSync } from 'child_process';
-import { existsSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -10,6 +10,27 @@ const WRANGLER_CONFIG = resolve(PROJECT_ROOT, 'wrangler.toml');
 const PACKAGE_DIR = resolve(PROJECT_ROOT, 'packages', 'ntfy-reverse-proxy');
 
 const OUTPUT_FILE = resolve(PACKAGE_DIR, 'worker-configuration.d.ts');
+
+/**
+ * Scripts - Generate Wrangler Types - Strip Global Props.
+ *
+ * Removes the Cloudflare.GlobalProps interface from the generated types.
+ * Wrangler generates a mainModule property that references the build
+ * output path (e.g. ./build/src/worker/index), which causes type errors
+ * when the build directory does not exist (e.g. during check on CI).
+ * No source code references GlobalProps, so it is safe to remove.
+ *
+ * @since 2.0.0
+ */
+function stripGlobalProps() {
+  const content = readFileSync(OUTPUT_FILE, 'utf-8');
+  const stripped = content.replace(/\tinterface GlobalProps \{[^}]*\}\n/s, '');
+
+  if (stripped !== content) {
+    writeFileSync(OUTPUT_FILE, stripped);
+    process.stdout.write('generate-wrangler-types: Stripped GlobalProps interface (references build output).\n');
+  }
+}
 
 /**
  * Scripts - Generate Wrangler Types.
@@ -35,10 +56,12 @@ function generateWranglerTypes() {
 
   process.stdout.write('generate-wrangler-types: Regenerating worker-configuration.d.ts from wrangler.toml ...\n');
 
-  execSync('wrangler types --config ../../wrangler.toml --strict-vars=false ./worker-configuration.d.ts', {
+  execSync('npx wrangler types --config ../../wrangler.toml --strict-vars=false ./worker-configuration.d.ts', {
     cwd: PACKAGE_DIR,
     stdio: 'inherit',
   });
+
+  stripGlobalProps();
 
   process.stdout.write('generate-wrangler-types: Done.\n');
 }

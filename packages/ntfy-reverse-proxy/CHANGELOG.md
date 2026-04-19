@@ -1,5 +1,10 @@
 # ntfy-reverse-proxy
 
+## 2.0.1 - 2026-04-19
+
+### FIXED
+- Strip GlobalProps from generated worker types to prevent type-check failures when build output does not exist
+
 ## 2.0.0 - 2026-04-18
 
 ### UPDATED

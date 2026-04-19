@@ -1,6 +1,6 @@
 {
   "name": "ntfy-reverse-proxy",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Notification gateway on Cloudflare Workers that routes webhooks and emails to ntfy with automatic server failover",
   "keywords": [
     "ntfy",
