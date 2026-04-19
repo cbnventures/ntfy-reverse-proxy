@@ -27,6 +27,7 @@
 
 ### FIXED
 - Fix wrangler type generation failing on CI — committed worker-configuration.d.ts as a build dependency and wrapped the generate step to gracefully skip when wrangler.toml is not present
+- Fix GitHub Packages workflow failing to install cross-repo scoped dependencies — resolved by nova v0.15.2 workflow template update that configures the registry after npm install
 
 ### REMOVED
 - Old single-file source structure
