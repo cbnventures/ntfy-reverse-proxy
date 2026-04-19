@@ -23,7 +23,6 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
   PUBLISH: "${{ github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && !inputs.dry-run) }}"
   ROOT_DIR: "./"
   NPM_DIR: "./packages/ntfy-reverse-proxy"
@@ -49,6 +48,11 @@ jobs:
         run: |
           npm install -g npm@latest
           npm install
+        working-directory: "${{ env.ROOT_DIR }}"
+
+      - name: "Check project"
+        run: |
+          npm run check
         working-directory: "${{ env.ROOT_DIR }}"
 
       - name: "Build project"
@@ -94,6 +98,8 @@ jobs:
         working-directory: "${{ env.NPM_DIR }}"
 
       - name: "Configure authentication"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         run: |
           echo "[Auth] Using GITHUB_TOKEN."
           echo "NODE_AUTH_TOKEN=${GITHUB_TOKEN}" >> "$GITHUB_ENV"

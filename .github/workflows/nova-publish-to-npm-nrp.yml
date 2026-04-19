@@ -23,7 +23,6 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  NPM_TOKEN: "${{ secrets.NPM_TOKEN }}"
   PUBLISH: "${{ github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && !inputs.dry-run) }}"
   ROOT_DIR: "./"
   NPM_DIR: "./packages/ntfy-reverse-proxy"
@@ -60,12 +59,19 @@ jobs:
           npm install
         working-directory: "${{ env.ROOT_DIR }}"
 
+      - name: "Check project"
+        run: |
+          npm run check
+        working-directory: "${{ env.ROOT_DIR }}"
+
       - name: "Build project"
         run: |
           npm run build
         working-directory: "${{ env.ROOT_DIR }}"
 
       - name: "Configure authentication"
+        env:
+          NPM_TOKEN: "${{ secrets.NPM_TOKEN }}"
         run: |
           if [ -n "${NPM_TOKEN}" ]; then
             echo "[Auth] Using NPM_TOKEN (token-based)."
