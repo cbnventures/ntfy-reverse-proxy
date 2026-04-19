@@ -165,7 +165,6 @@ src/aws-exports.js
 #### Web Hosting - Cloudflare Workers ####
 ##########################################
 .wrangler/
-worker-configuration.d.ts
 
 ################################
 #### Web Hosting - Firebase ####

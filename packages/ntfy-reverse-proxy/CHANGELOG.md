@@ -25,6 +25,9 @@
 - Interactive CLI with commands for server, context, settings, config-io, validate, generate, and deploy
 - Context-based routing with per-context interpreter, authentication, target server, and delivery mode
 
+### FIXED
+- Fix wrangler type generation failing on CI — committed worker-configuration.d.ts as a build dependency and wrapped the generate step to gracefully skip when wrangler.toml is not present
+
 ### REMOVED
 - Old single-file source structure
 - @cloudflare/workers-types package (replaced by Wrangler 4 built-in types)
