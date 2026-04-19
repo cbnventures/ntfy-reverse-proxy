@@ -1,0 +1,65 @@
+---
+id: local-development
+title: Local Development
+description: Run and test Reverse Proxy for ntfy locally with wrangler dev and config auto-resolution.
+sidebar_position: 4
+keywords:
+  - ntfy reverse proxy
+  - local development
+  - wrangler dev
+  - testing
+  - development server
+  - localhost
+  - debugging
+  - config resolution
+tags:
+  - reference
+  - cli
+---
+
+Run the proxy locally for testing and development using `npm run dev`.
+
+## Starting the Dev Server
+
+```bash
+npm run dev
+```
+
+This spawns `wrangler dev` with `--local-upstream localhost`. The worker is available at `http://localhost:8787` (the port may vary if 8787 is in use).
+
+## Config File Resolution
+
+The dev script searches for `config.json` in this order:
+
+1. Current working directory.
+2. Project root.
+3. XDG config directory (`~/.config/ntfy-reverse-proxy/config.json` on Linux/macOS).
+
+If no config is found, `config.sample.json` is copied to the project root as a starting point. If config files exist in multiple locations, you are prompted to choose which one to use.
+
+## Wrangler.toml Resolution
+
+The dev script also resolves `wrangler.toml`:
+
+1. Project root.
+2. XDG config directory.
+
+If neither exists, a `wrangler.toml` is auto-generated from your `config.json`. If both exist, you are prompted to choose.
+
+## Local Testing
+
+HTTPS enforcement is skipped when the hostname is `localhost`, so HTTP works for local testing. Use the `Host` header to simulate subdomain routing:
+
+```bash
+curl -X POST http://localhost:8787 \
+  -H "Host: mycontext.ntfy.example.com" \
+  -H "Content-Type: text/plain" \
+  -d "Test notification from local dev"
+```
+
+The `Host` header determines which context handles the request — the first label of the hostname is matched against context IDs.
+
+## Environment Variables
+
+- `CLOUDFLARE_API_TOKEN` — Not required for local development.
+- `.env` — Loaded automatically if present in the project root.

@@ -1,0 +1,87 @@
+---
+id: unifi
+title: UniFi
+description: Parse UniFi Network controller notification emails with device detection and priority inference.
+sidebar_position: 8
+keywords:
+  - ntfy reverse proxy
+  - unifi interpreter
+  - unifi network
+  - network notifications
+  - email to ntfy
+tags:
+  - interpreters
+  - unifi
+  - email
+---
+
+Process notification emails from UniFi Network controllers with automatic alert extraction, device tagging, and priority inference.
+
+## Input Handling
+
+The interpreter is designed for email input with `subject` and `textBody` fields. UniFi notification emails use the subject format: `[UniFi SiteName] Alert Message`.
+
+For string or binary inputs (e.g., if used with an HTTP context), the interpreter creates a basic notification with title `UniFi`, the input as the body, and priority inferred from keywords.
+
+## Subject Parsing
+
+The `[UniFi SiteName]` prefix is stripped from the subject to extract the event type. For example, `[UniFi Default] AP Disconnected` becomes `AP Disconnected`.
+
+## Structured Body Parsing
+
+The interpreter uses regex patterns to extract structured fields from the email body:
+
+- **Alert** — The alert description.
+- **Device Name** — Name of the affected device.
+- **Time** — When the event occurred.
+- **Device URL** — Management URL for the device (used as an action link).
+
+## Priority Inference
+
+Priority is determined by keyword matching on the event type and body:
+
+| Keywords                                 | Priority | Level   |
+|------------------------------------------|----------|---------|
+| "ids", "ips", "threat", "security"       | 5        | Urgent  |
+| "disconnect", "down", "failover", "lost" | 4        | High    |
+| "connect", "reconnect", "up", "restored" | 2        | Low     |
+| (none matched)                           | 3        | Default |
+
+## Device Tags
+
+The interpreter adds device-type tags based on keywords:
+
+- `ap` — Matches "ap" or "access point"
+- `switch` — Matches "switch"
+- `gateway` — Matches "gateway", "wan", "usg", or "udm"
+
+## Notification Output
+
+- **Title**: The event type (e.g., `AP Disconnected`).
+- **Body**: Alert description, device name, and timestamp.
+- **Priority**: Inferred from keywords.
+- **Tags**: Includes `unifi`, device tags, and emoji.
+- **Actions**: Link to the device management URL if extracted.
+
+## Email Context Example
+
+```json
+{
+  "id": "unifi",
+  "name": "UniFi Network",
+  "type": "email",
+  "interpreter": "unifi",
+  "topic": "network",
+  "mode": "send-once",
+  "show_visitor_info": false,
+  "primary_server": "primary",
+  "servers": ["primary"],
+  "allowed_from": "*@unifi.local"
+}
+```
+
+This creates the email address `unifi@ntfy.example.com`. Configure your UniFi controller to send notifications to this address.
+
+:::tip
+Use the `allowed_from` wildcard to restrict which senders can trigger this context. The `*@unifi.local` pattern allows any address from the `unifi.local` domain.
+:::

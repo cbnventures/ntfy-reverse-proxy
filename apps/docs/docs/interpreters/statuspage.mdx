@@ -1,0 +1,69 @@
+---
+id: statuspage
+title: Statuspage
+description: Monitor Statuspage.io incident webhooks with KV-based deduplication and component tracking.
+sidebar_position: 6
+keywords:
+  - ntfy reverse proxy
+  - statuspage interpreter
+  - statuspage.io
+  - incident monitoring
+  - component status
+tags:
+  - interpreters
+  - statuspage
+---
+
+Process Statuspage.io incident webhooks with automatic deduplication and component state tracking.
+
+## Supported Input
+
+Statuspage.io sends webhook payloads for incident updates and component status changes. The interpreter handles both:
+
+- **Incident updates** — Creates notifications with the incident name, status, impact level, and affected components. Priority is inferred from impact level: critical = 5, major = 4, minor = 3.
+- **Component updates** — Tracked via Cloudflare KV storage. When a component update arrives alongside an incident, the interpreter diffs the previous component state against the current one and includes changed components in the notification.
+
+:::info
+Component-only updates (no incident) silently update the stored state without sending a notification. The interpreter returns `null` if no KV namespace is bound or if the incident update is a duplicate.
+:::
+
+## KV State Management
+
+The Statuspage interpreter uses Cloudflare Workers KV to deduplicate notifications and track component state:
+
+- Stores incident and component state under `statuspage:{pageId}` keys.
+- State has a 24-hour TTL and is automatically cleaned up.
+- Without a KV namespace bound, component-only updates are silently ignored.
+
+:::warning
+If you are receiving duplicate Statuspage notifications, see [Troubleshooting](/docs/reference/troubleshooting/) for instructions on setting up KV deduplication.
+:::
+
+## Service Name Extraction
+
+The service name is derived from the unsubscribe URL hostname in the webhook payload (with `www.` prefix removed). If no unsubscribe URL is available, it defaults to `Statuspage`.
+
+## Notification Output
+
+- **Title**: `[Service Name] Incident Name` (e.g., `[GitHub] Elevated Error Rates`).
+- **Body**: Status, impact level, and changed component list with old/new status.
+- **Priority**: Based on impact — `critical` = 5, `major` = 4, `minor` = 3, default = 2. Terminal statuses (`resolved`, `completed`, `postmortem`) override priority to 2 regardless of impact.
+- **Tags**: Includes `statuspage`, the current status (e.g., `investigating`, `resolved`), and an emoji based on the status.
+- **Actions**: "View Incident" link to the Statuspage.io incident page, and "Unsubscribe" link if available.
+
+## Example Webhook Payload
+
+```json
+{
+  "page": { "id": "abc123" },
+  "incident": {
+    "name": "Elevated Error Rates",
+    "status": "investigating",
+    "impact": "major",
+    "shortlink": "https://stspg.io/abc123",
+    "incident_updates": [
+      { "id": "update-1", "body": "We are investigating elevated error rates." }
+    ]
+  }
+}
+```

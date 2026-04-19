@@ -1,0 +1,58 @@
+---
+title: Why We Built a Reverse Proxy for ntfy
+description: If you run self-hosted infrastructure with an ntfy server, you need a reliable way to forward webhooks. This Cloudflare Worker handles routing, delivery, and filtering at the edge.
+slug: why-we-built-a-reverse-proxy-for-ntfy
+authors:
+  - mrjackyliang
+tags:
+  - ntfy
+  - webhooks
+  - self-hosted
+  - home-lab
+  - cloudflare-workers
+  - notifications
+---
+
+If you run self-hosted infrastructure — a company server or a home lab — and you use ntfy for notifications, you've probably pointed a few webhooks at your ntfy server directly. It works, but it doesn't scale well. Every service needs the server URL and topic hardcoded. There's no filtering, no fallback if the server goes down, and no way to route different services to different topics without giving each one a different endpoint.
+
+We built ntfy-reverse-proxy to sit between your services and your ntfy server, handling routing, delivery, and filtering on Cloudflare Workers.
+
+{/* truncate */}
+
+## What It Does
+
+The worker runs on Cloudflare's edge network. Services send webhooks to it, and it forwards them to your ntfy server with the right topic, headers, and authentication. Each service is routed by subdomain — your Synology NAS hits one subdomain, your monitoring tool hits another, and each one lands on the correct ntfy topic.
+
+## Delivery Modes
+
+The worker supports two modes for sending to ntfy servers:
+
+**Send-once** tries each configured server in order and stops on the first success. If your primary ntfy server is unreachable, the worker falls through to the next one. This gives you automatic failover without any service-side configuration.
+
+**Send-all** delivers to every configured server simultaneously. This is useful when you want the same alert on multiple ntfy instances — for instance, a team server and a personal server.
+
+## Request Filtering
+
+Not every request that hits the worker should be forwarded. The worker supports three filtering dimensions, each configurable as allow-list, deny-list, or disabled:
+
+- **IP addresses** — Restrict which source IPs can send webhooks
+- **Countries** — Filter by the Cloudflare-detected country of the request
+- **User agents** — Filter by the requesting service's user agent string
+
+Requests that fail any active filter get a 403 response. The webhook never reaches your ntfy server.
+
+## Visitor Info
+
+When enabled, the worker appends Cloudflare's request metadata to the notification body — the connecting IP, country, data center, coordinates, and ISP. This is useful for verifying that webhooks are coming from the expected source, especially when debugging a new integration.
+
+## Why Cloudflare Workers
+
+A notification relay needs to be fast and always available. If it goes down when an alert fires, the notification is lost. Cloudflare Workers deploy globally, have no cold starts, and the free tier handles far more traffic than a self-hosted or home lab setup would generate.
+
+The worker also inherits Cloudflare's TLS termination and DDoS protection, so your ntfy server isn't directly exposed to the internet.
+
+## Getting Started
+
+Configuration is defined through environment variables in `wrangler.toml` — servers, filtering rules, delivery mode, and settings. A sample configuration is included in the repository.
+
+Check out the [quickstart guide](/docs/getting-started/quick-start) to set it up.

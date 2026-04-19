@@ -1,0 +1,92 @@
+{
+  "settings": {
+    "worker_name": "ntfy-reverse-proxy",
+    "base_domain": "ntfy.example.com",
+    "show_response_output": false
+  },
+  "servers": [
+    {
+      "name": "primary",
+      "server": "https://ntfy.example.com",
+      "token": "tk_replace_with_your_token"
+    },
+    {
+      "name": "fallback",
+      "server": "https://ntfy-backup.example.com",
+      "token": "tk_replace_with_fallback_token"
+    }
+  ],
+  "contexts": [
+    {
+      "id": "replace_with_random_string",
+      "name": "GitHub Status",
+      "type": "http",
+      "interpreter": "statuspage",
+      "topic": "github-status",
+      "error_topic": "errors",
+      "mode": "send-once",
+      "show_visitor_info": false,
+      "primary_server": "primary",
+      "servers": ["primary", "fallback"]
+    },
+    {
+      "id": "replace_with_random_string",
+      "name": "Seerr Requests",
+      "type": "http",
+      "interpreter": "seerr",
+      "topic": "media-requests",
+      "mode": "send-once",
+      "show_visitor_info": false,
+      "primary_server": "primary",
+      "servers": ["primary"],
+      "token": "replace_with_auth_token"
+    },
+    {
+      "id": "replace_with_random_string",
+      "name": "Synology NAS",
+      "type": "http",
+      "interpreter": "synology",
+      "topic": "nas-alerts",
+      "mode": "send-once",
+      "show_visitor_info": true,
+      "primary_server": "primary",
+      "servers": ["primary"],
+      "token": "replace_with_auth_token"
+    },
+    {
+      "id": "replace_with_random_string",
+      "name": "Generic Webhook",
+      "type": "http",
+      "interpreter": "plain-text",
+      "topic": "webhooks",
+      "mode": "send-once",
+      "show_visitor_info": true,
+      "primary_server": "primary",
+      "servers": ["primary"]
+    },
+    {
+      "id": "pfsense",
+      "name": "pfSense Firewall",
+      "type": "email",
+      "interpreter": "pfsense",
+      "topic": "firewall",
+      "mode": "send-once",
+      "show_visitor_info": false,
+      "primary_server": "primary",
+      "servers": ["primary"],
+      "allowed_from": "*@pfsense.local"
+    },
+    {
+      "id": "unifi",
+      "name": "UniFi Network",
+      "type": "email",
+      "interpreter": "unifi",
+      "topic": "network",
+      "mode": "send-once",
+      "show_visitor_info": false,
+      "primary_server": "primary",
+      "servers": ["primary"],
+      "allowed_from": "*@unifi.local"
+    }
+  ]
+}

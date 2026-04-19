@@ -1,70 +1,35 @@
 {
-  "name": "ntfy-reverse-proxy",
-  "displayName": "ntfy Reverse Proxy",
-  "version": "1.2.2",
-  "description": "A reverse proxy for ntfy running on Cloudflare Workers",
-  "main": "",
-  "exports": "./",
-  "type": "module",
+  "name": "ntfy-reverse-proxy-project",
+  "version": "0.0.0",
+  "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "wrangler dev",
-    "authorize": "wrangler login",
-    "deploy": "npm-run-all --sequential deploy:*",
-    "deploy:lint": "npx eslint ./src",
-    "deploy:wrangler": "wrangler deploy"
+    "dev": "turbo run dev",
+    "build": "turbo run build --concurrency=2",
+    "check": "turbo run check --concurrency=2",
+    "deploy": "turbo run deploy --concurrency=2",
+    "clean": "turbo run clean",
+    "manage": "npm run manage --workspace packages/ntfy-reverse-proxy",
+    "tail": "node ./scripts/tail-logs.mjs",
+    "changelog": "nova utility changelog",
+    "recipes": "nova utility run-recipes --replace-file",
+    "postinstall": "node ./scripts/link-nova.mjs"
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/cbnventures/ntfy-reverse-proxy.git"
-  },
-  "funding": [
-    {
-      "type": "github",
-      "url": "https://github.com/sponsors/cbnventures"
-    },
-    {
-      "type": "custom",
-      "url": "https://www.cbnventures.io/paypal/"
-    }
+  "workspaces": [
+    "./apps/*",
+    "./packages/*"
   ],
-  "keywords": [
-    "ntfy",
-    "push-notification",
-    "reverse-proxy",
-    "cloudflare"
-  ],
-  "author": {
-    "name": "Jacky Liang",
-    "email": "hello@mrjackyliang.com",
-    "url": "https://www.mrjackyliang.com"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/cbnventures/ntfy-reverse-proxy/issues"
-  },
-  "files": [],
-  "homepage": "https://github.com/cbnventures/ntfy-reverse-proxy",
+  "packageManager": "npm@11.11.0",
   "engines": {
-    "node": "^22 || ^24"
-  },
-  "dependencies": {
-    "lodash": "4.17.23",
-    "zod": "4.3.6"
+    "node": "^20 || ^22 || ^24"
   },
   "devDependencies": {
-    "@eslint/js": "9.22.0",
-    "@stylistic/eslint-plugin": "4.2.0",
-    "@types/lodash": "4.17.24",
-    "@types/node": "22.10.10",
-    "@typescript-eslint/eslint-plugin": "8.57.0",
-    "@typescript-eslint/parser": "8.57.0",
-    "eslint": "9.22.0",
-    "eslint-import-resolver-typescript": "4.4.4",
-    "eslint-plugin-import": "2.32.0",
-    "globals": "17.4.0",
-    "npm-run-all": "4.1.5",
-    "typescript": "5.9.3",
-    "wrangler": "4.73.0"
+    "@cbnventures/nova": "0.15.1",
+    "jiti": "2.6.1",
+    "prompts": "2.4.2",
+    "turbo": "2.8.12"
+  },
+  "overrides": {
+    "webpack": ">=5.95.0 <5.106.0"
   }
 }

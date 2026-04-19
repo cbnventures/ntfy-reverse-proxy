@@ -1,0 +1,73 @@
+---
+title: "What's New in v2.0.0: Interpreters, Email Routing, and a CLI"
+description: "Version 2.0.0 is a complete rewrite — built-in interpreters for Synology, pfSense, Seerr, Statuspage, and UniFi, email-to-notification support via Cloudflare Email Routing, message splitting, and an interactive CLI."
+slug: whats-new-in-v2
+authors:
+  - mrjackyliang
+tags:
+  - ntfy
+  - release
+  - interpreters
+  - self-hosted
+  - home-lab
+  - cloudflare-workers
+  - cli
+---
+
+Version 1.x of ntfy-reverse-proxy did one thing: forward webhooks to ntfy servers with routing and filtering. It worked, but every notification arrived as raw payload text. If Synology sent a JSON blob with fields scattered across `text`, `prefix`, and `severity`, that's what you saw in your notification.
+
+Version 2.0.0 changes that. The worker now understands what each service is sending and transforms it into a formatted notification with a meaningful title, priority, tags, and action buttons.
+
+{/* truncate */}
+
+## Built-in Interpreters
+
+The biggest addition is the interpreter system. Each supported service gets a dedicated interpreter that knows how to parse its payload format:
+
+- **Synology DSM** — Normalizes JSON fields across multiple DSM notification templates. Extracts hostname, timestamp, and severity. Infers priority from keywords when severity isn't provided. Adds an action button to open the DSM dashboard.
+- **pfSense** — Parses email alerts received via Cloudflare Email Routing. Infers priority from keywords in the email body.
+- **Seerr** — Maps media request events (requests, approvals, availability, issues) to priorities. Builds action buttons linking to TMDB and the Seerr dashboard.
+- **Statuspage.io** — Tracks incident state via Cloudflare KV to prevent duplicate notifications. Diffs component-level changes and silently drops updates where nothing changed. Maps impact levels to ntfy priorities.
+- **UniFi** — Parses email alerts. Strips site prefixes from subjects. Maps network security events (IDS/IPS, threats) to critical priority. Adds device URL action buttons.
+- **ntfy JSON** — Schema-validated pass-through for services that already format ntfy-compatible payloads.
+- **Plain Text** — Fallback that accepts any input format.
+
+Every webhook and email now goes through a processing pipeline: receive, route, authenticate, parse, interpret, format, split, and send. The interpret stage is where raw payloads become readable notifications.
+
+## Email as an Input Channel
+
+pfSense and UniFi only support email alerts — no webhooks. Version 2.0.0 adds email context support through Cloudflare Email Routing. Each email context gets a unique address. Cloudflare forwards matching messages to the worker, which parses the MIME body and runs it through the appropriate interpreter.
+
+Email contexts support sender domain validation, so you can restrict which addresses are allowed to trigger notifications.
+
+## Message Splitting
+
+ntfy has a message size limit of roughly 4,000 bytes. A Synology scheduled script that fails and dumps its entire error output, or any payload with verbose diagnostic context, can exceed that. The worker now automatically splits large notifications into numbered parts — "Disk Alert (1/3)", "Disk Alert (2/3)", "Disk Alert (3/3)" — preserving headers, priority, and tags on each part. The split respects UTF-8 character boundaries.
+
+## Interactive CLI
+
+Configuration is no longer manual. Running `npx ntfy-reverse-proxy` with no arguments launches an interactive menu for managing servers, contexts, and settings. Direct commands are also available:
+
+```bash
+npx ntfy-reverse-proxy validate
+npx ntfy-reverse-proxy generate
+npx ntfy-reverse-proxy deploy
+npx ntfy-reverse-proxy server remove my-server
+npx ntfy-reverse-proxy context remove my-context
+```
+
+The CLI validates configuration integrity — it won't let you delete a server that's still referenced by a context, and it checks that all required fields are present before deployment.
+
+## Context-Based Routing
+
+Version 1.x routed by subdomain. Version 2.0.0 introduces contexts — named configurations that define the interpreter, authentication method (bearer token for HTTP, sender domain for email), target ntfy server and topic, delivery mode, and optional features like visitor geolocation injection and error topics.
+
+Each context gets a unique ID that serves as its endpoint. HTTP contexts receive webhooks at their ID path. Email contexts receive forwarded emails at their ID address.
+
+## Error Topics
+
+When an interpreter fails to parse a payload — malformed JSON, unexpected format, missing required fields — the worker can publish the raw request to a separate error topic. This gives you visibility into interpretation failures without losing the original data.
+
+## Upgrading
+
+Version 2.0.0 is a full rewrite with a new configuration format. The project is now structured as a monorepo with the worker, CLI, and documentation site as separate workspaces. See the [migration guide](/docs/getting-started/quick-start) for details on upgrading from v1.x.

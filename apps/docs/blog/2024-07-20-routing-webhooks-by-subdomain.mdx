@@ -1,0 +1,50 @@
+---
+title: "Routing Webhooks by Subdomain: One Worker, Many Services"
+description: How ntfy-reverse-proxy routes webhooks from multiple services to the right ntfy topic using subdomain-based matching on a single Cloudflare Worker.
+slug: routing-webhooks-by-subdomain
+authors:
+  - mrjackyliang
+tags:
+  - ntfy
+  - webhooks
+  - routing
+  - self-hosted
+  - home-lab
+  - cloudflare-workers
+---
+
+When you only have one or two services sending webhooks, routing is simple — point them at your ntfy server and pick a topic. But self-hosted environments and home labs tend to accumulate services. A NAS, a firewall, a media server, a monitoring dashboard. Each one needs its own topic, and some need different ntfy servers entirely.
+
+ntfy-reverse-proxy handles this with subdomain-based routing on a single Cloudflare Worker.
+
+{/* truncate */}
+
+## How Routing Works
+
+Each service in your configuration is mapped to a subdomain. When the worker receives a request, it looks at the subdomain of the incoming URL and matches it against the configured server list. The matched entry determines which ntfy server, topic, and authentication token to use.
+
+For example, if your worker is deployed to `ntfy.example.com`:
+
+- `nas.ntfy.example.com` → sends to your primary ntfy server on the `storage` topic
+- `firewall.ntfy.example.com` → sends to the same server on the `network` topic
+- `monitoring.ntfy.example.com` → sends to a different ntfy server on the `alerts` topic
+
+Each service only knows its own subdomain. The routing, authentication, and delivery logic is entirely in the worker.
+
+## One Worker, Many Routes
+
+Cloudflare Workers support custom domain routes, so a single deployed worker can handle traffic across multiple subdomains. You define the routes in `wrangler.toml`, and Cloudflare directs matching requests to the worker. No load balancer, no reverse proxy chain — just DNS and a worker.
+
+This also means adding a new service is a configuration change, not a deployment. Add a server entry, add a route, and the new subdomain starts working.
+
+## Delivery After Routing
+
+Once a request is matched to a server configuration, the worker forwards it using the configured delivery mode — send-once (with failover) or send-all (to every server). The delivery logic is the same regardless of which subdomain the request arrived on.
+
+If visitor info is enabled, the worker appends Cloudflare's request metadata (IP, country, data center) to the notification body before sending.
+
+## Keeping It Simple
+
+The key design decision is that routing is based on infrastructure (subdomains and server config), not on payload inspection. The worker doesn't need to understand what each service sends — it just routes and delivers. This keeps the worker small, fast, and easy to configure.
+
+See the [quickstart guide](/docs/getting-started/quick-start) for configuration details and examples.

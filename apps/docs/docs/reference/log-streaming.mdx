@@ -1,0 +1,48 @@
+---
+id: log-streaming
+title: Log Streaming
+description: Stream real-time Cloudflare Worker logs with automatic session management and formatted output.
+sidebar_position: 5
+keywords:
+  - ntfy reverse proxy
+  - log streaming
+  - wrangler tail
+  - cloudflare logs
+  - debugging
+  - real-time logs
+  - tail logs
+  - monitoring
+tags:
+  - reference
+  - cli
+---
+
+Stream real-time logs from your deployed worker for debugging and monitoring using `npm run tail`.
+
+## Starting the Log Stream
+
+```bash
+npm run tail
+```
+
+This requires `CLOUDFLARE_API_TOKEN` to be set in your `.env` file. The stream outputs color-formatted log entries to the terminal and writes raw JSON lines to `tail-logs.jsonl` for later analysis.
+
+## Session Management
+
+Log streaming sessions have a limited lifespan set by Cloudflare. The script handles this automatically:
+
+- Fetches the actual session expiry time from the Cloudflare API.
+- Restarts the session with a 5-minute buffer before expiry.
+- Cleans up stale sessions on startup.
+- Shuts down gracefully on Ctrl+C.
+
+## Output Format
+
+Log entries are color-coded by event type and status:
+
+- **HTTP events** — Method, status code, URL, user agent, geolocation (country, ASN, IP), and per-server delivery results.
+- **Email events** — From/to/subject and interpreter results.
+
+## Config Resolution
+
+The script discovers `config.json` from the current directory, project root, or XDG config directory. It uses the `worker_name` from your config to identify the correct Worker on Cloudflare.

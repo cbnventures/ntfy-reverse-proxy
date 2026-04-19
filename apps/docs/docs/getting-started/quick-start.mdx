@@ -1,0 +1,107 @@
+---
+id: quick-start
+title: Quick Start
+description: Install Reverse Proxy for ntfy, configure your first context, and send a test notification in minutes.
+sidebar_position: 1
+keywords:
+  - ntfy reverse proxy
+  - quick start
+  - installation
+  - first notification
+  - setup guide
+tags:
+  - getting-started
+  - installation
+---
+
+Set up Reverse Proxy for ntfy from scratch and send your first push notification through Cloudflare Workers.
+
+## Prerequisites
+
+Before you begin, make sure you have the following ready:
+
+- **Node.js** — v20, v22, or v24 (LTS recommended for stability)
+- **npm** — v10 or later, which ships with supported Node.js versions
+- **Cloudflare account** — A free or paid account with a registered domain (Workers and Email Routing are both available on the free plan)
+- **ntfy server** — At least one self-hosted ntfy instance with token authentication enabled
+
+:::info
+Your ntfy server needs `base-url` set to its public URL and `behind-proxy` set to `true`. If you plan to receive binary attachments (images, files), also configure `attachment-cache-dir`. See the [ntfy self-hosting documentation](https://docs.ntfy.sh/config/) for details.
+:::
+
+## Install
+
+Reverse Proxy for ntfy is a monorepo managed with npm workspaces and Turborepo. Get up and running in three steps.
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/cbnventures/ntfy-reverse-proxy.git
+   ```
+
+2. Install dependencies from the repository root:
+
+   ```bash
+   npm install
+   ```
+
+3. The CLI is now available via `npm run manage` from the root. After publishing, you can also use `npx ntfy-reverse-proxy` or `npx nrp`.
+
+## First-Time Setup
+
+The interactive config menu guides you through everything you need for a working deployment.
+
+1. Run `npm run manage` to launch the interactive config menu.
+2. **Add at least one ntfy server.** Each server needs a name, a URL starting with `https://`, and a token starting with `tk_`.
+3. **Add at least one context.** Choose a name, interpreter, topic, delivery mode, and assign one or more servers.
+4. **Update settings.** Set the `worker_name` and `base_domain` to match your Cloudflare domain.
+5. **Run `npm run manage validate`** from the CLI to check config integrity. Validation also runs automatically as part of the deploy step. This catches missing fields and invalid references before deployment.
+6. **Run deploy** to generate `wrangler.toml` and deploy to Cloudflare Workers.
+
+:::tip
+The CLI validates config against its schema on every load. You can also run validation manually with `npm run manage validate` or through the interactive menu.
+:::
+
+## Sending Your First Notification
+
+After deployment, each HTTP context gets a subdomain route in the format `{context-id}.{base_domain}`. Test it with a simple `curl` command.
+
+### Plain Text Notification
+
+```bash
+curl -X POST https://{context-id}.ntfy.example.com \
+  -H "Content-Type: text/plain" \
+  -d "Hello from ntfy-reverse-proxy!"
+```
+
+### Authenticated Notification
+
+If the context has a token configured, include the `Authorization` header:
+
+```bash
+curl -X POST https://{context-id}.ntfy.example.com \
+  -H "Authorization: Bearer your-context-token" \
+  -d "Authenticated notification"
+```
+
+### Landing Page
+
+GET requests to any context URL return a landing page showing "Reverse Proxy for ntfy" with an operational status badge. When `show_response_output` is enabled, the page also includes a collapsible section with the full configuration, with sensitive values masked.
+
+## If Something Goes Wrong
+
+If deployment fails or notifications are not arriving, check [Troubleshooting](/docs/reference/troubleshooting/). Common first-time issues include:
+
+- Cloudflare's bot protection blocking webhooks (403 errors)
+- DNS propagation delays after deployment
+- ntfy server misconfiguration
+
+## What Is Next
+
+- **[Configuration](/docs/getting-started/configuration/)** — Full config reference for servers, contexts, and settings.
+- **[CLI Reference](/docs/reference/cli/)** — All commands and options available through the management CLI.
+- **[Interpreters](/docs/interpreters/overview/)** — Choose the right interpreter for your webhook source.
+- **[Deployment](/docs/getting-started/deployment/)** — Cloudflare-specific setup details, including DNS and worker configuration.
+- **[Email Routing](/docs/features/email-routing/)** — Receive notifications via email through Cloudflare Email Routing.
+- **[Security](/docs/features/security/)** — Authentication, WAF configuration, and best practices.
+- **[Troubleshooting](/docs/reference/troubleshooting/)** — Common issues and solutions.

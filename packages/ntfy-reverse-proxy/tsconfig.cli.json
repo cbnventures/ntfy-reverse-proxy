@@ -1,0 +1,25 @@
+{
+  "extends": [
+    "@cbnventures/nova/presets/tsconfig/dx-essentials.json",
+    "@cbnventures/nova/presets/tsconfig/dx-strict.json",
+    "@cbnventures/nova/presets/tsconfig/runtime-node.json"
+  ],
+  "compilerOptions": {
+    "noEmit": false,
+    "noEmitOnError": false,
+    "outDir": "./build",
+    "rootDir": "./",
+    "types": [
+      "@types/node"
+    ]
+  },
+  "include": [
+    "./src/cli/**/*",
+    "./src/lib/item.ts",
+    "./src/lib/regex.ts",
+    "./src/lib/schema.ts",
+    "./src/types/cli/**/*",
+    "./src/types/fetch-response.d.ts",
+    "./src/types/lib/**/*"
+  ]
+}

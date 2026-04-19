@@ -1,0 +1,269 @@
+{
+  "project": {
+    "name": {
+      "title": "Reverse Proxy for ntfy",
+      "slug": "ntfy-reverse-proxy"
+    },
+    "description": {
+      "short": "Notification gateway on Cloudflare Workers that routes webhooks and emails to ntfy with automatic server failover",
+      "long": "Webhook and email notification gateway with built-in interpreters (Statuspage.io, Synology DSM, Seerr, pfSense, UniFi, ntfy JSON, plain text), automatic primary/fallback server failover, and smart message splitting, powered by Cloudflare Workers and Cloudflare Email Routing. Interactive CLI for configuration, validation, and deployment."
+    },
+    "keywords": [
+      "ntfy",
+      "reverse-proxy",
+      "cloudflare-workers",
+      "webhooks",
+      "notifications",
+      "statuspage",
+      "synology",
+      "seerr",
+      "pfsense",
+      "unifi"
+    ],
+    "legalName": "CBN Ventures LLC",
+    "pronouns": "business",
+    "platforms": [
+      "nodejs"
+    ],
+    "startingYear": 2023,
+    "license": "MIT"
+  },
+  "entities": [
+    {
+      "name": "CBN Ventures",
+      "email": "contact@cbnventures.io",
+      "url": "https://www.cbnventures.io/",
+      "roles": [
+        "author"
+      ]
+    },
+    {
+      "name": "Jacky Liang",
+      "email": "hello@mrjackyliang.com",
+      "url": "https://www.mrjackyliang.com/",
+      "roles": [
+        "contributor",
+        "supporter"
+      ]
+    }
+  ],
+  "emails": {
+    "bugs": "bugs@cbnventures.io"
+  },
+  "workflows": [
+    {
+      "template": "check-sponsor-gated-issues",
+      "suffix": "project",
+      "triggers": [],
+      "settings": {
+        "PERSONAL_ACCESS_TOKEN": "PERSONAL_ACCESS_TOKEN"
+      }
+    },
+    {
+      "template": "lock-inactive-issues",
+      "suffix": "project",
+      "triggers": [
+        "schedule"
+      ]
+    },
+    {
+      "template": "publish-to-cloudflare-pages-docusaurus",
+      "suffix": "docs",
+      "triggers": [
+        "release"
+      ],
+      "settings": {
+        "DOCUSAURUS_WORKING_DIR": "./apps/docs",
+        "ROOT_WORKING_DIR": "./"
+      }
+    },
+    {
+      "template": "publish-to-github-packages",
+      "suffix": "nrp",
+      "triggers": [
+        "release"
+      ],
+      "settings": {
+        "NPM_WORKING_DIR": "./packages/ntfy-reverse-proxy",
+        "ROOT_WORKING_DIR": "./"
+      }
+    },
+    {
+      "template": "publish-to-npm",
+      "suffix": "nrp",
+      "triggers": [
+        "release"
+      ],
+      "settings": {
+        "NPM_TOKEN": "NPM_TOKEN",
+        "NPM_WORKING_DIR": "./packages/ntfy-reverse-proxy",
+        "ROOT_WORKING_DIR": "./"
+      }
+    }
+  ],
+  "urls": {
+    "homepage": "https://nrp.cbnventures.io/",
+    "repository": "git+https://github.com/cbnventures/ntfy-reverse-proxy.git",
+    "bugs": "https://github.com/cbnventures/ntfy-reverse-proxy/issues",
+    "license": "https://github.com/cbnventures/ntfy-reverse-proxy/blob/HEAD/LICENSE",
+    "logo": "https://nrp.cbnventures.io/images/logo.svg",
+    "documentation": "https://nrp.cbnventures.io/",
+    "github": "https://github.com/cbnventures/ntfy-reverse-proxy",
+    "npm": "https://www.npmjs.com/package/ntfy-reverse-proxy",
+    "fundSources": [
+      "https://github.com/sponsors/cbnventures",
+      "https://www.paypal.com/biz/profile/cbnventures"
+    ],
+    "privacyPolicy": "https://www.cbnventures.io/privacy/",
+    "termsOfUse": "https://www.cbnventures.io/terms/"
+  },
+  "workspaces": {
+    "./": {
+      "role": "project",
+      "policy": "freezable",
+      "name": "ntfy-reverse-proxy-project",
+      "recipes": {
+        "cleanup": [
+          true,
+          {
+            "removeUnknownKeys": true,
+            "reorderKeys": true
+          }
+        ],
+        "normalize-artifacts": [
+          true
+        ],
+        "normalize-bundler": [
+          true
+        ],
+        "normalize-dependencies": [
+          true,
+          {
+            "pinDependencyVersions": true,
+            "pinDevDependencyVersions": true
+          }
+        ],
+        "normalize-modules": [
+          true
+        ],
+        "normalize-tooling": [
+          true
+        ],
+        "sync-environment": [
+          true,
+          {
+            "trackNodeLtsVersions": true
+          }
+        ],
+        "sync-identity": [
+          true
+        ],
+        "sync-ownership": [
+          true
+        ]
+      }
+    },
+    "./apps/docs": {
+      "role": "docs",
+      "policy": "freezable",
+      "name": "ntfy-reverse-proxy-docs",
+      "recipes": {
+        "cleanup": [
+          true,
+          {
+            "removeUnknownKeys": true,
+            "reorderKeys": true
+          }
+        ],
+        "normalize-artifacts": [
+          true
+        ],
+        "normalize-bundler": [
+          true
+        ],
+        "normalize-dependencies": [
+          true,
+          {
+            "pinDependencyVersions": true,
+            "pinDevDependencyVersions": true
+          }
+        ],
+        "normalize-modules": [
+          true
+        ],
+        "normalize-tooling": [
+          true
+        ],
+        "sync-environment": [
+          true,
+          {
+            "trackNodeLtsVersions": true
+          }
+        ],
+        "sync-identity": [
+          true
+        ],
+        "sync-ownership": [
+          true
+        ]
+      }
+    },
+    "./packages/ntfy-reverse-proxy": {
+      "role": "package",
+      "policy": "distributable",
+      "name": "ntfy-reverse-proxy",
+      "recipes": {
+        "cleanup": [
+          true,
+          {
+            "removeUnknownKeys": true,
+            "reorderKeys": true
+          }
+        ],
+        "normalize-artifacts": [
+          true
+        ],
+        "normalize-bundler": [
+          true
+        ],
+        "normalize-dependencies": [
+          true,
+          {
+            "pinDependencyVersions": true,
+            "pinDevDependencyVersions": true
+          }
+        ],
+        "normalize-modules": [
+          true
+        ],
+        "normalize-tooling": [
+          true
+        ],
+        "sync-environment": [
+          true,
+          {
+            "trackNodeLtsVersions": true
+          }
+        ],
+        "sync-identity": [
+          true,
+          {
+            "description": true,
+            "keywords": true
+          }
+        ],
+        "sync-ownership": [
+          true,
+          {
+            "homepage": true,
+            "bugs": true,
+            "author": true,
+            "contributors": true,
+            "funding": true,
+            "repository": true
+          }
+        ]
+      }
+    }
+  }
+}

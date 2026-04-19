@@ -1,40 +1,21 @@
 {
+  "extends": [
+    "@cbnventures/nova/presets/tsconfig/dx-essentials.json",
+    "@cbnventures/nova/presets/tsconfig/dx-strict.json",
+    "@cbnventures/nova/presets/tsconfig/fw-docusaurus.json"
+  ],
   "compilerOptions": {
     "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": "./",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "lib": [
-      "ESNext"
-    ],
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "outDir": "./build",
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ]
-    },
-    "removeComments": true,
-    "resolveJsonModule": true,
-    "rootDir": "./src",
-    "sourceMap": true,
-    "strict": true,
-    "target": "ESNext",
+    "checkJs": false,
+    "declaration": false,
+    "declarationMap": false,
+    "noEmit": true,
     "types": [
-      "lodash"
+      "@types/node"
     ]
   },
   "include": [
-    "./src",
-    "./worker-configuration.d.ts"
-  ],
-  "exclude": [
-    "node_modules"
+    "./eslint.config.ts",
+    "./scripts/**/*.mjs"
   ]
 }

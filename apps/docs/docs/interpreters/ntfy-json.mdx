@@ -1,0 +1,52 @@
+---
+id: ntfy-json
+title: ntfy JSON
+description: Send pre-formatted notifications with full control over title, priority, tags, and attachments.
+sidebar_position: 2
+keywords:
+  - ntfy reverse proxy
+  - ntfy json interpreter
+  - structured payload
+  - json notification
+tags:
+  - interpreters
+  - ntfy-json
+---
+
+Map a JSON payload with ntfy-compatible fields directly to the notification object for full control over every field.
+
+## Payload Schema
+
+| Field      | Type       | Required | Description                                        |
+|------------|------------|----------|----------------------------------------------------|
+| `body`     | `string`   | Yes      | The notification message body.                     |
+| `title`    | `string`   | No       | Notification title.                                |
+| `priority` | `1-5`      | No       | Priority level (1 = min, 3 = default, 5 = max).    |
+| `tags`     | `string[]` | No       | Array of tag strings (emoji shortcodes or labels). |
+| `icon`     | `string`   | No       | URL of the notification icon.                      |
+| `actions`  | `string`   | No       | ntfy action string (view, broadcast, http).        |
+| `attach`   | `string`   | No       | URL of a file to attach.                           |
+| `filename` | `string`   | No       | Filename for the attachment.                       |
+| `markdown` | `boolean`  | No       | Set to `true` to enable markdown rendering.        |
+
+## Example Payload
+
+```json
+{
+  "title": "Backup Complete",
+  "body": "Daily backup finished at 03:00 AM.\n\nAll 42 files synced successfully.",
+  "priority": 2,
+  "tags": ["white_check_mark", "backup"],
+  "markdown": true
+}
+```
+
+## Use Cases
+
+- Custom scripts or services where you control the HTTP payload.
+- Automation platforms (n8n, Node-RED, Home Assistant) that can send arbitrary JSON.
+- When you want full control over every ntfy field from the sender side.
+
+:::tip
+The `ntfy-json` interpreter is the only interpreter that supports all ntfy notification fields directly from the payload. Use it when you need fine-grained control over titles, priorities, tags, icons, actions, and attachments.
+:::

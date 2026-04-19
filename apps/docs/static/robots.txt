@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://nrp.cbnventures.io/sitemap.xml

@@ -1,0 +1,79 @@
+---
+id: overview
+title: Overview
+description: Discover how Reverse Proxy for ntfy routes webhooks and emails to your ntfy servers via Cloudflare Workers.
+sidebar_position: 1
+keywords:
+  - ntfy reverse proxy
+  - overview
+  - cloudflare workers
+  - webhook routing
+  - push notifications
+tags:
+  - overview
+  - getting-started
+---
+
+Learn what **Reverse Proxy for ntfy** does, how it fits into your notification stack, and where to go next.
+
+## What Is This?
+
+**Reverse Proxy for ntfy** is a Cloudflare Worker that sits between webhook sources and your self-hosted [ntfy](https://ntfy.sh) servers. It receives HTTP webhooks and emails, transforms them with purpose-built interpreters, and delivers formatted push notifications to one or more ntfy instances.
+
+## Key Capabilities
+
+- **Webhook-to-ntfy routing** — Accepts POST/PUT requests at context-specific subdomains and forwards them as ntfy notifications.
+- **Email-to-ntfy routing** — Receives emails via Cloudflare Email Routing and converts them into push notifications.
+- **Built-in interpreters** — Dedicated parsers for Statuspage.io, Synology DSM, Seerr, pfSense, and UniFi, plus generic plain-text and ntfy-JSON modes.
+- **Server failover** — Supports `send-once` (primary with fallback) and `send-all` (broadcast to every server) delivery modes.
+- **Interactive CLI** — Manages configuration, validates settings, generates `wrangler.toml`, and deploys to Cloudflare in one step.
+- **Edge security** — Origin IP shielding, per-context token authentication, sender filtering for email, and automatic HTTPS enforcement.
+
+## How It Works
+
+```mermaid
+flowchart LR
+    Source[Webhook / Email] --> Worker[Cloudflare Worker]
+    Worker --> Pipeline
+    Pipeline --> ntfy[ntfy Servers]
+
+    subgraph Pipeline [Pipeline]
+        direction TB
+
+        subgraph Ingress [Ingress]
+            direction TB
+            Receive --> Route
+            Route --> Authenticate
+        end
+
+        subgraph Processing [Processing]
+            direction TB
+            Parse --> Interpret
+            Interpret --> Format
+        end
+
+        subgraph Delivery [Delivery]
+            direction TB
+            Split --> Send
+        end
+
+        Ingress --> Processing --> Delivery
+    end
+```
+
+Each notification source maps to a **context**. Contexts define the interpreter, delivery mode, topic, and server list. The CLI manages all of this through an interactive menu or direct commands.
+
+## What You Will Need
+
+- **Node.js** — v20, v22, or v24 (LTS recommended)
+- **npm** — v10 or later
+- **Cloudflare account** — Free or paid, with a registered domain
+- **ntfy server** — At least one self-hosted instance with token authentication enabled
+
+## Next Steps
+
+- **[Quick Start](/docs/getting-started/quick-start/)** — Install, configure, and send your first notification.
+- **[Configuration](/docs/getting-started/configuration/)** — Full reference for servers, contexts, and settings.
+- **[Interpreters](/docs/interpreters/overview/)** — Choose the right interpreter for your webhook source.
+- **[Deployment](/docs/getting-started/deployment/)** — Cloudflare-specific setup details.
+- **[Architecture](/docs/reference/architecture/)** — Understand the HTTP and email processing pipelines.

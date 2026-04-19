@@ -1,0 +1,64 @@
+name: "Publish to Cloudflare Pages / Docusaurus (docs)"
+
+run-name: "Publishing ${{ github.event.release.tag_name || 'manually' }} to Cloudflare Pages / Docusaurus (docs)${{ github.event_name == 'workflow_dispatch' && inputs.dry-run && ' (dry run)' || '' }}"
+
+on:
+  release:
+    types:
+      - "published"
+
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: "Run without making changes"
+        required: false
+        type: "boolean"
+        default: true
+
+permissions:
+  contents: "read"
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: false
+
+env:
+  CLOUDFLARE_ACCOUNT_ID: "${{ vars.CLOUDFLARE_ACCOUNT_ID }}"
+  CLOUDFLARE_API_TOKEN: "${{ secrets.CLOUDFLARE_API_TOKEN }}"
+  CLOUDFLARE_PROJECT_NAME: "${{ vars.CLOUDFLARE_PROJECT_NAME }}"
+  DOCUSAURUS_DIR: "./apps/docs"
+  PUBLISH: "${{ github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && !inputs.dry-run) }}"
+  ROOT_DIR: "./"
+
+jobs:
+  publish-to-cloudflare-pages:
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 10
+    steps:
+      - name: "Checkout repository"
+        uses: "actions/checkout@v6"
+
+      - name: "Setup Node.js"
+        uses: "actions/setup-node@v6"
+        with:
+          node-version-file: "${{ env.ROOT_DIR }}/package.json"
+          package-manager-cache: false
+
+      - name: "Install packages"
+        run: |
+          npm install -g npm@latest
+          npm install
+        working-directory: "${{ env.ROOT_DIR }}"
+
+      - name: "Build project"
+        run: |
+          npm run build
+        working-directory: "${{ env.ROOT_DIR }}"
+
+      - name: "Deploy to Cloudflare Pages"
+        if: "${{ env.PUBLISH == 'true' }}"
+        uses: "cloudflare/wrangler-action@v3"
+        with:
+          apiToken: "${{ env.CLOUDFLARE_API_TOKEN }}"
+          accountId: "${{ env.CLOUDFLARE_ACCOUNT_ID }}"
+          command: "pages deploy ${{ env.DOCUSAURUS_DIR }}/build --project-name=${{ env.CLOUDFLARE_PROJECT_NAME }}"

@@ -1,0 +1,49 @@
+---
+id: plain-text
+title: Plain Text
+description: Forward raw text, JSON, or binary input as a notification body with zero transformation.
+sidebar_position: 3
+keywords:
+  - ntfy reverse proxy
+  - plain text interpreter
+  - generic webhook
+  - raw notification
+tags:
+  - interpreters
+  - plain-text
+---
+
+Pass the input through as the notification body with no transformation — the simplest interpreter available.
+
+## Behavior
+
+- **String input** — Used directly as the body.
+- **Binary input** — Decoded as UTF-8 text.
+- **Object input** — Serialized as pretty-printed JSON (2-space indent).
+
+No title, priority, tags, or other notification fields are set by this interpreter. The notification title falls back to the context's `name` field.
+
+:::info
+ntfy headers like `X-Title` or `X-Priority` on the incoming HTTP request are **not** forwarded to the ntfy server. The proxy builds outgoing headers from the interpreter's notification object, not from the incoming request. If you need control over title, priority, tags, and other ntfy fields, use the [`ntfy-json`](/docs/interpreters/ntfy-json/) interpreter instead.
+:::
+
+## Use Cases
+
+- Testing your deployment with a simple curl command.
+- Generic webhook sources that send unstructured payloads.
+- Services where you do not need rich formatting and the raw body is sufficient.
+
+## Example
+
+```bash
+curl -X POST https://{context-id}.ntfy.example.com \
+  -d "Deployment to production finished successfully."
+```
+
+To add a title and priority, use the `ntfy-json` interpreter with a JSON payload instead:
+
+```bash
+curl -X POST https://{context-id}.ntfy.example.com \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Build Complete", "body": "Deployment to production finished.", "priority": 3}'
+```

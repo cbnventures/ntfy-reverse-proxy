@@ -1,0 +1,69 @@
+---
+id: synology
+title: Synology
+description: Format Synology DSM webhook notifications with automatic severity detection and priority inference.
+sidebar_position: 7
+keywords:
+  - ntfy reverse proxy
+  - synology interpreter
+  - synology DSM
+  - NAS notifications
+  - webhook
+tags:
+  - interpreters
+  - synology
+---
+
+Process webhook notifications from Synology DSM with automatic device identification, severity detection, and priority inference.
+
+## Input Handling
+
+For string and binary inputs, the interpreter returns a simple notification with title `Synology DSM`, priority 3, and the tag `synology`. The full parsing pipeline only runs for JSON object inputs.
+
+## Payload Detection
+
+When the input is a JSON object, the interpreter tries multiple field names to accommodate Synology's variable payload format:
+
+- **Message body**: Checks `text`, `message`, `body`, `content`, `description` (in order).
+- **Hostname**: Checks `prefix` field (format: `hostname | date time`), then `hostname`, `host`, `device`.
+- **Timestamp**: Extracted from `prefix` or from `date`/`time` fields.
+- **Severity**: Checks `severity` and `level` fields.
+- **Event type**: Checks `event`, `category`, `type` fields.
+
+## Priority Inference
+
+Priority is determined in two ways:
+
+1. **Explicit severity field** — `critical` = 5, `error` = 4, `warning` = 3, `info` = 2.
+2. **Keyword matching** (if no severity field) — Scans the message body for keywords:
+   - "is down", "lost link", "unreachable" = 5 (urgent)
+   - "error", "bad sector", "failure" = 4 (high)
+   - "warning", "packet loss", "high latency", "running out" = 3 (default)
+   - "is available", "restored", "completed successfully" = 2 (low)
+
+## Notification Output
+
+- **Title**: The hostname if available, otherwise `Synology DSM`.
+- **Body**: Timestamp (bold) and message text.
+- **Priority**: Inferred from severity or keywords.
+- **Tags**: Includes `synology`, sanitized event slug (if present), severity (if explicitly set and not `info`), and emoji.
+- **Actions**: Link to the DSM URL if provided in `ntfy-reverse-proxy.url` field.
+
+## Custom Fields
+
+Add an `ntfy-reverse-proxy` object to the payload with a `url` field pointing to your DSM login page. This creates an "Open DSM" action button in the notification that also clears it when tapped.
+
+```json
+{
+  "text": "Volume 1 is running low on disk space.",
+  "prefix": "MyNAS | 2026-01-15 03:00:00",
+  "severity": "warning",
+  "ntfy-reverse-proxy": {
+    "url": "https://nas.example.com:5001"
+  }
+}
+```
+
+:::tip
+Configure the `ntfy-reverse-proxy.url` field in your Synology DSM webhook settings to add an "Open DSM" action button that links directly to your NAS management interface.
+:::

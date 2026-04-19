@@ -1,0 +1,80 @@
+---
+id: seerr
+title: Seerr
+description: Format Seerr webhook notifications with event-based priority and TMDB links.
+sidebar_position: 5
+keywords:
+  - ntfy reverse proxy
+  - seerr interpreter
+  - seerr app
+  - media requests
+tags:
+  - interpreters
+  - seerr
+---
+
+Process webhook notifications from Seerr with contextual priority, media details, and action links.
+
+## Input Handling
+
+For JSON object inputs, the full parsing pipeline is used. For string inputs, the interpreter attempts JSON parsing — if it fails, a fallback notification is created with title `[Seerr] Notification`, the raw string as the body, priority 3, and tags `seerr` and `movie_camera`.
+
+Binary inputs are decoded as UTF-8 and parsed as JSON (no fallback on parse failure).
+
+## Supported Events
+
+| Event Type             | Priority    | Description                             |
+|------------------------|-------------|-----------------------------------------|
+| `MEDIA_FAILED`         | 4 (high)    | Media request processing failed.        |
+| `ISSUE_CREATED`        | 3 (default) | New issue reported on a media item.     |
+| `ISSUE_REOPENED`       | 3 (default) | Previously resolved issue was reopened. |
+| `MEDIA_PENDING`        | 3 (default) | New media request awaiting approval.    |
+| `MEDIA_APPROVED`       | 3 (default) | Media request was approved.             |
+| `MEDIA_DECLINED`       | 3 (default) | Media request was declined.             |
+| `MEDIA_AUTO_APPROVED`  | 3 (default) | Media request was auto-approved.        |
+| `MEDIA_AUTO_REQUESTED` | 3 (default) | Media was auto-requested.               |
+| `ISSUE_COMMENT`        | 3 (default) | Comment added to an issue.              |
+| `MEDIA_AVAILABLE`      | 2 (low)     | Requested media is now available.       |
+| `ISSUE_RESOLVED`       | 2 (low)     | Issue was resolved.                     |
+| `TEST_NOTIFICATION`    | 2 (low)     | Test notification from Seerr.           |
+
+Unrecognized event types are handled at priority 3 (default).
+
+## Payload Fields
+
+The interpreter extracts:
+
+- `notification_type` — Determines priority and notification style.
+- `event`, `subject`, `message` — Used for title and body.
+- `image` — Used as the notification icon if present.
+- `media.media_type`, `media.tmdbId`, `media.status` — Used for media details and TMDB action link.
+- `request.requestedBy_username` — Shows who made the request.
+- `issue.issue_type`, `issue.reportedBy_username` — Shows issue details.
+- `comment.comment_message`, `comment.commentedBy_username` — Shows comment details.
+
+## Notification Output
+
+- **Title**: `[Seerr] {event}` (e.g., `[Seerr] Media Available`).
+- **Body**: Markdown-formatted with subject, message, requester/reporter, and comment if applicable.
+- **Priority**: Based on notification type (see table above).
+- **Tags**: Includes `seerr` and an emoji tag.
+- **Actions**: Links to TMDB page and Seerr dashboard (if `ntfy-reverse-proxy.url` is provided).
+
+## Custom Fields
+
+Add an `ntfy-reverse-proxy` object with a `url` field pointing to your Seerr instance for a dashboard action link:
+
+```json
+{
+  "notification_type": "MEDIA_AVAILABLE",
+  "event": "Media Available",
+  "subject": "The Matrix (1999)",
+  "ntfy-reverse-proxy": {
+    "url": "https://seerr.example.com"
+  }
+}
+```
+
+:::tip
+Configure the `ntfy-reverse-proxy.url` field in your Seerr webhook settings to add a "View in Seerr" action button to every notification.
+:::

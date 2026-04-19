@@ -1,0 +1,163 @@
+---
+id: troubleshooting
+title: Troubleshooting
+description: Resolve common deployment, DNS, SSL, authentication, and notification delivery issues.
+sidebar_position: 3
+keywords:
+  - ntfy reverse proxy
+  - troubleshooting
+  - DNS errors
+  - SSL errors
+  - 403 forbidden
+  - notification issues
+tags:
+  - reference
+  - troubleshooting
+---
+
+Diagnose and fix common issues when deploying and operating Reverse Proxy for ntfy.
+
+## DNS_PROBE_FINISHED_NXDOMAIN
+
+**Symptom**: Browser or curl reports that the domain cannot be resolved.
+
+**Cause**: The custom domain route was deployed but Cloudflare has not created the DNS record yet, or DNS has not propagated.
+
+**Solution**:
+
+- Wait a few minutes after deployment — Cloudflare auto-creates DNS records for custom domain routes.
+- Check **Dashboard > DNS > Records** for a record matching your subdomain.
+- Check **Dashboard > Workers & Pages > ntfy-reverse-proxy > Settings > Domains & Routes** for the custom domain entry.
+- Verify propagation with `dig {context-id}.ntfy.example.com`.
+
+## ERR_SSL_VERSION_OR_CIPHER_MISMATCH
+
+**Symptom**: Browser shows an SSL error when accessing a custom domain.
+
+**Cause**: Cloudflare has not provisioned the SSL certificate for the new custom domain yet.
+
+**Solution**:
+
+- Wait up to 15 minutes for certificate provisioning.
+- Check **Dashboard > SSL/TLS > Edge Certificates** for the certificate status.
+- Verify your SSL/TLS mode is "Full" or "Full (strict)" in **Dashboard > SSL/TLS > Overview**.
+
+## 403 Forbidden (Cloudflare HTML Page)
+
+**Symptom**: POST requests return a Cloudflare "Sorry, you have been blocked" HTML page instead of the worker's JSON response.
+
+**Cause**: Bot Fight Mode or WAF rules are blocking automated HTTP requests (webhooks, curl, etc.).
+
+**Solution**:
+
+- Disable Bot Fight Mode: **Dashboard > Security > Bots > Bot Fight Mode > Off**.
+- Or create a WAF skip rule: **Dashboard > Security > WAF > Custom Rules**:
+  - If: `(http.host contains "ntfy.example.com")`
+  - Then: Skip > All Super Bot Fight Mode Rules
+  - Place at: First
+
+:::warning
+Bot Fight Mode cannot be skipped via WAF rules on any plan. The skip rule above targets Super Bot Fight Mode, which is available on Pro plans and above. Free plan users will need to disable Bot Fight Mode entirely if it blocks webhook traffic. You can also use a `sec-fetch-mode` header check to distinguish browser traffic from API traffic (see [Security](/docs/features/security/)).
+:::
+
+## TLS Handshake Failure from Docker Containers
+
+**Symptom**: Docker containers (e.g., Watchtower) fail with `remote error: tls: handshake failure` when sending to the proxy.
+
+**Cause**: The container's CA certificate bundle is outdated. Cloudflare's edge certificates may chain through a CA that the container does not trust.
+
+**Solution**: Mount the host's CA certificates into the container:
+
+```bash
+docker run -v /etc/ssl/certs:/etc/ssl/certs:ro ...
+```
+
+On Synology NAS, the cert path is `/etc/ssl/certs/`. Add this volume mount and restart the container.
+
+## 404 Not Found
+
+**Symptom**: POST requests return a JSON error like `{"status": "error", "message": "No context found for http identifier: ..."}`.
+
+**Cause**: The request subdomain does not match any configured context ID.
+
+**Solution**:
+
+- Check that the context ID matches the subdomain: a request to `abc123.ntfy.example.com` needs a context with `"id": "abc123"`.
+- Run `npm run manage validate` to check for config issues.
+- Re-deploy after config changes — the worker reads config from environment variables injected at deploy time.
+
+## 403 Authentication Failed
+
+**Symptom**: POST requests return HTTP 403 from the worker with `{"status": "error", "message": "Unauthorized"}`.
+
+**Cause**: The context has a `token` configured and the request does not include a matching `Authorization` header.
+
+**Solution**:
+
+- Include the header: `Authorization: Bearer {context-token}`.
+- Both `Bearer {token}` and raw `{token}` formats are accepted.
+- Check that the token matches exactly — it is case-sensitive.
+
+## 422 Interpretation Failed
+
+**Symptom**: POST requests return HTTP 422 with an error message from the interpreter.
+
+**Cause**: The interpreter could not parse the request body. The payload does not match the expected shape for the configured interpreter.
+
+**Solution**:
+
+- Check that the correct interpreter is configured for your webhook source.
+- For `ntfy-json`, verify the payload includes the required `body` field.
+- For service-specific interpreters, check that the payload matches the expected format (see individual [interpreter docs](/docs/interpreters/overview/)).
+- Enable `show_response_output` temporarily to see detailed error information in the response.
+
+## Notifications Not Arriving
+
+**Symptom**: The proxy returns 200 but notifications do not appear in ntfy.
+
+**Solution**:
+
+- Check that the ntfy server is reachable and the token is valid.
+- Verify the ntfy server has `behind-proxy` set to `true` and `base-url` configured.
+- Enable `show_response_output` to see per-server delivery results in the response JSON.
+- Check ntfy server logs for authentication or topic permission errors.
+- For binary attachments (images, files), verify `attachment-cache-dir` is configured on the ntfy server. Large text messages are handled by the proxy's message splitting and do not require this setting.
+
+## Email Notifications Not Working
+
+**Symptom**: Emails sent to `{context-id}@{base_domain}` do not produce notifications.
+
+**Solution**:
+
+- Verify Cloudflare Email Routing is enabled for your domain.
+- Check that a routing rule exists for the email address pointing to your worker.
+- Verify the context type is `"email"` (not `"http"`).
+- Check the `allowed_from` field — if set, the sender must match.
+- Email processing is silent — there are no HTTP error responses for failed email processing.
+
+:::tip
+If the context has an `error_topic` configured, authentication and interpretation errors from email processing are forwarded there as debug attachments. Check that topic for diagnostic information.
+:::
+
+## Duplicate Statuspage Notifications
+
+**Symptom**: You receive the same Statuspage.io notification multiple times.
+
+**Cause**: Without KV storage, the Statuspage interpreter cannot deduplicate updates. The interpreter uses the `updateId` field from incident updates to detect duplicates.
+
+**Solution**:
+
+- Run `deploy` from the interactive menu — it automatically creates a KV namespace named `{worker_name}-kv` and binds it to the worker.
+- If deploying manually, create a Cloudflare Workers KV namespace and provide its ID during `wrangler.toml` generation.
+- The interpreter stores incident state with a 24-hour TTL and skips duplicate update IDs.
+
+## 405 Method Not Allowed
+
+**Symptom**: Requests return HTTP 405 with a "Method not allowed" error.
+
+**Cause**: The worker only accepts `GET`, `POST`, and `PUT` requests. Other HTTP methods (e.g., `DELETE`, `PATCH`) are rejected.
+
+**Solution**:
+
+- Verify the webhook source is sending `POST` or `PUT` requests.
+- `GET` requests return the landing page, so use `POST` or `PUT` for webhook delivery.

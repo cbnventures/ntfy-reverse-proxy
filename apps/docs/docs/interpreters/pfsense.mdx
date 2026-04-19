@@ -1,0 +1,79 @@
+---
+id: pfsense
+title: pfSense
+description: Parse pfSense firewall notification emails with automatic hostname extraction and priority inference.
+sidebar_position: 4
+keywords:
+  - ntfy reverse proxy
+  - pfSense interpreter
+  - firewall notifications
+  - email to ntfy
+tags:
+  - interpreters
+  - pfsense
+  - email
+---
+
+Process notification emails from pfSense firewalls with automatic hostname extraction and keyword-based priority inference.
+
+## Input Handling
+
+The interpreter is designed for email input with `subject` and `textBody` fields. pfSense notification emails typically use the subject format: `hostname - Notification`.
+
+For string or binary inputs (e.g., if used with an HTTP context), the interpreter creates a basic notification with title `pfSense`, the input as the body, and priority inferred from keywords.
+
+## Hostname Extraction
+
+The hostname is extracted from the subject by removing the ` - Notification` suffix. If the subject does not contain this pattern, the title falls back to `pfSense`.
+
+## Priority Inference
+
+Priority is determined by scanning the email body for keywords:
+
+| Keywords                                 | Priority | Level   |
+|------------------------------------------|----------|---------|
+| "is down"                                | 5        | Urgent  |
+| "error", "bad sectors"                   | 4        | High    |
+| "packet loss", "high latency", "warning" | 3        | Default |
+| "is available", "restored"               | 2        | Low     |
+| (none matched)                           | 3        | Default |
+
+## Content Tags
+
+The interpreter scans the body for topic-specific keywords and adds matching tags:
+
+- `gateway` — Matches "gateway"
+- `certificate` — Matches "certificate"
+- `firewall` — Matches "firewall" or "filter"
+- `vpn` — Matches "vpn", "openvpn", or "ipsec"
+- `dns` — Matches "dns" or "resolver"
+
+## Notification Output
+
+- **Title**: The hostname (e.g., `fw.home`).
+- **Body**: Notification lines from the email body (separator lines are skipped).
+- **Priority**: Inferred from keywords.
+- **Tags**: Includes `pfsense`, content tags, and emoji.
+
+## Email Context Example
+
+```json
+{
+  "id": "pfsense",
+  "name": "pfSense Firewall",
+  "type": "email",
+  "interpreter": "pfsense",
+  "topic": "firewall",
+  "mode": "send-once",
+  "show_visitor_info": false,
+  "primary_server": "primary",
+  "servers": ["primary"],
+  "allowed_from": "*@pfsense.local"
+}
+```
+
+This creates the email address `pfsense@ntfy.example.com`. Configure pfSense to send notifications to this address.
+
+:::tip
+Use the `allowed_from` wildcard to restrict which senders can trigger this context. The `*@pfsense.local` pattern allows any address from the `pfsense.local` domain.
+:::

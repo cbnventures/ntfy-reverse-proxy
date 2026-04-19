@@ -1,0 +1,23 @@
+{
+  "extends": [
+    "@cbnventures/nova/presets/tsconfig/dx-essentials.json",
+    "@cbnventures/nova/presets/tsconfig/dx-strict.json",
+    "@cbnventures/nova/presets/tsconfig/runtime-cloudflare-workers.json"
+  ],
+  "compilerOptions": {
+    "noEmit": false,
+    "noEmitOnError": false,
+    "outDir": "./build",
+    "rootDir": "./",
+    "types": []
+  },
+  "include": [
+    "./src/lib/regex.ts",
+    "./src/lib/schema.ts",
+    "./src/lib/utility.ts",
+    "./src/types/lib/**/*",
+    "./src/types/worker/**/*",
+    "./src/worker/**/*",
+    "./worker-configuration.d.ts"
+  ]
+}

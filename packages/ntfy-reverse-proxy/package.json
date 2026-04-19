@@ -1,0 +1,98 @@
+{
+  "name": "ntfy-reverse-proxy",
+  "version": "2.0.0",
+  "description": "Notification gateway on Cloudflare Workers that routes webhooks and emails to ntfy with automatic server failover",
+  "keywords": [
+    "ntfy",
+    "reverse-proxy",
+    "cloudflare-workers",
+    "webhooks",
+    "notifications",
+    "statuspage",
+    "synology",
+    "seerr",
+    "pfsense",
+    "unifi"
+  ],
+  "license": "MIT",
+  "homepage": "https://nrp.cbnventures.io/",
+  "bugs": {
+    "email": "bugs@cbnventures.io",
+    "url": "https://github.com/cbnventures/ntfy-reverse-proxy/issues"
+  },
+  "author": {
+    "name": "CBN Ventures",
+    "email": "contact@cbnventures.io",
+    "url": "https://www.cbnventures.io/"
+  },
+  "contributors": [
+    {
+      "name": "Jacky Liang",
+      "email": "hello@mrjackyliang.com",
+      "url": "https://www.mrjackyliang.com/"
+    }
+  ],
+  "funding": [
+    "https://github.com/sponsors/cbnventures",
+    "https://www.paypal.com/biz/profile/cbnventures"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cbnventures/ntfy-reverse-proxy.git",
+    "directory": "packages/ntfy-reverse-proxy"
+  },
+  "type": "module",
+  "files": [
+    "build"
+  ],
+  "bin": {
+    "ntfy-reverse-proxy": "build/src/cli/index.js",
+    "nrp": "build/src/cli/index.js"
+  },
+  "private": false,
+  "scripts": {
+    "dev": "nova utility run-scripts --parallel 'dev:*'",
+    "dev:worker": "node ../../scripts/dev-worker.mjs",
+    "build": "nova utility run-scripts --sequential 'build:*'",
+    "build:generate-types": "wrangler types --config ../../wrangler.toml --strict-vars=false ./worker-configuration.d.ts",
+    "build:transpile-cli": "nova utility transpile --project tsconfig.cli.json",
+    "build:transpile-worker": "nova utility transpile --project tsconfig.worker.json",
+    "build:copy-types": "shx rm -rf \"./build/src/types\" && shx cp -r \"./src/types\" \"./build/src/types\"",
+    "build:fix-perms": "shx chmod +x ./build/src/cli/index.js",
+    "check": "nova utility run-scripts --sequential 'check:*'",
+    "check:generate-types": "wrangler types --config ../../wrangler.toml --strict-vars=false ./worker-configuration.d.ts",
+    "check:lint": "eslint ./ --max-warnings=0",
+    "check:types-cli": "nova utility type-check --project tsconfig.cli.json",
+    "check:types-worker": "nova utility type-check --project tsconfig.worker.json",
+    "check:types-tests": "nova utility type-check --project tsconfig.tests.json",
+    "check:test": "vitest run",
+    "deploy": "nova utility run-scripts --sequential 'deploy:*'",
+    "deploy:worker": "node build/src/cli/index.js deploy",
+    "clean": "nova utility run-scripts --parallel 'clean:*'",
+    "clean:build": "shx rm -rf ./build",
+    "manage": "tsx src/cli/index.ts"
+  },
+  "engines": {
+    "node": "^20 || ^22 || ^24"
+  },
+  "dependencies": {
+    "@cbnventures/nova": "0.15.1",
+    "chalk": "5.6.2",
+    "commander": "14.0.3",
+    "prompts": "2.4.2",
+    "wrangler": "4.78.0",
+    "zod": "4.3.6"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "0.13.5",
+    "@cloudflare/workers-types": "4.20260317.1",
+    "@types/node": "22.10.10",
+    "@types/prompts": "2.4.9",
+    "eslint": "9.39.3",
+    "glob": "13.0.6",
+    "shx": "0.4.0",
+    "tsx": "4.21.0",
+    "typescript": "5.9.3",
+    "vitest": "4.1.2"
+  }
+}
