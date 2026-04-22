@@ -5,9 +5,9 @@
   "private": true,
   "scripts": {
     "dev": "nova utility run-scripts --parallel 'dev:*'",
-    "dev:start": "PORTLESS_PORT=3000 portless nrp-docs docusaurus start --host 0.0.0.0 --no-open",
+    "dev:start": "PORTLESS_PORT=3000 portless dev-nrp-docs docusaurus start --host 0.0.0.0 --no-open",
     "prod": "nova utility run-scripts --sequential 'prod:*'",
-    "prod:serve": "PORTLESS_PORT=3000 portless nrp-docs docusaurus serve --host 0.0.0.0 --no-open",
+    "prod:serve": "PORTLESS_PORT=3000 portless prod-nrp-docs docusaurus serve --host 0.0.0.0 --no-open",
     "build": "nova utility run-scripts --sequential 'build:*'",
     "build:build": "docusaurus build",
     "build:transpile-app": "nova utility transpile --project tsconfig.app.json",
@@ -25,8 +25,8 @@
     "node": "^20 || ^22 || ^24"
   },
   "dependencies": {
-    "@cbnventures/docusaurus-preset-nova": "0.15.3",
-    "@cbnventures/nova": "0.15.3",
+    "@cbnventures/docusaurus-preset-nova": "0.16.2",
+    "@cbnventures/nova": "0.16.2",
     "@docusaurus/core": "3.10.0",
     "react": "19.2.4",
     "react-dom": "19.2.4"

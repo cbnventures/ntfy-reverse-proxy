@@ -1,5 +1,10 @@
 # ntfy-reverse-proxy
 
+## 2.0.2 - 2026-04-21
+
+### FIXED
+- Fix docs deployment silently failing to reach Cloudflare Pages — nova v0.16.2 workflow template update configures the download-artifact step with the correct workspace build path, so the generated site now lands at `apps/docs/build/` for the Pages upload to pick up, instead of being extracted to the repo root.
+
 ## 2.0.1 - 2026-04-19
 
 ### FIXED

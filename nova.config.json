@@ -54,49 +54,59 @@
     {
       "template": "check-sponsor-gated-issues",
       "suffix": "project",
-      "triggers": [],
+      "triggers": [
+        "issue-comment",
+        "issues"
+      ],
       "settings": {
-        "PERSONAL_ACCESS_TOKEN": "PERSONAL_ACCESS_TOKEN"
+        "IS_ORGANIZATION": "IS_ORGANIZATION",
+        "ISSUE_LABELS": "ISSUE_LABELS",
+        "ISSUE_LIMIT_COMMENTER": "ISSUE_LIMIT_COMMENTER",
+        "ISSUE_LOCK_ON_CLOSE": "ISSUE_LOCK_ON_CLOSE",
+        "ISSUE_MESSAGE_NOT_SPONSOR": "ISSUE_MESSAGE_NOT_SPONSOR",
+        "ISSUE_MESSAGE_WELCOME": "ISSUE_MESSAGE_WELCOME",
+        "PERSONAL_ACCESS_TOKEN": "PERSONAL_ACCESS_TOKEN",
+        "SPONSOR_ACTIVE_ONLY": "SPONSOR_ACTIVE_ONLY",
+        "SPONSOR_EXEMPT_FILE_LOCATION": "SPONSOR_EXEMPT_FILE_LOCATION",
+        "SPONSOR_MINIMUM": "SPONSOR_MINIMUM"
       }
     },
     {
       "template": "lock-inactive-issues",
       "suffix": "project",
       "triggers": [
-        "schedule"
+        "schedule-weekly"
       ]
     },
     {
-      "template": "publish-to-cloudflare-pages-docusaurus",
-      "suffix": "docs",
+      "template": "publish",
+      "suffix": "project",
       "triggers": [
         "release"
       ],
-      "settings": {
-        "DOCUSAURUS_WORKING_DIR": "./apps/docs",
-        "ROOT_WORKING_DIR": "./"
-      }
-    },
-    {
-      "template": "publish-to-github-packages",
-      "suffix": "nrp",
-      "triggers": [
-        "release"
+      "scopes": [
+        "./packages/ntfy-reverse-proxy",
+        "./apps/docs"
+      ],
+      "targets": [
+        {
+          "type": "npm",
+          "workingDir": "./packages/ntfy-reverse-proxy"
+        },
+        {
+          "type": "github-packages",
+          "workingDir": "./packages/ntfy-reverse-proxy"
+        },
+        {
+          "type": "cloudflare-pages-docusaurus",
+          "workingDir": "./apps/docs"
+        }
       ],
       "settings": {
-        "NPM_WORKING_DIR": "./packages/ntfy-reverse-proxy",
-        "ROOT_WORKING_DIR": "./"
-      }
-    },
-    {
-      "template": "publish-to-npm",
-      "suffix": "nrp",
-      "triggers": [
-        "release"
-      ],
-      "settings": {
+        "CLOUDFLARE_ACCOUNT_ID": "CLOUDFLARE_ACCOUNT_ID",
+        "CLOUDFLARE_API_TOKEN": "CLOUDFLARE_API_TOKEN",
+        "CLOUDFLARE_PROJECT_NAME": "CLOUDFLARE_PROJECT_NAME",
         "NPM_TOKEN": "NPM_TOKEN",
-        "NPM_WORKING_DIR": "./packages/ntfy-reverse-proxy",
         "ROOT_WORKING_DIR": "./"
       }
     }

@@ -1,11 +1,10 @@
 name: "Lock Inactive Issues (project)"
 
-run-name: "Locking inactive issues (project)${{ github.event_name == 'workflow_dispatch' && inputs.dry-run && ' (dry run)' || '' || 'manually' }}"
+run-name: "Locking inactive issues (project)${{ github.event_name == 'workflow_dispatch' && inputs.dry-run && ' (dry run)' || '' }}"
 
 on:
   schedule:
     - cron: "0 0 * * 0"
-
   workflow_dispatch:
     inputs:
       dry-run:
