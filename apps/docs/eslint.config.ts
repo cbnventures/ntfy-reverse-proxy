@@ -80,7 +80,7 @@ export default [
     },
   },
   {
-    name: 'custom-rules',
+    name: 'nova-rules',
     files: [
       '**/*.js',
       '**/*.ts',
@@ -575,7 +575,7 @@ export default [
     },
   },
   {
-    name: 'custom-rules/mdx',
+    name: 'nova-rules/mdx',
     files: ['**/*.mdx'],
     plugins: {
       '@cbnventures/nova': {

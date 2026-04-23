@@ -96,7 +96,7 @@ export default [
     },
   },
   {
-    name: 'custom-rules',
+    name: 'nova-rules',
     files: [
       '**/*.js',
       '**/*.ts',
@@ -438,7 +438,11 @@ export default [
             'src',
             'utils',
           ],
-          ignoreFiles: [],
+          ignoreFiles: [
+            './eslint.config.ts',
+            './vitest.config.ts',
+            './vitest.setup.ts',
+          ],
           knownNames: {},
           stripDirectories: ['types'],
         },
@@ -482,8 +486,9 @@ export default [
         {
           extraExtensions: [],
           ignoreFiles: [
-            'eslint.config.ts',
-            'vitest.config.ts',
+            './eslint.config.ts',
+            './vitest.config.ts',
+            './vitest.setup.ts',
           ],
         },
       ],

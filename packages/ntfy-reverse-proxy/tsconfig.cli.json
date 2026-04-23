@@ -10,7 +10,8 @@
     "outDir": "./build",
     "rootDir": "./",
     "types": [
-      "@types/node"
+      "@types/node",
+      "@types/prompts"
     ]
   },
   "include": [
