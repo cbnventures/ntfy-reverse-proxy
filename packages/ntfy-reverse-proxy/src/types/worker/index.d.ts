@@ -132,6 +132,14 @@ export type WorkerEmailInterpreted = WorkerPipelineInterpretResult | null | unde
 
 export type WorkerEmailErrorMessage = string;
 
+export type WorkerEmailErrorName = string;
+
+export type WorkerEmailErrorStack = string | undefined;
+
+export type WorkerEmailErrorIssuesRaw = unknown;
+
+export type WorkerEmailErrorIssues = unknown[] | undefined;
+
 export type WorkerEmailFormatted = WorkerPipelineFormatResult;
 
 export type WorkerEmailMessages = WorkerPipelineSplitMessagePart[];
@@ -176,7 +184,17 @@ export type WorkerErrorFormatted = WorkerPipelineFormatResult;
 
 export type WorkerErrorMessages = WorkerPipelineSplitMessagePart[];
 
+export type WorkerErrorAttachmentHeaderEntryName = string;
+
+export type WorkerErrorAttachmentHeaderEntryValue = string;
+
+export type WorkerErrorAttachmentHeaderEntry = [WorkerErrorAttachmentHeaderEntryName, WorkerErrorAttachmentHeaderEntryValue];
+
+export type WorkerErrorAttachmentHeaderEntries = WorkerErrorAttachmentHeaderEntry[];
+
 export type WorkerErrorAttachmentHeaders = Record<string, string>;
+
+export type WorkerErrorAttachmentParsed = WorkerPipelineParseResult;
 
 export type WorkerErrorAttachmentData = Record<string, unknown>;
 
@@ -197,6 +215,14 @@ export type WorkerInput = WorkerPipelineInterpretInput;
 export type WorkerInterpreted = WorkerPipelineInterpretResult | null | undefined;
 
 export type WorkerErrorMessage = string;
+
+export type WorkerErrorName = string;
+
+export type WorkerErrorStack = string | undefined;
+
+export type WorkerErrorIssuesRaw = unknown;
+
+export type WorkerErrorIssues = unknown[] | undefined;
 
 export type WorkerErrorNotification = {
   notification: {

@@ -23,7 +23,11 @@ import type {
   WorkerEmailErrorAttachmentBuffer,
   WorkerEmailErrorAttachmentData,
   WorkerEmailErrorAttachmentJson,
+  WorkerEmailErrorIssues,
+  WorkerEmailErrorIssuesRaw,
   WorkerEmailErrorMessage,
+  WorkerEmailErrorName,
+  WorkerEmailErrorStack,
   WorkerEmailFormatted,
   WorkerEmailInput,
   WorkerEmailInterpreted,
@@ -35,9 +39,17 @@ import type {
   WorkerEmailSendResult,
   WorkerErrorAttachmentBuffer,
   WorkerErrorAttachmentData,
+  WorkerErrorAttachmentHeaderEntries,
+  WorkerErrorAttachmentHeaderEntryName,
+  WorkerErrorAttachmentHeaderEntryValue,
   WorkerErrorAttachmentHeaders,
   WorkerErrorAttachmentJson,
+  WorkerErrorAttachmentParsed,
+  WorkerErrorIssues,
+  WorkerErrorIssuesRaw,
   WorkerErrorMessage,
+  WorkerErrorName,
+  WorkerErrorStack,
   WorkerFormatted,
   WorkerHandleEmailConfig,
   WorkerHandleEmailFrom,
@@ -131,9 +143,28 @@ async function handleRequest(request: WorkerHandleRequestRequest, config: Worker
     if (authResult['authenticated'] === false) {
       if (ctx['error_topic'] !== undefined) {
         try {
-          const errorAttachmentHeaders: WorkerErrorAttachmentHeaders = Object.fromEntries(
-            [...received['headers'].entries()].filter((entry) => entry[0].toLowerCase() !== 'authorization'),
-          );
+          // Mask the authorization header value rather than stripping the field — matches Cloudflare tail behavior and signals whether the client even attempted to authenticate.
+          const errorAttachmentHeaderEntries: WorkerErrorAttachmentHeaderEntries = [...received['headers'].entries()].map((entry) => {
+            const entryName: WorkerErrorAttachmentHeaderEntryName = entry[0];
+            const entryValue: WorkerErrorAttachmentHeaderEntryValue = entry[1];
+
+            if (entryName.toLowerCase() === 'authorization') {
+              return [
+                entryName,
+                'REDACTED',
+              ];
+            }
+
+            return [
+              entryName,
+              entryValue,
+            ];
+          });
+          const errorAttachmentHeaders: WorkerErrorAttachmentHeaders = Object.fromEntries(errorAttachmentHeaderEntries);
+
+          // Parse the body just for the attachment so the unauthorized payload is visible — auth runs before the main parse step.
+          const errorAttachmentParsed: WorkerErrorAttachmentParsed = parse(received['rawBody'], received['headers']);
+
           const errorAttachmentData: WorkerErrorAttachmentData = {
             timestamp: new Date().toISOString(),
             error: {
@@ -143,12 +174,21 @@ async function handleRequest(request: WorkerHandleRequestRequest, config: Worker
             context: {
               name: ctx['name'],
               interpreter: ctx['interpreter'],
+              stage: 'authentication',
             },
             request: {
               method: received['method'],
               url: received['url'],
               headers: errorAttachmentHeaders,
               ...(received['cfProperties'] !== undefined ? { cf: received['cfProperties'] } : {}),
+            },
+            response: {
+              status: 403,
+            },
+            body: {
+              type: errorAttachmentParsed['type'],
+              ...(errorAttachmentParsed['json'] !== undefined ? { json: errorAttachmentParsed['json'] } : {}),
+              ...(errorAttachmentParsed['text'] !== undefined ? { text: errorAttachmentParsed['text'] } : {}),
             },
           };
           const errorAttachmentJson: WorkerErrorAttachmentJson = JSON.stringify(errorAttachmentData, null, 2);
@@ -209,28 +249,66 @@ async function handleRequest(request: WorkerHandleRequestRequest, config: Worker
     try {
       interpreted = await interpret(ctx['interpreter'], input, (kv !== undefined) ? { kv } : {});
     } catch (err) {
+      const errorName: WorkerErrorName = (err instanceof Error) ? err.name : 'Error';
       const errorMessage: WorkerErrorMessage = (err instanceof Error) ? err.message : 'Unknown interpretation error';
+      const errorStack: WorkerErrorStack = (err instanceof Error) ? err.stack : undefined;
+      let errorIssues: WorkerErrorIssues = undefined;
+
+      if (
+        err instanceof Error
+        && err.name === 'ZodError'
+        && 'issues' in err
+      ) {
+        const errorIssuesRaw: WorkerErrorIssuesRaw = Reflect.get(err, 'issues');
+
+        if (Array.isArray(errorIssuesRaw) === true) {
+          errorIssues = errorIssuesRaw;
+        }
+      }
 
       if (ctx['error_topic'] !== undefined) {
         try {
-          const errorAttachmentHeaders: WorkerErrorAttachmentHeaders = Object.fromEntries(
-            [...received['headers'].entries()].filter((entry) => entry[0].toLowerCase() !== 'authorization'),
-          );
+          // Mask the authorization header value rather than stripping the field.
+          const errorAttachmentHeaderEntries: WorkerErrorAttachmentHeaderEntries = [...received['headers'].entries()].map((entry) => {
+            const entryName: WorkerErrorAttachmentHeaderEntryName = entry[0];
+            const entryValue: WorkerErrorAttachmentHeaderEntryValue = entry[1];
+
+            if (entryName.toLowerCase() === 'authorization') {
+              return [
+                entryName,
+                'REDACTED',
+              ];
+            }
+
+            return [
+              entryName,
+              entryValue,
+            ];
+          });
+          const errorAttachmentHeaders: WorkerErrorAttachmentHeaders = Object.fromEntries(errorAttachmentHeaderEntries);
+
           const errorAttachmentData: WorkerErrorAttachmentData = {
             timestamp: new Date().toISOString(),
             error: {
               type: 'interpretation',
+              name: errorName,
               message: errorMessage,
+              ...(errorStack !== undefined ? { stack: errorStack } : {}),
+              ...(errorIssues !== undefined ? { issues: errorIssues } : {}),
             },
             context: {
               name: ctx['name'],
               interpreter: ctx['interpreter'],
+              stage: 'interpretation',
             },
             request: {
               method: received['method'],
               url: received['url'],
               headers: errorAttachmentHeaders,
               ...(received['cfProperties'] !== undefined ? { cf: received['cfProperties'] } : {}),
+            },
+            response: {
+              status: 422,
             },
             body: {
               type: parsed['type'],
@@ -392,11 +470,13 @@ async function handleEmail(rawEmail: WorkerHandleEmailRawEmail, from: WorkerHand
           context: {
             name: ctx['name'],
             interpreter: ctx['interpreter'],
+            stage: 'authentication',
           },
           email: {
             from,
             to: parsed['to'],
             subject: parsed['subject'],
+            textBody: parsed['textBody'],
           },
         };
         const errorAttachmentJson: WorkerEmailErrorAttachmentJson = JSON.stringify(errorAttachmentData, null, 2);
@@ -433,7 +513,22 @@ async function handleEmail(rawEmail: WorkerHandleEmailRawEmail, from: WorkerHand
   try {
     interpreted = await interpret(ctx['interpreter'], emailInput, (kv !== undefined) ? { kv } : {});
   } catch (err) {
+    const errorName: WorkerEmailErrorName = (err instanceof Error) ? err.name : 'Error';
     const errorMessage: WorkerEmailErrorMessage = (err instanceof Error) ? err.message : 'Unknown interpretation error';
+    const errorStack: WorkerEmailErrorStack = (err instanceof Error) ? err.stack : undefined;
+    let errorIssues: WorkerEmailErrorIssues = undefined;
+
+    if (
+      err instanceof Error
+      && err.name === 'ZodError'
+      && 'issues' in err
+    ) {
+      const errorIssuesRaw: WorkerEmailErrorIssuesRaw = Reflect.get(err, 'issues');
+
+      if (Array.isArray(errorIssuesRaw) === true) {
+        errorIssues = errorIssuesRaw;
+      }
+    }
 
     if (ctx['error_topic'] !== undefined) {
       try {
@@ -441,11 +536,15 @@ async function handleEmail(rawEmail: WorkerHandleEmailRawEmail, from: WorkerHand
           timestamp: new Date().toISOString(),
           error: {
             type: 'interpretation',
+            name: errorName,
             message: errorMessage,
+            ...(errorStack !== undefined ? { stack: errorStack } : {}),
+            ...(errorIssues !== undefined ? { issues: errorIssues } : {}),
           },
           context: {
             name: ctx['name'],
             interpreter: ctx['interpreter'],
+            stage: 'interpretation',
           },
           email: {
             from,

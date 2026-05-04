@@ -22,13 +22,13 @@
   ],
   "packageManager": "npm@11.11.0",
   "engines": {
-    "node": "^20 || ^22 || ^24"
+    "node": "^22 || ^24"
   },
   "devDependencies": {
     "@cbnventures/nova": "0.17.0",
     "jiti": "2.6.1",
     "prompts": "2.4.2",
-    "turbo": "2.8.12"
+    "turbo": "2.9.8"
   },
   "overrides": {
     "webpack": ">=5.95.0 <5.106.0"

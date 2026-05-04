@@ -1,5 +1,10 @@
 # ntfy-reverse-proxy
 
+## 2.0.4 - 2026-05-04
+
+### UPDATED
+- error_topic notifications now include the unauthorized request body (parsed as JSON or text, never both), structured Zod validation issues, error stack traces, response status, masked authorization header, and pipeline stage — enough detail to debug incoming traffic without keeping wrangler tail open
+
 ## 2.0.3 - 2026-04-23
 
 ### UPDATED
