@@ -3,10 +3,18 @@ import { describe, expect, it } from 'vitest';
 import { split } from '../../../worker/pipeline/split.js';
 
 import type {
-  TestsWorkerPipelineSplitBody,
-  TestsWorkerPipelineSplitHeaders,
-  TestsWorkerPipelineSplitLongBody,
-  TestsWorkerPipelineSplitResult,
+  Tests_Worker_Pipeline_Split_Split_AddsPartNumbersToTitle_LongBody,
+  Tests_Worker_Pipeline_Split_Split_AddsPartNumbersToTitle_Result,
+  Tests_Worker_Pipeline_Split_Split_CreatesTitleIfNoneExistsWhenSplitting_LongBody,
+  Tests_Worker_Pipeline_Split_Split_CreatesTitleIfNoneExistsWhenSplitting_Result,
+  Tests_Worker_Pipeline_Split_Split_DoesNotSplitOnMultiByteCharacterBoundaries_Body,
+  Tests_Worker_Pipeline_Split_Split_DoesNotSplitOnMultiByteCharacterBoundaries_Result,
+  Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_Headers,
+  Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_LongBody,
+  Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_Result,
+  Tests_Worker_Pipeline_Split_Split_ReturnsSingleMessageWhenUnderLimit_Result,
+  Tests_Worker_Pipeline_Split_Split_SplitsMessageExceeding4000Bytes_LongBody,
+  Tests_Worker_Pipeline_Split_Split_SplitsMessageExceeding4000Bytes_Result,
 } from '../../../types/tests/worker/pipeline/split.test.d.ts';
 
 /**
@@ -16,7 +24,7 @@ import type {
  */
 describe('split', () => {
   it('returns single message when under limit', () => {
-    const result: TestsWorkerPipelineSplitResult = split('Short message', { 'X-Title': 'Test' });
+    const result: Tests_Worker_Pipeline_Split_Split_ReturnsSingleMessageWhenUnderLimit_Result = split('Short message', { 'X-Title': 'Test' });
 
     expect(result).toHaveLength(1);
 
@@ -26,8 +34,8 @@ describe('split', () => {
   });
 
   it('splits message exceeding ~4000 bytes', () => {
-    const longBody: TestsWorkerPipelineSplitLongBody = 'A'.repeat(5000);
-    const result: TestsWorkerPipelineSplitResult = split(longBody, { 'X-Title': 'Test' });
+    const longBody: Tests_Worker_Pipeline_Split_Split_SplitsMessageExceeding4000Bytes_LongBody = 'A'.repeat(5000);
+    const result: Tests_Worker_Pipeline_Split_Split_SplitsMessageExceeding4000Bytes_Result = split(longBody, { 'X-Title': 'Test' });
 
     expect(result.length).toBeGreaterThan(1);
 
@@ -35,8 +43,8 @@ describe('split', () => {
   });
 
   it('adds part numbers to title', () => {
-    const longBody: TestsWorkerPipelineSplitLongBody = 'A'.repeat(5000);
-    const result: TestsWorkerPipelineSplitResult = split(longBody, { 'X-Title': 'Test' });
+    const longBody: Tests_Worker_Pipeline_Split_Split_AddsPartNumbersToTitle_LongBody = 'A'.repeat(5000);
+    const result: Tests_Worker_Pipeline_Split_Split_AddsPartNumbersToTitle_Result = split(longBody, { 'X-Title': 'Test' });
 
     expect(result[0]!['headers']['X-Title']).toContain('(1/');
 
@@ -46,11 +54,13 @@ describe('split', () => {
   });
 
   it('preserves all headers on each part', () => {
-    const longBody: TestsWorkerPipelineSplitLongBody = 'A'.repeat(5000);
-    const headers: TestsWorkerPipelineSplitHeaders = {
-      'X-Title': 'Test', 'X-Tags': 'important', 'X-Priority': '4',
+    const longBody: Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_LongBody = 'A'.repeat(5000);
+    const headers: Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_Headers = {
+      'X-Title': 'Test',
+      'X-Tags': 'important',
+      'X-Priority': '4',
     };
-    const result: TestsWorkerPipelineSplitResult = split(longBody, headers);
+    const result: Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_Result = split(longBody, headers);
 
     for (const part of result) {
       expect(part['headers']['X-Tags']).toBe('important');
@@ -62,8 +72,8 @@ describe('split', () => {
   });
 
   it('does not split on multi-byte character boundaries', () => {
-    const body: TestsWorkerPipelineSplitBody = 'Hello '.repeat(500);
-    const result: TestsWorkerPipelineSplitResult = split(body, { 'X-Title': 'Emoji' });
+    const body: Tests_Worker_Pipeline_Split_Split_DoesNotSplitOnMultiByteCharacterBoundaries_Body = 'Hello '.repeat(500);
+    const result: Tests_Worker_Pipeline_Split_Split_DoesNotSplitOnMultiByteCharacterBoundaries_Result = split(body, { 'X-Title': 'Emoji' });
 
     for (const part of result) {
       expect(() => new TextEncoder().encode(part['body'])).not.toThrow();
@@ -73,8 +83,8 @@ describe('split', () => {
   });
 
   it('creates title if none exists when splitting', () => {
-    const longBody: TestsWorkerPipelineSplitLongBody = 'A'.repeat(5000);
-    const result: TestsWorkerPipelineSplitResult = split(longBody, {});
+    const longBody: Tests_Worker_Pipeline_Split_Split_CreatesTitleIfNoneExistsWhenSplitting_LongBody = 'A'.repeat(5000);
+    const result: Tests_Worker_Pipeline_Split_Split_CreatesTitleIfNoneExistsWhenSplitting_Result = split(longBody, {});
 
     expect(result[0]!['headers']['X-Title']).toContain('(1/');
 

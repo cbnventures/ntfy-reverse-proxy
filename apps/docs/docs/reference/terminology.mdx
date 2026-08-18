@@ -1,0 +1,120 @@
+---
+id: terminology
+title: Terminology
+description: Define Context, Interpreter, Pipeline, delivery modes, and the ntfy and Cloudflare terms used throughout Reverse Proxy for ntfy documentation.
+sidebar_position: 6
+keywords:
+  - ntfy reverse proxy
+  - glossary
+  - context
+  - interpreter
+  - pipeline
+  - delivery modes
+  - cloudflare workers
+tags:
+  - reference
+  - glossary
+  - terminology
+---
+
+Define the Context, Interpreter, Pipeline, and other domain-specific terms that appear throughout the Reverse Proxy for ntfy documentation.
+
+## Worker
+
+The Worker is the Cloudflare-hosted entry point that receives incoming HTTP webhooks and emails and runs them through the pipeline. It is one of two runtimes in the project — the CLI is the other, managing `config.json` locally instead of processing traffic.
+
+## Pipeline
+
+The pipeline is the ordered sequence of stages a request or email passes through inside the Worker, grouped into Ingress, Processing, and Delivery phases. The HTTP pipeline runs 9 stages (Receive, Route, Authenticate, Parse, Interpret, Format, Split, Send, Respond); the email pipeline runs 8, replacing Receive with Parse Email and Respond with Log.
+
+## Context
+
+A context is a notification source configuration that defines a subdomain or email address, an interpreter, a topic, a server list, and a delivery mode. Each webhook source or email sender maps to one context, and a context is either the HTTP type or the email type.
+
+## Interpreter
+
+An interpreter is a module that transforms a raw webhook payload or email into a standardized notification object with a title, body, priority, tags, and other ntfy fields. The project maintains built-in interpreters for Statuspage.io, Synology DSM, Seerr, pfSense, and UniFi, plus generic plain-text and ntfy-JSON modes.
+
+## Notification Object
+
+The notification object is the standardized result an interpreter returns, carrying fields like title, body, priority, tags, icon, actions, and markdown. An optional attachment and its filename travel alongside the notification object at the same level, not nested inside it.
+
+## Notification Suppression
+
+Notification suppression occurs when an interpreter returns `null` instead of a notification object, intentionally dropping the event. An HTTP context responds with an `"ignored"` status, while an email context drops the message with no reply to the sender.
+
+## Server
+
+A server is an ntfy instance defined by a name, a URL, and an authentication token. The config defines each server once, and any number of contexts can reference it by name.
+
+## Primary Server
+
+The primary server is the preferred ntfy server for a context, and `send-once` tries it first. If it is unreachable, `send-once` tries the remaining servers in the context's list in order until one succeeds.
+
+## send-once
+
+`send-once` is a delivery mode that tries the primary server first, then falls through the remaining servers in order, stopping at the first success. When a fallback server ends up delivering the notification, the proxy prepends a warning to the message body noting that the primary was unreachable.
+
+## send-all
+
+`send-all` is a delivery mode that sends the notification to every server in the context's list at the same time, with no failover. Every server gets contacted regardless of whether the others succeed or fail.
+
+## Smart Split
+
+Smart split automatically breaks a notification body exceeding 4000 UTF-8 bytes into numbered message parts, each labeled with a suffix like "(1/3)". It always respects UTF-8 character boundaries, so a multi-byte character never gets split mid-sequence.
+
+## Attachment
+
+An attachment is a binary file, such as an image, delivered alongside a notification. The proxy sends it in two stages per server — a POST carries the text message body, then a PUT carries the binary attachment and its filename header.
+
+## ntfy
+
+[ntfy](https://ntfy.sh) is the open-source push notification service this project delivers formatted messages to. Reverse Proxy for ntfy does not replace ntfy — it sits in front of one or more self-hosted ntfy servers and prepares notifications for them.
+
+## Topic
+
+A topic is the ntfy channel a context publishes its notifications to. This differs from a context's error topic, which only receives interpreter and authentication failures, never the notification itself.
+
+## ntfy Headers
+
+ntfy headers are the 8 outgoing HTTP headers the proxy sets from the interpreter's notification object: `X-Title`, `X-Priority`, `X-Tags`, `X-Markdown`, `X-Icon`, `X-Actions`, `X-Attach`, and `X-Filename`. The proxy does not forward other ntfy-supported headers, like `X-Click` and `X-Delay`, or any headers from the incoming request.
+
+## Error Topic
+
+An error topic is an optional ntfy topic where the proxy forwards authentication and interpretation failures as JSON debug attachments, so a failure surfaces instead of vanishing silently. The `error_events` setting can narrow this down to just one failure category.
+
+## Base Domain
+
+The base domain is the single domain, such as `ntfy.example.com`, under which every context subdomain registers as a Cloudflare custom domain route. Global settings define it once, and every context in the config shares it.
+
+## config.json
+
+`config.json` is the single file holding the `settings`, `servers`, and `contexts` sections that the Worker reads at runtime as injected environment variables. The CLI manages this file and keeps it gitignored — only the `config.sample.json` template gets committed.
+
+## Debug Mode
+
+Debug mode is the `show_response_output` setting, and turning it on adds context, interpreter, and per-server delivery details to responses and to the landing page's collapsible section. Sensitive values, like server tokens and URLs, always stay masked with `***` in that output, even with debug mode on.
+
+## Landing Page
+
+The landing page is the HTML page a context returns on GET requests, showing operational status with "Powered by ntfy-reverse-proxy" branding. With debug mode enabled, it also includes a collapsible section with the masked configuration.
+
+## Cloudflare Email Routing
+
+Cloudflare Email Routing is the Cloudflare feature that forwards email sent to a context's address, like `pfsense@ntfy.example.com`, to the Worker for processing. The `deploy` command configures its routing rules automatically for every email context.
+
+## KV Namespace
+
+A KV namespace is a Cloudflare Workers KV store the Worker uses to track Statuspage.io incident and component state for deduplication, and entries expire after 24 hours. The `deploy` command creates and binds this namespace automatically; without one, the Worker silently ignores component-only updates.
+
+## wrangler.toml
+
+`wrangler.toml` is the Cloudflare Workers configuration file the CLI generates from `config.json`, containing routes, environment variables, and KV bindings. It stays gitignored because it embeds serialized config values, and Wrangler (Cloudflare's deployment CLI) reads it to deploy the Worker.
+
+## Custom Domain Route
+
+A custom domain route is a Cloudflare Workers route configured with `custom_domain = true`, which treats the first label of the hostname as the routable subdomain. This lets the Worker match a request's subdomain directly against a context ID.
+
+## Bot Fight Mode
+
+Bot Fight Mode is a Cloudflare feature that can block automated requests, including legitimate webhooks, with a 403 response. Pro plans and above can selectively skip its Super Bot Fight Mode variant with a WAF rule, but the free plan can only turn it off entirely.

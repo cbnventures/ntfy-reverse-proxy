@@ -1,7 +1,7 @@
 ---
 id: synology
 title: Synology
-description: Format Synology DSM webhook notifications with automatic severity detection and priority inference.
+description: Format Synology DSM webhook notifications with automatic hostname extraction, severity-based and keyword-based priority inference, and DSM action buttons.
 sidebar_position: 7
 keywords:
   - ntfy reverse proxy
@@ -14,15 +14,17 @@ tags:
   - synology
 ---
 
+import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
+
 Process webhook notifications from Synology DSM with automatic device identification, severity detection, and priority inference.
 
 ## Input Handling
 
-For string and binary inputs, the interpreter returns a simple notification with title `Synology DSM`, priority 3, and the tag `synology`. The full parsing pipeline only runs for JSON object inputs.
+For string and binary inputs, the <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> returns a simple notification with title `Synology DSM`, priority 3, and the tag `synology`. The full parsing pipeline only runs for JSON object inputs.
 
 ## Payload Detection
 
-When the input is a JSON object, the interpreter tries multiple field names to accommodate Synology's variable payload format:
+When the input is a JSON object, the <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> tries multiple field names to accommodate Synology's variable payload format:
 
 - **Message body**: Checks `text`, `message`, `body`, `content`, `description` (in order).
 - **Hostname**: Checks `prefix` field (format: `hostname | date time`), then `hostname`, `host`, `device`.

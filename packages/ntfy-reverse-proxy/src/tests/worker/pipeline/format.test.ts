@@ -3,10 +3,14 @@ import { describe, expect, it } from 'vitest';
 import { format } from '../../../worker/pipeline/format.js';
 
 import type {
-  TestsWorkerPipelineFormatBaseNotification,
-  TestsWorkerPipelineFormatCfProperties,
-  TestsWorkerPipelineFormatNotificationWithOptionals,
-  TestsWorkerPipelineFormatResult,
+  Tests_Worker_Pipeline_Format_BaseNotification,
+  Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_CfProperties,
+  Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_Result,
+  Tests_Worker_Pipeline_Format_Format_DoesNotIncludeVisitorInfoWhenDisabled_Result,
+  Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_Notification,
+  Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_Result,
+  Tests_Worker_Pipeline_Format_Format_OmitsUndefinedOptionalHeaders_Result,
+  Tests_Worker_Pipeline_Format_Format_ReturnsFormattedBodyAndNtfyHeaders_Result,
 } from '../../../types/tests/worker/pipeline/format.test.d.ts';
 
 /**
@@ -15,7 +19,7 @@ import type {
  * @since 2.0.0
  */
 describe('format', () => {
-  const baseNotification: TestsWorkerPipelineFormatBaseNotification = {
+  const baseNotification: Tests_Worker_Pipeline_Format_BaseNotification = {
     title: 'Test Title',
     body: 'Test body message',
     priority: 3,
@@ -24,7 +28,7 @@ describe('format', () => {
   };
 
   it('returns formatted body and ntfy headers', () => {
-    const result: TestsWorkerPipelineFormatResult = format(baseNotification, { showVisitorInfo: false });
+    const result: Tests_Worker_Pipeline_Format_Format_ReturnsFormattedBodyAndNtfyHeaders_Result = format(baseNotification, { showVisitorInfo: false });
 
     expect(result['body']).toBe('Test body message');
 
@@ -40,7 +44,7 @@ describe('format', () => {
   });
 
   it('appends visitor info when enabled', () => {
-    const cfProperties: TestsWorkerPipelineFormatCfProperties = {
+    const cfProperties: Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_CfProperties = {
       country: 'US',
       region: 'California',
       city: 'San Francisco',
@@ -51,7 +55,7 @@ describe('format', () => {
       asOrganization: 'Cloudflare Inc',
     };
 
-    const result: TestsWorkerPipelineFormatResult = format(baseNotification, {
+    const result: Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_Result = format(baseNotification, {
       showVisitorInfo: true,
       visitorIp: '1.2.3.4',
       cfProperties,
@@ -65,7 +69,7 @@ describe('format', () => {
   });
 
   it('does not include visitor info when disabled', () => {
-    const result: TestsWorkerPipelineFormatResult = format(baseNotification, { showVisitorInfo: false });
+    const result: Tests_Worker_Pipeline_Format_Format_DoesNotIncludeVisitorInfoWhenDisabled_Result = format(baseNotification, { showVisitorInfo: false });
 
     expect(result['body']).not.toContain('Visitor');
 
@@ -73,7 +77,7 @@ describe('format', () => {
   });
 
   it('maps optional notification fields to headers', () => {
-    const notification: TestsWorkerPipelineFormatNotificationWithOptionals = {
+    const notification: Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_Notification = {
       title: 'Test Title',
       body: 'Test body message',
       priority: 3,
@@ -83,7 +87,7 @@ describe('format', () => {
       actions: 'view, Open, https://example.com',
     };
 
-    const result: TestsWorkerPipelineFormatResult = format(notification, { showVisitorInfo: false });
+    const result: Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_Result = format(notification, { showVisitorInfo: false });
 
     expect(result['headers']['X-Icon']).toBe('https://example.com/icon.png');
 
@@ -93,7 +97,7 @@ describe('format', () => {
   });
 
   it('omits undefined optional headers', () => {
-    const result: TestsWorkerPipelineFormatResult = format(baseNotification, { showVisitorInfo: false });
+    const result: Tests_Worker_Pipeline_Format_Format_OmitsUndefinedOptionalHeaders_Result = format(baseNotification, { showVisitorInfo: false });
 
     expect(result['headers']['X-Icon']).toBeUndefined();
 

@@ -3,15 +3,27 @@ import { describe, expect, it } from 'vitest';
 import { landingPage } from '../../../worker/landing/page.js';
 
 import type {
-  TestsWorkerLandingPageContentType,
-  TestsWorkerLandingPageContextsStart,
-  TestsWorkerLandingPageDebugConfig,
-  TestsWorkerLandingPageHtml,
-  TestsWorkerLandingPageIdIndex,
-  TestsWorkerLandingPageMockConfig,
-  TestsWorkerLandingPageNameIndex,
-  TestsWorkerLandingPageResponse,
-  TestsWorkerLandingPageTypeIndex,
+  Tests_Worker_Landing_Page_LandingPage_DoesNotShowDebugInfoWhenShowResponseOutputIsFalse_Html,
+  Tests_Worker_Landing_Page_LandingPage_DoesNotShowDebugInfoWhenShowResponseOutputIsFalse_Response,
+  Tests_Worker_Landing_Page_LandingPage_IncludesGitHubLink_Html,
+  Tests_Worker_Landing_Page_LandingPage_IncludesGitHubLink_Response,
+  Tests_Worker_Landing_Page_LandingPage_ReturnsHTMLWithBranding_ContentType,
+  Tests_Worker_Landing_Page_LandingPage_ReturnsHTMLWithBranding_Html,
+  Tests_Worker_Landing_Page_LandingPage_ReturnsHTMLWithBranding_Response,
+  Tests_Worker_Landing_Page_LandingPage_ShowsFullNameInDebugOutput_DebugConfig,
+  Tests_Worker_Landing_Page_LandingPage_ShowsFullNameInDebugOutput_Html,
+  Tests_Worker_Landing_Page_LandingPage_ShowsFullNameInDebugOutput_Response,
+  Tests_Worker_Landing_Page_LandingPage_ShowsIdNameTypeOrderingInDebugOutput_ContextsStart,
+  Tests_Worker_Landing_Page_LandingPage_ShowsIdNameTypeOrderingInDebugOutput_DebugConfig,
+  Tests_Worker_Landing_Page_LandingPage_ShowsIdNameTypeOrderingInDebugOutput_Html,
+  Tests_Worker_Landing_Page_LandingPage_ShowsIdNameTypeOrderingInDebugOutput_IdIndex,
+  Tests_Worker_Landing_Page_LandingPage_ShowsIdNameTypeOrderingInDebugOutput_NameIndex,
+  Tests_Worker_Landing_Page_LandingPage_ShowsIdNameTypeOrderingInDebugOutput_Response,
+  Tests_Worker_Landing_Page_LandingPage_ShowsIdNameTypeOrderingInDebugOutput_TypeIndex,
+  Tests_Worker_Landing_Page_LandingPage_ShowsMaskedDebugInfoWhenShowResponseOutputIsTrue_DebugConfig,
+  Tests_Worker_Landing_Page_LandingPage_ShowsMaskedDebugInfoWhenShowResponseOutputIsTrue_Html,
+  Tests_Worker_Landing_Page_LandingPage_ShowsMaskedDebugInfoWhenShowResponseOutputIsTrue_Response,
+  Tests_Worker_Landing_Page_MockConfig,
 } from '../../../types/tests/worker/landing/page.test.d.ts';
 
 /**
@@ -19,12 +31,16 @@ import type {
  *
  * @since 2.0.0
  */
-const mockConfig: TestsWorkerLandingPageMockConfig = {
+const mockConfig: Tests_Worker_Landing_Page_MockConfig = {
   settings: {
-    worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+    worker_name: 'test-worker',
+    base_domain: 'ntfy.example.com',
+    show_response_output: false,
   },
   servers: [{
-    name: 'alpha', server: 'https://ntfy.alpha.example.com', token: 'tk_abc123',
+    name: 'alpha',
+    server: 'https://ntfy.alpha.example.com',
+    token: 'tk_abc123',
   }],
   contexts: [{
     id: 'abcdefghijklmnopqrst',
@@ -47,10 +63,10 @@ const mockConfig: TestsWorkerLandingPageMockConfig = {
  */
 describe('landingPage', () => {
   it('returns HTML with branding', async () => {
-    const response: TestsWorkerLandingPageResponse = landingPage(mockConfig);
-    const html: TestsWorkerLandingPageHtml = await response.text();
+    const response: Tests_Worker_Landing_Page_LandingPage_ReturnsHTMLWithBranding_Response = landingPage(mockConfig);
+    const html: Tests_Worker_Landing_Page_LandingPage_ReturnsHTMLWithBranding_Html = await response.text();
 
-    const contentType: TestsWorkerLandingPageContentType = response.headers.get('content-type');
+    const contentType: Tests_Worker_Landing_Page_LandingPage_ReturnsHTMLWithBranding_ContentType = response.headers.get('content-type');
 
     expect(contentType).toContain('text/html');
 
@@ -62,8 +78,8 @@ describe('landingPage', () => {
   });
 
   it('includes GitHub link', async () => {
-    const response: TestsWorkerLandingPageResponse = landingPage(mockConfig);
-    const html: TestsWorkerLandingPageHtml = await response.text();
+    const response: Tests_Worker_Landing_Page_LandingPage_IncludesGitHubLink_Response = landingPage(mockConfig);
+    const html: Tests_Worker_Landing_Page_LandingPage_IncludesGitHubLink_Html = await response.text();
 
     expect(html).toContain('github.com/cbnventures/ntfy-reverse-proxy');
 
@@ -71,8 +87,8 @@ describe('landingPage', () => {
   });
 
   it('does not show debug info when show_response_output is false', async () => {
-    const response: TestsWorkerLandingPageResponse = landingPage(mockConfig);
-    const html: TestsWorkerLandingPageHtml = await response.text();
+    const response: Tests_Worker_Landing_Page_LandingPage_DoesNotShowDebugInfoWhenShowResponseOutputIsFalse_Response = landingPage(mockConfig);
+    const html: Tests_Worker_Landing_Page_LandingPage_DoesNotShowDebugInfoWhenShowResponseOutputIsFalse_Html = await response.text();
 
     expect(html).not.toContain('tk_abc123');
 
@@ -82,16 +98,18 @@ describe('landingPage', () => {
   });
 
   it('shows masked debug info when show_response_output is true', async () => {
-    const debugConfig: TestsWorkerLandingPageDebugConfig = {
+    const debugConfig: Tests_Worker_Landing_Page_LandingPage_ShowsMaskedDebugInfoWhenShowResponseOutputIsTrue_DebugConfig = {
       settings: {
-        worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: true,
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: true,
       },
       servers: mockConfig['servers'],
       contexts: mockConfig['contexts'],
     };
 
-    const response: TestsWorkerLandingPageResponse = landingPage(debugConfig);
-    const html: TestsWorkerLandingPageHtml = await response.text();
+    const response: Tests_Worker_Landing_Page_LandingPage_ShowsMaskedDebugInfoWhenShowResponseOutputIsTrue_Response = landingPage(debugConfig);
+    const html: Tests_Worker_Landing_Page_LandingPage_ShowsMaskedDebugInfoWhenShowResponseOutputIsTrue_Html = await response.text();
 
     expect(html).not.toContain('ntfy.alpha.example.com');
 
@@ -107,16 +125,18 @@ describe('landingPage', () => {
   });
 
   it('shows full name in debug output', async () => {
-    const debugConfig: TestsWorkerLandingPageDebugConfig = {
+    const debugConfig: Tests_Worker_Landing_Page_LandingPage_ShowsFullNameInDebugOutput_DebugConfig = {
       settings: {
-        worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: true,
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: true,
       },
       servers: mockConfig['servers'],
       contexts: mockConfig['contexts'],
     };
 
-    const response: TestsWorkerLandingPageResponse = landingPage(debugConfig);
-    const html: TestsWorkerLandingPageHtml = await response.text();
+    const response: Tests_Worker_Landing_Page_LandingPage_ShowsFullNameInDebugOutput_Response = landingPage(debugConfig);
+    const html: Tests_Worker_Landing_Page_LandingPage_ShowsFullNameInDebugOutput_Html = await response.text();
 
     expect(html).toContain('homebridge');
 
@@ -124,20 +144,22 @@ describe('landingPage', () => {
   });
 
   it('shows id, name, type ordering in debug output', async () => {
-    const debugConfig: TestsWorkerLandingPageDebugConfig = {
+    const debugConfig: Tests_Worker_Landing_Page_LandingPage_ShowsIdNameTypeOrderingInDebugOutput_DebugConfig = {
       settings: {
-        worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: true,
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: true,
       },
       servers: mockConfig['servers'],
       contexts: mockConfig['contexts'],
     };
 
-    const response: TestsWorkerLandingPageResponse = landingPage(debugConfig);
-    const html: TestsWorkerLandingPageHtml = await response.text();
-    const contextsStart: TestsWorkerLandingPageContextsStart = html.indexOf('&quot;contexts&quot;');
-    const idIndex: TestsWorkerLandingPageIdIndex = html.indexOf('&quot;id&quot;', contextsStart);
-    const nameIndex: TestsWorkerLandingPageNameIndex = html.indexOf('&quot;name&quot;', contextsStart);
-    const typeIndex: TestsWorkerLandingPageTypeIndex = html.indexOf('&quot;type&quot;', contextsStart);
+    const response: Tests_Worker_Landing_Page_LandingPage_ShowsIdNameTypeOrderingInDebugOutput_Response = landingPage(debugConfig);
+    const html: Tests_Worker_Landing_Page_LandingPage_ShowsIdNameTypeOrderingInDebugOutput_Html = await response.text();
+    const contextsStart: Tests_Worker_Landing_Page_LandingPage_ShowsIdNameTypeOrderingInDebugOutput_ContextsStart = html.indexOf('&quot;contexts&quot;');
+    const idIndex: Tests_Worker_Landing_Page_LandingPage_ShowsIdNameTypeOrderingInDebugOutput_IdIndex = html.indexOf('&quot;id&quot;', contextsStart);
+    const nameIndex: Tests_Worker_Landing_Page_LandingPage_ShowsIdNameTypeOrderingInDebugOutput_NameIndex = html.indexOf('&quot;name&quot;', contextsStart);
+    const typeIndex: Tests_Worker_Landing_Page_LandingPage_ShowsIdNameTypeOrderingInDebugOutput_TypeIndex = html.indexOf('&quot;type&quot;', contextsStart);
 
     expect(idIndex).toBeLessThan(nameIndex);
 

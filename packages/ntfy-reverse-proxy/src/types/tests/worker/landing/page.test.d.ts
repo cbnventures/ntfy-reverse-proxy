@@ -1,55 +1,78 @@
+import type { Lib_Schema_ConfigSchema } from '../../../lib/schema.d.ts';
+
 /**
  * Tests - Worker - Landing - Page.
  *
  * @since 2.0.0
  */
-export type TestsWorkerLandingPageMockConfig = {
-  settings: TestsWorkerLandingPageMockSettings;
-  servers: TestsWorkerLandingPageMockServer[];
-  contexts: TestsWorkerLandingPageMockContext[];
-};
+export type Tests_Worker_Landing_Page_MockConfig = Lib_Schema_ConfigSchema & {};
 
-export type TestsWorkerLandingPageMockSettings = {
-  worker_name: string;
-  base_domain: string;
-  show_response_output: boolean;
-};
+/**
+ * Tests - Worker - Landing - Page - Landing Page - Does Not Show Debug Info When Show Response Output Is False.
+ *
+ * @since 2.0.0
+ */
+export type Tests_Worker_Landing_Page_LandingPage_DoesNotShowDebugInfoWhenShowResponseOutputIsFalse_Response = Response;
 
-export type TestsWorkerLandingPageMockServer = {
-  name: string;
-  server: string;
-  token: string;
-};
+export type Tests_Worker_Landing_Page_LandingPage_DoesNotShowDebugInfoWhenShowResponseOutputIsFalse_Html = string;
 
-export type TestsWorkerLandingPageMockContext = {
-  id: string;
-  name: string;
-  type: 'http';
-  interpreter: 'plain-text';
-  topic: string;
-  mode: 'send-once';
-  show_visitor_info: boolean;
-  primary_server: string;
-  servers: string[];
-  token?: string | undefined;
-};
+/**
+ * Tests - Worker - Landing - Page - Landing Page - Includes GitHub Link.
+ *
+ * @since 2.0.0
+ */
+export type Tests_Worker_Landing_Page_LandingPage_IncludesGitHubLink_Response = Response;
 
-export type TestsWorkerLandingPageResponse = Response;
+export type Tests_Worker_Landing_Page_LandingPage_IncludesGitHubLink_Html = string;
 
-export type TestsWorkerLandingPageHtml = string;
+/**
+ * Tests - Worker - Landing - Page - Landing Page - Returns HTML With Branding.
+ *
+ * @since 2.0.0
+ */
+export type Tests_Worker_Landing_Page_LandingPage_ReturnsHTMLWithBranding_Response = Response;
 
-export type TestsWorkerLandingPageContentType = string | null;
+export type Tests_Worker_Landing_Page_LandingPage_ReturnsHTMLWithBranding_Html = string;
 
-export type TestsWorkerLandingPageDebugConfig = {
-  settings: TestsWorkerLandingPageMockSettings;
-  servers: TestsWorkerLandingPageMockServer[];
-  contexts: TestsWorkerLandingPageMockContext[];
-};
+export type Tests_Worker_Landing_Page_LandingPage_ReturnsHTMLWithBranding_ContentType = string | null;
 
-export type TestsWorkerLandingPageContextsStart = number;
+/**
+ * Tests - Worker - Landing - Page - Landing Page - Shows Full Name In Debug Output.
+ *
+ * @since 2.0.0
+ */
+export type Tests_Worker_Landing_Page_LandingPage_ShowsFullNameInDebugOutput_DebugConfig = Lib_Schema_ConfigSchema & {};
 
-export type TestsWorkerLandingPageIdIndex = number;
+export type Tests_Worker_Landing_Page_LandingPage_ShowsFullNameInDebugOutput_Response = Response;
 
-export type TestsWorkerLandingPageNameIndex = number;
+export type Tests_Worker_Landing_Page_LandingPage_ShowsFullNameInDebugOutput_Html = string;
 
-export type TestsWorkerLandingPageTypeIndex = number;
+/**
+ * Tests - Worker - Landing - Page - Landing Page - Shows Id Name Type Ordering In Debug Output.
+ *
+ * @since 2.0.0
+ */
+export type Tests_Worker_Landing_Page_LandingPage_ShowsIdNameTypeOrderingInDebugOutput_DebugConfig = Lib_Schema_ConfigSchema & {};
+
+export type Tests_Worker_Landing_Page_LandingPage_ShowsIdNameTypeOrderingInDebugOutput_Response = Response;
+
+export type Tests_Worker_Landing_Page_LandingPage_ShowsIdNameTypeOrderingInDebugOutput_Html = string;
+
+export type Tests_Worker_Landing_Page_LandingPage_ShowsIdNameTypeOrderingInDebugOutput_ContextsStart = number;
+
+export type Tests_Worker_Landing_Page_LandingPage_ShowsIdNameTypeOrderingInDebugOutput_IdIndex = number;
+
+export type Tests_Worker_Landing_Page_LandingPage_ShowsIdNameTypeOrderingInDebugOutput_NameIndex = number;
+
+export type Tests_Worker_Landing_Page_LandingPage_ShowsIdNameTypeOrderingInDebugOutput_TypeIndex = number;
+
+/**
+ * Tests - Worker - Landing - Page - Landing Page - Shows Masked Debug Info When Show Response Output Is True.
+ *
+ * @since 2.0.0
+ */
+export type Tests_Worker_Landing_Page_LandingPage_ShowsMaskedDebugInfoWhenShowResponseOutputIsTrue_DebugConfig = Lib_Schema_ConfigSchema & {};
+
+export type Tests_Worker_Landing_Page_LandingPage_ShowsMaskedDebugInfoWhenShowResponseOutputIsTrue_Response = Response;
+
+export type Tests_Worker_Landing_Page_LandingPage_ShowsMaskedDebugInfoWhenShowResponseOutputIsTrue_Html = string;

@@ -1,52 +1,52 @@
-import { randomBytes } from 'crypto';
+import { randomBytes } from 'node:crypto';
 
 import { LIB_REGEX_NON_ALPHANUMERIC } from '../../lib/regex.js';
 import { configSchema } from '../../lib/schema.js';
 import { loadConfig, saveConfig } from './config-io.js';
 
 import type {
-  CliCommandsContextAddContextConfig,
-  CliCommandsContextAddContextConfigPath,
-  CliCommandsContextAddContextContext,
-  CliCommandsContextAddContextCurrentContext,
-  CliCommandsContextAddContextDuplicateName,
-  CliCommandsContextAddContextExistingIds,
-  CliCommandsContextAddContextMissingServer,
-  CliCommandsContextAddContextNewId,
-  CliCommandsContextAddContextOrdered,
-  CliCommandsContextAddContextReturn,
-  CliCommandsContextAddContextServerNames,
-  CliCommandsContextEditContextConfig,
-  CliCommandsContextEditContextConfigPath,
-  CliCommandsContextEditContextExistingIds,
-  CliCommandsContextEditContextIndex,
-  CliCommandsContextEditContextMerged,
-  CliCommandsContextEditContextName,
-  CliCommandsContextEditContextNewId,
-  CliCommandsContextEditContextOrdered,
-  CliCommandsContextEditContextReturn,
-  CliCommandsContextEditContextUpdatedUpdates,
-  CliCommandsContextEditContextUpdates,
-  CliCommandsContextGenerateIdReturn,
-  CliCommandsContextGenerateRandomStringChunk,
-  CliCommandsContextGenerateRandomStringLength,
-  CliCommandsContextGenerateRandomStringLowercase,
-  CliCommandsContextGenerateRandomStringResult,
-  CliCommandsContextGenerateRandomStringReturn,
-  CliCommandsContextGenerateTokenReturn,
-  CliCommandsContextListContextsConfigPath,
-  CliCommandsContextListContextsReturn,
-  CliCommandsContextOrderContextKeysContext,
-  CliCommandsContextOrderContextKeysId,
-  CliCommandsContextOrderContextKeysName,
-  CliCommandsContextOrderContextKeysRest,
-  CliCommandsContextOrderContextKeysReturn,
-  CliCommandsContextOrderContextKeysType,
-  CliCommandsContextRemoveContextConfig,
-  CliCommandsContextRemoveContextConfigPath,
-  CliCommandsContextRemoveContextFiltered,
-  CliCommandsContextRemoveContextName,
-  CliCommandsContextRemoveContextReturn,
+  Cli_Commands_Context_AddContext_Config,
+  Cli_Commands_Context_AddContext_ConfigPath,
+  Cli_Commands_Context_AddContext_Context,
+  Cli_Commands_Context_AddContext_CurrentContext,
+  Cli_Commands_Context_AddContext_DuplicateName,
+  Cli_Commands_Context_AddContext_ExistingIds,
+  Cli_Commands_Context_AddContext_MissingServer,
+  Cli_Commands_Context_AddContext_NewId,
+  Cli_Commands_Context_AddContext_Ordered,
+  Cli_Commands_Context_AddContext_Returns,
+  Cli_Commands_Context_AddContext_ServerNames,
+  Cli_Commands_Context_EditContext_Config,
+  Cli_Commands_Context_EditContext_ConfigPath,
+  Cli_Commands_Context_EditContext_ExistingIds,
+  Cli_Commands_Context_EditContext_Index,
+  Cli_Commands_Context_EditContext_Merged,
+  Cli_Commands_Context_EditContext_Name,
+  Cli_Commands_Context_EditContext_NewId,
+  Cli_Commands_Context_EditContext_Ordered,
+  Cli_Commands_Context_EditContext_Returns,
+  Cli_Commands_Context_EditContext_UpdatedUpdates,
+  Cli_Commands_Context_EditContext_Updates,
+  Cli_Commands_Context_GenerateId_Returns,
+  Cli_Commands_Context_GenerateRandomString_Chunk,
+  Cli_Commands_Context_GenerateRandomString_Length,
+  Cli_Commands_Context_GenerateRandomString_Lowercase,
+  Cli_Commands_Context_GenerateRandomString_Result,
+  Cli_Commands_Context_GenerateRandomString_Returns,
+  Cli_Commands_Context_GenerateToken_Returns,
+  Cli_Commands_Context_ListContexts_ConfigPath,
+  Cli_Commands_Context_ListContexts_Returns,
+  Cli_Commands_Context_OrderContextKeys_Context,
+  Cli_Commands_Context_OrderContextKeys_Id,
+  Cli_Commands_Context_OrderContextKeys_Name,
+  Cli_Commands_Context_OrderContextKeys_Rest,
+  Cli_Commands_Context_OrderContextKeys_Returns,
+  Cli_Commands_Context_OrderContextKeys_Type,
+  Cli_Commands_Context_RemoveContext_Config,
+  Cli_Commands_Context_RemoveContext_ConfigPath,
+  Cli_Commands_Context_RemoveContext_Filtered,
+  Cli_Commands_Context_RemoveContext_Name,
+  Cli_Commands_Context_RemoveContext_Returns,
 } from '../../types/cli/commands/context.d.ts';
 
 /**
@@ -57,19 +57,19 @@ import type {
  *
  * @since 2.0.0
  */
-function addContext(configPath: CliCommandsContextAddContextConfigPath, context: CliCommandsContextAddContextContext): CliCommandsContextAddContextReturn {
-  const config: CliCommandsContextAddContextConfig = configSchema.parse(loadConfig(configPath));
-  const duplicateName: CliCommandsContextAddContextDuplicateName = config['contexts'].some((existingContext) => existingContext['name'] === context['name']);
+function addContext(configPath: Cli_Commands_Context_AddContext_ConfigPath, context: Cli_Commands_Context_AddContext_Context): Cli_Commands_Context_AddContext_Returns {
+  const config: Cli_Commands_Context_AddContext_Config = configSchema.parse(loadConfig(configPath));
+  const duplicateName: Cli_Commands_Context_AddContext_DuplicateName = config['contexts'].some((existingContext) => existingContext['name'] === context['name']);
 
   if (duplicateName === true) {
     throw new Error(`Context with name "${context['name']}" already exists.`);
   }
 
-  let currentContext: CliCommandsContextAddContextCurrentContext = context;
-  const existingIds: CliCommandsContextAddContextExistingIds = new Set(config['contexts'].map((existingContext) => existingContext['id']));
+  let currentContext: Cli_Commands_Context_AddContext_CurrentContext = context;
+  const existingIds: Cli_Commands_Context_AddContext_ExistingIds = new Set(config['contexts'].map((existingContext) => existingContext['id']));
 
   if (existingIds.has(currentContext['id']) === true) {
-    let newId: CliCommandsContextAddContextNewId = generateId();
+    let newId: Cli_Commands_Context_AddContext_NewId = generateId();
 
     while (existingIds.has(newId) === true) {
       newId = generateId();
@@ -81,8 +81,8 @@ function addContext(configPath: CliCommandsContextAddContextConfigPath, context:
     };
   }
 
-  const serverNames: CliCommandsContextAddContextServerNames = config['servers'].map((server) => server['name']);
-  const missingServer: CliCommandsContextAddContextMissingServer = currentContext['servers'].find((serverName) => serverNames.includes(serverName) === false);
+  const serverNames: Cli_Commands_Context_AddContext_ServerNames = config['servers'].map((server) => server['name']);
+  const missingServer: Cli_Commands_Context_AddContext_MissingServer = currentContext['servers'].find((serverName) => serverNames.includes(serverName) === false);
 
   if (missingServer !== undefined) {
     throw new Error(`Server "${missingServer}" does not exist.`);
@@ -92,7 +92,7 @@ function addContext(configPath: CliCommandsContextAddContextConfigPath, context:
     throw new Error(`Server "${currentContext['primary_server']}" does not exist.`);
   }
 
-  const ordered: CliCommandsContextAddContextOrdered = orderContextKeys(currentContext);
+  const ordered: Cli_Commands_Context_AddContext_Ordered = orderContextKeys(currentContext);
 
   config['contexts'].push(ordered);
 
@@ -109,7 +109,7 @@ function addContext(configPath: CliCommandsContextAddContextConfigPath, context:
  *
  * @since 2.0.0
  */
-function listContexts(configPath: CliCommandsContextListContextsConfigPath): CliCommandsContextListContextsReturn {
+function listContexts(configPath: Cli_Commands_Context_ListContexts_ConfigPath): Cli_Commands_Context_ListContexts_Returns {
   return configSchema.parse(loadConfig(configPath))['contexts'];
 }
 
@@ -121,19 +121,19 @@ function listContexts(configPath: CliCommandsContextListContextsConfigPath): Cli
  *
  * @since 2.0.0
  */
-function editContext(configPath: CliCommandsContextEditContextConfigPath, name: CliCommandsContextEditContextName, updates: CliCommandsContextEditContextUpdates): CliCommandsContextEditContextReturn {
-  const config: CliCommandsContextEditContextConfig = configSchema.parse(loadConfig(configPath));
-  const index: CliCommandsContextEditContextIndex = config['contexts'].findIndex((context) => context['name'] === name);
+function editContext(configPath: Cli_Commands_Context_EditContext_ConfigPath, name: Cli_Commands_Context_EditContext_Name, updates: Cli_Commands_Context_EditContext_Updates): Cli_Commands_Context_EditContext_Returns {
+  const config: Cli_Commands_Context_EditContext_Config = configSchema.parse(loadConfig(configPath));
+  const index: Cli_Commands_Context_EditContext_Index = config['contexts'].findIndex((context) => context['name'] === name);
 
   if (index === -1) {
     throw new Error(`Context with name "${name}" not found.`);
   }
 
-  let updatedUpdates: CliCommandsContextEditContextUpdatedUpdates = updates;
+  let updatedUpdates: Cli_Commands_Context_EditContext_UpdatedUpdates = updates;
 
   if (updatedUpdates['id'] !== undefined) {
-    let newId: CliCommandsContextEditContextNewId = updatedUpdates['id'];
-    const existingIds: CliCommandsContextEditContextExistingIds = new Set(
+    let newId: Cli_Commands_Context_EditContext_NewId = updatedUpdates['id'];
+    const existingIds: Cli_Commands_Context_EditContext_ExistingIds = new Set(
       config['contexts'].filter((_context, i) => i !== index).map((context) => context['id']),
     );
 
@@ -151,12 +151,12 @@ function editContext(configPath: CliCommandsContextEditContextConfigPath, name: 
     };
   }
 
-  const merged: CliCommandsContextEditContextMerged = {
+  const merged: Cli_Commands_Context_EditContext_Merged = {
     ...config['contexts'][index],
     ...updatedUpdates,
-  } as CliCommandsContextEditContextMerged;
+  } as Cli_Commands_Context_EditContext_Merged;
 
-  const ordered: CliCommandsContextEditContextOrdered = orderContextKeys(merged);
+  const ordered: Cli_Commands_Context_EditContext_Ordered = orderContextKeys(merged);
 
   Reflect.set(config['contexts'], index, ordered);
 
@@ -173,9 +173,9 @@ function editContext(configPath: CliCommandsContextEditContextConfigPath, name: 
  *
  * @since 2.0.0
  */
-function removeContext(configPath: CliCommandsContextRemoveContextConfigPath, name: CliCommandsContextRemoveContextName): CliCommandsContextRemoveContextReturn {
-  const config: CliCommandsContextRemoveContextConfig = configSchema.parse(loadConfig(configPath));
-  const filtered: CliCommandsContextRemoveContextFiltered = config['contexts'].filter((context) => context['name'] !== name);
+function removeContext(configPath: Cli_Commands_Context_RemoveContext_ConfigPath, name: Cli_Commands_Context_RemoveContext_Name): Cli_Commands_Context_RemoveContext_Returns {
+  const config: Cli_Commands_Context_RemoveContext_Config = configSchema.parse(loadConfig(configPath));
+  const filtered: Cli_Commands_Context_RemoveContext_Filtered = config['contexts'].filter((context) => context['name'] !== name);
 
   Reflect.set(config, 'contexts', filtered);
 
@@ -192,11 +192,11 @@ function removeContext(configPath: CliCommandsContextRemoveContextConfigPath, na
  *
  * @since 2.0.0
  */
-function orderContextKeys(context: CliCommandsContextOrderContextKeysContext): CliCommandsContextOrderContextKeysReturn {
-  const type: CliCommandsContextOrderContextKeysType = context['type'];
-  const name: CliCommandsContextOrderContextKeysName = context['name'];
-  const id: CliCommandsContextOrderContextKeysId = context['id'];
-  const rest: CliCommandsContextOrderContextKeysRest = {
+function orderContextKeys(context: Cli_Commands_Context_OrderContextKeys_Context): Cli_Commands_Context_OrderContextKeys_Returns {
+  const type: Cli_Commands_Context_OrderContextKeys_Type = context['type'];
+  const name: Cli_Commands_Context_OrderContextKeys_Name = context['name'];
+  const id: Cli_Commands_Context_OrderContextKeys_Id = context['id'];
+  const rest: Cli_Commands_Context_OrderContextKeys_Rest = {
     ...context,
   };
 
@@ -209,7 +209,7 @@ function orderContextKeys(context: CliCommandsContextOrderContextKeysContext): C
     name,
     id,
     ...rest,
-  } as CliCommandsContextOrderContextKeysReturn;
+  } as Cli_Commands_Context_OrderContextKeys_Returns;
 }
 
 /**
@@ -220,11 +220,11 @@ function orderContextKeys(context: CliCommandsContextOrderContextKeysContext): C
  *
  * @since 2.0.0
  */
-function generateRandomString(length: CliCommandsContextGenerateRandomStringLength, lowercase: CliCommandsContextGenerateRandomStringLowercase = false): CliCommandsContextGenerateRandomStringReturn {
-  let result: CliCommandsContextGenerateRandomStringResult = '';
+function generateRandomString(length: Cli_Commands_Context_GenerateRandomString_Length, lowercase: Cli_Commands_Context_GenerateRandomString_Lowercase = false): Cli_Commands_Context_GenerateRandomString_Returns {
+  let result: Cli_Commands_Context_GenerateRandomString_Result = '';
 
   while (result['length'] < length) {
-    const chunk: CliCommandsContextGenerateRandomStringChunk = randomBytes(48).toString('base64').replace(new RegExp(LIB_REGEX_NON_ALPHANUMERIC, 'g'), '');
+    const chunk: Cli_Commands_Context_GenerateRandomString_Chunk = randomBytes(48).toString('base64').replace(new RegExp(LIB_REGEX_NON_ALPHANUMERIC, 'g'), '');
 
     result += (lowercase === true) ? chunk.toLowerCase() : chunk;
   }
@@ -240,7 +240,7 @@ function generateRandomString(length: CliCommandsContextGenerateRandomStringLeng
  *
  * @since 2.0.0
  */
-function generateId(): CliCommandsContextGenerateIdReturn {
+function generateId(): Cli_Commands_Context_GenerateId_Returns {
   return generateRandomString(20, true);
 }
 
@@ -252,7 +252,7 @@ function generateId(): CliCommandsContextGenerateIdReturn {
  *
  * @since 2.0.0
  */
-function generateToken(): CliCommandsContextGenerateTokenReturn {
+function generateToken(): Cli_Commands_Context_GenerateToken_Returns {
   return generateRandomString(64);
 }
 

@@ -1,16 +1,16 @@
 import type {
-  WorkerPipelineFormatBody,
-  WorkerPipelineFormatBoldFn,
-  WorkerPipelineFormatCf,
-  WorkerPipelineFormatHeaders,
-  WorkerPipelineFormatIp,
-  WorkerPipelineFormatIsMarkdown,
-  WorkerPipelineFormatLines,
-  WorkerPipelineFormatOptions,
-  WorkerPipelineFormatResult,
-  WorkerPipelineFormatSeparator,
+  Worker_Pipeline_Format_Body,
+  Worker_Pipeline_Format_Cf,
+  Worker_Pipeline_Format_Format_Bold_Bold,
+  Worker_Pipeline_Format_Headers,
+  Worker_Pipeline_Format_Ip,
+  Worker_Pipeline_Format_IsMarkdown,
+  Worker_Pipeline_Format_Lines,
+  Worker_Pipeline_Format_Notification,
+  Worker_Pipeline_Format_Options,
+  Worker_Pipeline_Format_Returns,
+  Worker_Pipeline_Format_Separator,
 } from '../../types/worker/pipeline/format.d.ts';
-import type { WorkerPipelineInterpretNotificationObject } from '../../types/worker/pipeline/interpret.d.ts';
 
 /**
  * Worker - Pipeline - Format.
@@ -20,17 +20,31 @@ import type { WorkerPipelineInterpretNotificationObject } from '../../types/work
  *
  * @since 2.0.0
  */
-function format(notification: WorkerPipelineInterpretNotificationObject, options: WorkerPipelineFormatOptions): WorkerPipelineFormatResult {
-  let body: WorkerPipelineFormatBody = notification['body'];
+function format(notification: Worker_Pipeline_Format_Notification, options: Worker_Pipeline_Format_Options): Worker_Pipeline_Format_Returns {
+  let body: Worker_Pipeline_Format_Body = notification['body'];
 
   if (options['showVisitorInfo'] === true && options['cfProperties'] !== undefined) {
-    const cf: WorkerPipelineFormatCf = options['cfProperties'];
-    const ip: WorkerPipelineFormatIp = options['visitorIp'] ?? 'unknown';
-    const separator: WorkerPipelineFormatSeparator = (notification['markdown'] === true) ? '\n\n---\n\n' : '\n\n';
-    const isMarkdown: WorkerPipelineFormatIsMarkdown = notification['markdown'] === true;
-    const bold: WorkerPipelineFormatBoldFn = (text) => (isMarkdown === true) ? `**${text}**` : text;
+    const cf: Worker_Pipeline_Format_Cf = options['cfProperties'];
+    const ip: Worker_Pipeline_Format_Ip = options['visitorIp'] ?? 'unknown';
+    const separator: Worker_Pipeline_Format_Separator = (notification['markdown'] === true) ? '\n\n---\n\n' : '\n\n';
+    const isMarkdown: Worker_Pipeline_Format_IsMarkdown = notification['markdown'] === true;
+    /**
+     * Worker - Pipeline - Format - Format - Bold.
+     *
+     * Wraps the passed text in Markdown bold markers when the
+     * notification is Markdown, otherwise returns it unchanged.
+     *
+     * @param {string} text - Text.
+     *
+     * @private
+     *
+     * @returns {Worker_Pipeline_Format_Format_Bold_Bold_Returns}
+     *
+     * @since 2.1.0
+     */
+    const bold: Worker_Pipeline_Format_Format_Bold_Bold = (text) => (isMarkdown === true) ? `**${text}**` : text;
 
-    const lines: WorkerPipelineFormatLines = [
+    const lines: Worker_Pipeline_Format_Lines = [
       bold('« Incoming Request Details »'),
       `${bold('IP address')}: ${ip}`,
       `${bold('Location')}: ${cf['region'] ?? 'Unknown'} (country: ${cf['country'] ?? 'Unknown'}, colo: ${cf['colo'] ?? 'Unknown'})`,
@@ -41,7 +55,7 @@ function format(notification: WorkerPipelineInterpretNotificationObject, options
     body = `${body}${separator}${lines.join('\n')}`;
   }
 
-  const headers: WorkerPipelineFormatHeaders = {};
+  const headers: Worker_Pipeline_Format_Headers = {};
 
   if (notification['title'] !== undefined) {
     Reflect.set(headers, 'X-Title', notification['title']);
@@ -76,7 +90,8 @@ function format(notification: WorkerPipelineInterpretNotificationObject, options
   }
 
   return {
-    body, headers,
+    body,
+    headers,
   };
 }
 

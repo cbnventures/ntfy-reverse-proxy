@@ -1,9 +1,15 @@
 ---
 title: Why We Built a Reverse Proxy for ntfy
-description: If you run self-hosted infrastructure with an ntfy server, you need a reliable way to forward webhooks. This Cloudflare Worker handles routing, delivery, and filtering at the edge.
+description: Routing webhooks from self-hosted services to ntfy servers with subdomain-based matching, delivery failover, and request filtering on Cloudflare Workers.
 slug: why-we-built-a-reverse-proxy-for-ntfy
 authors:
   - mrjackyliang
+keywords:
+  - ntfy reverse proxy
+  - webhooks
+  - cloudflare workers
+  - self-hosted
+  - push notifications
 tags:
   - ntfy
   - webhooks
@@ -12,6 +18,10 @@ tags:
   - cloudflare-workers
   - notifications
 ---
+
+:::info
+This post describes version 1.x. Version 2.0.0 is a full rewrite with built-in interpreters, email support, and an interactive CLI. See [What's New in v2.0.0](/blog/whats-new-in-v2/) for the current feature set.
+:::
 
 If you run self-hosted infrastructure — a company server or a home lab — and you use ntfy for notifications, you've probably pointed a few webhooks at your ntfy server directly. It works, but it doesn't scale well. Every service needs the server URL and topic hardcoded. There's no filtering, no fallback if the server goes down, and no way to route different services to different topics without giving each one a different endpoint.
 
@@ -55,4 +65,4 @@ The worker also inherits Cloudflare's TLS termination and DDoS protection, so yo
 
 Configuration is defined through environment variables in `wrangler.toml` — servers, filtering rules, delivery mode, and settings. A sample configuration is included in the repository.
 
-Check out the [quickstart guide](/docs/getting-started/quick-start) to set it up.
+Check out the [quickstart guide](/docs/getting-started/quick-start/) to set it up.

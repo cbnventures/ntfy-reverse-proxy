@@ -1,6 +1,6 @@
-import { existsSync, readFileSync } from 'fs';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
+import { existsSync, readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { Bootstrap, CLIHeader, Logger } from '@cbnventures/nova/toolkit';
 import chalk from 'chalk';
@@ -15,165 +15,187 @@ import { addServer, listServers, removeServer } from '../commands/server.js';
 import { getSettings, updateSettings } from '../commands/settings.js';
 
 import type {
-  CliMenuInteractiveAddContextFlowAllowedFromResponse,
-  CliMenuInteractiveAddContextFlowAllowedFromTrimmed,
-  CliMenuInteractiveAddContextFlowAutoId,
-  CliMenuInteractiveAddContextFlowAutoToken,
-  CliMenuInteractiveAddContextFlowConfigPath,
-  CliMenuInteractiveAddContextFlowContextType,
-  CliMenuInteractiveAddContextFlowEmailInterpreters,
-  CliMenuInteractiveAddContextFlowErrorTopic,
-  CliMenuInteractiveAddContextFlowErrorTopicResponse,
-  CliMenuInteractiveAddContextFlowErrorTopicString,
-  CliMenuInteractiveAddContextFlowErrorTopicTrimmed,
-  CliMenuInteractiveAddContextFlowHttpInterpreters,
-  CliMenuInteractiveAddContextFlowIdMessage,
-  CliMenuInteractiveAddContextFlowIdResponse,
-  CliMenuInteractiveAddContextFlowIdTrimmed,
-  CliMenuInteractiveAddContextFlowIdValidateValue,
-  CliMenuInteractiveAddContextFlowInterpreter,
-  CliMenuInteractiveAddContextFlowInterpreterChoices,
-  CliMenuInteractiveAddContextFlowInterpreterResponse,
-  CliMenuInteractiveAddContextFlowMode,
-  CliMenuInteractiveAddContextFlowModeResponse,
-  CliMenuInteractiveAddContextFlowName,
-  CliMenuInteractiveAddContextFlowNameResponse,
-  CliMenuInteractiveAddContextFlowNameValidateValue,
-  CliMenuInteractiveAddContextFlowPrimaryServer,
-  CliMenuInteractiveAddContextFlowPrimaryServerResponse,
-  CliMenuInteractiveAddContextFlowRawAllowedFrom,
-  CliMenuInteractiveAddContextFlowRawId,
-  CliMenuInteractiveAddContextFlowRawIdString,
-  CliMenuInteractiveAddContextFlowRawToken,
-  CliMenuInteractiveAddContextFlowResolvedAllowedFrom,
-  CliMenuInteractiveAddContextFlowResolvedErrorTopic,
-  CliMenuInteractiveAddContextFlowResolvedId,
-  CliMenuInteractiveAddContextFlowResolvedToken,
-  CliMenuInteractiveAddContextFlowReturn,
-  CliMenuInteractiveAddContextFlowSelectedServers,
-  CliMenuInteractiveAddContextFlowSelectedServersResponse,
-  CliMenuInteractiveAddContextFlowServers,
-  CliMenuInteractiveAddContextFlowShowVisitorInfo,
-  CliMenuInteractiveAddContextFlowShowVisitorInfoResponse,
-  CliMenuInteractiveAddContextFlowTokenResponse,
-  CliMenuInteractiveAddContextFlowTokenTrimmed,
-  CliMenuInteractiveAddContextFlowTopic,
-  CliMenuInteractiveAddContextFlowTopicResponse,
-  CliMenuInteractiveAddContextFlowTopicString,
-  CliMenuInteractiveAddContextFlowTopicValidateValue,
-  CliMenuInteractiveAddContextFlowTypedInterpreter,
-  CliMenuInteractiveAddContextFlowTypedMode,
-  CliMenuInteractiveAddContextFlowTypeResponse,
-  CliMenuInteractiveContextMenuAction,
-  CliMenuInteractiveContextMenuAddToken,
-  CliMenuInteractiveContextMenuAddTokenResponse,
-  CliMenuInteractiveContextMenuAllowedFrom,
-  CliMenuInteractiveContextMenuAllowedFromResponse,
-  CliMenuInteractiveContextMenuAllowedFromTrimmed,
-  CliMenuInteractiveContextMenuConfigPath,
-  CliMenuInteractiveContextMenuConfirmed,
-  CliMenuInteractiveContextMenuConfirmResponse,
-  CliMenuInteractiveContextMenuContexts,
-  CliMenuInteractiveContextMenuCurrent,
-  CliMenuInteractiveContextMenuEditImport,
-  CliMenuInteractiveContextMenuEmailChoices,
-  CliMenuInteractiveContextMenuErrorMessage,
-  CliMenuInteractiveContextMenuErrorTopic,
-  CliMenuInteractiveContextMenuErrorTopicResponse,
-  CliMenuInteractiveContextMenuErrorTopicTrimmed,
-  CliMenuInteractiveContextMenuErrorTopicValue,
-  CliMenuInteractiveContextMenuExists,
-  CliMenuInteractiveContextMenuHttpChoices,
-  CliMenuInteractiveContextMenuId,
-  CliMenuInteractiveContextMenuIdx,
-  CliMenuInteractiveContextMenuInMenu,
-  CliMenuInteractiveContextMenuInterpreter,
-  CliMenuInteractiveContextMenuInterpreterResponse,
-  CliMenuInteractiveContextMenuKeepId,
-  CliMenuInteractiveContextMenuKeepIdResponse,
-  CliMenuInteractiveContextMenuKeepToken,
-  CliMenuInteractiveContextMenuKeepTokenResponse,
-  CliMenuInteractiveContextMenuKnownChoices,
-  CliMenuInteractiveContextMenuKnownValues,
-  CliMenuInteractiveContextMenuMode,
-  CliMenuInteractiveContextMenuModeResponse,
-  CliMenuInteractiveContextMenuName,
-  CliMenuInteractiveContextMenuNewToken,
-  CliMenuInteractiveContextMenuPrimaryServer,
-  CliMenuInteractiveContextMenuPrimaryServerIdx,
-  CliMenuInteractiveContextMenuPrimaryServerResponse,
-  CliMenuInteractiveContextMenuResponse,
-  CliMenuInteractiveContextMenuReturn,
-  CliMenuInteractiveContextMenuSelectedServers,
-  CliMenuInteractiveContextMenuSelectedServersResponse,
-  CliMenuInteractiveContextMenuSelectResponse,
-  CliMenuInteractiveContextMenuServerChoices,
-  CliMenuInteractiveContextMenuServers,
-  CliMenuInteractiveContextMenuShowVisitorInfo,
-  CliMenuInteractiveContextMenuShowVisitorInfoResponse,
-  CliMenuInteractiveContextMenuTopic,
-  CliMenuInteractiveContextMenuTopicResponse,
-  CliMenuInteractiveContextMenuTopicValidateValue,
-  CliMenuInteractiveContextMenuUpdates,
-  CliMenuInteractiveInteractiveMenuAction,
-  CliMenuInteractiveInteractiveMenuConfigDirResponse,
-  CliMenuInteractiveInteractiveMenuConfigDirs,
-  CliMenuInteractiveInteractiveMenuCurrentFilePath,
-  CliMenuInteractiveInteractiveMenuDefaultConfigDir,
-  CliMenuInteractiveInteractiveMenuDir,
-  CliMenuInteractiveInteractiveMenuErrorMessage,
-  CliMenuInteractiveInteractiveMenuHeader,
-  CliMenuInteractiveInteractiveMenuInteractiveConfigPath,
-  CliMenuInteractiveInteractiveMenuPackageJsonParsed,
-  CliMenuInteractiveInteractiveMenuPackageJsonPath,
-  CliMenuInteractiveInteractiveMenuPackageJsonRaw,
-  CliMenuInteractiveInteractiveMenuParent,
-  CliMenuInteractiveInteractiveMenuResponse,
-  CliMenuInteractiveInteractiveMenuReturn,
-  CliMenuInteractiveInteractiveMenuRunning,
-  CliMenuInteractiveInteractiveMenuVersion,
-  CliMenuInteractiveServerMenuAction,
-  CliMenuInteractiveServerMenuAnswers,
-  CliMenuInteractiveServerMenuConfigPath,
-  CliMenuInteractiveServerMenuConfirmed,
-  CliMenuInteractiveServerMenuConfirmResponse,
-  CliMenuInteractiveServerMenuCurrent,
-  CliMenuInteractiveServerMenuEditImport,
-  CliMenuInteractiveServerMenuEditUpdates,
-  CliMenuInteractiveServerMenuErrorMessage,
-  CliMenuInteractiveServerMenuInMenu,
-  CliMenuInteractiveServerMenuName,
-  CliMenuInteractiveServerMenuNameValidateValue,
-  CliMenuInteractiveServerMenuResponse,
-  CliMenuInteractiveServerMenuReturn,
-  CliMenuInteractiveServerMenuSelectResponse,
-  CliMenuInteractiveServerMenuServer,
-  CliMenuInteractiveServerMenuServers,
-  CliMenuInteractiveServerMenuServerUrl,
-  CliMenuInteractiveServerMenuServerUrlTrimmed,
-  CliMenuInteractiveServerMenuServerValidateValue,
-  CliMenuInteractiveServerMenuStartsWithTk,
-  CliMenuInteractiveServerMenuToken,
-  CliMenuInteractiveServerMenuTokenTrimmed,
-  CliMenuInteractiveServerMenuTokenValidateValue,
-  CliMenuInteractiveServerMenuTokenValue,
-  CliMenuInteractiveServerMenuTrimmedEmpty,
-  CliMenuInteractiveServerMenuUpdates,
-  CliMenuInteractiveServerMenuUpdatesServerString,
-  CliMenuInteractiveServerMenuUpdatesTokenString,
-  CliMenuInteractiveServerMenuUrlInstance,
-  CliMenuInteractiveSettingsFlowBaseDomain,
-  CliMenuInteractiveSettingsFlowBaseDomainResponse,
-  CliMenuInteractiveSettingsFlowBaseDomainValidateValue,
-  CliMenuInteractiveSettingsFlowConfigPath,
-  CliMenuInteractiveSettingsFlowCurrentSettings,
-  CliMenuInteractiveSettingsFlowErrorMessage,
-  CliMenuInteractiveSettingsFlowReturn,
-  CliMenuInteractiveSettingsFlowShowResponseOutput,
-  CliMenuInteractiveSettingsFlowShowResponseOutputResponse,
-  CliMenuInteractiveSettingsFlowWorkerName,
-  CliMenuInteractiveSettingsFlowWorkerNameResponse,
-  CliMenuInteractiveSettingsFlowWorkerNameValidateValue,
+  Cli_Menu_Interactive_AddContextFlow_AllowedFromResponse,
+  Cli_Menu_Interactive_AddContextFlow_AllowedFromTrimmed,
+  Cli_Menu_Interactive_AddContextFlow_AutoId,
+  Cli_Menu_Interactive_AddContextFlow_AutoToken,
+  Cli_Menu_Interactive_AddContextFlow_ConfigPath,
+  Cli_Menu_Interactive_AddContextFlow_ContextType,
+  Cli_Menu_Interactive_AddContextFlow_EmailInterpreters,
+  Cli_Menu_Interactive_AddContextFlow_ErrorEvents,
+  Cli_Menu_Interactive_AddContextFlow_ErrorEventsResponse,
+  Cli_Menu_Interactive_AddContextFlow_ErrorTopic,
+  Cli_Menu_Interactive_AddContextFlow_ErrorTopicResponse,
+  Cli_Menu_Interactive_AddContextFlow_ErrorTopicString,
+  Cli_Menu_Interactive_AddContextFlow_ErrorTopicTrimmed,
+  Cli_Menu_Interactive_AddContextFlow_HttpInterpreters,
+  Cli_Menu_Interactive_AddContextFlow_IdMessage,
+  Cli_Menu_Interactive_AddContextFlow_IdResponse,
+  Cli_Menu_Interactive_AddContextFlow_IdTrimmed,
+  Cli_Menu_Interactive_AddContextFlow_Interpreter,
+  Cli_Menu_Interactive_AddContextFlow_InterpreterChoices,
+  Cli_Menu_Interactive_AddContextFlow_InterpreterResponse,
+  Cli_Menu_Interactive_AddContextFlow_Mode,
+  Cli_Menu_Interactive_AddContextFlow_ModeResponse,
+  Cli_Menu_Interactive_AddContextFlow_Name,
+  Cli_Menu_Interactive_AddContextFlow_NameResponse,
+  Cli_Menu_Interactive_AddContextFlow_PrimaryServer,
+  Cli_Menu_Interactive_AddContextFlow_PrimaryServerResponse,
+  Cli_Menu_Interactive_AddContextFlow_RawAllowedFrom,
+  Cli_Menu_Interactive_AddContextFlow_RawId,
+  Cli_Menu_Interactive_AddContextFlow_RawIdString,
+  Cli_Menu_Interactive_AddContextFlow_RawToken,
+  Cli_Menu_Interactive_AddContextFlow_ResolvedAllowedFrom,
+  Cli_Menu_Interactive_AddContextFlow_ResolvedErrorTopic,
+  Cli_Menu_Interactive_AddContextFlow_ResolvedId,
+  Cli_Menu_Interactive_AddContextFlow_ResolvedToken,
+  Cli_Menu_Interactive_AddContextFlow_Returns,
+  Cli_Menu_Interactive_AddContextFlow_SelectedServers,
+  Cli_Menu_Interactive_AddContextFlow_SelectedServersResponse,
+  Cli_Menu_Interactive_AddContextFlow_Servers,
+  Cli_Menu_Interactive_AddContextFlow_ShowVisitorInfo,
+  Cli_Menu_Interactive_AddContextFlow_ShowVisitorInfoResponse,
+  Cli_Menu_Interactive_AddContextFlow_TokenResponse,
+  Cli_Menu_Interactive_AddContextFlow_TokenTrimmed,
+  Cli_Menu_Interactive_AddContextFlow_Topic,
+  Cli_Menu_Interactive_AddContextFlow_TopicResponse,
+  Cli_Menu_Interactive_AddContextFlow_TopicString,
+  Cli_Menu_Interactive_AddContextFlow_TypedErrorEvents,
+  Cli_Menu_Interactive_AddContextFlow_TypedInterpreter,
+  Cli_Menu_Interactive_AddContextFlow_TypedMode,
+  Cli_Menu_Interactive_AddContextFlow_TypeResponse,
+  Cli_Menu_Interactive_ContextMenu_Action,
+  Cli_Menu_Interactive_ContextMenu_AddNewToken,
+  Cli_Menu_Interactive_ContextMenu_AddToken,
+  Cli_Menu_Interactive_ContextMenu_AddTokenResponse,
+  Cli_Menu_Interactive_ContextMenu_AllowedFrom,
+  Cli_Menu_Interactive_ContextMenu_AllowedFromResponse,
+  Cli_Menu_Interactive_ContextMenu_AllowedFromTrimmed,
+  Cli_Menu_Interactive_ContextMenu_ConfigPath,
+  Cli_Menu_Interactive_ContextMenu_Confirmed,
+  Cli_Menu_Interactive_ContextMenu_ConfirmResponse,
+  Cli_Menu_Interactive_ContextMenu_Contexts,
+  Cli_Menu_Interactive_ContextMenu_Current,
+  Cli_Menu_Interactive_ContextMenu_CurrentAllowedFrom,
+  Cli_Menu_Interactive_ContextMenu_CurrentErrorEvents,
+  Cli_Menu_Interactive_ContextMenu_CurrentErrorTopic,
+  Cli_Menu_Interactive_ContextMenu_EditErrorMessage,
+  Cli_Menu_Interactive_ContextMenu_EditImport,
+  Cli_Menu_Interactive_ContextMenu_EditServers,
+  Cli_Menu_Interactive_ContextMenu_EmailChoices,
+  Cli_Menu_Interactive_ContextMenu_EmailValues,
+  Cli_Menu_Interactive_ContextMenu_ErrorEvents,
+  Cli_Menu_Interactive_ContextMenu_ErrorEventsResponse,
+  Cli_Menu_Interactive_ContextMenu_ErrorMessage,
+  Cli_Menu_Interactive_ContextMenu_ErrorTopic,
+  Cli_Menu_Interactive_ContextMenu_ErrorTopicResponse,
+  Cli_Menu_Interactive_ContextMenu_ErrorTopicTrimmed,
+  Cli_Menu_Interactive_ContextMenu_ErrorTopicValue,
+  Cli_Menu_Interactive_ContextMenu_Exists,
+  Cli_Menu_Interactive_ContextMenu_HttpChoices,
+  Cli_Menu_Interactive_ContextMenu_HttpValues,
+  Cli_Menu_Interactive_ContextMenu_Id,
+  Cli_Menu_Interactive_ContextMenu_InMenu,
+  Cli_Menu_Interactive_ContextMenu_Interpreter,
+  Cli_Menu_Interactive_ContextMenu_InterpreterIdx,
+  Cli_Menu_Interactive_ContextMenu_InterpreterInitial,
+  Cli_Menu_Interactive_ContextMenu_InterpreterResponse,
+  Cli_Menu_Interactive_ContextMenu_KeepId,
+  Cli_Menu_Interactive_ContextMenu_KeepIdResponse,
+  Cli_Menu_Interactive_ContextMenu_KeepToken,
+  Cli_Menu_Interactive_ContextMenu_KeepTokenResponse,
+  Cli_Menu_Interactive_ContextMenu_KnownChoices,
+  Cli_Menu_Interactive_ContextMenu_KnownValues,
+  Cli_Menu_Interactive_ContextMenu_Mode,
+  Cli_Menu_Interactive_ContextMenu_ModeInitial,
+  Cli_Menu_Interactive_ContextMenu_ModeResponse,
+  Cli_Menu_Interactive_ContextMenu_Name,
+  Cli_Menu_Interactive_ContextMenu_NewToken,
+  Cli_Menu_Interactive_ContextMenu_PrimaryServer,
+  Cli_Menu_Interactive_ContextMenu_PrimaryServerIdx,
+  Cli_Menu_Interactive_ContextMenu_PrimaryServerInitial,
+  Cli_Menu_Interactive_ContextMenu_PrimaryServerResponse,
+  Cli_Menu_Interactive_ContextMenu_RemoveContexts,
+  Cli_Menu_Interactive_ContextMenu_RemoveErrorMessage,
+  Cli_Menu_Interactive_ContextMenu_RemoveName,
+  Cli_Menu_Interactive_ContextMenu_RemoveSelectResponse,
+  Cli_Menu_Interactive_ContextMenu_ResolvedAllowedFrom,
+  Cli_Menu_Interactive_ContextMenu_ResolvedErrorTopic,
+  Cli_Menu_Interactive_ContextMenu_Response,
+  Cli_Menu_Interactive_ContextMenu_Returns,
+  Cli_Menu_Interactive_ContextMenu_SelectedServers,
+  Cli_Menu_Interactive_ContextMenu_SelectedServersResponse,
+  Cli_Menu_Interactive_ContextMenu_SelectResponse,
+  Cli_Menu_Interactive_ContextMenu_ServerChoices,
+  Cli_Menu_Interactive_ContextMenu_Servers,
+  Cli_Menu_Interactive_ContextMenu_ShowVisitorInfo,
+  Cli_Menu_Interactive_ContextMenu_ShowVisitorInfoResponse,
+  Cli_Menu_Interactive_ContextMenu_Topic,
+  Cli_Menu_Interactive_ContextMenu_TopicResponse,
+  Cli_Menu_Interactive_ContextMenu_Updates,
+  Cli_Menu_Interactive_InteractiveMenu_Action,
+  Cli_Menu_Interactive_InteractiveMenu_ConfigDirResponse,
+  Cli_Menu_Interactive_InteractiveMenu_ConfigDirs,
+  Cli_Menu_Interactive_InteractiveMenu_ConfigPath,
+  Cli_Menu_Interactive_InteractiveMenu_CurrentFilePath,
+  Cli_Menu_Interactive_InteractiveMenu_DefaultConfigDir,
+  Cli_Menu_Interactive_InteractiveMenu_Dir,
+  Cli_Menu_Interactive_InteractiveMenu_ErrorMessage,
+  Cli_Menu_Interactive_InteractiveMenu_Header,
+  Cli_Menu_Interactive_InteractiveMenu_PackageJsonParsed,
+  Cli_Menu_Interactive_InteractiveMenu_PackageJsonPath,
+  Cli_Menu_Interactive_InteractiveMenu_PackageJsonRaw,
+  Cli_Menu_Interactive_InteractiveMenu_Parent,
+  Cli_Menu_Interactive_InteractiveMenu_Response,
+  Cli_Menu_Interactive_InteractiveMenu_Returns,
+  Cli_Menu_Interactive_InteractiveMenu_Running,
+  Cli_Menu_Interactive_InteractiveMenu_Version,
+  Cli_Menu_Interactive_ServerMenu_Action,
+  Cli_Menu_Interactive_ServerMenu_Answers,
+  Cli_Menu_Interactive_ServerMenu_AnswersName,
+  Cli_Menu_Interactive_ServerMenu_AnswersServer,
+  Cli_Menu_Interactive_ServerMenu_AnswersToken,
+  Cli_Menu_Interactive_ServerMenu_ConfigPath,
+  Cli_Menu_Interactive_ServerMenu_Confirmed,
+  Cli_Menu_Interactive_ServerMenu_ConfirmResponse,
+  Cli_Menu_Interactive_ServerMenu_Current,
+  Cli_Menu_Interactive_ServerMenu_CurrentServer,
+  Cli_Menu_Interactive_ServerMenu_EditErrorMessage,
+  Cli_Menu_Interactive_ServerMenu_EditImport,
+  Cli_Menu_Interactive_ServerMenu_EditUpdates,
+  Cli_Menu_Interactive_ServerMenu_EditUrlInstance,
+  Cli_Menu_Interactive_ServerMenu_ErrorMessage,
+  Cli_Menu_Interactive_ServerMenu_InMenu,
+  Cli_Menu_Interactive_ServerMenu_Name,
+  Cli_Menu_Interactive_ServerMenu_RemoveErrorMessage,
+  Cli_Menu_Interactive_ServerMenu_RemoveName,
+  Cli_Menu_Interactive_ServerMenu_RemoveSelectResponse,
+  Cli_Menu_Interactive_ServerMenu_RemoveServers,
+  Cli_Menu_Interactive_ServerMenu_Response,
+  Cli_Menu_Interactive_ServerMenu_Returns,
+  Cli_Menu_Interactive_ServerMenu_SelectResponse,
+  Cli_Menu_Interactive_ServerMenu_Servers,
+  Cli_Menu_Interactive_ServerMenu_ServerUrl,
+  Cli_Menu_Interactive_ServerMenu_ServerUrlTrimmed,
+  Cli_Menu_Interactive_ServerMenu_StartsWithTk,
+  Cli_Menu_Interactive_ServerMenu_TokenTrimmed,
+  Cli_Menu_Interactive_ServerMenu_TokenValue,
+  Cli_Menu_Interactive_ServerMenu_TrimmedEmpty,
+  Cli_Menu_Interactive_ServerMenu_Updates,
+  Cli_Menu_Interactive_ServerMenu_UpdatesServerString,
+  Cli_Menu_Interactive_ServerMenu_UpdatesTokenString,
+  Cli_Menu_Interactive_ServerMenu_UrlInstance,
+  Cli_Menu_Interactive_SettingsFlow_BaseDomain,
+  Cli_Menu_Interactive_SettingsFlow_BaseDomainResponse,
+  Cli_Menu_Interactive_SettingsFlow_ConfigPath,
+  Cli_Menu_Interactive_SettingsFlow_CurrentSettings,
+  Cli_Menu_Interactive_SettingsFlow_ErrorMessage,
+  Cli_Menu_Interactive_SettingsFlow_Returns,
+  Cli_Menu_Interactive_SettingsFlow_ShowResponseOutput,
+  Cli_Menu_Interactive_SettingsFlow_ShowResponseOutputResponse,
+  Cli_Menu_Interactive_SettingsFlow_UpdateErrorMessage,
+  Cli_Menu_Interactive_SettingsFlow_WorkerName,
+  Cli_Menu_Interactive_SettingsFlow_WorkerNameResponse,
 } from '../../types/cli/menu/interactive.d.ts';
 
 /**
@@ -184,30 +206,30 @@ import type {
  *
  * @since 2.0.0
  */
-async function interactiveMenu(configDirs: CliMenuInteractiveInteractiveMenuConfigDirs): CliMenuInteractiveInteractiveMenuReturn {
-  const currentFilePath: CliMenuInteractiveInteractiveMenuCurrentFilePath = fileURLToPath(import.meta.url);
+async function interactiveMenu(configDirs: Cli_Menu_Interactive_InteractiveMenu_ConfigDirs): Cli_Menu_Interactive_InteractiveMenu_Returns {
+  const currentFilePath: Cli_Menu_Interactive_InteractiveMenu_CurrentFilePath = fileURLToPath(import.meta.url);
 
-  let dir: CliMenuInteractiveInteractiveMenuDir = dirname(currentFilePath);
-  let version: CliMenuInteractiveInteractiveMenuVersion = '0.0.0';
+  let dir: Cli_Menu_Interactive_InteractiveMenu_Dir = dirname(currentFilePath);
+  let version: Cli_Menu_Interactive_InteractiveMenu_Version = '0.0.0';
 
   while (dir !== dirname(dir)) {
-    const packageJsonPath: CliMenuInteractiveInteractiveMenuPackageJsonPath = join(dir, 'package.json');
+    const packageJsonPath: Cli_Menu_Interactive_InteractiveMenu_PackageJsonPath = join(dir, 'package.json');
 
     if (existsSync(packageJsonPath) === true) {
-      const packageJsonRaw: CliMenuInteractiveInteractiveMenuPackageJsonRaw = readFileSync(packageJsonPath, 'utf-8');
-      const packageJsonParsed: CliMenuInteractiveInteractiveMenuPackageJsonParsed = JSON.parse(packageJsonRaw);
+      const packageJsonRaw: Cli_Menu_Interactive_InteractiveMenu_PackageJsonRaw = readFileSync(packageJsonPath, 'utf-8');
+      const packageJsonParsed: Cli_Menu_Interactive_InteractiveMenu_PackageJsonParsed = JSON.parse(packageJsonRaw);
 
-      version = packageJsonParsed['version'] as CliMenuInteractiveInteractiveMenuVersion;
+      version = packageJsonParsed['version'] as Cli_Menu_Interactive_InteractiveMenu_Version;
 
       break;
     }
 
-    const parent: CliMenuInteractiveInteractiveMenuParent = dirname(dir);
+    const parent: Cli_Menu_Interactive_InteractiveMenu_Parent = dirname(dir);
 
     dir = parent;
   }
 
-  const header: CliMenuInteractiveInteractiveMenuHeader = CLIHeader.render([
+  const header: Cli_Menu_Interactive_InteractiveMenu_Header = CLIHeader.render([
     chalk.magentaBright(`Reverse Proxy for ntfy v${version}`),
     chalk.dim('A CBN Ventures Creation'),
   ], {
@@ -218,10 +240,10 @@ async function interactiveMenu(configDirs: CliMenuInteractiveInteractiveMenuConf
 
   process.stdout.write(`${header}\n`);
 
-  let configPath: CliMenuInteractiveInteractiveMenuInteractiveConfigPath = undefined;
+  let configPath: Cli_Menu_Interactive_InteractiveMenu_ConfigPath = undefined;
 
   if (configDirs['length'] > 1) {
-    const configDirResponse: CliMenuInteractiveInteractiveMenuConfigDirResponse = await prompts({
+    const configDirResponse: Cli_Menu_Interactive_InteractiveMenu_ConfigDirResponse = await prompts({
       type: 'select',
       name: 'dir',
       message: chalk.cyan('Multiple config files found. Which one?'),
@@ -239,38 +261,43 @@ async function interactiveMenu(configDirs: CliMenuInteractiveInteractiveMenuConf
   } else if (configDirs['length'] === 1) {
     configPath = join(configDirs[0]!, 'config.json');
   } else {
-    const defaultConfigDir: CliMenuInteractiveInteractiveMenuDefaultConfigDir = Bootstrap.getConfigDir('ntfy-reverse-proxy');
+    const defaultConfigDir: Cli_Menu_Interactive_InteractiveMenu_DefaultConfigDir = Bootstrap.getConfigDir('ntfy-reverse-proxy');
 
     configPath = join(defaultConfigDir, 'config.json');
   }
 
-  let running: CliMenuInteractiveInteractiveMenuRunning = true;
+  let running: Cli_Menu_Interactive_InteractiveMenu_Running = true;
 
   while (running === true) {
-    const response: CliMenuInteractiveInteractiveMenuResponse = await prompts({
+    const response: Cli_Menu_Interactive_InteractiveMenu_Response = await prompts({
       type: 'select',
       name: 'action',
       message: chalk.cyan('What would you like to do?'),
       choices: [
         {
-          title: 'Manage Servers', value: 'servers',
+          title: 'Manage Servers',
+          value: 'servers',
         },
         {
-          title: 'Manage Contexts', value: 'contexts',
+          title: 'Manage Contexts',
+          value: 'contexts',
         },
         {
-          title: 'Settings', value: 'settings',
+          title: 'Settings',
+          value: 'settings',
         },
         {
-          title: 'Deploy', value: 'deploy',
+          title: 'Deploy',
+          value: 'deploy',
         },
         {
-          title: 'Exit', value: 'exit',
+          title: 'Exit',
+          value: 'exit',
         },
       ],
     });
 
-    const action: CliMenuInteractiveInteractiveMenuAction = response['action'];
+    const action: Cli_Menu_Interactive_InteractiveMenu_Action = response['action'];
 
     if (action === undefined || action === 'exit') {
       running = false;
@@ -288,7 +315,7 @@ async function interactiveMenu(configDirs: CliMenuInteractiveInteractiveMenuConf
       try {
         await deploy(configPath, true);
       } catch (error) {
-        const errorMessage: CliMenuInteractiveInteractiveMenuErrorMessage = (error instanceof Error) ? error['message'] : String(error);
+        const errorMessage: Cli_Menu_Interactive_InteractiveMenu_ErrorMessage = (error instanceof Error) ? error['message'] : String(error);
 
         Logger.error(`Error: ${errorMessage}`);
       }
@@ -306,31 +333,35 @@ async function interactiveMenu(configDirs: CliMenuInteractiveInteractiveMenuConf
  *
  * @since 2.0.0
  */
-async function serverMenu(configPath: CliMenuInteractiveServerMenuConfigPath): CliMenuInteractiveServerMenuReturn {
-  let inMenu: CliMenuInteractiveServerMenuInMenu = true;
+async function serverMenu(configPath: Cli_Menu_Interactive_ServerMenu_ConfigPath): Cli_Menu_Interactive_ServerMenu_Returns {
+  let inMenu: Cli_Menu_Interactive_ServerMenu_InMenu = true;
 
   while (inMenu === true) {
-    const response: CliMenuInteractiveServerMenuResponse = await prompts({
+    const response: Cli_Menu_Interactive_ServerMenu_Response = await prompts({
       type: 'select',
       name: 'action',
       message: chalk.cyan('Manage Servers'),
       choices: [
         {
-          title: 'Add', value: 'add',
+          title: 'Add',
+          value: 'add',
         },
         {
-          title: 'Edit', value: 'edit',
+          title: 'Edit',
+          value: 'edit',
         },
         {
-          title: 'Remove', value: 'remove',
+          title: 'Remove',
+          value: 'remove',
         },
         {
-          title: 'Back', value: 'back',
+          title: 'Back',
+          value: 'back',
         },
       ],
     });
 
-    const action: CliMenuInteractiveServerMenuAction = response['action'];
+    const action: Cli_Menu_Interactive_ServerMenu_Action = response['action'];
 
     if (action === undefined || action === 'back') {
       inMenu = false;
@@ -339,24 +370,24 @@ async function serverMenu(configPath: CliMenuInteractiveServerMenuConfigPath): C
     }
 
     if (action === 'add') {
-      const answers: CliMenuInteractiveServerMenuAnswers = await prompts([
+      const answers: Cli_Menu_Interactive_ServerMenu_Answers = await prompts([
         {
           type: 'text',
           name: 'name',
           message: 'Server name:',
-          validate: (value: CliMenuInteractiveServerMenuNameValidateValue) => value.trim()['length'] > 0 || 'Name is required',
+          validate: (value) => value.trim()['length'] > 0 || 'Name is required',
         },
         {
           type: 'text',
           name: 'server',
           message: 'Server URL:',
-          validate: (value: CliMenuInteractiveServerMenuServerValidateValue) => {
+          validate: (value) => {
             if (value.startsWith('https://') === false) {
               return 'URL must start with https://';
             }
 
             try {
-              const urlInstance: CliMenuInteractiveServerMenuUrlInstance = new URL(value);
+              const urlInstance: Cli_Menu_Interactive_ServerMenu_UrlInstance = new URL(value);
 
               void urlInstance;
 
@@ -370,13 +401,13 @@ async function serverMenu(configPath: CliMenuInteractiveServerMenuConfigPath): C
           type: 'password',
           name: 'token',
           message: 'Server token:',
-          validate: (value: CliMenuInteractiveServerMenuTokenValidateValue) => value.startsWith('tk_') || 'Token must start with tk_',
+          validate: (value) => value.startsWith('tk_') || 'Token must start with tk_',
         },
       ]);
 
-      const answersName: CliMenuInteractiveServerMenuName = answers['name'];
-      const answersServer: CliMenuInteractiveServerMenuServer = answers['server'];
-      const answersToken: CliMenuInteractiveServerMenuToken = answers['token'];
+      const answersName: Cli_Menu_Interactive_ServerMenu_AnswersName = answers['name'];
+      const answersServer: Cli_Menu_Interactive_ServerMenu_AnswersServer = answers['server'];
+      const answersToken: Cli_Menu_Interactive_ServerMenu_AnswersToken = answers['token'];
 
       if (
         answersName !== undefined
@@ -392,51 +423,52 @@ async function serverMenu(configPath: CliMenuInteractiveServerMenuConfigPath): C
 
           Logger.info(`Server "${answersName}" added.`);
         } catch (error) {
-          const errorMessage: CliMenuInteractiveServerMenuErrorMessage = (error instanceof Error) ? error['message'] : String(error);
+          const errorMessage: Cli_Menu_Interactive_ServerMenu_ErrorMessage = (error instanceof Error) ? error['message'] : String(error);
 
           Logger.error(`Error: ${errorMessage}`);
         }
       }
     } else if (action === 'edit') {
       try {
-        const servers: CliMenuInteractiveServerMenuServers = listServers(configPath);
+        const servers: Cli_Menu_Interactive_ServerMenu_Servers = listServers(configPath);
 
         servers.sort((a, b) => a['name'].localeCompare(b['name']));
 
         if (servers['length'] === 0) {
           Logger.warn('No servers to edit.');
         } else {
-          const selectResponse: CliMenuInteractiveServerMenuSelectResponse = await prompts({
+          const selectResponse: Cli_Menu_Interactive_ServerMenu_SelectResponse = await prompts({
             type: 'select',
             name: 'name',
             message: 'Select server to edit:',
             choices: servers.map((server) => ({
-              title: server['name'], value: server['name'],
+              title: server['name'],
+              value: server['name'],
             })),
           });
 
-          const name: CliMenuInteractiveServerMenuName = selectResponse['name'];
+          const name: Cli_Menu_Interactive_ServerMenu_Name = selectResponse['name'];
 
           if (name !== undefined) {
-            const current: CliMenuInteractiveServerMenuCurrent = servers.find((server) => server['name'] === name);
+            const current: Cli_Menu_Interactive_ServerMenu_Current = servers.find((server) => server['name'] === name);
 
-            const currentServer: CliMenuInteractiveServerMenuServer = (current !== undefined) ? current['server'] : undefined;
+            const currentServer: Cli_Menu_Interactive_ServerMenu_CurrentServer = (current !== undefined) ? current['server'] : undefined;
 
-            const updates: CliMenuInteractiveServerMenuUpdates = await prompts([
+            const updates: Cli_Menu_Interactive_ServerMenu_Updates = await prompts([
               {
                 type: 'text',
                 name: 'server',
                 message: 'Server URL:',
                 initial: currentServer,
-                validate: (value: CliMenuInteractiveServerMenuServerValidateValue) => {
+                validate: (value) => {
                   if (value.startsWith('https://') === false) {
                     return 'URL must start with https://';
                   }
 
                   try {
-                    const urlInstance: CliMenuInteractiveServerMenuUrlInstance = new URL(value);
+                    const editUrlInstance: Cli_Menu_Interactive_ServerMenu_EditUrlInstance = new URL(value);
 
-                    void urlInstance;
+                    void editUrlInstance;
 
                     return true;
                   } catch {
@@ -448,9 +480,9 @@ async function serverMenu(configPath: CliMenuInteractiveServerMenuConfigPath): C
                 type: 'password',
                 name: 'token',
                 message: 'Server token (leave blank to keep current):',
-                validate: (value: CliMenuInteractiveServerMenuTokenValidateValue) => {
-                  const trimmedEmpty: CliMenuInteractiveServerMenuTrimmedEmpty = (value.trim() === '');
-                  const startsWithTk: CliMenuInteractiveServerMenuStartsWithTk = value.startsWith('tk_');
+                validate: (value) => {
+                  const trimmedEmpty: Cli_Menu_Interactive_ServerMenu_TrimmedEmpty = (value.trim() === '');
+                  const startsWithTk: Cli_Menu_Interactive_ServerMenu_StartsWithTk = value.startsWith('tk_');
 
                   if (trimmedEmpty === true) {
                     return true;
@@ -461,16 +493,20 @@ async function serverMenu(configPath: CliMenuInteractiveServerMenuConfigPath): C
               },
             ]);
 
-            const editImport: CliMenuInteractiveServerMenuEditImport = await import('../commands/server.js');
-            const updatesServerString: CliMenuInteractiveServerMenuUpdatesServerString = updates['server'];
-            const serverUrlTrimmed: CliMenuInteractiveServerMenuServerUrlTrimmed = updatesServerString.trim();
-            const serverUrl: CliMenuInteractiveServerMenuServerUrl = (serverUrlTrimmed !== '') ? updatesServerString : undefined;
-            const updatesTokenString: CliMenuInteractiveServerMenuUpdatesTokenString = updates['token'];
-            const tokenTrimmed: CliMenuInteractiveServerMenuTokenTrimmed = updatesTokenString.trim();
-            const tokenValue: CliMenuInteractiveServerMenuTokenValue = (tokenTrimmed !== '') ? updatesTokenString : undefined;
+            if (updates['server'] === undefined || updates['token'] === undefined) {
+              break;
+            }
+
+            const editImport: Cli_Menu_Interactive_ServerMenu_EditImport = await import('../commands/server.js');
+            const updatesServerString: Cli_Menu_Interactive_ServerMenu_UpdatesServerString = updates['server'];
+            const serverUrlTrimmed: Cli_Menu_Interactive_ServerMenu_ServerUrlTrimmed = updatesServerString.trim();
+            const serverUrl: Cli_Menu_Interactive_ServerMenu_ServerUrl = (serverUrlTrimmed !== '') ? updatesServerString : undefined;
+            const updatesTokenString: Cli_Menu_Interactive_ServerMenu_UpdatesTokenString = updates['token'];
+            const tokenTrimmed: Cli_Menu_Interactive_ServerMenu_TokenTrimmed = updatesTokenString.trim();
+            const tokenValue: Cli_Menu_Interactive_ServerMenu_TokenValue = (tokenTrimmed !== '') ? updatesTokenString : undefined;
 
             if (serverUrl !== undefined || tokenValue !== undefined) {
-              const editUpdates: CliMenuInteractiveServerMenuEditUpdates = {};
+              const editUpdates: Cli_Menu_Interactive_ServerMenu_EditUpdates = {};
 
               if (serverUrl !== undefined) {
                 Reflect.set(editUpdates, 'server', serverUrl);
@@ -487,51 +523,52 @@ async function serverMenu(configPath: CliMenuInteractiveServerMenuConfigPath): C
           }
         }
       } catch (error) {
-        const errorMessage: CliMenuInteractiveServerMenuErrorMessage = (error instanceof Error) ? error['message'] : String(error);
+        const editErrorMessage: Cli_Menu_Interactive_ServerMenu_EditErrorMessage = (error instanceof Error) ? error['message'] : String(error);
 
-        Logger.error(`Error: ${errorMessage}`);
+        Logger.error(`Error: ${editErrorMessage}`);
       }
     } else if (action === 'remove') {
       try {
-        const servers: CliMenuInteractiveServerMenuServers = listServers(configPath);
+        const removeServers: Cli_Menu_Interactive_ServerMenu_RemoveServers = listServers(configPath);
 
-        servers.sort((a, b) => a['name'].localeCompare(b['name']));
+        removeServers.sort((a, b) => a['name'].localeCompare(b['name']));
 
-        if (servers['length'] === 0) {
+        if (removeServers['length'] === 0) {
           Logger.warn('No servers to remove.');
         } else {
-          const selectResponse: CliMenuInteractiveServerMenuSelectResponse = await prompts({
+          const removeSelectResponse: Cli_Menu_Interactive_ServerMenu_RemoveSelectResponse = await prompts({
             type: 'select',
             name: 'name',
             message: 'Select server to remove:',
-            choices: servers.map((server) => ({
-              title: server['name'], value: server['name'],
+            choices: removeServers.map((server) => ({
+              title: server['name'],
+              value: server['name'],
             })),
           });
 
-          const name: CliMenuInteractiveServerMenuName = selectResponse['name'];
+          const removeName: Cli_Menu_Interactive_ServerMenu_RemoveName = removeSelectResponse['name'];
 
-          if (name !== undefined) {
-            const confirmResponse: CliMenuInteractiveServerMenuConfirmResponse = await prompts({
+          if (removeName !== undefined) {
+            const confirmResponse: Cli_Menu_Interactive_ServerMenu_ConfirmResponse = await prompts({
               type: 'confirm',
               name: 'confirmed',
-              message: chalk.yellow(`Remove "${name}"?`),
+              message: chalk.yellow(`Remove "${removeName}"?`),
               initial: false,
             });
 
-            const confirmed: CliMenuInteractiveServerMenuConfirmed = confirmResponse['confirmed'];
+            const confirmed: Cli_Menu_Interactive_ServerMenu_Confirmed = confirmResponse['confirmed'];
 
             if (confirmed === true) {
-              removeServer(configPath, name);
+              removeServer(configPath, removeName);
 
-              Logger.info(`Server "${name}" removed.`);
+              Logger.info(`Server "${removeName}" removed.`);
             }
           }
         }
       } catch (error) {
-        const errorMessage: CliMenuInteractiveServerMenuErrorMessage = (error instanceof Error) ? error['message'] : String(error);
+        const removeErrorMessage: Cli_Menu_Interactive_ServerMenu_RemoveErrorMessage = (error instanceof Error) ? error['message'] : String(error);
 
-        Logger.error(`Error: ${errorMessage}`);
+        Logger.error(`Error: ${removeErrorMessage}`);
       }
     }
   }
@@ -547,31 +584,35 @@ async function serverMenu(configPath: CliMenuInteractiveServerMenuConfigPath): C
  *
  * @since 2.0.0
  */
-async function contextMenu(configPath: CliMenuInteractiveContextMenuConfigPath): CliMenuInteractiveContextMenuReturn {
-  let inMenu: CliMenuInteractiveContextMenuInMenu = true;
+async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPath): Cli_Menu_Interactive_ContextMenu_Returns {
+  let inMenu: Cli_Menu_Interactive_ContextMenu_InMenu = true;
 
   while (inMenu === true) {
-    const response: CliMenuInteractiveContextMenuResponse = await prompts({
+    const response: Cli_Menu_Interactive_ContextMenu_Response = await prompts({
       type: 'select',
       name: 'action',
       message: chalk.cyan('Manage Contexts'),
       choices: [
         {
-          title: 'Add', value: 'add',
+          title: 'Add',
+          value: 'add',
         },
         {
-          title: 'Edit', value: 'edit',
+          title: 'Edit',
+          value: 'edit',
         },
         {
-          title: 'Remove', value: 'remove',
+          title: 'Remove',
+          value: 'remove',
         },
         {
-          title: 'Back', value: 'back',
+          title: 'Back',
+          value: 'back',
         },
       ],
     });
 
-    const action: CliMenuInteractiveContextMenuAction = response['action'];
+    const action: Cli_Menu_Interactive_ContextMenu_Action = response['action'];
 
     if (action === undefined || action === 'back') {
       inMenu = false;
@@ -581,7 +622,7 @@ async function contextMenu(configPath: CliMenuInteractiveContextMenuConfigPath):
 
     if (action === 'add') {
       try {
-        const servers: CliMenuInteractiveContextMenuServers = listServers(configPath);
+        const servers: Cli_Menu_Interactive_ContextMenu_Servers = listServers(configPath);
 
         if (servers['length'] === 0) {
           Logger.warn('Add a server first.');
@@ -589,49 +630,51 @@ async function contextMenu(configPath: CliMenuInteractiveContextMenuConfigPath):
           await addContextFlow(configPath, servers);
         }
       } catch (error) {
-        const errorMessage: CliMenuInteractiveContextMenuErrorMessage = (error instanceof Error) ? error['message'] : String(error);
+        const errorMessage: Cli_Menu_Interactive_ContextMenu_ErrorMessage = (error instanceof Error) ? error['message'] : String(error);
 
         Logger.error(`Error: ${errorMessage}`);
       }
     } else if (action === 'edit') {
       try {
-        const contexts: CliMenuInteractiveContextMenuContexts = listContexts(configPath);
+        const contexts: Cli_Menu_Interactive_ContextMenu_Contexts = listContexts(configPath);
 
         contexts.sort((a, b) => a['name'].localeCompare(b['name']));
 
         if (contexts['length'] === 0) {
           Logger.warn('No contexts to edit.');
         } else {
-          const selectResponse: CliMenuInteractiveContextMenuSelectResponse = await prompts({
+          const selectResponse: Cli_Menu_Interactive_ContextMenu_SelectResponse = await prompts({
             type: 'select',
             name: 'name',
             message: 'Select context to edit:',
             choices: contexts.map((context) => ({
-              title: context['name'], value: context['name'],
+              title: context['name'],
+              value: context['name'],
             })),
           });
 
-          const name: CliMenuInteractiveContextMenuName = selectResponse['name'];
+          const name: Cli_Menu_Interactive_ContextMenu_Name = selectResponse['name'];
 
           if (name !== undefined) {
-            const current: CliMenuInteractiveContextMenuCurrent = contexts.find((context) => context['name'] === name);
+            const current: Cli_Menu_Interactive_ContextMenu_Current = contexts.find((context) => context['name'] === name);
 
             if (current !== undefined) {
-              const servers: CliMenuInteractiveContextMenuServers = listServers(configPath);
-              const serverChoices: CliMenuInteractiveContextMenuServerChoices = servers.map((server) => ({
-                title: server['name'], value: server['name'],
+              const editServers: Cli_Menu_Interactive_ContextMenu_EditServers = listServers(configPath);
+              const serverChoices: Cli_Menu_Interactive_ContextMenu_ServerChoices = editServers.map((server) => ({
+                title: server['name'],
+                value: server['name'],
               }));
 
-              const keepIdResponse: CliMenuInteractiveContextMenuKeepIdResponse = await prompts({
+              const keepIdResponse: Cli_Menu_Interactive_ContextMenu_KeepIdResponse = await prompts({
                 type: 'confirm',
                 name: 'keepId',
                 message: `Keep current ID (${current['id']})?`,
                 initial: true,
               });
 
-              const keepId: CliMenuInteractiveContextMenuKeepId = keepIdResponse['keepId'];
+              const keepId: Cli_Menu_Interactive_ContextMenu_KeepId = keepIdResponse['keepId'];
 
-              let id: CliMenuInteractiveContextMenuId = undefined;
+              let id: Cli_Menu_Interactive_ContextMenu_Id = undefined;
 
               if (keepId === false) {
                 id = generateId();
@@ -639,60 +682,69 @@ async function contextMenu(configPath: CliMenuInteractiveContextMenuConfigPath):
                 Logger.info(`  New ID: ${id}`);
               }
 
-              const httpChoices: CliMenuInteractiveContextMenuHttpChoices = [
+              const httpChoices: Cli_Menu_Interactive_ContextMenu_HttpChoices = [
                 {
-                  title: 'Plain Text', value: 'plain-text',
+                  title: 'Plain Text',
+                  value: 'plain-text',
                 },
                 {
-                  title: 'ntfy JSON', value: 'ntfy-json',
+                  title: 'ntfy JSON',
+                  value: 'ntfy-json',
                 },
                 {
-                  title: 'Seerr', value: 'seerr',
+                  title: 'Seerr',
+                  value: 'seerr',
                 },
                 {
-                  title: 'Synology DSM', value: 'synology',
+                  title: 'Synology DSM',
+                  value: 'synology',
                 },
                 {
-                  title: 'Statuspage.io', value: 'statuspage',
-                },
-              ];
-              const emailChoices: CliMenuInteractiveContextMenuEmailChoices = [
-                {
-                  title: 'Plain Text', value: 'plain-text',
-                },
-                {
-                  title: 'pfSense', value: 'pfsense',
-                },
-                {
-                  title: 'UniFi', value: 'unifi',
+                  title: 'Statuspage.io',
+                  value: 'statuspage',
                 },
               ];
-              const knownChoices: CliMenuInteractiveContextMenuKnownChoices = (current['type'] === 'http') ? httpChoices : emailChoices;
-              const exists: CliMenuInteractiveContextMenuExists = knownChoices.some((c) => c['value'] === current['interpreter']);
+              const emailChoices: Cli_Menu_Interactive_ContextMenu_EmailChoices = [
+                {
+                  title: 'Plain Text',
+                  value: 'plain-text',
+                },
+                {
+                  title: 'pfSense',
+                  value: 'pfsense',
+                },
+                {
+                  title: 'UniFi',
+                  value: 'unifi',
+                },
+              ];
+              const knownChoices: Cli_Menu_Interactive_ContextMenu_KnownChoices = (current['type'] === 'http') ? httpChoices : emailChoices;
+              const exists: Cli_Menu_Interactive_ContextMenu_Exists = knownChoices.some((c) => c['value'] === current['interpreter']);
 
               if (exists === false) {
                 knownChoices.unshift({
-                  title: `${current['interpreter']} (current, unknown)`, value: current['interpreter'],
+                  title: `${current['interpreter']} (current, unknown)`,
+                  value: current['interpreter'],
                 });
               }
 
-              const httpValues: CliMenuInteractiveContextMenuKnownValues = [
+              const httpValues: Cli_Menu_Interactive_ContextMenu_HttpValues = [
                 'plain-text',
                 'ntfy-json',
                 'seerr',
                 'synology',
                 'statuspage',
               ];
-              const emailValues: CliMenuInteractiveContextMenuKnownValues = [
+              const emailValues: Cli_Menu_Interactive_ContextMenu_EmailValues = [
                 'plain-text',
                 'pfsense',
                 'unifi',
               ];
-              const knownValues: CliMenuInteractiveContextMenuKnownValues = (current['type'] === 'http') ? httpValues : emailValues;
-              const interpreterIdx: CliMenuInteractiveContextMenuIdx = knownValues.indexOf(current['interpreter']);
-              const interpreterInitial: CliMenuInteractiveContextMenuIdx = (interpreterIdx >= 0) ? interpreterIdx : 0;
+              const knownValues: Cli_Menu_Interactive_ContextMenu_KnownValues = (current['type'] === 'http') ? httpValues : emailValues;
+              const interpreterIdx: Cli_Menu_Interactive_ContextMenu_InterpreterIdx = knownValues.indexOf(current['interpreter']);
+              const interpreterInitial: Cli_Menu_Interactive_ContextMenu_InterpreterInitial = (interpreterIdx >= 0) ? interpreterIdx : 0;
 
-              const interpreterResponse: CliMenuInteractiveContextMenuInterpreterResponse = await prompts({
+              const interpreterResponse: Cli_Menu_Interactive_ContextMenu_InterpreterResponse = await prompts({
                 type: 'select',
                 name: 'interpreter',
                 message: 'Interpreter:',
@@ -700,68 +752,93 @@ async function contextMenu(configPath: CliMenuInteractiveContextMenuConfigPath):
                 initial: interpreterInitial,
               });
 
-              const interpreter: CliMenuInteractiveContextMenuInterpreter = interpreterResponse['interpreter'];
+              const interpreter: Cli_Menu_Interactive_ContextMenu_Interpreter = interpreterResponse['interpreter'];
 
-              const topicResponse: CliMenuInteractiveContextMenuTopicResponse = await prompts({
+              const topicResponse: Cli_Menu_Interactive_ContextMenu_TopicResponse = await prompts({
                 type: 'text',
                 name: 'topic',
                 message: 'ntfy topic:',
                 initial: current['topic'],
-                validate: (value: CliMenuInteractiveContextMenuTopicValidateValue) => value.trim()['length'] > 0 || 'Topic is required',
+                validate: (value) => value.trim()['length'] > 0 || 'Topic is required',
               });
 
-              const topic: CliMenuInteractiveContextMenuTopic = topicResponse['topic'];
+              const topic: Cli_Menu_Interactive_ContextMenu_Topic = topicResponse['topic'];
 
-              const currentErrorTopic: CliMenuInteractiveContextMenuErrorTopic = (current['error_topic'] !== undefined) ? current['error_topic'] : '';
+              const currentErrorTopic: Cli_Menu_Interactive_ContextMenu_CurrentErrorTopic = (current['error_topic'] !== undefined) ? current['error_topic'] : '';
 
-              const errorTopicResponse: CliMenuInteractiveContextMenuErrorTopicResponse = await prompts({
+              const errorTopicResponse: Cli_Menu_Interactive_ContextMenu_ErrorTopicResponse = await prompts({
                 type: 'text',
                 name: 'error_topic',
                 message: 'ntfy error topic (blank to skip):',
                 initial: currentErrorTopic,
               });
 
-              const errorTopic: CliMenuInteractiveContextMenuErrorTopic = errorTopicResponse['error_topic'];
+              const errorTopic: Cli_Menu_Interactive_ContextMenu_ErrorTopic = errorTopicResponse['error_topic'];
 
-              const modeInitial: CliMenuInteractiveContextMenuIdx = (current['mode'] === 'send-all') ? 1 : 0;
+              const currentErrorEvents: Cli_Menu_Interactive_ContextMenu_CurrentErrorEvents = current['error_events'];
 
-              const modeResponse: CliMenuInteractiveContextMenuModeResponse = await prompts({
+              const errorEventsResponse: Cli_Menu_Interactive_ContextMenu_ErrorEventsResponse = await prompts({
+                type: 'multiselect',
+                name: 'error_events',
+                message: 'Errors that notify the error topic (space to select):',
+                choices: [
+                  {
+                    title: 'Authentication (failed auth, scanner traffic)',
+                    value: 'authentication',
+                    selected: currentErrorEvents === undefined || currentErrorEvents.includes('authentication'),
+                  },
+                  {
+                    title: 'Interpretation (interpreter errors)',
+                    value: 'interpretation',
+                    selected: currentErrorEvents === undefined || currentErrorEvents.includes('interpretation'),
+                  },
+                ],
+              });
+
+              const errorEvents: Cli_Menu_Interactive_ContextMenu_ErrorEvents = errorEventsResponse['error_events'];
+
+              const modeInitial: Cli_Menu_Interactive_ContextMenu_ModeInitial = (current['mode'] === 'send-all') ? 1 : 0;
+
+              const modeResponse: Cli_Menu_Interactive_ContextMenu_ModeResponse = await prompts({
                 type: 'select',
                 name: 'mode',
                 message: 'Mode:',
                 choices: [
                   {
-                    title: 'Send to one server only', value: 'send-once',
+                    title: 'Send to one server only',
+                    value: 'send-once',
                   },
                   {
-                    title: 'Send to all servers', value: 'send-all',
+                    title: 'Send to all servers',
+                    value: 'send-all',
                   },
                 ],
                 initial: modeInitial,
               });
 
-              const mode: CliMenuInteractiveContextMenuMode = modeResponse['mode'];
+              const mode: Cli_Menu_Interactive_ContextMenu_Mode = modeResponse['mode'];
 
-              const showVisitorInfoResponse: CliMenuInteractiveContextMenuShowVisitorInfoResponse = await prompts({
+              const showVisitorInfoResponse: Cli_Menu_Interactive_ContextMenu_ShowVisitorInfoResponse = await prompts({
                 type: 'confirm',
                 name: 'show_visitor_info',
                 message: 'Show visitor info?',
                 initial: current['show_visitor_info'],
               });
 
-              const showVisitorInfo: CliMenuInteractiveContextMenuShowVisitorInfo = showVisitorInfoResponse['show_visitor_info'];
+              const showVisitorInfo: Cli_Menu_Interactive_ContextMenu_ShowVisitorInfo = showVisitorInfoResponse['show_visitor_info'];
 
-              const primaryServerIdx: CliMenuInteractiveContextMenuPrimaryServerIdx = serverChoices.findIndex((s) => s['value'] === current['primary_server']);
+              const primaryServerIdx: Cli_Menu_Interactive_ContextMenu_PrimaryServerIdx = serverChoices.findIndex((s) => s['value'] === current['primary_server']);
 
               if (primaryServerIdx < 0) {
                 serverChoices.unshift({
-                  title: `${current['primary_server']} (current, not found)`, value: current['primary_server'],
+                  title: `${current['primary_server']} (current, not found)`,
+                  value: current['primary_server'],
                 });
               }
 
-              const primaryServerInitial: CliMenuInteractiveContextMenuPrimaryServerIdx = (primaryServerIdx >= 0) ? primaryServerIdx : 0;
+              const primaryServerInitial: Cli_Menu_Interactive_ContextMenu_PrimaryServerInitial = (primaryServerIdx >= 0) ? primaryServerIdx : 0;
 
-              const primaryServerResponse: CliMenuInteractiveContextMenuPrimaryServerResponse = await prompts({
+              const primaryServerResponse: Cli_Menu_Interactive_ContextMenu_PrimaryServerResponse = await prompts({
                 type: 'select',
                 name: 'primary_server',
                 message: 'Primary server:',
@@ -769,9 +846,9 @@ async function contextMenu(configPath: CliMenuInteractiveContextMenuConfigPath):
                 initial: primaryServerInitial,
               });
 
-              const primaryServer: CliMenuInteractiveContextMenuPrimaryServer = primaryServerResponse['primary_server'];
+              const primaryServer: Cli_Menu_Interactive_ContextMenu_PrimaryServer = primaryServerResponse['primary_server'];
 
-              const selectedServersResponse: CliMenuInteractiveContextMenuSelectedServersResponse = await prompts({
+              const selectedServersResponse: Cli_Menu_Interactive_ContextMenu_SelectedServersResponse = await prompts({
                 type: 'multiselect',
                 name: 'selectedServers',
                 message: 'All servers (space to select):',
@@ -781,9 +858,9 @@ async function contextMenu(configPath: CliMenuInteractiveContextMenuConfigPath):
                 })),
               });
 
-              const selectedServers: CliMenuInteractiveContextMenuSelectedServers = selectedServersResponse['selectedServers'];
+              const selectedServers: Cli_Menu_Interactive_ContextMenu_SelectedServers = selectedServersResponse['selectedServers'];
 
-              const updates: CliMenuInteractiveContextMenuUpdates = {};
+              const updates: Cli_Menu_Interactive_ContextMenu_Updates = {};
 
               if (id !== undefined) {
                 Reflect.set(updates, 'id', id);
@@ -813,64 +890,68 @@ async function contextMenu(configPath: CliMenuInteractiveContextMenuConfigPath):
                 Reflect.set(updates, 'servers', selectedServers);
               }
 
-              const errorTopicValue: CliMenuInteractiveContextMenuErrorTopicValue = errorTopic;
-              const errorTopicTrimmed: CliMenuInteractiveContextMenuErrorTopicTrimmed = (errorTopicValue !== undefined) ? errorTopicValue.trim() : '';
-              const resolvedErrorTopic: CliMenuInteractiveContextMenuErrorTopic = (errorTopicTrimmed !== '') ? errorTopicTrimmed : undefined;
+              const errorTopicValue: Cli_Menu_Interactive_ContextMenu_ErrorTopicValue = errorTopic;
+              const errorTopicTrimmed: Cli_Menu_Interactive_ContextMenu_ErrorTopicTrimmed = (errorTopicValue !== undefined) ? errorTopicValue.trim() : '';
+              const resolvedErrorTopic: Cli_Menu_Interactive_ContextMenu_ResolvedErrorTopic = (errorTopicTrimmed !== '') ? errorTopicTrimmed : undefined;
 
               Reflect.set(updates, 'error_topic', resolvedErrorTopic);
 
+              if (errorEvents !== undefined) {
+                Reflect.set(updates, 'error_events', errorEvents);
+              }
+
               if (current['type'] === 'http' && current['token'] !== undefined) {
-                const keepTokenResponse: CliMenuInteractiveContextMenuKeepTokenResponse = await prompts({
+                const keepTokenResponse: Cli_Menu_Interactive_ContextMenu_KeepTokenResponse = await prompts({
                   type: 'confirm',
                   name: 'keepToken',
                   message: 'Keep current auth token?',
                   initial: true,
                 });
 
-                const keepToken: CliMenuInteractiveContextMenuKeepToken = keepTokenResponse['keepToken'];
+                const keepToken: Cli_Menu_Interactive_ContextMenu_KeepToken = keepTokenResponse['keepToken'];
 
                 if (keepToken === false) {
-                  const newToken: CliMenuInteractiveContextMenuNewToken = generateToken();
+                  const newToken: Cli_Menu_Interactive_ContextMenu_NewToken = generateToken();
 
                   Reflect.set(updates, 'token', newToken);
 
                   Logger.info(`  New token: ${newToken}`);
                 }
               } else if (current['type'] === 'http' && current['token'] === undefined) {
-                const addTokenResponse: CliMenuInteractiveContextMenuAddTokenResponse = await prompts({
+                const addTokenResponse: Cli_Menu_Interactive_ContextMenu_AddTokenResponse = await prompts({
                   type: 'confirm',
                   name: 'addToken',
                   message: 'Add auth token?',
                   initial: false,
                 });
 
-                const addToken: CliMenuInteractiveContextMenuAddToken = addTokenResponse['addToken'];
+                const addToken: Cli_Menu_Interactive_ContextMenu_AddToken = addTokenResponse['addToken'];
 
                 if (addToken === true) {
-                  const newToken: CliMenuInteractiveContextMenuNewToken = generateToken();
+                  const addNewToken: Cli_Menu_Interactive_ContextMenu_AddNewToken = generateToken();
 
-                  Reflect.set(updates, 'token', newToken);
+                  Reflect.set(updates, 'token', addNewToken);
 
-                  Logger.info(`  New token: ${newToken}`);
+                  Logger.info(`  New token: ${addNewToken}`);
                 }
               } else if (current['type'] === 'email') {
-                const currentAllowedFrom: CliMenuInteractiveContextMenuAllowedFrom = (current['allowed_from'] !== undefined) ? current['allowed_from'] : '';
+                const currentAllowedFrom: Cli_Menu_Interactive_ContextMenu_CurrentAllowedFrom = (current['allowed_from'] !== undefined) ? current['allowed_from'] : '';
 
-                const allowedFromResponse: CliMenuInteractiveContextMenuAllowedFromResponse = await prompts({
+                const allowedFromResponse: Cli_Menu_Interactive_ContextMenu_AllowedFromResponse = await prompts({
                   type: 'text',
                   name: 'allowed_from',
                   message: 'Allowed from email (blank to clear):',
                   initial: currentAllowedFrom,
                 });
 
-                const allowedFrom: CliMenuInteractiveContextMenuAllowedFrom = allowedFromResponse['allowed_from'];
-                const allowedFromTrimmed: CliMenuInteractiveContextMenuAllowedFromTrimmed = (allowedFrom !== undefined) ? allowedFrom.trim() : '';
-                const resolvedAllowedFrom: CliMenuInteractiveContextMenuAllowedFrom = (allowedFromTrimmed !== '') ? allowedFromTrimmed : undefined;
+                const allowedFrom: Cli_Menu_Interactive_ContextMenu_AllowedFrom = allowedFromResponse['allowed_from'];
+                const allowedFromTrimmed: Cli_Menu_Interactive_ContextMenu_AllowedFromTrimmed = (allowedFrom !== undefined) ? allowedFrom.trim() : '';
+                const resolvedAllowedFrom: Cli_Menu_Interactive_ContextMenu_ResolvedAllowedFrom = (allowedFromTrimmed !== '') ? allowedFromTrimmed : undefined;
 
                 Reflect.set(updates, 'allowed_from', resolvedAllowedFrom);
               }
 
-              const editImport: CliMenuInteractiveContextMenuEditImport = await import('../commands/context.js');
+              const editImport: Cli_Menu_Interactive_ContextMenu_EditImport = await import('../commands/context.js');
 
               editImport.editContext(configPath, name, updates);
 
@@ -879,51 +960,52 @@ async function contextMenu(configPath: CliMenuInteractiveContextMenuConfigPath):
           }
         }
       } catch (error) {
-        const errorMessage: CliMenuInteractiveContextMenuErrorMessage = (error instanceof Error) ? error['message'] : String(error);
+        const editErrorMessage: Cli_Menu_Interactive_ContextMenu_EditErrorMessage = (error instanceof Error) ? error['message'] : String(error);
 
-        Logger.error(`Error: ${errorMessage}`);
+        Logger.error(`Error: ${editErrorMessage}`);
       }
     } else if (action === 'remove') {
       try {
-        const contexts: CliMenuInteractiveContextMenuContexts = listContexts(configPath);
+        const removeContexts: Cli_Menu_Interactive_ContextMenu_RemoveContexts = listContexts(configPath);
 
-        contexts.sort((a, b) => a['name'].localeCompare(b['name']));
+        removeContexts.sort((a, b) => a['name'].localeCompare(b['name']));
 
-        if (contexts['length'] === 0) {
+        if (removeContexts['length'] === 0) {
           Logger.warn('No contexts to remove.');
         } else {
-          const selectResponse: CliMenuInteractiveContextMenuSelectResponse = await prompts({
+          const removeSelectResponse: Cli_Menu_Interactive_ContextMenu_RemoveSelectResponse = await prompts({
             type: 'select',
             name: 'name',
             message: 'Select context to remove:',
-            choices: contexts.map((context) => ({
-              title: context['name'], value: context['name'],
+            choices: removeContexts.map((context) => ({
+              title: context['name'],
+              value: context['name'],
             })),
           });
 
-          const name: CliMenuInteractiveContextMenuName = selectResponse['name'];
+          const removeName: Cli_Menu_Interactive_ContextMenu_RemoveName = removeSelectResponse['name'];
 
-          if (name !== undefined) {
-            const confirmResponse: CliMenuInteractiveContextMenuConfirmResponse = await prompts({
+          if (removeName !== undefined) {
+            const confirmResponse: Cli_Menu_Interactive_ContextMenu_ConfirmResponse = await prompts({
               type: 'confirm',
               name: 'confirmed',
-              message: chalk.yellow(`Remove "${name}"?`),
+              message: chalk.yellow(`Remove "${removeName}"?`),
               initial: false,
             });
 
-            const confirmed: CliMenuInteractiveContextMenuConfirmed = confirmResponse['confirmed'];
+            const confirmed: Cli_Menu_Interactive_ContextMenu_Confirmed = confirmResponse['confirmed'];
 
             if (confirmed === true) {
-              removeContext(configPath, name);
+              removeContext(configPath, removeName);
 
-              Logger.info(`Context "${name}" removed.`);
+              Logger.info(`Context "${removeName}" removed.`);
             }
           }
         }
       } catch (error) {
-        const errorMessage: CliMenuInteractiveContextMenuErrorMessage = (error instanceof Error) ? error['message'] : String(error);
+        const removeErrorMessage: Cli_Menu_Interactive_ContextMenu_RemoveErrorMessage = (error instanceof Error) ? error['message'] : String(error);
 
-        Logger.error(`Error: ${errorMessage}`);
+        Logger.error(`Error: ${removeErrorMessage}`);
       }
     }
   }
@@ -939,79 +1021,89 @@ async function contextMenu(configPath: CliMenuInteractiveContextMenuConfigPath):
  *
  * @since 2.0.0
  */
-async function addContextFlow(configPath: CliMenuInteractiveAddContextFlowConfigPath, servers: CliMenuInteractiveAddContextFlowServers): CliMenuInteractiveAddContextFlowReturn {
-  const autoId: CliMenuInteractiveAddContextFlowAutoId = generateId();
+async function addContextFlow(configPath: Cli_Menu_Interactive_AddContextFlow_ConfigPath, servers: Cli_Menu_Interactive_AddContextFlow_Servers): Cli_Menu_Interactive_AddContextFlow_Returns {
+  const autoId: Cli_Menu_Interactive_AddContextFlow_AutoId = generateId();
 
-  const typeResponse: CliMenuInteractiveAddContextFlowTypeResponse = await prompts({
+  const typeResponse: Cli_Menu_Interactive_AddContextFlow_TypeResponse = await prompts({
     type: 'select',
     name: 'contextType',
     message: 'Context type:',
     choices: [
       {
-        title: 'HTTP', value: 'http',
+        title: 'HTTP',
+        value: 'http',
       },
       {
-        title: 'Email', value: 'email',
+        title: 'Email',
+        value: 'email',
       },
     ],
   });
 
-  const contextType: CliMenuInteractiveAddContextFlowContextType = typeResponse['contextType'];
+  const contextType: Cli_Menu_Interactive_AddContextFlow_ContextType = typeResponse['contextType'];
 
   if (contextType === undefined) {
     return;
   }
 
-  const httpInterpreters: CliMenuInteractiveAddContextFlowHttpInterpreters = [
+  const httpInterpreters: Cli_Menu_Interactive_AddContextFlow_HttpInterpreters = [
     {
-      title: 'Plain Text', value: 'plain-text',
+      title: 'Plain Text',
+      value: 'plain-text',
     },
     {
-      title: 'ntfy JSON', value: 'ntfy-json',
+      title: 'ntfy JSON',
+      value: 'ntfy-json',
     },
     {
-      title: 'Seerr', value: 'seerr',
+      title: 'Seerr',
+      value: 'seerr',
     },
     {
-      title: 'Synology DSM', value: 'synology',
+      title: 'Synology DSM',
+      value: 'synology',
     },
     {
-      title: 'Statuspage.io', value: 'statuspage',
-    },
-  ];
-
-  const emailInterpreters: CliMenuInteractiveAddContextFlowEmailInterpreters = [
-    {
-      title: 'Plain Text', value: 'plain-text',
-    },
-    {
-      title: 'pfSense', value: 'pfsense',
-    },
-    {
-      title: 'UniFi', value: 'unifi',
+      title: 'Statuspage.io',
+      value: 'statuspage',
     },
   ];
 
-  const nameResponse: CliMenuInteractiveAddContextFlowNameResponse = await prompts({
+  const emailInterpreters: Cli_Menu_Interactive_AddContextFlow_EmailInterpreters = [
+    {
+      title: 'Plain Text',
+      value: 'plain-text',
+    },
+    {
+      title: 'pfSense',
+      value: 'pfsense',
+    },
+    {
+      title: 'UniFi',
+      value: 'unifi',
+    },
+  ];
+
+  const nameResponse: Cli_Menu_Interactive_AddContextFlow_NameResponse = await prompts({
     type: 'text',
     name: 'name',
     message: 'Context name:',
-    validate: (value: CliMenuInteractiveAddContextFlowNameValidateValue) => value.trim()['length'] > 0 || 'Name is required',
+    validate: (value) => value.trim()['length'] > 0 || 'Name is required',
   });
 
-  const name: CliMenuInteractiveAddContextFlowName = nameResponse['name'];
+  const name: Cli_Menu_Interactive_AddContextFlow_Name = nameResponse['name'];
 
   if (name === undefined) {
     return;
   }
 
-  const idMessage: CliMenuInteractiveAddContextFlowIdMessage = (contextType === 'http') ? `ID (blank for auto: ${autoId}):` : 'ID (email local part, e.g. "pfsense"):';
+  const idMessage: Cli_Menu_Interactive_AddContextFlow_IdMessage = (contextType === 'http') ? `ID (blank for auto: ${autoId}):` : 'ID (email local part, e.g. "pfsense"):';
 
-  const idResponse: CliMenuInteractiveAddContextFlowIdResponse = await prompts({
+  const idResponse: Cli_Menu_Interactive_AddContextFlow_IdResponse = await prompts({
     type: 'text',
     name: 'id',
     message: idMessage,
-    validate: (value: CliMenuInteractiveAddContextFlowIdValidateValue) => {
+    validate: (value) => {
       if (contextType === 'http') {
         return true;
       }
@@ -1028,136 +1120,161 @@ async function addContextFlow(configPath: CliMenuInteractiveAddContextFlowConfig
     },
   });
 
-  const rawId: CliMenuInteractiveAddContextFlowRawId = idResponse['id'];
+  const rawId: Cli_Menu_Interactive_AddContextFlow_RawId = idResponse['id'];
 
   if (rawId === undefined) {
     return;
   }
 
-  const interpreterChoices: CliMenuInteractiveAddContextFlowInterpreterChoices = (contextType === 'http') ? httpInterpreters : emailInterpreters;
+  const interpreterChoices: Cli_Menu_Interactive_AddContextFlow_InterpreterChoices = (contextType === 'http') ? httpInterpreters : emailInterpreters;
 
-  const interpreterResponse: CliMenuInteractiveAddContextFlowInterpreterResponse = await prompts({
+  const interpreterResponse: Cli_Menu_Interactive_AddContextFlow_InterpreterResponse = await prompts({
     type: 'select',
     name: 'interpreter',
     message: 'Interpreter:',
     choices: interpreterChoices,
   });
 
-  const interpreter: CliMenuInteractiveAddContextFlowInterpreter = interpreterResponse['interpreter'];
+  const interpreter: Cli_Menu_Interactive_AddContextFlow_Interpreter = interpreterResponse['interpreter'];
 
   if (interpreter === undefined) {
     return;
   }
 
-  const topicResponse: CliMenuInteractiveAddContextFlowTopicResponse = await prompts({
+  const topicResponse: Cli_Menu_Interactive_AddContextFlow_TopicResponse = await prompts({
     type: 'text',
     name: 'topic',
     message: 'ntfy topic:',
-    validate: (value: CliMenuInteractiveAddContextFlowTopicValidateValue) => value.trim()['length'] > 0 || 'Topic is required',
+    validate: (value) => value.trim()['length'] > 0 || 'Topic is required',
   });
 
-  const topic: CliMenuInteractiveAddContextFlowTopic = topicResponse['topic'];
+  const topic: Cli_Menu_Interactive_AddContextFlow_Topic = topicResponse['topic'];
 
   if (topic === undefined) {
     return;
   }
 
-  const errorTopicResponse: CliMenuInteractiveAddContextFlowErrorTopicResponse = await prompts({
+  const errorTopicResponse: Cli_Menu_Interactive_AddContextFlow_ErrorTopicResponse = await prompts({
     type: 'text',
     name: 'error_topic',
     message: 'ntfy error topic (blank to skip):',
   });
 
-  const errorTopic: CliMenuInteractiveAddContextFlowErrorTopic = errorTopicResponse['error_topic'];
+  const errorTopic: Cli_Menu_Interactive_AddContextFlow_ErrorTopic = errorTopicResponse['error_topic'];
 
-  const modeResponse: CliMenuInteractiveAddContextFlowModeResponse = await prompts({
+  const errorEventsResponse: Cli_Menu_Interactive_AddContextFlow_ErrorEventsResponse = await prompts({
+    type: 'multiselect',
+    name: 'error_events',
+    message: 'Errors that notify the error topic (space to select):',
+    choices: [
+      {
+        title: 'Authentication (failed auth, scanner traffic)',
+        value: 'authentication',
+        selected: true,
+      },
+      {
+        title: 'Interpretation (interpreter errors)',
+        value: 'interpretation',
+        selected: true,
+      },
+    ],
+  });
+
+  const errorEvents: Cli_Menu_Interactive_AddContextFlow_ErrorEvents = errorEventsResponse['error_events'];
+
+  const modeResponse: Cli_Menu_Interactive_AddContextFlow_ModeResponse = await prompts({
     type: 'select',
     name: 'mode',
     message: 'Mode:',
     choices: [
       {
-        title: 'Send to one server only', value: 'send-once',
+        title: 'Send to one server only',
+        value: 'send-once',
       },
       {
-        title: 'Send to all servers', value: 'send-all',
+        title: 'Send to all servers',
+        value: 'send-all',
       },
     ],
   });
 
-  const mode: CliMenuInteractiveAddContextFlowMode = modeResponse['mode'];
+  const mode: Cli_Menu_Interactive_AddContextFlow_Mode = modeResponse['mode'];
 
   if (mode === undefined) {
     return;
   }
 
-  const showVisitorInfoResponse: CliMenuInteractiveAddContextFlowShowVisitorInfoResponse = await prompts({
+  const showVisitorInfoResponse: Cli_Menu_Interactive_AddContextFlow_ShowVisitorInfoResponse = await prompts({
     type: 'confirm',
     name: 'show_visitor_info',
     message: 'Show visitor info?',
     initial: false,
   });
 
-  const showVisitorInfo: CliMenuInteractiveAddContextFlowShowVisitorInfo = showVisitorInfoResponse['show_visitor_info'];
+  const showVisitorInfo: Cli_Menu_Interactive_AddContextFlow_ShowVisitorInfo = showVisitorInfoResponse['show_visitor_info'];
 
   if (showVisitorInfo === undefined) {
     return;
   }
 
-  const primaryServerResponse: CliMenuInteractiveAddContextFlowPrimaryServerResponse = await prompts({
+  const primaryServerResponse: Cli_Menu_Interactive_AddContextFlow_PrimaryServerResponse = await prompts({
     type: 'select',
     name: 'primary_server',
     message: 'Primary server:',
     choices: servers.map((server) => ({
-      title: server['name'], value: server['name'],
+      title: server['name'],
+      value: server['name'],
     })),
   });
 
-  const primaryServer: CliMenuInteractiveAddContextFlowPrimaryServer = primaryServerResponse['primary_server'];
+  const primaryServer: Cli_Menu_Interactive_AddContextFlow_PrimaryServer = primaryServerResponse['primary_server'];
 
   if (primaryServer === undefined) {
     return;
   }
 
-  const selectedServersResponse: CliMenuInteractiveAddContextFlowSelectedServersResponse = await prompts({
+  const selectedServersResponse: Cli_Menu_Interactive_AddContextFlow_SelectedServersResponse = await prompts({
     type: 'multiselect',
     name: 'selectedServers',
     message: 'All servers for this context (space to select):',
     choices: servers.map((server) => ({
-      title: server['name'], value: server['name'],
+      title: server['name'],
+      value: server['name'],
     })),
   });
 
-  const selectedServers: CliMenuInteractiveAddContextFlowSelectedServers = selectedServersResponse['selectedServers'];
+  const selectedServers: Cli_Menu_Interactive_AddContextFlow_SelectedServers = selectedServersResponse['selectedServers'];
 
   if (selectedServers === undefined) {
     return;
   }
 
-  const rawIdString: CliMenuInteractiveAddContextFlowRawIdString = rawId;
-  const idTrimmed: CliMenuInteractiveAddContextFlowIdTrimmed = rawIdString.trim();
-  const resolvedId: CliMenuInteractiveAddContextFlowResolvedId = (idTrimmed !== '') ? idTrimmed : autoId;
+  const rawIdString: Cli_Menu_Interactive_AddContextFlow_RawIdString = rawId;
+  const idTrimmed: Cli_Menu_Interactive_AddContextFlow_IdTrimmed = rawIdString.trim();
+  const resolvedId: Cli_Menu_Interactive_AddContextFlow_ResolvedId = (idTrimmed !== '') ? idTrimmed : autoId;
 
-  const errorTopicString: CliMenuInteractiveAddContextFlowErrorTopicString = (errorTopic !== undefined) ? (errorTopic) : '';
-  const errorTopicTrimmed: CliMenuInteractiveAddContextFlowErrorTopicTrimmed = errorTopicString.trim();
-  const resolvedErrorTopic: CliMenuInteractiveAddContextFlowResolvedErrorTopic = (errorTopicTrimmed !== '') ? errorTopicTrimmed : undefined;
+  const errorTopicString: Cli_Menu_Interactive_AddContextFlow_ErrorTopicString = (errorTopic !== undefined) ? (errorTopic) : '';
+  const errorTopicTrimmed: Cli_Menu_Interactive_AddContextFlow_ErrorTopicTrimmed = errorTopicString.trim();
+  const resolvedErrorTopic: Cli_Menu_Interactive_AddContextFlow_ResolvedErrorTopic = (errorTopicTrimmed !== '') ? errorTopicTrimmed : undefined;
 
-  const topicString: CliMenuInteractiveAddContextFlowTopicString = topic;
-  const typedInterpreter: CliMenuInteractiveAddContextFlowTypedInterpreter = interpreter as CliMenuInteractiveAddContextFlowTypedInterpreter;
-  const typedMode: CliMenuInteractiveAddContextFlowTypedMode = mode as CliMenuInteractiveAddContextFlowTypedMode;
+  const topicString: Cli_Menu_Interactive_AddContextFlow_TopicString = topic;
+  const typedInterpreter: Cli_Menu_Interactive_AddContextFlow_TypedInterpreter = interpreter as Cli_Menu_Interactive_AddContextFlow_TypedInterpreter;
+  const typedMode: Cli_Menu_Interactive_AddContextFlow_TypedMode = mode as Cli_Menu_Interactive_AddContextFlow_TypedMode;
+  const typedErrorEvents: Cli_Menu_Interactive_AddContextFlow_TypedErrorEvents = errorEvents as Cli_Menu_Interactive_AddContextFlow_TypedErrorEvents;
 
   if (contextType === 'http') {
-    const autoToken: CliMenuInteractiveAddContextFlowAutoToken = generateToken();
+    const autoToken: Cli_Menu_Interactive_AddContextFlow_AutoToken = generateToken();
 
-    const tokenResponse: CliMenuInteractiveAddContextFlowTokenResponse = await prompts({
+    const tokenResponse: Cli_Menu_Interactive_AddContextFlow_TokenResponse = await prompts({
       type: 'text',
       name: 'token',
       message: 'Auth token (blank to skip, enter to accept):',
       initial: autoToken,
     });
 
-    const rawToken: CliMenuInteractiveAddContextFlowRawToken = tokenResponse['token'];
-    const tokenTrimmed: CliMenuInteractiveAddContextFlowTokenTrimmed = (rawToken !== undefined) ? rawToken.trim() : '';
-    const resolvedToken: CliMenuInteractiveAddContextFlowResolvedToken = (tokenTrimmed !== '') ? tokenTrimmed : undefined;
+    const rawToken: Cli_Menu_Interactive_AddContextFlow_RawToken = tokenResponse['token'];
+    const tokenTrimmed: Cli_Menu_Interactive_AddContextFlow_TokenTrimmed = (rawToken !== undefined) ? rawToken.trim() : '';
+    const resolvedToken: Cli_Menu_Interactive_AddContextFlow_ResolvedToken = (tokenTrimmed !== '') ? tokenTrimmed : undefined;
 
     addContext(configPath, {
       name,
@@ -1166,6 +1283,7 @@ async function addContextFlow(configPath: CliMenuInteractiveAddContextFlowConfig
       interpreter: typedInterpreter,
       topic: topicString,
       error_topic: resolvedErrorTopic,
+      error_events: typedErrorEvents,
       mode: typedMode,
       show_visitor_info: showVisitorInfo,
       primary_server: primaryServer,
@@ -1173,15 +1291,15 @@ async function addContextFlow(configPath: CliMenuInteractiveAddContextFlowConfig
       token: resolvedToken,
     });
   } else {
-    const allowedFromResponse: CliMenuInteractiveAddContextFlowAllowedFromResponse = await prompts({
+    const allowedFromResponse: Cli_Menu_Interactive_AddContextFlow_AllowedFromResponse = await prompts({
       type: 'text',
       name: 'allowed_from',
       message: 'Allowed from email (blank to skip):',
     });
 
-    const rawAllowedFrom: CliMenuInteractiveAddContextFlowRawAllowedFrom = allowedFromResponse['allowed_from'];
-    const allowedFromTrimmed: CliMenuInteractiveAddContextFlowAllowedFromTrimmed = (rawAllowedFrom !== undefined) ? rawAllowedFrom.trim() : '';
-    const resolvedAllowedFrom: CliMenuInteractiveAddContextFlowResolvedAllowedFrom = (allowedFromTrimmed !== '') ? allowedFromTrimmed : undefined;
+    const rawAllowedFrom: Cli_Menu_Interactive_AddContextFlow_RawAllowedFrom = allowedFromResponse['allowed_from'];
+    const allowedFromTrimmed: Cli_Menu_Interactive_AddContextFlow_AllowedFromTrimmed = (rawAllowedFrom !== undefined) ? rawAllowedFrom.trim() : '';
+    const resolvedAllowedFrom: Cli_Menu_Interactive_AddContextFlow_ResolvedAllowedFrom = (allowedFromTrimmed !== '') ? allowedFromTrimmed : undefined;
 
     addContext(configPath, {
       name,
@@ -1190,6 +1308,7 @@ async function addContextFlow(configPath: CliMenuInteractiveAddContextFlowConfig
       interpreter: typedInterpreter,
       topic: topicString,
       error_topic: resolvedErrorTopic,
+      error_events: typedErrorEvents,
       mode: typedMode,
       show_visitor_info: showVisitorInfo,
       primary_server: primaryServer,
@@ -1211,55 +1330,55 @@ async function addContextFlow(configPath: CliMenuInteractiveAddContextFlowConfig
  *
  * @since 2.0.0
  */
-async function settingsFlow(configPath: CliMenuInteractiveSettingsFlowConfigPath): CliMenuInteractiveSettingsFlowReturn {
-  let currentSettings: CliMenuInteractiveSettingsFlowCurrentSettings = undefined;
+async function settingsFlow(configPath: Cli_Menu_Interactive_SettingsFlow_ConfigPath): Cli_Menu_Interactive_SettingsFlow_Returns {
+  let currentSettings: Cli_Menu_Interactive_SettingsFlow_CurrentSettings = undefined;
 
   try {
     currentSettings = getSettings(configPath);
   } catch (error) {
-    const errorMessage: CliMenuInteractiveSettingsFlowErrorMessage = (error instanceof Error) ? error['message'] : String(error);
+    const errorMessage: Cli_Menu_Interactive_SettingsFlow_ErrorMessage = (error instanceof Error) ? error['message'] : String(error);
 
     Logger.error(`Error: ${errorMessage}`);
 
     return;
   }
 
-  const workerNameResponse: CliMenuInteractiveSettingsFlowWorkerNameResponse = await prompts({
+  const workerNameResponse: Cli_Menu_Interactive_SettingsFlow_WorkerNameResponse = await prompts({
     type: 'text',
     name: 'worker_name',
     message: 'Worker name:',
     initial: currentSettings['worker_name'],
-    validate: (value: CliMenuInteractiveSettingsFlowWorkerNameValidateValue) => value.trim()['length'] > 0 || 'Worker name is required',
+    validate: (value) => value.trim()['length'] > 0 || 'Worker name is required',
   });
 
-  const workerName: CliMenuInteractiveSettingsFlowWorkerName = workerNameResponse['worker_name'];
+  const workerName: Cli_Menu_Interactive_SettingsFlow_WorkerName = workerNameResponse['worker_name'];
 
   if (workerName === undefined) {
     return;
   }
 
-  const baseDomainResponse: CliMenuInteractiveSettingsFlowBaseDomainResponse = await prompts({
+  const baseDomainResponse: Cli_Menu_Interactive_SettingsFlow_BaseDomainResponse = await prompts({
     type: 'text',
     name: 'base_domain',
     message: 'Base domain:',
     initial: currentSettings['base_domain'],
-    validate: (value: CliMenuInteractiveSettingsFlowBaseDomainValidateValue) => value.trim()['length'] > 0 || 'Base domain is required',
+    validate: (value) => value.trim()['length'] > 0 || 'Base domain is required',
   });
 
-  const baseDomain: CliMenuInteractiveSettingsFlowBaseDomain = baseDomainResponse['base_domain'];
+  const baseDomain: Cli_Menu_Interactive_SettingsFlow_BaseDomain = baseDomainResponse['base_domain'];
 
   if (baseDomain === undefined) {
     return;
   }
 
-  const showResponseOutputResponse: CliMenuInteractiveSettingsFlowShowResponseOutputResponse = await prompts({
+  const showResponseOutputResponse: Cli_Menu_Interactive_SettingsFlow_ShowResponseOutputResponse = await prompts({
     type: 'confirm',
     name: 'show_response_output',
     message: 'Show response output (debug mode)?',
     initial: currentSettings['show_response_output'],
   });
 
-  const showResponseOutput: CliMenuInteractiveSettingsFlowShowResponseOutput = showResponseOutputResponse['show_response_output'];
+  const showResponseOutput: Cli_Menu_Interactive_SettingsFlow_ShowResponseOutput = showResponseOutputResponse['show_response_output'];
 
   if (showResponseOutput === undefined) {
     return;
@@ -1274,9 +1393,9 @@ async function settingsFlow(configPath: CliMenuInteractiveSettingsFlowConfigPath
 
     Logger.info('Settings updated.');
   } catch (error) {
-    const errorMessage: CliMenuInteractiveSettingsFlowErrorMessage = (error instanceof Error) ? error['message'] : String(error);
+    const updateErrorMessage: Cli_Menu_Interactive_SettingsFlow_UpdateErrorMessage = (error instanceof Error) ? error['message'] : String(error);
 
-    Logger.error(`Error: ${errorMessage}`);
+    Logger.error(`Error: ${updateErrorMessage}`);
   }
 
   return;

@@ -7,20 +7,21 @@ import {
 } from '../../lib/regex.js';
 
 import type {
-  WorkerLandingPageBase,
-  WorkerLandingPageConfig,
-  WorkerLandingPageContexts,
-  WorkerLandingPageDebugSection,
-  WorkerLandingPageEscapeHtmlReturns,
-  WorkerLandingPageEscapeHtmlStr,
-  WorkerLandingPageHtml,
-  WorkerLandingPageMaskedConfig,
-  WorkerLandingPageMaskedContexts,
-  WorkerLandingPageMaskedJson,
-  WorkerLandingPageMaskedServers,
-  WorkerLandingPageResponse,
-  WorkerLandingPageServers,
-  WorkerLandingPageSettings,
+  Worker_Landing_Page_Config,
+  Worker_Landing_Page_EscapeHtml_Returns,
+  Worker_Landing_Page_EscapeHtml_Str,
+  Worker_Landing_Page_LandingPage_Base,
+  Worker_Landing_Page_LandingPage_Contexts,
+  Worker_Landing_Page_LandingPage_DebugSection,
+  Worker_Landing_Page_LandingPage_Html,
+  Worker_Landing_Page_LandingPage_MaskedConfig,
+  Worker_Landing_Page_LandingPage_MaskedContexts,
+  Worker_Landing_Page_LandingPage_MaskedJson,
+  Worker_Landing_Page_LandingPage_MaskedJsonRaw,
+  Worker_Landing_Page_LandingPage_MaskedServers,
+  Worker_Landing_Page_LandingPage_Returns,
+  Worker_Landing_Page_LandingPage_Servers,
+  Worker_Landing_Page_LandingPage_Settings,
 } from '../../types/worker/landing/page.d.ts';
 
 /**
@@ -29,9 +30,13 @@ import type {
  * Sanitizes user-controlled strings by replacing HTML-sensitive
  * characters with their entity equivalents to prevent XSS.
  *
+ * @param {Worker_Landing_Page_EscapeHtml_Str} str - Str.
+ *
+ * @returns {Worker_Landing_Page_EscapeHtml_Returns}
+ *
  * @since 2.0.0
  */
-function escapeHtml(str: WorkerLandingPageEscapeHtmlStr): WorkerLandingPageEscapeHtmlReturns {
+function escapeHtml(str: Worker_Landing_Page_EscapeHtml_Str): Worker_Landing_Page_EscapeHtml_Returns {
   return str
     .replace(new RegExp(LIB_REGEX_AMPERSAND, 'g'), '&amp;')
     .replace(new RegExp(LIB_REGEX_LESS_THAN, 'g'), '&lt;')
@@ -46,30 +51,35 @@ function escapeHtml(str: WorkerLandingPageEscapeHtmlStr): WorkerLandingPageEscap
  * Renders the HTML landing page shown when a GET request
  * arrives at the reverse proxy root endpoint.
  *
+ * @param {Worker_Landing_Page_Config} config - Config.
+ *
+ * @returns {Worker_Landing_Page_LandingPage_Returns}
+ *
  * @since 2.0.0
  */
-function landingPage(config: WorkerLandingPageConfig): WorkerLandingPageResponse {
-  const settings: WorkerLandingPageSettings = config['settings'];
-  const servers: WorkerLandingPageServers = config['servers'];
-  const contexts: WorkerLandingPageContexts = config['contexts'];
+function landingPage(config: Worker_Landing_Page_Config): Worker_Landing_Page_LandingPage_Returns {
+  const settings: Worker_Landing_Page_LandingPage_Settings = config['settings'];
+  const servers: Worker_Landing_Page_LandingPage_Servers = config['servers'];
+  const contexts: Worker_Landing_Page_LandingPage_Contexts = config['contexts'];
 
-  let debugSection: WorkerLandingPageDebugSection = '';
+  let debugSection: Worker_Landing_Page_LandingPage_DebugSection = '';
 
   if (settings['show_response_output'] === true) {
-    const maskedServers: WorkerLandingPageMaskedServers = servers.map((server) => ({
+    const maskedServers: Worker_Landing_Page_LandingPage_MaskedServers = servers.map((server) => ({
       name: server['name'],
       server: '***',
       token: '***',
     }));
 
-    const maskedContexts: WorkerLandingPageMaskedContexts = contexts.map((context) => {
-      const base: WorkerLandingPageBase = {
+    const maskedContexts: Worker_Landing_Page_LandingPage_MaskedContexts = contexts.map((context) => {
+      const base: Worker_Landing_Page_LandingPage_Base = {
         id: '***',
         name: context['name'],
         type: context['type'],
         interpreter: context['interpreter'],
         topic: '***',
-        ...(context['error_topic'] !== undefined ? { error_topic: '***' } : {}),
+        ...((context['error_topic'] !== undefined) ? { error_topic: '***' } : {}),
+        ...((context['error_events'] !== undefined) ? { error_events: context['error_events'] } : {}),
         mode: context['mode'],
         show_visitor_info: context['show_visitor_info'],
         primary_server: context['primary_server'],
@@ -79,17 +89,17 @@ function landingPage(config: WorkerLandingPageConfig): WorkerLandingPageResponse
       if (context['type'] === 'http') {
         return {
           ...base,
-          ...(context['token'] !== undefined ? { token: '***' } : {}),
+          ...((context['token'] !== undefined) ? { token: '***' } : {}),
         };
       }
 
       return {
         ...base,
-        ...(context['allowed_from'] !== undefined ? { allowed_from: '***' } : {}),
+        ...((context['allowed_from'] !== undefined) ? { allowed_from: '***' } : {}),
       };
     });
 
-    const maskedConfig: WorkerLandingPageMaskedConfig = {
+    const maskedConfig: Worker_Landing_Page_LandingPage_MaskedConfig = {
       settings: {
         ...settings,
         base_domain: '***',
@@ -98,8 +108,8 @@ function landingPage(config: WorkerLandingPageConfig): WorkerLandingPageResponse
       contexts: maskedContexts,
     };
 
-    const maskedJsonRaw: WorkerLandingPageMaskedJson = JSON.stringify(maskedConfig, null, 2);
-    const maskedJson: WorkerLandingPageMaskedJson = escapeHtml(maskedJsonRaw);
+    const maskedJsonRaw: Worker_Landing_Page_LandingPage_MaskedJsonRaw = JSON.stringify(maskedConfig, null, 2);
+    const maskedJson: Worker_Landing_Page_LandingPage_MaskedJson = escapeHtml(maskedJsonRaw);
 
     debugSection = [
       '',
@@ -110,7 +120,7 @@ function landingPage(config: WorkerLandingPageConfig): WorkerLandingPageResponse
     ].join('\n');
   }
 
-  const html: WorkerLandingPageHtml = [
+  const html: Worker_Landing_Page_LandingPage_Html = [
     '<!DOCTYPE html>',
     '<html lang="en">',
     '<head>',

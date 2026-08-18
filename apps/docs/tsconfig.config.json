@@ -14,7 +14,7 @@
   },
   "include": [
     "./docusaurus.config.ts",
-    "./eslint.config.ts",
+    "./eslint.config.mts",
     "./sidebars.ts",
     "./vitest.config.ts",
     "./vitest.setup.ts"

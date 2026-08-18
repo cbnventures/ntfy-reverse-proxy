@@ -1,19 +1,20 @@
 import type {
-  WorkerPipelineReceiveBaseDomain,
-  WorkerPipelineReceiveCfProperties,
-  WorkerPipelineReceiveCfRequestRecord,
-  WorkerPipelineReceiveCfRequestUnknown,
-  WorkerPipelineReceiveHeaders,
-  WorkerPipelineReceiveHostname,
-  WorkerPipelineReceiveIncludesBaseDomain,
-  WorkerPipelineReceiveIsGet,
-  WorkerPipelineReceiveMethod,
-  WorkerPipelineReceiveProtocol,
-  WorkerPipelineReceiveRawBody,
-  WorkerPipelineReceiveRedirect,
-  WorkerPipelineReceiveRequest,
-  WorkerPipelineReceiveReturns,
-  WorkerPipelineReceiveUrl,
+  Worker_Pipeline_Receive_BaseDomain,
+  Worker_Pipeline_Receive_CfProperties,
+  Worker_Pipeline_Receive_CfRequestRecord,
+  Worker_Pipeline_Receive_CfRequestUnknown,
+  Worker_Pipeline_Receive_Headers,
+  Worker_Pipeline_Receive_Hostname,
+  Worker_Pipeline_Receive_IncludesBaseDomain,
+  Worker_Pipeline_Receive_IsGet,
+  Worker_Pipeline_Receive_Method,
+  Worker_Pipeline_Receive_Protocol,
+  Worker_Pipeline_Receive_RawBody,
+  Worker_Pipeline_Receive_Receive_ParsedUrl,
+  Worker_Pipeline_Receive_Redirect,
+  Worker_Pipeline_Receive_Request,
+  Worker_Pipeline_Receive_Returns,
+  Worker_Pipeline_Receive_Url,
 } from '../../types/worker/pipeline/receive.d.ts';
 
 /**
@@ -24,23 +25,23 @@ import type {
  *
  * @since 2.0.0
  */
-async function receive(request: WorkerPipelineReceiveRequest, baseDomain: WorkerPipelineReceiveBaseDomain): WorkerPipelineReceiveReturns {
-  const method: WorkerPipelineReceiveMethod = request.method;
-  const parsedUrl: URL = new URL(request.url);
-  const hostname: WorkerPipelineReceiveHostname = parsedUrl.hostname;
-  const protocol: WorkerPipelineReceiveProtocol = parsedUrl.protocol;
-  const url: WorkerPipelineReceiveUrl = request.url;
-  const headers: WorkerPipelineReceiveHeaders = request.headers;
+async function receive(request: Worker_Pipeline_Receive_Request, baseDomain: Worker_Pipeline_Receive_BaseDomain): Worker_Pipeline_Receive_Returns {
+  const method: Worker_Pipeline_Receive_Method = request['method'];
+  const parsedUrl: Worker_Pipeline_Receive_Receive_ParsedUrl = new URL(request['url']);
+  const hostname: Worker_Pipeline_Receive_Hostname = parsedUrl.hostname;
+  const protocol: Worker_Pipeline_Receive_Protocol = parsedUrl.protocol;
+  const url: Worker_Pipeline_Receive_Url = request['url'];
+  const headers: Worker_Pipeline_Receive_Headers = request['headers'];
 
   // Redirect HTTP to HTTPS in production (not localhost).
-  const includesBaseDomain: WorkerPipelineReceiveIncludesBaseDomain = hostname.includes(baseDomain);
+  const includesBaseDomain: Worker_Pipeline_Receive_IncludesBaseDomain = hostname.includes(baseDomain);
 
   if (
     protocol === 'http:'
     && hostname !== 'localhost'
     && includesBaseDomain === true
   ) {
-    const redirect: WorkerPipelineReceiveRedirect = request.url.replace('http://', 'https://');
+    const redirect: Worker_Pipeline_Receive_Redirect = request['url'].replace('http://', 'https://');
 
     return {
       method,
@@ -71,11 +72,11 @@ async function receive(request: WorkerPipelineReceiveRequest, baseDomain: Worker
   }
 
   // Read raw body for POST/PUT; empty ArrayBuffer for GET.
-  const rawBody: WorkerPipelineReceiveRawBody = (method === 'POST' || method === 'PUT') ? await request.arrayBuffer() : new ArrayBuffer(0);
-  const isGet: WorkerPipelineReceiveIsGet = method === 'GET';
-  const cfRequestUnknown: WorkerPipelineReceiveCfRequestUnknown = request;
-  const cfRequestRecord: WorkerPipelineReceiveCfRequestRecord = cfRequestUnknown as WorkerPipelineReceiveCfRequestRecord;
-  const cfProperties: WorkerPipelineReceiveCfProperties = cfRequestRecord['cf'] as WorkerPipelineReceiveCfProperties;
+  const rawBody: Worker_Pipeline_Receive_RawBody = (method === 'POST' || method === 'PUT') ? await request.arrayBuffer() : new ArrayBuffer(0);
+  const isGet: Worker_Pipeline_Receive_IsGet = method === 'GET';
+  const cfRequestUnknown: Worker_Pipeline_Receive_CfRequestUnknown = request;
+  const cfRequestRecord: Worker_Pipeline_Receive_CfRequestRecord = cfRequestUnknown as Worker_Pipeline_Receive_CfRequestRecord;
+  const cfProperties: Worker_Pipeline_Receive_CfProperties = cfRequestRecord['cf'] as Worker_Pipeline_Receive_CfProperties;
 
   return {
     method,
@@ -84,7 +85,7 @@ async function receive(request: WorkerPipelineReceiveRequest, baseDomain: Worker
     headers,
     rawBody,
     isGet,
-    ...(cfProperties !== undefined ? { cfProperties } : {}),
+    ...((cfProperties !== undefined) ? { cfProperties } : {}),
   };
 }
 

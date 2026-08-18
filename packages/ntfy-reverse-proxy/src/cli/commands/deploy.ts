@@ -1,6 +1,7 @@
-import { spawnSync } from 'child_process';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
-import { resolve } from 'path';
+import { spawnSync } from 'node:child_process';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { Bootstrap, Logger } from '@cbnventures/nova/toolkit';
 import chalk from 'chalk';
@@ -15,142 +16,183 @@ import { getSettings } from './settings.js';
 import { validateConfig } from './validate.js';
 
 import type {
-  CliCommandsDeployCreateEmailRoutingRuleContextId,
-  CliCommandsDeployCreateEmailRoutingRuleCreateData,
-  CliCommandsDeployCreateEmailRoutingRuleCreateDataErrors,
-  CliCommandsDeployCreateEmailRoutingRuleEmail,
-  CliCommandsDeployCreateEmailRoutingRuleErrorDetails,
-  CliCommandsDeployCreateEmailRoutingRuleResponse,
-  CliCommandsDeployCreateEmailRoutingRuleReturn,
-  CliCommandsDeployCreateEmailRoutingRuleToken,
-  CliCommandsDeployCreateEmailRoutingRuleWorkerName,
-  CliCommandsDeployCreateEmailRoutingRuleZoneId,
-  CliCommandsDeployDeleteEmailRoutingRuleDeleteData,
-  CliCommandsDeployDeleteEmailRoutingRuleDeleteDataErrors,
-  CliCommandsDeployDeleteEmailRoutingRuleErrorDetails,
-  CliCommandsDeployDeleteEmailRoutingRuleResponse,
-  CliCommandsDeployDeleteEmailRoutingRuleReturn,
-  CliCommandsDeployDeleteEmailRoutingRuleRuleId,
-  CliCommandsDeployDeleteEmailRoutingRuleToken,
-  CliCommandsDeployDeleteEmailRoutingRuleZoneId,
-  CliCommandsDeployDeployAccountId,
-  CliCommandsDeployDeployConfigPath,
-  CliCommandsDeployDeployContexts,
-  CliCommandsDeployDeployHasEmailContexts,
-  CliCommandsDeployDeployInteractive,
-  CliCommandsDeployDeployKvNamespaceId,
-  CliCommandsDeployDeployProjectRoot,
-  CliCommandsDeployDeployResult,
-  CliCommandsDeployDeployReturn,
-  CliCommandsDeployDeployServers,
-  CliCommandsDeployDeploySettings,
-  CliCommandsDeployDeployToken,
-  CliCommandsDeployDeployWorkerDeployResult,
-  CliCommandsDeployDeployWorkerName,
-  CliCommandsDeployDeployWorkerProjectRoot,
-  CliCommandsDeployDeployWorkerReturn,
-  CliCommandsDeployDeployWorkerWranglerTomlPath,
-  CliCommandsDeployDeployWranglerTomlPath,
-  CliCommandsDeployEnsureKvNamespaceAccountId,
-  CliCommandsDeployEnsureKvNamespaceCreateData,
-  CliCommandsDeployEnsureKvNamespaceCreateDataErrors,
-  CliCommandsDeployEnsureKvNamespaceCreateErrorDetails,
-  CliCommandsDeployEnsureKvNamespaceCreateResponse,
-  CliCommandsDeployEnsureKvNamespaceExisting,
-  CliCommandsDeployEnsureKvNamespaceKvTitle,
-  CliCommandsDeployEnsureKvNamespaceListData,
-  CliCommandsDeployEnsureKvNamespaceListDataErrors,
-  CliCommandsDeployEnsureKvNamespaceListErrorDetails,
-  CliCommandsDeployEnsureKvNamespaceListResponse,
-  CliCommandsDeployEnsureKvNamespaceReturn,
-  CliCommandsDeployEnsureKvNamespaceToken,
-  CliCommandsDeployEnsureKvNamespaceWorkerName,
-  CliCommandsDeployGetZoneInfoBaseDomain,
-  CliCommandsDeployGetZoneInfoCandidates,
-  CliCommandsDeployGetZoneInfoData,
-  CliCommandsDeployGetZoneInfoFirstResult,
-  CliCommandsDeployGetZoneInfoHasResults,
-  CliCommandsDeployGetZoneInfoParts,
-  CliCommandsDeployGetZoneInfoResponse,
-  CliCommandsDeployGetZoneInfoReturn,
-  CliCommandsDeployGetZoneInfoToken,
-  CliCommandsDeployListEmailRoutingRulesData,
-  CliCommandsDeployListEmailRoutingRulesDataErrors,
-  CliCommandsDeployListEmailRoutingRulesErrorDetails,
-  CliCommandsDeployListEmailRoutingRulesResponse,
-  CliCommandsDeployListEmailRoutingRulesReturn,
-  CliCommandsDeployListEmailRoutingRulesToken,
-  CliCommandsDeployListEmailRoutingRulesZoneId,
-  CliCommandsDeployLoadEnvTokenContent,
-  CliCommandsDeployLoadEnvTokenEnvValue,
-  CliCommandsDeployLoadEnvTokenMatch,
-  CliCommandsDeployLoadEnvTokenReturn,
-  CliCommandsDeployLoadEnvTokenValue,
-  CliCommandsDeployPrintContextSummaryConfigPath,
-  CliCommandsDeployPrintContextSummaryContexts,
-  CliCommandsDeployPrintContextSummaryReturn,
-  CliCommandsDeployPrintContextSummarySettings,
-  CliCommandsDeployPromptForApiTokenPromptResult,
-  CliCommandsDeployPromptForApiTokenReturn,
-  CliCommandsDeployPromptForApiTokenToken,
-  CliCommandsDeployPromptForApiTokenValidateValue,
-  CliCommandsDeployResolveApiTokenEnvToken,
-  CliCommandsDeployResolveApiTokenInteractive,
-  CliCommandsDeployResolveApiTokenReturn,
-  CliCommandsDeployRunLintLintResult,
-  CliCommandsDeployRunLintReturn,
-  CliCommandsDeploySaveEnvTokenContent,
-  CliCommandsDeploySaveEnvTokenRegex,
-  CliCommandsDeploySaveEnvTokenReturn,
-  CliCommandsDeploySaveEnvTokenToken,
-  CliCommandsDeploySetupEmailRoutingConfigPath,
-  CliCommandsDeploySetupEmailRoutingContexts,
-  CliCommandsDeploySetupEmailRoutingCreated,
-  CliCommandsDeploySetupEmailRoutingDesiredEmails,
-  CliCommandsDeploySetupEmailRoutingEmail,
-  CliCommandsDeploySetupEmailRoutingEmailContexts,
-  CliCommandsDeploySetupEmailRoutingExistingRules,
-  CliCommandsDeploySetupEmailRoutingKept,
-  CliCommandsDeploySetupEmailRoutingRemoved,
-  CliCommandsDeploySetupEmailRoutingReturn,
-  CliCommandsDeploySetupEmailRoutingRuleEmail,
-  CliCommandsDeploySetupEmailRoutingRuleExists,
-  CliCommandsDeploySetupEmailRoutingSettings,
-  CliCommandsDeploySetupEmailRoutingToken,
-  CliCommandsDeploySetupEmailRoutingWorkerName,
-  CliCommandsDeploySetupEmailRoutingWorkerRules,
-  CliCommandsDeploySetupEmailRoutingZoneId,
-  CliCommandsDeploySetupEmailRoutingZoneInfo,
-  CliCommandsDeployVerifyApiTokenData,
-  CliCommandsDeployVerifyApiTokenResponse,
-  CliCommandsDeployVerifyApiTokenReturn,
-  CliCommandsDeployVerifyApiTokenToken,
-  CliCommandsDeployVerifyPermissionsAccountId,
-  CliCommandsDeployVerifyPermissionsBaseDomain,
-  CliCommandsDeployVerifyPermissionsHasEmailContexts,
-  CliCommandsDeployVerifyPermissionsHasEmailRouting,
-  CliCommandsDeployVerifyPermissionsHasKvStorage,
-  CliCommandsDeployVerifyPermissionsHasWorkersRoutes,
-  CliCommandsDeployVerifyPermissionsHasWorkersScripts,
-  CliCommandsDeployVerifyPermissionsInteractive,
-  CliCommandsDeployVerifyPermissionsKvStorageData,
-  CliCommandsDeployVerifyPermissionsKvStorageResponse,
-  CliCommandsDeployVerifyPermissionsMissing,
-  CliCommandsDeployVerifyPermissionsMissingMessage,
-  CliCommandsDeployVerifyPermissionsPromptResult,
-  CliCommandsDeployVerifyPermissionsReturn,
-  CliCommandsDeployVerifyPermissionsToken,
-  CliCommandsDeployVerifyPermissionsWorkersRoutesData,
-  CliCommandsDeployVerifyPermissionsWorkersRoutesResponse,
-  CliCommandsDeployVerifyPermissionsWorkersScriptsData,
-  CliCommandsDeployVerifyPermissionsWorkersScriptsResponse,
-  CliCommandsDeployVerifyPermissionsZoneId,
-  CliCommandsDeployVerifyPermissionsZoneInfo,
+  Cli_Commands_Deploy_CreateEmailRoutingRule_ContextId,
+  Cli_Commands_Deploy_CreateEmailRoutingRule_CreateData,
+  Cli_Commands_Deploy_CreateEmailRoutingRule_CreateErrors,
+  Cli_Commands_Deploy_CreateEmailRoutingRule_Email,
+  Cli_Commands_Deploy_CreateEmailRoutingRule_ErrorDetails,
+  Cli_Commands_Deploy_CreateEmailRoutingRule_Response,
+  Cli_Commands_Deploy_CreateEmailRoutingRule_Returns,
+  Cli_Commands_Deploy_CreateEmailRoutingRule_Token,
+  Cli_Commands_Deploy_CreateEmailRoutingRule_WorkerName,
+  Cli_Commands_Deploy_CreateEmailRoutingRule_ZoneId,
+  Cli_Commands_Deploy_DeleteEmailRoutingRule_DeleteData,
+  Cli_Commands_Deploy_DeleteEmailRoutingRule_DeleteErrors,
+  Cli_Commands_Deploy_DeleteEmailRoutingRule_ErrorDetails,
+  Cli_Commands_Deploy_DeleteEmailRoutingRule_Response,
+  Cli_Commands_Deploy_DeleteEmailRoutingRule_Returns,
+  Cli_Commands_Deploy_DeleteEmailRoutingRule_RuleId,
+  Cli_Commands_Deploy_DeleteEmailRoutingRule_Token,
+  Cli_Commands_Deploy_DeleteEmailRoutingRule_ZoneId,
+  Cli_Commands_Deploy_Deploy_AccountId,
+  Cli_Commands_Deploy_Deploy_ConfigPath,
+  Cli_Commands_Deploy_Deploy_Contexts,
+  Cli_Commands_Deploy_Deploy_HasEmailContexts,
+  Cli_Commands_Deploy_Deploy_Interactive,
+  Cli_Commands_Deploy_Deploy_KvNamespaceId,
+  Cli_Commands_Deploy_Deploy_ProjectRoot,
+  Cli_Commands_Deploy_Deploy_Result,
+  Cli_Commands_Deploy_Deploy_Returns,
+  Cli_Commands_Deploy_Deploy_Servers,
+  Cli_Commands_Deploy_Deploy_Settings,
+  Cli_Commands_Deploy_Deploy_Token,
+  Cli_Commands_Deploy_Deploy_WorkerName,
+  Cli_Commands_Deploy_Deploy_WranglerTomlPath,
+  Cli_Commands_Deploy_DeployWorker_DeployResult,
+  Cli_Commands_Deploy_DeployWorker_ProjectRoot,
+  Cli_Commands_Deploy_DeployWorker_Returns,
+  Cli_Commands_Deploy_DeployWorker_WranglerTomlPath,
+  Cli_Commands_Deploy_EnsureKvNamespace_AccountId,
+  Cli_Commands_Deploy_EnsureKvNamespace_AllNamespaces,
+  Cli_Commands_Deploy_EnsureKvNamespace_CreateData,
+  Cli_Commands_Deploy_EnsureKvNamespace_CreateErrorDetails,
+  Cli_Commands_Deploy_EnsureKvNamespace_CreateErrors,
+  Cli_Commands_Deploy_EnsureKvNamespace_CreateResponse,
+  Cli_Commands_Deploy_EnsureKvNamespace_Cursor,
+  Cli_Commands_Deploy_EnsureKvNamespace_Existing,
+  Cli_Commands_Deploy_EnsureKvNamespace_HasMore,
+  Cli_Commands_Deploy_EnsureKvNamespace_KvTitle,
+  Cli_Commands_Deploy_EnsureKvNamespace_ListData,
+  Cli_Commands_Deploy_EnsureKvNamespace_ListErrorDetails,
+  Cli_Commands_Deploy_EnsureKvNamespace_ListErrors,
+  Cli_Commands_Deploy_EnsureKvNamespace_ListResponse,
+  Cli_Commands_Deploy_EnsureKvNamespace_Page,
+  Cli_Commands_Deploy_EnsureKvNamespace_PaginationUrl,
+  Cli_Commands_Deploy_EnsureKvNamespace_ResultInfoCursor,
+  Cli_Commands_Deploy_EnsureKvNamespace_Returns,
+  Cli_Commands_Deploy_EnsureKvNamespace_Token,
+  Cli_Commands_Deploy_EnsureKvNamespace_WorkerName,
+  Cli_Commands_Deploy_GetZoneInfo_BaseDomain,
+  Cli_Commands_Deploy_GetZoneInfo_Candidates,
+  Cli_Commands_Deploy_GetZoneInfo_Data,
+  Cli_Commands_Deploy_GetZoneInfo_FirstResult,
+  Cli_Commands_Deploy_GetZoneInfo_HasResults,
+  Cli_Commands_Deploy_GetZoneInfo_Parts,
+  Cli_Commands_Deploy_GetZoneInfo_Response,
+  Cli_Commands_Deploy_GetZoneInfo_Returns,
+  Cli_Commands_Deploy_GetZoneInfo_Token,
+  Cli_Commands_Deploy_ListEmailRoutingRules_Data,
+  Cli_Commands_Deploy_ListEmailRoutingRules_DataErrors,
+  Cli_Commands_Deploy_ListEmailRoutingRules_ErrorDetails,
+  Cli_Commands_Deploy_ListEmailRoutingRules_Response,
+  Cli_Commands_Deploy_ListEmailRoutingRules_Returns,
+  Cli_Commands_Deploy_ListEmailRoutingRules_Token,
+  Cli_Commands_Deploy_ListEmailRoutingRules_ZoneId,
+  Cli_Commands_Deploy_LoadEnvToken_Content,
+  Cli_Commands_Deploy_LoadEnvToken_EnvValue,
+  Cli_Commands_Deploy_LoadEnvToken_Match,
+  Cli_Commands_Deploy_LoadEnvToken_Returns,
+  Cli_Commands_Deploy_LoadEnvToken_Value,
+  Cli_Commands_Deploy_PrintContextSummary_ConfigPath,
+  Cli_Commands_Deploy_PrintContextSummary_Contexts,
+  Cli_Commands_Deploy_PrintContextSummary_Returns,
+  Cli_Commands_Deploy_PrintContextSummary_Settings,
+  Cli_Commands_Deploy_PromptForApiToken_PromptResult,
+  Cli_Commands_Deploy_PromptForApiToken_Returns,
+  Cli_Commands_Deploy_PromptForApiToken_Token,
+  Cli_Commands_Deploy_ResolveApiToken_EnvToken,
+  Cli_Commands_Deploy_ResolveApiToken_Interactive,
+  Cli_Commands_Deploy_ResolveApiToken_Returns,
+  Cli_Commands_Deploy_RunLint_LintResult,
+  Cli_Commands_Deploy_RunLint_PackageRoot,
+  Cli_Commands_Deploy_RunLint_Returns,
+  Cli_Commands_Deploy_SaveEnvToken_Content,
+  Cli_Commands_Deploy_SaveEnvToken_Regex,
+  Cli_Commands_Deploy_SaveEnvToken_Returns,
+  Cli_Commands_Deploy_SaveEnvToken_Token,
+  Cli_Commands_Deploy_SetupEmailRouting_ConfigPath,
+  Cli_Commands_Deploy_SetupEmailRouting_Contexts,
+  Cli_Commands_Deploy_SetupEmailRouting_Created,
+  Cli_Commands_Deploy_SetupEmailRouting_DesiredEmails,
+  Cli_Commands_Deploy_SetupEmailRouting_Email,
+  Cli_Commands_Deploy_SetupEmailRouting_EmailContexts,
+  Cli_Commands_Deploy_SetupEmailRouting_ExistingRules,
+  Cli_Commands_Deploy_SetupEmailRouting_Kept,
+  Cli_Commands_Deploy_SetupEmailRouting_Removed,
+  Cli_Commands_Deploy_SetupEmailRouting_Returns,
+  Cli_Commands_Deploy_SetupEmailRouting_RuleEmail,
+  Cli_Commands_Deploy_SetupEmailRouting_RuleExists,
+  Cli_Commands_Deploy_SetupEmailRouting_Settings,
+  Cli_Commands_Deploy_SetupEmailRouting_Token,
+  Cli_Commands_Deploy_SetupEmailRouting_WorkerName,
+  Cli_Commands_Deploy_SetupEmailRouting_WorkerRules,
+  Cli_Commands_Deploy_SetupEmailRouting_ZoneId,
+  Cli_Commands_Deploy_SetupEmailRouting_ZoneInfo,
+  Cli_Commands_Deploy_VerifyApiToken_Data,
+  Cli_Commands_Deploy_VerifyApiToken_Response,
+  Cli_Commands_Deploy_VerifyApiToken_Returns,
+  Cli_Commands_Deploy_VerifyApiToken_Token,
+  Cli_Commands_Deploy_VerifyPermissions_AccountId,
+  Cli_Commands_Deploy_VerifyPermissions_BaseDomain,
+  Cli_Commands_Deploy_VerifyPermissions_HasEmailContexts,
+  Cli_Commands_Deploy_VerifyPermissions_HasEmailRouting,
+  Cli_Commands_Deploy_VerifyPermissions_HasKvStorage,
+  Cli_Commands_Deploy_VerifyPermissions_HasWorkersRoutes,
+  Cli_Commands_Deploy_VerifyPermissions_HasWorkersScripts,
+  Cli_Commands_Deploy_VerifyPermissions_Interactive,
+  Cli_Commands_Deploy_VerifyPermissions_KvStorageData,
+  Cli_Commands_Deploy_VerifyPermissions_KvStorageResponse,
+  Cli_Commands_Deploy_VerifyPermissions_Missing,
+  Cli_Commands_Deploy_VerifyPermissions_MissingMessage,
+  Cli_Commands_Deploy_VerifyPermissions_PromptResult,
+  Cli_Commands_Deploy_VerifyPermissions_Returns,
+  Cli_Commands_Deploy_VerifyPermissions_Token,
+  Cli_Commands_Deploy_VerifyPermissions_WorkersRoutesData,
+  Cli_Commands_Deploy_VerifyPermissions_WorkersRoutesResponse,
+  Cli_Commands_Deploy_VerifyPermissions_WorkersScriptsData,
+  Cli_Commands_Deploy_VerifyPermissions_WorkersScriptsResponse,
+  Cli_Commands_Deploy_VerifyPermissions_ZoneId,
+  Cli_Commands_Deploy_VerifyPermissions_ZoneInfo,
 } from '../../types/cli/commands/deploy.d.ts';
 
+/**
+ * CLI - Commands - Deploy - Cloudflare API Base.
+ *
+ * Base URL for the Cloudflare v4 REST API used by every
+ * authenticated request made during the deployment pipeline.
+ *
+ * @since 2.1.0
+ */
 const CLOUDFLARE_API_BASE = 'https://api.cloudflare.com/client/v4';
+
+/**
+ * CLI - Commands - Deploy - Config Dir.
+ *
+ * Absolute path to the per-user configuration directory that
+ * stores the persisted Cloudflare API token and related files.
+ *
+ * @since 2.1.0
+ */
 const configDir = Bootstrap.getConfigDir(APP_NAME);
+
+/**
+ * CLI - Commands - Deploy - Env File Path.
+ *
+ * Absolute path to the dotenv file inside the configuration
+ * directory where the Cloudflare API token is written.
+ *
+ * @since 2.1.0
+ */
 const envFilePath = resolve(configDir, '.env');
+
+/**
+ * CLI - Commands - Deploy - Env Token Key.
+ *
+ * Environment variable name under which the Cloudflare API
+ * token is stored and later read back during deployment.
+ *
+ * @since 2.1.0
+ */
 const ENV_TOKEN_KEY = 'CLOUDFLARE_API_TOKEN';
 
 /**
@@ -161,11 +203,11 @@ const ENV_TOKEN_KEY = 'CLOUDFLARE_API_TOKEN';
  *
  * @since 2.0.0
  */
-async function deploy(configPath: CliCommandsDeployDeployConfigPath, interactive: CliCommandsDeployDeployInteractive = false): CliCommandsDeployDeployReturn {
+async function deploy(configPath: Cli_Commands_Deploy_Deploy_ConfigPath, interactive: Cli_Commands_Deploy_Deploy_Interactive = false): Cli_Commands_Deploy_Deploy_Returns {
   // Step 1: Resolve API token.
   Logger.info('Checking authentication...');
 
-  const token: CliCommandsDeployDeployToken = await resolveApiToken(interactive);
+  const token: Cli_Commands_Deploy_Deploy_Token = await resolveApiToken(interactive);
 
   Reflect.set(process.env, ENV_TOKEN_KEY, token);
 
@@ -174,7 +216,7 @@ async function deploy(configPath: CliCommandsDeployDeployConfigPath, interactive
   // Step 2: Validate config.
   Logger.info('Validating config...');
 
-  const result: CliCommandsDeployDeployResult = validateConfig(configPath);
+  const result: Cli_Commands_Deploy_Deploy_Result = validateConfig(configPath);
 
   if (result['valid'] === false) {
     Logger.error('Config is invalid:');
@@ -189,50 +231,50 @@ async function deploy(configPath: CliCommandsDeployDeployConfigPath, interactive
   Logger.info('Config is valid.');
 
   // Warn if no servers are configured (notifications won't be delivered).
-  const servers: CliCommandsDeployDeployServers = listServers(configPath);
+  const servers: Cli_Commands_Deploy_Deploy_Servers = listServers(configPath);
 
   if (servers.length === 0) {
     Logger.warn('No ntfy servers are configured. Notifications will not be sent until at least one server is added.');
   }
 
-  // Step 3: Verify permissions.
-  const settings: CliCommandsDeployDeploySettings = getSettings(configPath);
-
-  const workerName: CliCommandsDeployDeployWorkerName = settings['worker_name'];
-
-  const contexts: CliCommandsDeployDeployContexts = listContexts(configPath);
-
-  const hasEmailContexts: CliCommandsDeployDeployHasEmailContexts = contexts.some((context) => context['type'] === 'email');
-
-  Logger.info('Verifying API token permissions...');
-
-  const accountId: CliCommandsDeployDeployAccountId = await verifyPermissions(token, settings['base_domain'], hasEmailContexts, interactive);
-
-  Logger.info('Permissions verified.');
-
-  // Step 3.5: Ensure KV namespace exists.
-  Logger.info('Ensuring KV namespace...');
-
-  const kvNamespaceId: CliCommandsDeployDeployKvNamespaceId = await ensureKvNamespace(token, accountId, workerName);
-
-  Logger.info('KV namespace ready.');
-
-  // Step 4: Generate wrangler.toml.
-  Logger.info('Generating wrangler.toml...');
-
-  const projectRoot: CliCommandsDeployDeployProjectRoot = Bootstrap.getProjectRoot() ?? process.cwd();
-  const wranglerTomlPath: CliCommandsDeployDeployWranglerTomlPath = resolve(projectRoot, 'wrangler.toml');
-
-  generateWranglerToml(configPath, wranglerTomlPath, accountId, kvNamespaceId);
-
-  Logger.info('wrangler.toml generated.');
-
-  // Step 5: Lint.
+  // Step 3: Lint (fail fast before any Cloudflare API calls or writes).
   Logger.info('Running lint...');
 
   runLint();
 
   Logger.info('Lint passed.');
+
+  // Step 4: Verify permissions.
+  const settings: Cli_Commands_Deploy_Deploy_Settings = getSettings(configPath);
+
+  const workerName: Cli_Commands_Deploy_Deploy_WorkerName = settings['worker_name'];
+
+  const contexts: Cli_Commands_Deploy_Deploy_Contexts = listContexts(configPath);
+
+  const hasEmailContexts: Cli_Commands_Deploy_Deploy_HasEmailContexts = contexts.some((context) => context['type'] === 'email');
+
+  Logger.info('Verifying API token permissions...');
+
+  const accountId: Cli_Commands_Deploy_Deploy_AccountId = await verifyPermissions(token, settings['base_domain'], hasEmailContexts, interactive);
+
+  Logger.info('Permissions verified.');
+
+  // Step 4.5: Ensure KV namespace exists.
+  Logger.info('Ensuring KV namespace...');
+
+  const kvNamespaceId: Cli_Commands_Deploy_Deploy_KvNamespaceId = await ensureKvNamespace(token, accountId, workerName);
+
+  Logger.info('KV namespace ready.');
+
+  // Step 5: Generate wrangler.toml.
+  Logger.info('Generating wrangler.toml...');
+
+  const projectRoot: Cli_Commands_Deploy_Deploy_ProjectRoot = Bootstrap.getProjectRoot() ?? process.cwd();
+  const wranglerTomlPath: Cli_Commands_Deploy_Deploy_WranglerTomlPath = resolve(projectRoot, 'wrangler.toml');
+
+  generateWranglerToml(configPath, wranglerTomlPath, accountId, kvNamespaceId);
+
+  Logger.info('wrangler.toml generated.');
 
   // Step 6: Deploy worker.
   Logger.info('Deploying worker...');
@@ -265,9 +307,9 @@ async function deploy(configPath: CliCommandsDeployDeployConfigPath, interactive
  *
  * @since 2.0.0
  */
-async function resolveApiToken(interactive: CliCommandsDeployResolveApiTokenInteractive): CliCommandsDeployResolveApiTokenReturn {
+async function resolveApiToken(interactive: Cli_Commands_Deploy_ResolveApiToken_Interactive): Cli_Commands_Deploy_ResolveApiToken_Returns {
   // Check .env first.
-  const envToken: CliCommandsDeployResolveApiTokenEnvToken = loadEnvToken();
+  const envToken: Cli_Commands_Deploy_ResolveApiToken_EnvToken = loadEnvToken();
 
   if (envToken !== undefined) {
     if (await verifyApiToken(envToken) === true) {
@@ -299,13 +341,13 @@ async function resolveApiToken(interactive: CliCommandsDeployResolveApiTokenInte
  *
  * @since 2.0.0
  */
-async function verifyApiToken(token: CliCommandsDeployVerifyApiTokenToken): CliCommandsDeployVerifyApiTokenReturn {
+async function verifyApiToken(token: Cli_Commands_Deploy_VerifyApiToken_Token): Cli_Commands_Deploy_VerifyApiToken_Returns {
   try {
-    const response: CliCommandsDeployVerifyApiTokenResponse = await fetch(`${CLOUDFLARE_API_BASE}/user/tokens/verify`, {
+    const response: Cli_Commands_Deploy_VerifyApiToken_Response = await fetch(`${CLOUDFLARE_API_BASE}/user/tokens/verify`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    const data: CliCommandsDeployVerifyApiTokenData = await response.json<CliCommandsDeployVerifyApiTokenData>();
+    const data: Cli_Commands_Deploy_VerifyApiToken_Data = await response.json<Cli_Commands_Deploy_VerifyApiToken_Data>();
 
     return data['success'];
   } catch {
@@ -321,58 +363,58 @@ async function verifyApiToken(token: CliCommandsDeployVerifyApiTokenToken): CliC
  *
  * @since 2.0.0
  */
-async function verifyPermissions(token: CliCommandsDeployVerifyPermissionsToken, baseDomain: CliCommandsDeployVerifyPermissionsBaseDomain, hasEmailContexts: CliCommandsDeployVerifyPermissionsHasEmailContexts, interactive: CliCommandsDeployVerifyPermissionsInteractive): CliCommandsDeployVerifyPermissionsReturn {
-  const zoneInfo: CliCommandsDeployVerifyPermissionsZoneInfo = await getZoneInfo(token, baseDomain);
-  const zoneId: CliCommandsDeployVerifyPermissionsZoneId = zoneInfo['zoneId'];
-  const accountId: CliCommandsDeployVerifyPermissionsAccountId = zoneInfo['accountId'];
+async function verifyPermissions(token: Cli_Commands_Deploy_VerifyPermissions_Token, baseDomain: Cli_Commands_Deploy_VerifyPermissions_BaseDomain, hasEmailContexts: Cli_Commands_Deploy_VerifyPermissions_HasEmailContexts, interactive: Cli_Commands_Deploy_VerifyPermissions_Interactive): Cli_Commands_Deploy_VerifyPermissions_Returns {
+  const zoneInfo: Cli_Commands_Deploy_VerifyPermissions_ZoneInfo = await getZoneInfo(token, baseDomain);
+  const zoneId: Cli_Commands_Deploy_VerifyPermissions_ZoneId = zoneInfo['zoneId'];
+  const accountId: Cli_Commands_Deploy_VerifyPermissions_AccountId = zoneInfo['accountId'];
 
   // Check Workers Scripts (Account level).
-  let hasWorkersScripts: CliCommandsDeployVerifyPermissionsHasWorkersScripts = false;
+  let hasWorkersScripts: Cli_Commands_Deploy_VerifyPermissions_HasWorkersScripts = false;
 
   try {
-    const response: CliCommandsDeployVerifyPermissionsWorkersScriptsResponse = await fetch(`${CLOUDFLARE_API_BASE}/accounts/${accountId}/workers/scripts`, {
+    const workersScriptsResponse: Cli_Commands_Deploy_VerifyPermissions_WorkersScriptsResponse = await fetch(`${CLOUDFLARE_API_BASE}/accounts/${accountId}/workers/scripts`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    const data: CliCommandsDeployVerifyPermissionsWorkersScriptsData = await response.json<CliCommandsDeployVerifyPermissionsWorkersScriptsData>();
+    const workersScriptsData: Cli_Commands_Deploy_VerifyPermissions_WorkersScriptsData = await workersScriptsResponse.json<Cli_Commands_Deploy_VerifyPermissions_WorkersScriptsData>();
 
-    hasWorkersScripts = data['success'];
+    hasWorkersScripts = workersScriptsData['success'];
   } catch {
     hasWorkersScripts = false;
   }
 
   // Check Workers Routes (Zone level).
-  let hasWorkersRoutes: CliCommandsDeployVerifyPermissionsHasWorkersRoutes = false;
+  let hasWorkersRoutes: Cli_Commands_Deploy_VerifyPermissions_HasWorkersRoutes = false;
 
   try {
-    const response: CliCommandsDeployVerifyPermissionsWorkersRoutesResponse = await fetch(`${CLOUDFLARE_API_BASE}/zones/${zoneId}/workers/routes`, {
+    const workersRoutesResponse: Cli_Commands_Deploy_VerifyPermissions_WorkersRoutesResponse = await fetch(`${CLOUDFLARE_API_BASE}/zones/${zoneId}/workers/routes`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    const data: CliCommandsDeployVerifyPermissionsWorkersRoutesData = await response.json<CliCommandsDeployVerifyPermissionsWorkersRoutesData>();
+    const workersRoutesData: Cli_Commands_Deploy_VerifyPermissions_WorkersRoutesData = await workersRoutesResponse.json<Cli_Commands_Deploy_VerifyPermissions_WorkersRoutesData>();
 
-    hasWorkersRoutes = data['success'];
+    hasWorkersRoutes = workersRoutesData['success'];
   } catch {
     hasWorkersRoutes = false;
   }
 
   // Check Workers KV Storage (Account level).
-  let hasKvStorage: CliCommandsDeployVerifyPermissionsHasKvStorage = false;
+  let hasKvStorage: Cli_Commands_Deploy_VerifyPermissions_HasKvStorage = false;
 
   try {
-    const response: CliCommandsDeployVerifyPermissionsKvStorageResponse = await fetch(`${CLOUDFLARE_API_BASE}/accounts/${accountId}/storage/kv/namespaces?per_page=1`, {
+    const kvStorageResponse: Cli_Commands_Deploy_VerifyPermissions_KvStorageResponse = await fetch(`${CLOUDFLARE_API_BASE}/accounts/${accountId}/storage/kv/namespaces?per_page=1`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    const data: CliCommandsDeployVerifyPermissionsKvStorageData = await response.json<CliCommandsDeployVerifyPermissionsKvStorageData>();
+    const kvStorageData: Cli_Commands_Deploy_VerifyPermissions_KvStorageData = await kvStorageResponse.json<Cli_Commands_Deploy_VerifyPermissions_KvStorageData>();
 
-    hasKvStorage = data['success'];
+    hasKvStorage = kvStorageData['success'];
   } catch {
     hasKvStorage = false;
   }
 
   // Check Email Routing Rules (Zone level).
-  let hasEmailRouting: CliCommandsDeployVerifyPermissionsHasEmailRouting = false;
+  let hasEmailRouting: Cli_Commands_Deploy_VerifyPermissions_HasEmailRouting = false;
 
   if (hasEmailContexts === true) {
     try {
@@ -386,7 +428,7 @@ async function verifyPermissions(token: CliCommandsDeployVerifyPermissionsToken,
     hasEmailRouting = true;
   }
 
-  const missing: CliCommandsDeployVerifyPermissionsMissing = [];
+  const missing: Cli_Commands_Deploy_VerifyPermissions_Missing = [];
 
   if (hasWorkersScripts === false) {
     missing.push('Account > Workers Scripts > Edit');
@@ -409,7 +451,7 @@ async function verifyPermissions(token: CliCommandsDeployVerifyPermissionsToken,
   }
 
   if (interactive === false) {
-    const missingMessage: CliCommandsDeployVerifyPermissionsMissingMessage = [
+    const missingMessage: Cli_Commands_Deploy_VerifyPermissions_MissingMessage = [
       'API token is missing permissions:',
       ...missing.map((p) => `  - ${p}`),
       '',
@@ -430,12 +472,12 @@ async function verifyPermissions(token: CliCommandsDeployVerifyPermissionsToken,
   Logger.warn('');
 
   Logger.info('  1. Go to https://dash.cloudflare.com/profile/api-tokens');
-  Logger.info('  2. Find your token → ... → Edit');
+  Logger.info('  2. Find your token -> ... -> Edit');
   Logger.info('  3. Add the missing permissions listed above');
   Logger.info('  4. Click "Continue to summary" then "Update Token"');
   Logger.info('');
 
-  const promptResult: CliCommandsDeployVerifyPermissionsPromptResult = await prompts({
+  const promptResult: Cli_Commands_Deploy_VerifyPermissions_PromptResult = await prompts({
     type: 'confirm',
     name: 'ready',
     message: 'Done? Press enter to retry.',
@@ -458,7 +500,7 @@ async function verifyPermissions(token: CliCommandsDeployVerifyPermissionsToken,
  *
  * @since 2.0.0
  */
-async function promptForApiToken(): CliCommandsDeployPromptForApiTokenReturn {
+async function promptForApiToken(): Cli_Commands_Deploy_PromptForApiToken_Returns {
   Logger.info('');
   Logger.info('You need a Cloudflare API token to deploy and manage email routing.');
   Logger.info('');
@@ -472,23 +514,23 @@ async function promptForApiToken(): CliCommandsDeployPromptForApiTokenReturn {
   Logger.info('     - Zone | Workers Routes | Edit');
   Logger.info('     - Zone | Email Routing Rules | Edit');
   Logger.info('  6. Under Account Resources, select your account');
-  Logger.info('  7. Under Zone Resources, select Specific zone → your base domain');
+  Logger.info('  7. Under Zone Resources, select Specific zone -> your base domain');
   Logger.info('  8. Click "Continue to summary" then "Create Token"');
   Logger.info('  9. Copy the generated token');
   Logger.info('');
 
-  const promptResult: CliCommandsDeployPromptForApiTokenPromptResult = await prompts({
+  const promptResult: Cli_Commands_Deploy_PromptForApiToken_PromptResult = await prompts({
     type: 'password',
     name: 'apiToken',
     message: 'Paste your API token:',
-    validate: (value: CliCommandsDeployPromptForApiTokenValidateValue) => value.trim().length > 0 || 'Token is required',
+    validate: (value) => value.trim().length > 0 || 'Token is required',
   });
 
   if (promptResult['apiToken'] === undefined) {
     throw new Error('API token is required to deploy.');
   }
 
-  const token: CliCommandsDeployPromptForApiTokenToken = promptResult['apiToken'].trim();
+  const token: Cli_Commands_Deploy_PromptForApiToken_Token = promptResult['apiToken'].trim();
 
   if (await verifyApiToken(token) === false) {
     throw new Error('API token is invalid. Please check the token and try again.');
@@ -509,13 +551,24 @@ async function promptForApiToken(): CliCommandsDeployPromptForApiTokenReturn {
  *
  * @since 2.0.0
  */
-function runLint(): CliCommandsDeployRunLintReturn {
-  const lintResult: CliCommandsDeployRunLintLintResult = spawnSync('npx', [
+function runLint(): Cli_Commands_Deploy_RunLint_Returns {
+  let packageRoot: Cli_Commands_Deploy_RunLint_PackageRoot = dirname(fileURLToPath(import.meta.url));
+
+  while (packageRoot !== dirname(packageRoot)) {
+    if (existsSync(resolve(packageRoot, 'package.json')) === true) {
+      break;
+    }
+
+    packageRoot = dirname(packageRoot);
+  }
+
+  const lintResult: Cli_Commands_Deploy_RunLint_LintResult = spawnSync('npx', [
     'eslint',
     './src',
   ], {
     encoding: 'utf-8',
     stdio: 'inherit',
+    cwd: packageRoot,
   });
 
   if (lintResult['status'] !== 0) {
@@ -533,11 +586,11 @@ function runLint(): CliCommandsDeployRunLintReturn {
  *
  * @since 2.0.0
  */
-function deployWorker(): CliCommandsDeployDeployWorkerReturn {
-  const projectRoot: CliCommandsDeployDeployWorkerProjectRoot = Bootstrap.getProjectRoot() ?? process.cwd();
-  const wranglerTomlPath: CliCommandsDeployDeployWorkerWranglerTomlPath = resolve(projectRoot, 'wrangler.toml');
+function deployWorker(): Cli_Commands_Deploy_DeployWorker_Returns {
+  const projectRoot: Cli_Commands_Deploy_DeployWorker_ProjectRoot = Bootstrap.getProjectRoot() ?? process.cwd();
+  const wranglerTomlPath: Cli_Commands_Deploy_DeployWorker_WranglerTomlPath = resolve(projectRoot, 'wrangler.toml');
 
-  const deployResult: CliCommandsDeployDeployWorkerDeployResult = spawnSync('npx', [
+  const deployResult: Cli_Commands_Deploy_DeployWorker_DeployResult = spawnSync('npx', [
     'wrangler',
     'deploy',
     '--config',
@@ -564,37 +617,61 @@ function deployWorker(): CliCommandsDeployDeployWorkerReturn {
  * @param accountId  - Account id.
  * @param workerName - Worker name.
  *
- * @returns The KV namespace ID.
+ * @returns {Cli_Commands_Deploy_EnsureKvNamespace_Returns}
  *
  * @since 2.0.0
  */
-async function ensureKvNamespace(token: CliCommandsDeployEnsureKvNamespaceToken, accountId: CliCommandsDeployEnsureKvNamespaceAccountId, workerName: CliCommandsDeployEnsureKvNamespaceWorkerName): CliCommandsDeployEnsureKvNamespaceReturn {
-  const listResponse: CliCommandsDeployEnsureKvNamespaceListResponse = await fetch(`${CLOUDFLARE_API_BASE}/accounts/${accountId}/storage/kv/namespaces?per_page=100`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+async function ensureKvNamespace(token: Cli_Commands_Deploy_EnsureKvNamespace_Token, accountId: Cli_Commands_Deploy_EnsureKvNamespace_AccountId, workerName: Cli_Commands_Deploy_EnsureKvNamespace_WorkerName): Cli_Commands_Deploy_EnsureKvNamespace_Returns {
+  const allNamespaces: Cli_Commands_Deploy_EnsureKvNamespace_AllNamespaces = [];
+  let page: Cli_Commands_Deploy_EnsureKvNamespace_Page = 1;
+  let cursor: Cli_Commands_Deploy_EnsureKvNamespace_Cursor = undefined;
+  let hasMore: Cli_Commands_Deploy_EnsureKvNamespace_HasMore = true;
 
-  const listData: CliCommandsDeployEnsureKvNamespaceListData = await listResponse.json<CliCommandsDeployEnsureKvNamespaceListData>();
+  while (hasMore === true) {
+    const paginationUrl: Cli_Commands_Deploy_EnsureKvNamespace_PaginationUrl = (cursor !== undefined) ? `${CLOUDFLARE_API_BASE}/accounts/${accountId}/storage/kv/namespaces?per_page=100&cursor=${cursor}` : `${CLOUDFLARE_API_BASE}/accounts/${accountId}/storage/kv/namespaces?per_page=100`;
 
-  if (listData['success'] === false) {
-    const listErrors: CliCommandsDeployEnsureKvNamespaceListDataErrors = listData['errors'];
-    let listErrorDetails: CliCommandsDeployEnsureKvNamespaceListErrorDetails = 'Unknown error';
+    const listResponse: Cli_Commands_Deploy_EnsureKvNamespace_ListResponse = await fetch(paginationUrl, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-    if (listErrors !== undefined) {
-      listErrorDetails = listErrors.map((e) => `${String(e['code'])}: ${e['message']}`).join(', ');
+    if (listResponse['ok'] === false) {
+      throw new Error(`Failed to list KV namespaces: HTTP ${String(listResponse['status'])}`);
     }
 
-    throw new Error(`Failed to list KV namespaces: ${listErrorDetails}`);
+    const listData: Cli_Commands_Deploy_EnsureKvNamespace_ListData = await listResponse.json<Cli_Commands_Deploy_EnsureKvNamespace_ListData>();
+
+    if (listData['success'] === false) {
+      const listErrors: Cli_Commands_Deploy_EnsureKvNamespace_ListErrors = listData['errors'];
+      let listErrorDetails: Cli_Commands_Deploy_EnsureKvNamespace_ListErrorDetails = 'Unknown error';
+
+      if (listErrors !== undefined) {
+        listErrorDetails = listErrors.map((e) => `${String(e['code'])}: ${e['message']}`).join(', ');
+      }
+
+      throw new Error(`Failed to list KV namespaces: ${listErrorDetails}`);
+    }
+
+    allNamespaces.push(...listData['result']);
+
+    const resultInfoCursor: Cli_Commands_Deploy_EnsureKvNamespace_ResultInfoCursor = (listData['result_info'] !== undefined && listData['result_info'] !== null) ? listData['result_info']['cursor'] : undefined;
+
+    hasMore = listData['result'].length >= 100
+      && page < 100
+      && resultInfoCursor !== undefined
+      && resultInfoCursor !== '';
+    cursor = resultInfoCursor;
+    page += 1;
   }
 
-  const kvTitle: CliCommandsDeployEnsureKvNamespaceKvTitle = `${workerName}-kv`;
+  const kvTitle: Cli_Commands_Deploy_EnsureKvNamespace_KvTitle = `${workerName}-kv`;
 
-  const existing: CliCommandsDeployEnsureKvNamespaceExisting = listData['result'].find((ns) => ns['title'] === kvTitle);
+  const existing: Cli_Commands_Deploy_EnsureKvNamespace_Existing = allNamespaces.find((ns) => ns['title'] === kvTitle);
 
   if (existing !== undefined) {
     return existing['id'];
   }
 
-  const createResponse: CliCommandsDeployEnsureKvNamespaceCreateResponse = await fetch(`${CLOUDFLARE_API_BASE}/accounts/${accountId}/storage/kv/namespaces`, {
+  const createResponse: Cli_Commands_Deploy_EnsureKvNamespace_CreateResponse = await fetch(`${CLOUDFLARE_API_BASE}/accounts/${accountId}/storage/kv/namespaces`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -603,11 +680,15 @@ async function ensureKvNamespace(token: CliCommandsDeployEnsureKvNamespaceToken,
     body: JSON.stringify({ title: kvTitle }),
   });
 
-  const createData: CliCommandsDeployEnsureKvNamespaceCreateData = await createResponse.json<CliCommandsDeployEnsureKvNamespaceCreateData>();
+  if (createResponse['ok'] === false) {
+    throw new Error(`Failed to create KV namespace: HTTP ${String(createResponse['status'])}`);
+  }
+
+  const createData: Cli_Commands_Deploy_EnsureKvNamespace_CreateData = await createResponse.json<Cli_Commands_Deploy_EnsureKvNamespace_CreateData>();
 
   if (createData['success'] === false) {
-    const createErrors: CliCommandsDeployEnsureKvNamespaceCreateDataErrors = createData['errors'];
-    let createErrorDetails: CliCommandsDeployEnsureKvNamespaceCreateErrorDetails = 'Unknown error';
+    const createErrors: Cli_Commands_Deploy_EnsureKvNamespace_CreateErrors = createData['errors'];
+    let createErrorDetails: Cli_Commands_Deploy_EnsureKvNamespace_CreateErrorDetails = 'Unknown error';
 
     if (createErrors !== undefined) {
       createErrorDetails = createErrors.map((e) => `${String(e['code'])}: ${e['message']}`).join(', ');
@@ -627,25 +708,29 @@ async function ensureKvNamespace(token: CliCommandsDeployEnsureKvNamespaceToken,
  *
  * @since 2.0.0
  */
-async function getZoneInfo(token: CliCommandsDeployGetZoneInfoToken, baseDomain: CliCommandsDeployGetZoneInfoBaseDomain): CliCommandsDeployGetZoneInfoReturn {
+async function getZoneInfo(token: Cli_Commands_Deploy_GetZoneInfo_Token, baseDomain: Cli_Commands_Deploy_GetZoneInfo_BaseDomain): Cli_Commands_Deploy_GetZoneInfo_Returns {
   /*
    * Try progressively shorter domain segments to find the zone.
-   * e.g., "ntfy.example.co.uk" → try "ntfy.example.co.uk", then "example.co.uk", then "co.uk".
+   * e.g., "ntfy.example.co.uk" -> try "ntfy.example.co.uk", then "example.co.uk", then "co.uk".
    */
-  const parts: CliCommandsDeployGetZoneInfoParts = baseDomain.split('.');
-  const candidates: CliCommandsDeployGetZoneInfoCandidates = parts.slice(0, parts.length - 1).map((_unused, i) => parts.slice(i).join('.'));
+  const parts: Cli_Commands_Deploy_GetZoneInfo_Parts = baseDomain.split('.');
+  const candidates: Cli_Commands_Deploy_GetZoneInfo_Candidates = parts.slice(0, parts.length - 1).map((_unused, i) => parts.slice(i).join('.'));
 
   for (const candidate of candidates) {
-    const response: CliCommandsDeployGetZoneInfoResponse = await fetch(`${CLOUDFLARE_API_BASE}/zones?name=${candidate}`, {
+    const response: Cli_Commands_Deploy_GetZoneInfo_Response = await fetch(`${CLOUDFLARE_API_BASE}/zones?name=${candidate}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    const data: CliCommandsDeployGetZoneInfoData = await response.json<CliCommandsDeployGetZoneInfoData>();
+    if (response['ok'] === false) {
+      continue;
+    }
 
-    const hasResults: CliCommandsDeployGetZoneInfoHasResults = data['success'] === true
+    const data: Cli_Commands_Deploy_GetZoneInfo_Data = await response.json<Cli_Commands_Deploy_GetZoneInfo_Data>();
+
+    const hasResults: Cli_Commands_Deploy_GetZoneInfo_HasResults = data['success'] === true
       && data['result'].length > 0;
 
-    let firstResult: CliCommandsDeployGetZoneInfoFirstResult = undefined;
+    let firstResult: Cli_Commands_Deploy_GetZoneInfo_FirstResult = undefined;
 
     if (hasResults === true) {
       firstResult = data['result'][0];
@@ -671,16 +756,20 @@ async function getZoneInfo(token: CliCommandsDeployGetZoneInfoToken, baseDomain:
  *
  * @since 2.0.0
  */
-async function listEmailRoutingRules(token: CliCommandsDeployListEmailRoutingRulesToken, zoneId: CliCommandsDeployListEmailRoutingRulesZoneId): CliCommandsDeployListEmailRoutingRulesReturn {
-  const response: CliCommandsDeployListEmailRoutingRulesResponse = await fetch(`${CLOUDFLARE_API_BASE}/zones/${zoneId}/email/routing/rules`, {
+async function listEmailRoutingRules(token: Cli_Commands_Deploy_ListEmailRoutingRules_Token, zoneId: Cli_Commands_Deploy_ListEmailRoutingRules_ZoneId): Cli_Commands_Deploy_ListEmailRoutingRules_Returns {
+  const response: Cli_Commands_Deploy_ListEmailRoutingRules_Response = await fetch(`${CLOUDFLARE_API_BASE}/zones/${zoneId}/email/routing/rules`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
-  const data: CliCommandsDeployListEmailRoutingRulesData = await response.json<CliCommandsDeployListEmailRoutingRulesData>();
+  if (response['ok'] === false) {
+    throw new Error(`Failed to list email routing rules: HTTP ${String(response['status'])}`);
+  }
+
+  const data: Cli_Commands_Deploy_ListEmailRoutingRules_Data = await response.json<Cli_Commands_Deploy_ListEmailRoutingRules_Data>();
 
   if (data['success'] === false) {
-    const dataErrors: CliCommandsDeployListEmailRoutingRulesDataErrors = data['errors'];
-    let errorDetails: CliCommandsDeployListEmailRoutingRulesErrorDetails = 'Unknown error';
+    const dataErrors: Cli_Commands_Deploy_ListEmailRoutingRules_DataErrors = data['errors'];
+    let errorDetails: Cli_Commands_Deploy_ListEmailRoutingRules_ErrorDetails = 'Unknown error';
 
     if (dataErrors !== undefined) {
       errorDetails = dataErrors.map((e) => `${String(e['code'])}: ${e['message']}`).join(', ');
@@ -700,8 +789,8 @@ async function listEmailRoutingRules(token: CliCommandsDeployListEmailRoutingRul
  *
  * @since 2.0.0
  */
-async function createEmailRoutingRule(token: CliCommandsDeployCreateEmailRoutingRuleToken, zoneId: CliCommandsDeployCreateEmailRoutingRuleZoneId, email: CliCommandsDeployCreateEmailRoutingRuleEmail, contextId: CliCommandsDeployCreateEmailRoutingRuleContextId, workerName: CliCommandsDeployCreateEmailRoutingRuleWorkerName): CliCommandsDeployCreateEmailRoutingRuleReturn {
-  const response: CliCommandsDeployCreateEmailRoutingRuleResponse = await fetch(`${CLOUDFLARE_API_BASE}/zones/${zoneId}/email/routing/rules`, {
+async function createEmailRoutingRule(token: Cli_Commands_Deploy_CreateEmailRoutingRule_Token, zoneId: Cli_Commands_Deploy_CreateEmailRoutingRule_ZoneId, email: Cli_Commands_Deploy_CreateEmailRoutingRule_Email, contextId: Cli_Commands_Deploy_CreateEmailRoutingRule_ContextId, workerName: Cli_Commands_Deploy_CreateEmailRoutingRule_WorkerName): Cli_Commands_Deploy_CreateEmailRoutingRule_Returns {
+  const response: Cli_Commands_Deploy_CreateEmailRoutingRule_Response = await fetch(`${CLOUDFLARE_API_BASE}/zones/${zoneId}/email/routing/rules`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -722,11 +811,15 @@ async function createEmailRoutingRule(token: CliCommandsDeployCreateEmailRouting
     }),
   });
 
-  const createData: CliCommandsDeployCreateEmailRoutingRuleCreateData = await response.json<CliCommandsDeployCreateEmailRoutingRuleCreateData>();
+  if (response['ok'] === false) {
+    throw new Error(`Failed to create email routing rule for "${email}": HTTP ${String(response['status'])}`);
+  }
+
+  const createData: Cli_Commands_Deploy_CreateEmailRoutingRule_CreateData = await response.json<Cli_Commands_Deploy_CreateEmailRoutingRule_CreateData>();
 
   if (createData['success'] === false) {
-    const createErrors: CliCommandsDeployCreateEmailRoutingRuleCreateDataErrors = createData['errors'];
-    let errorDetails: CliCommandsDeployCreateEmailRoutingRuleErrorDetails = 'Unknown error';
+    const createErrors: Cli_Commands_Deploy_CreateEmailRoutingRule_CreateErrors = createData['errors'];
+    let errorDetails: Cli_Commands_Deploy_CreateEmailRoutingRule_ErrorDetails = 'Unknown error';
 
     if (createErrors !== undefined) {
       errorDetails = createErrors.map((e) => `${String(e['code'])}: ${e['message']}`).join(', ');
@@ -746,17 +839,21 @@ async function createEmailRoutingRule(token: CliCommandsDeployCreateEmailRouting
  *
  * @since 2.0.0
  */
-async function deleteEmailRoutingRule(token: CliCommandsDeployDeleteEmailRoutingRuleToken, zoneId: CliCommandsDeployDeleteEmailRoutingRuleZoneId, ruleId: CliCommandsDeployDeleteEmailRoutingRuleRuleId): CliCommandsDeployDeleteEmailRoutingRuleReturn {
-  const response: CliCommandsDeployDeleteEmailRoutingRuleResponse = await fetch(`${CLOUDFLARE_API_BASE}/zones/${zoneId}/email/routing/rules/${ruleId}`, {
+async function deleteEmailRoutingRule(token: Cli_Commands_Deploy_DeleteEmailRoutingRule_Token, zoneId: Cli_Commands_Deploy_DeleteEmailRoutingRule_ZoneId, ruleId: Cli_Commands_Deploy_DeleteEmailRoutingRule_RuleId): Cli_Commands_Deploy_DeleteEmailRoutingRule_Returns {
+  const response: Cli_Commands_Deploy_DeleteEmailRoutingRule_Response = await fetch(`${CLOUDFLARE_API_BASE}/zones/${zoneId}/email/routing/rules/${ruleId}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` },
   });
 
-  const deleteData: CliCommandsDeployDeleteEmailRoutingRuleDeleteData = await response.json<CliCommandsDeployDeleteEmailRoutingRuleDeleteData>();
+  if (response['ok'] === false) {
+    throw new Error(`Failed to delete email routing rule "${ruleId}": HTTP ${String(response['status'])}`);
+  }
+
+  const deleteData: Cli_Commands_Deploy_DeleteEmailRoutingRule_DeleteData = await response.json<Cli_Commands_Deploy_DeleteEmailRoutingRule_DeleteData>();
 
   if (deleteData['success'] === false) {
-    const deleteErrors: CliCommandsDeployDeleteEmailRoutingRuleDeleteDataErrors = deleteData['errors'];
-    let errorDetails: CliCommandsDeployDeleteEmailRoutingRuleErrorDetails = 'Unknown error';
+    const deleteErrors: Cli_Commands_Deploy_DeleteEmailRoutingRule_DeleteErrors = deleteData['errors'];
+    let errorDetails: Cli_Commands_Deploy_DeleteEmailRoutingRule_ErrorDetails = 'Unknown error';
 
     if (deleteErrors !== undefined) {
       errorDetails = deleteErrors.map((e) => `${String(e['code'])}: ${e['message']}`).join(', ');
@@ -776,8 +873,8 @@ async function deleteEmailRoutingRule(token: CliCommandsDeployDeleteEmailRouting
  *
  * @since 2.0.0
  */
-function loadEnvToken(): CliCommandsDeployLoadEnvTokenReturn {
-  const envValue: CliCommandsDeployLoadEnvTokenEnvValue = process.env[ENV_TOKEN_KEY];
+function loadEnvToken(): Cli_Commands_Deploy_LoadEnvToken_Returns {
+  const envValue: Cli_Commands_Deploy_LoadEnvToken_EnvValue = process.env[ENV_TOKEN_KEY];
 
   if (envValue !== undefined && envValue !== '') {
     return envValue;
@@ -787,15 +884,15 @@ function loadEnvToken(): CliCommandsDeployLoadEnvTokenReturn {
     return undefined;
   }
 
-  const content: CliCommandsDeployLoadEnvTokenContent = readFileSync(envFilePath, 'utf-8');
+  const content: Cli_Commands_Deploy_LoadEnvToken_Content = readFileSync(envFilePath, 'utf-8');
 
-  const match: CliCommandsDeployLoadEnvTokenMatch = content.match(new RegExp(`^${ENV_TOKEN_KEY}=(.+)$`, 'm'));
+  const match: Cli_Commands_Deploy_LoadEnvToken_Match = content.match(new RegExp(`^${ENV_TOKEN_KEY}=(.+)$`, 'm'));
 
   if (match === null || match[1] === undefined) {
     return undefined;
   }
 
-  const value: CliCommandsDeployLoadEnvTokenValue = match[1].trim().replace(new RegExp(LIB_REGEX_SURROUNDING_QUOTES.source, 'g'), '');
+  const value: Cli_Commands_Deploy_LoadEnvToken_Value = match[1].trim().replace(new RegExp(LIB_REGEX_SURROUNDING_QUOTES.source, 'g'), '');
 
   return (value !== '') ? value : undefined;
 }
@@ -808,11 +905,11 @@ function loadEnvToken(): CliCommandsDeployLoadEnvTokenReturn {
  *
  * @since 2.0.0
  */
-function saveEnvToken(token: CliCommandsDeploySaveEnvTokenToken): CliCommandsDeploySaveEnvTokenReturn {
+function saveEnvToken(token: Cli_Commands_Deploy_SaveEnvToken_Token): Cli_Commands_Deploy_SaveEnvToken_Returns {
   if (existsSync(envFilePath) === true) {
-    let content: CliCommandsDeploySaveEnvTokenContent = readFileSync(envFilePath, 'utf-8');
+    let content: Cli_Commands_Deploy_SaveEnvToken_Content = readFileSync(envFilePath, 'utf-8');
 
-    const regex: CliCommandsDeploySaveEnvTokenRegex = new RegExp(`^${ENV_TOKEN_KEY}=.*$`, 'm');
+    const regex: Cli_Commands_Deploy_SaveEnvToken_Regex = new RegExp(`^${ENV_TOKEN_KEY}=.*$`, 'm');
 
     if (regex.test(content) === true) {
       content = content.replace(regex, `${ENV_TOKEN_KEY}=${token}`);
@@ -824,9 +921,9 @@ function saveEnvToken(token: CliCommandsDeploySaveEnvTokenToken): CliCommandsDep
       ].join('\n');
     }
 
-    writeFileSync(envFilePath, content);
+    writeFileSync(envFilePath, content, { mode: parseInt('600', 8) });
   } else {
-    writeFileSync(envFilePath, `${ENV_TOKEN_KEY}=${token}\n`);
+    writeFileSync(envFilePath, `${ENV_TOKEN_KEY}=${token}\n`, { mode: parseInt('600', 8) });
   }
 
   return;
@@ -840,10 +937,10 @@ function saveEnvToken(token: CliCommandsDeploySaveEnvTokenToken): CliCommandsDep
  *
  * @since 2.0.0
  */
-async function setupEmailRouting(configPath: CliCommandsDeploySetupEmailRoutingConfigPath, token: CliCommandsDeploySetupEmailRoutingToken): CliCommandsDeploySetupEmailRoutingReturn {
-  const contexts: CliCommandsDeploySetupEmailRoutingContexts = listContexts(configPath);
+async function setupEmailRouting(configPath: Cli_Commands_Deploy_SetupEmailRouting_ConfigPath, token: Cli_Commands_Deploy_SetupEmailRouting_Token): Cli_Commands_Deploy_SetupEmailRouting_Returns {
+  const contexts: Cli_Commands_Deploy_SetupEmailRouting_Contexts = listContexts(configPath);
 
-  const emailContexts: CliCommandsDeploySetupEmailRoutingEmailContexts = contexts.filter((context) => context['type'] === 'email');
+  const emailContexts: Cli_Commands_Deploy_SetupEmailRouting_EmailContexts = contexts.filter((context) => context['type'] === 'email');
 
   if (emailContexts.length === 0) {
     return;
@@ -851,31 +948,31 @@ async function setupEmailRouting(configPath: CliCommandsDeploySetupEmailRoutingC
 
   Logger.info('Setting up email routing...');
 
-  const settings: CliCommandsDeploySetupEmailRoutingSettings = getSettings(configPath);
+  const settings: Cli_Commands_Deploy_SetupEmailRouting_Settings = getSettings(configPath);
 
-  const workerName: CliCommandsDeploySetupEmailRoutingWorkerName = settings['worker_name'];
+  const workerName: Cli_Commands_Deploy_SetupEmailRouting_WorkerName = settings['worker_name'];
 
-  const zoneInfo: CliCommandsDeploySetupEmailRoutingZoneInfo = await getZoneInfo(token, settings['base_domain']);
+  const zoneInfo: Cli_Commands_Deploy_SetupEmailRouting_ZoneInfo = await getZoneInfo(token, settings['base_domain']);
 
-  const zoneId: CliCommandsDeploySetupEmailRoutingZoneId = zoneInfo['zoneId'];
+  const zoneId: Cli_Commands_Deploy_SetupEmailRouting_ZoneId = zoneInfo['zoneId'];
 
-  const existingRules: CliCommandsDeploySetupEmailRoutingExistingRules = await listEmailRoutingRules(token, zoneId);
+  const existingRules: Cli_Commands_Deploy_SetupEmailRouting_ExistingRules = await listEmailRoutingRules(token, zoneId);
 
-  const workerRules: CliCommandsDeploySetupEmailRoutingWorkerRules = existingRules.filter((rule) => {
+  const workerRules: Cli_Commands_Deploy_SetupEmailRouting_WorkerRules = existingRules.filter((rule) => {
     return rule['actions'].some((action) => action['type'] === 'worker' && action['value'].includes(workerName));
   });
 
-  const desiredEmails: CliCommandsDeploySetupEmailRoutingDesiredEmails = new Set(emailContexts.map((context) => `${context['id']}@${settings['base_domain']}`));
+  const desiredEmails: Cli_Commands_Deploy_SetupEmailRouting_DesiredEmails = new Set(emailContexts.map((context) => `${context['id']}@${settings['base_domain']}`));
 
-  let created: CliCommandsDeploySetupEmailRoutingCreated = 0;
-  let kept: CliCommandsDeploySetupEmailRoutingKept = 0;
-  let removed: CliCommandsDeploySetupEmailRoutingRemoved = 0;
+  let created: Cli_Commands_Deploy_SetupEmailRouting_Created = 0;
+  let kept: Cli_Commands_Deploy_SetupEmailRouting_Kept = 0;
+  let removed: Cli_Commands_Deploy_SetupEmailRouting_Removed = 0;
 
   // Create missing rules.
   for (const context of emailContexts) {
-    const email: CliCommandsDeploySetupEmailRoutingEmail = `${context['id']}@${settings['base_domain']}`;
+    const email: Cli_Commands_Deploy_SetupEmailRouting_Email = `${context['id']}@${settings['base_domain']}`;
 
-    const ruleExists: CliCommandsDeploySetupEmailRoutingRuleExists = workerRules.some((rule) => {
+    const ruleExists: Cli_Commands_Deploy_SetupEmailRouting_RuleExists = workerRules.some((rule) => {
       return rule['matchers'].some((matcher) => {
         return matcher['type'] === 'literal'
           && matcher['field'] === 'to'
@@ -894,7 +991,7 @@ async function setupEmailRouting(configPath: CliCommandsDeploySetupEmailRoutingC
 
   // Remove stale rules.
   for (const rule of workerRules) {
-    const ruleEmail: CliCommandsDeploySetupEmailRoutingRuleEmail = rule['matchers'].find((matcher) => matcher['type'] === 'literal' && matcher['field'] === 'to');
+    const ruleEmail: Cli_Commands_Deploy_SetupEmailRouting_RuleEmail = rule['matchers'].find((matcher) => matcher['type'] === 'literal' && matcher['field'] === 'to');
 
     if (ruleEmail !== undefined && desiredEmails.has(ruleEmail['value']) === false) {
       await deleteEmailRoutingRule(token, zoneId, rule['tag']);
@@ -916,10 +1013,10 @@ async function setupEmailRouting(configPath: CliCommandsDeploySetupEmailRoutingC
  *
  * @since 2.0.0
  */
-function printContextSummary(configPath: CliCommandsDeployPrintContextSummaryConfigPath): CliCommandsDeployPrintContextSummaryReturn {
-  const contexts: CliCommandsDeployPrintContextSummaryContexts = listContexts(configPath);
+function printContextSummary(configPath: Cli_Commands_Deploy_PrintContextSummary_ConfigPath): Cli_Commands_Deploy_PrintContextSummary_Returns {
+  const contexts: Cli_Commands_Deploy_PrintContextSummary_Contexts = listContexts(configPath);
 
-  const settings: CliCommandsDeployPrintContextSummarySettings = getSettings(configPath);
+  const settings: Cli_Commands_Deploy_PrintContextSummary_Settings = getSettings(configPath);
 
   if (contexts.length === 0) {
     return;

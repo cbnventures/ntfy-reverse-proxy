@@ -1,15 +1,15 @@
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 
 import type {
-  CliCommandsConfigIoLoadConfigConfigPath,
-  CliCommandsConfigIoLoadConfigReturn,
-  CliCommandsConfigIoNormalizeConfigConfig,
-  CliCommandsConfigIoNormalizeConfigReturn,
-  CliCommandsConfigIoNormalizeConfigSortedContexts,
-  CliCommandsConfigIoNormalizeConfigSortedServers,
-  CliCommandsConfigIoSaveConfigConfig,
-  CliCommandsConfigIoSaveConfigConfigPath,
-  CliCommandsConfigIoSaveConfigReturns,
+  Cli_Commands_ConfigIo_LoadConfig_ConfigPath,
+  Cli_Commands_ConfigIo_LoadConfig_Returns,
+  Cli_Commands_ConfigIo_NormalizeConfig_Config,
+  Cli_Commands_ConfigIo_NormalizeConfig_Returns,
+  Cli_Commands_ConfigIo_NormalizeConfig_SortedContexts,
+  Cli_Commands_ConfigIo_NormalizeConfig_SortedServers,
+  Cli_Commands_ConfigIo_SaveConfig_Config,
+  Cli_Commands_ConfigIo_SaveConfig_ConfigPath,
+  Cli_Commands_ConfigIo_SaveConfig_Returns,
 } from '../../types/cli/commands/config-io.d.ts';
 
 /**
@@ -21,7 +21,7 @@ import type {
  *
  * @since 2.0.0
  */
-function loadConfig(configPath: CliCommandsConfigIoLoadConfigConfigPath): CliCommandsConfigIoLoadConfigReturn {
+function loadConfig(configPath: Cli_Commands_ConfigIo_LoadConfig_ConfigPath): Cli_Commands_ConfigIo_LoadConfig_Returns {
   return JSON.parse(readFileSync(configPath, 'utf-8'));
 }
 
@@ -33,12 +33,12 @@ function loadConfig(configPath: CliCommandsConfigIoLoadConfigConfigPath): CliCom
  *
  * @since 2.0.0
  */
-function normalizeConfig(config: CliCommandsConfigIoNormalizeConfigConfig): CliCommandsConfigIoNormalizeConfigReturn {
-  const sortedServers: CliCommandsConfigIoNormalizeConfigSortedServers = [...config['servers']].sort(
+function normalizeConfig(config: Cli_Commands_ConfigIo_NormalizeConfig_Config): Cli_Commands_ConfigIo_NormalizeConfig_Returns {
+  const sortedServers: Cli_Commands_ConfigIo_NormalizeConfig_SortedServers = [...config['servers']].sort(
     (a, b) => a['name'].localeCompare(b['name']),
   );
 
-  const sortedContexts: CliCommandsConfigIoNormalizeConfigSortedContexts = [...config['contexts']].sort(
+  const sortedContexts: Cli_Commands_ConfigIo_NormalizeConfig_SortedContexts = [...config['contexts']].sort(
     (a, b) => a['name'].localeCompare(b['name']),
   );
 
@@ -57,7 +57,7 @@ function normalizeConfig(config: CliCommandsConfigIoNormalizeConfigConfig): CliC
  *
  * @since 2.0.0
  */
-function saveConfig(configPath: CliCommandsConfigIoSaveConfigConfigPath, config: CliCommandsConfigIoSaveConfigConfig): CliCommandsConfigIoSaveConfigReturns {
+function saveConfig(configPath: Cli_Commands_ConfigIo_SaveConfig_ConfigPath, config: Cli_Commands_ConfigIo_SaveConfig_Config): Cli_Commands_ConfigIo_SaveConfig_Returns {
   writeFileSync(configPath, `${JSON.stringify(normalizeConfig(config), null, 2)}\n`);
 
   return;

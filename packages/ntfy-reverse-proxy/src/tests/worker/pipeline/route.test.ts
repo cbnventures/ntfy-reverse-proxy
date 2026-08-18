@@ -3,8 +3,17 @@ import { describe, expect, it } from 'vitest';
 import { route } from '../../../worker/pipeline/route.js';
 
 import type {
-  TestsWorkerPipelineRouteMockConfig,
-  TestsWorkerPipelineRouteResult,
+  Tests_Worker_Pipeline_Route_MockConfig,
+  Tests_Worker_Pipeline_Route_Route_EmailRouting_DoesNotMatchHTTPContextsForEmailRouteType_Result,
+  Tests_Worker_Pipeline_Route_Route_EmailRouting_IdentifiesThePrimaryServerForEmailContext_Result,
+  Tests_Worker_Pipeline_Route_Route_EmailRouting_MatchesAContextByIdForEmailType_Result,
+  Tests_Worker_Pipeline_Route_Route_EmailRouting_ResolvesServerConfigsForEmailContext_Result,
+  Tests_Worker_Pipeline_Route_Route_EmailRouting_ReturnsErrorWhenNoEmailContextMatches_Result,
+  Tests_Worker_Pipeline_Route_Route_HTTPRouting_DoesNotMatchEmailContextsForHTTPRouteType_Result,
+  Tests_Worker_Pipeline_Route_Route_HTTPRouting_IdentifiesThePrimaryServer_Result,
+  Tests_Worker_Pipeline_Route_Route_HTTPRouting_MatchesAContextByIdForHTTPType_Result,
+  Tests_Worker_Pipeline_Route_Route_HTTPRouting_ResolvesServerConfigsFromContextServerNames_Result,
+  Tests_Worker_Pipeline_Route_Route_HTTPRouting_ReturnsErrorWhenNoContextMatches_Result,
 } from '../../../types/tests/worker/pipeline/route.test.d.ts';
 
 /**
@@ -12,16 +21,22 @@ import type {
  *
  * @since 2.0.0
  */
-const mockConfig: TestsWorkerPipelineRouteMockConfig = {
+const mockConfig: Tests_Worker_Pipeline_Route_MockConfig = {
   settings: {
-    worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+    worker_name: 'test-worker',
+    base_domain: 'ntfy.example.com',
+    show_response_output: false,
   },
   servers: [
     {
-      name: 'alpha', server: 'https://ntfy.alpha.example.com', token: 'tk_abc',
+      name: 'alpha',
+      server: 'https://ntfy.alpha.example.com',
+      token: 'tk_abc',
     },
     {
-      name: 'beta', server: 'https://ntfy.beta.example.com', token: 'tk_def',
+      name: 'beta',
+      server: 'https://ntfy.beta.example.com',
+      token: 'tk_def',
     },
   ],
   contexts: [
@@ -70,7 +85,7 @@ describe('route', () => {
    */
   describe('HTTP routing', () => {
     it('matches a context by id for HTTP type', () => {
-      const result: TestsWorkerPipelineRouteResult = route('http', 'aBcDeFgHiJkLmNoPqRsT', mockConfig);
+      const result: Tests_Worker_Pipeline_Route_Route_HTTPRouting_MatchesAContextByIdForHTTPType_Result = route('http', 'aBcDeFgHiJkLmNoPqRsT', mockConfig);
 
       expect(result['context']).toBeDefined();
 
@@ -80,7 +95,7 @@ describe('route', () => {
     });
 
     it('resolves server configs from context server names', () => {
-      const result: TestsWorkerPipelineRouteResult = route('http', 'aBcDeFgHiJkLmNoPqRsT', mockConfig);
+      const result: Tests_Worker_Pipeline_Route_Route_HTTPRouting_ResolvesServerConfigsFromContextServerNames_Result = route('http', 'aBcDeFgHiJkLmNoPqRsT', mockConfig);
 
       expect(result['resolvedServers']).toHaveLength(2);
 
@@ -90,7 +105,7 @@ describe('route', () => {
     });
 
     it('identifies the primary server', () => {
-      const result: TestsWorkerPipelineRouteResult = route('http', 'aBcDeFgHiJkLmNoPqRsT', mockConfig);
+      const result: Tests_Worker_Pipeline_Route_Route_HTTPRouting_IdentifiesThePrimaryServer_Result = route('http', 'aBcDeFgHiJkLmNoPqRsT', mockConfig);
 
       expect(result['primaryServer']).toBeDefined();
 
@@ -100,7 +115,7 @@ describe('route', () => {
     });
 
     it('returns error when no context matches', () => {
-      const result: TestsWorkerPipelineRouteResult = route('http', 'unknown', mockConfig);
+      const result: Tests_Worker_Pipeline_Route_Route_HTTPRouting_ReturnsErrorWhenNoContextMatches_Result = route('http', 'unknown', mockConfig);
 
       expect(result['error']).toBeDefined();
 
@@ -110,7 +125,7 @@ describe('route', () => {
     });
 
     it('does not match email contexts for HTTP route type', () => {
-      const result: TestsWorkerPipelineRouteResult = route('http', 'pfsense', mockConfig);
+      const result: Tests_Worker_Pipeline_Route_Route_HTTPRouting_DoesNotMatchEmailContextsForHTTPRouteType_Result = route('http', 'pfsense', mockConfig);
 
       expect(result['error']).toBeDefined();
 
@@ -129,7 +144,7 @@ describe('route', () => {
    */
   describe('Email routing', () => {
     it('matches a context by id for email type', () => {
-      const result: TestsWorkerPipelineRouteResult = route('email', 'pfsense', mockConfig);
+      const result: Tests_Worker_Pipeline_Route_Route_EmailRouting_MatchesAContextByIdForEmailType_Result = route('email', 'pfsense', mockConfig);
 
       expect(result['context']).toBeDefined();
 
@@ -139,7 +154,7 @@ describe('route', () => {
     });
 
     it('resolves server configs for email context', () => {
-      const result: TestsWorkerPipelineRouteResult = route('email', 'pfsense', mockConfig);
+      const result: Tests_Worker_Pipeline_Route_Route_EmailRouting_ResolvesServerConfigsForEmailContext_Result = route('email', 'pfsense', mockConfig);
 
       expect(result['resolvedServers']).toHaveLength(1);
 
@@ -149,7 +164,7 @@ describe('route', () => {
     });
 
     it('identifies the primary server for email context', () => {
-      const result: TestsWorkerPipelineRouteResult = route('email', 'pfsense', mockConfig);
+      const result: Tests_Worker_Pipeline_Route_Route_EmailRouting_IdentifiesThePrimaryServerForEmailContext_Result = route('email', 'pfsense', mockConfig);
 
       expect(result['primaryServer']).toBeDefined();
 
@@ -159,7 +174,7 @@ describe('route', () => {
     });
 
     it('returns error when no email context matches', () => {
-      const result: TestsWorkerPipelineRouteResult = route('email', 'unknown', mockConfig);
+      const result: Tests_Worker_Pipeline_Route_Route_EmailRouting_ReturnsErrorWhenNoEmailContextMatches_Result = route('email', 'unknown', mockConfig);
 
       expect(result['error']).toBeDefined();
 
@@ -169,7 +184,7 @@ describe('route', () => {
     });
 
     it('does not match HTTP contexts for email route type', () => {
-      const result: TestsWorkerPipelineRouteResult = route('email', 'aBcDeFgHiJkLmNoPqRsT', mockConfig);
+      const result: Tests_Worker_Pipeline_Route_Route_EmailRouting_DoesNotMatchHTTPContextsForEmailRouteType_Result = route('email', 'aBcDeFgHiJkLmNoPqRsT', mockConfig);
 
       expect(result['error']).toBeDefined();
 

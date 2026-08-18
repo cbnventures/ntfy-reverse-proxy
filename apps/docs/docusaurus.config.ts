@@ -1,6 +1,13 @@
-import { resolve } from 'node:path';
+import { NovaIdentity } from '@cbnventures/nova/toolkit';
 
 import type { DocusaurusNovaConfig } from '@cbnventures/docusaurus-preset-nova/types/config';
+
+/**
+ * Identity.
+ *
+ * @since UNRELEASED
+ */
+const identity = new NovaIdentity().forDocs();
 
 /**
  * Docusaurus Configuration.
@@ -9,16 +16,16 @@ import type { DocusaurusNovaConfig } from '@cbnventures/docusaurus-preset-nova/t
  */
 const config: DocusaurusNovaConfig = {
   // Site Metadata.
-  title: 'Reverse Proxy for ntfy',
+  title: identity['title'] ?? '',
   titleDelimiter: ' - ',
-  tagline: 'Notification gateway on Cloudflare Workers that routes webhooks and emails to ntfy with automatic server failover',
+  tagline: identity['tagline'],
   favicon: './favicon.ico',
 
   // Deployment.
-  url: 'https://nrp.cbnventures.io',
+  url: identity['url'] ?? '',
   baseUrl: '/',
-  organizationName: 'cbnventures',
-  projectName: 'ntfy-reverse-proxy',
+  organizationName: identity['organizationName'],
+  projectName: identity['projectName'],
   deploymentBranch: undefined,
   githubHost: undefined,
   githubPort: undefined,
@@ -55,7 +62,7 @@ const config: DocusaurusNovaConfig = {
       attributes: {
         rel: 'apple-touch-icon',
         sizes: '180x180',
-        href: '/apple-touch-icon.png',
+        href: `${identity['baseUrl'] ?? '/'}apple-touch-icon.png`,
       },
     },
     {
@@ -64,7 +71,7 @@ const config: DocusaurusNovaConfig = {
         rel: 'icon',
         type: 'image/png',
         sizes: '96x96',
-        href: '/favicon-96x96.png',
+        href: `${identity['baseUrl'] ?? '/'}favicon-96x96.png`,
       },
     },
     {
@@ -72,14 +79,14 @@ const config: DocusaurusNovaConfig = {
       attributes: {
         rel: 'icon',
         type: 'image/svg+xml',
-        href: '/favicon.svg',
+        href: `${identity['baseUrl'] ?? '/'}favicon.svg`,
       },
     },
     {
       tagName: 'link',
       attributes: {
         rel: 'manifest',
-        href: '/site.webmanifest',
+        href: `${identity['baseUrl'] ?? '/'}site.webmanifest`,
       },
     },
   ],
@@ -129,27 +136,23 @@ const config: DocusaurusNovaConfig = {
       // Preset Overrides (undefined = use preset default).
       overrides: {
         colors: {
-          primary: '#0D9488',
-          accent: '#D97706',
-          neutral: '#57534E',
+          primary: {
+            light: '#0D9488',
+            dark: '#0D9488',
+          },
+          secondary: {
+            light: '#D97706',
+            dark: '#D97706',
+          },
+          text: undefined,
+          border: undefined,
+          warning: undefined,
+          danger: undefined,
         },
         fonts: {
           display: 'Outfit',
           body: 'Be Vietnam Pro',
           code: 'Fira Code',
-        },
-        shape: {
-          radius: undefined,
-          density: undefined,
-        },
-        depth: {
-          cards: undefined,
-          codeBlocks: undefined,
-        },
-        motion: {
-          speed: undefined,
-          staggeredReveals: undefined,
-          hoverEffects: undefined,
         },
         navbar: undefined,
         footer: undefined,
@@ -176,7 +179,7 @@ const config: DocusaurusNovaConfig = {
               'rss',
               'atom',
             ],
-            copyright: `Copyright \u00A9 2023-${String(new Date().getFullYear())} CBN Ventures LLC. All Rights Reserved.`,
+            copyright: identity['copyright'],
             limit: 20,
             title: 'Reverse Proxy for ntfy Blog',
             description: 'Release notes, integration deep dives, and the occasional dispatch from the relay room.',
@@ -220,34 +223,32 @@ const config: DocusaurusNovaConfig = {
   ]],
 
   // Plugins.
-  plugins: [[
-    'docusaurus-plugin-module-alias',
-    {
-      alias: {
-        '@': resolve(__dirname, 'src'),
-      },
-    },
-  ]],
+  plugins: [],
 
   // Theme Config.
   themeConfig: {
     // Site.
     site: {
-      title: 'Reverse Proxy for ntfy',
       logo: {
         alt: 'Reverse Proxy for ntfy',
-        src: '/images/logo.svg',
-        srcDark: undefined,
+        src: {
+          light: '/images/logo.svg',
+          dark: undefined,
+        },
         href: '/',
-        wordmark: undefined,
-        wordmarkDark: undefined,
-        title: 'Reverse Proxy for ntfy',
+        target: undefined,
+        rel: undefined,
+        ariaLabel: undefined,
+        wordmark: {
+          light: undefined,
+          dark: undefined,
+        },
       },
       image: '/thumbnails/brand.png',
       metadata: [
         {
           name: 'description',
-          content: 'Notification gateway on Cloudflare Workers that routes webhooks and emails to ntfy with automatic server failover',
+          content: identity['metaDescription'] ?? '',
         },
         {
           name: 'twitter:card',
@@ -264,7 +265,6 @@ const config: DocusaurusNovaConfig = {
 
     // Navbar.
     navbar: {
-      title: 'Reverse Proxy for ntfy',
       hideOnScroll: false,
       items: [
         {
@@ -336,16 +336,28 @@ const config: DocusaurusNovaConfig = {
     },
 
     // Announcement Bar.
-    // announcementBar: {
-    //   id: '',
-    //   content: '',
-    //   backgroundColor: undefined,
-    //   textColor: undefined,
-    //   isCloseable: true,
-    // },
+    announcementBar: undefined,
 
     // Back to Top Button.
     backToTopButton: true,
+
+    // Error Pages - overrides Nova's randomized defaults with consumer copy.
+    // Any unset field falls through to the Nova-flavored randomized pool.
+    errorPages: {
+      notFound: {
+        title: 'This route did not relay.',
+        description: 'We could not find a handler for this URL. Head back to the docs index.',
+        backHomeLabel: 'Back to the docs',
+        backHomeHref: undefined,
+      },
+      errorPageContent: {
+        title: 'Relay failed on this page.',
+        retryLabel: 'Retry the relay',
+      },
+      error: {
+        retryLabel: 'Retry the dispatch',
+      },
+    },
 
     // Footer.
     footer: {
@@ -415,7 +427,7 @@ const config: DocusaurusNovaConfig = {
       },
       socialLinks: [
         {
-          icon: 'mdi:facebook',
+          icon: 'ri:facebook-fill',
           href: 'https://www.facebook.com/cbnventures',
           label: 'Facebook',
         },
@@ -425,32 +437,32 @@ const config: DocusaurusNovaConfig = {
           label: 'X',
         },
         {
-          icon: 'mdi:youtube',
+          icon: 'ri:youtube-fill',
           href: 'https://www.youtube.com/@cbnventures',
           label: 'YouTube',
         },
         {
-          icon: 'mdi:instagram',
+          icon: 'ri:instagram-fill',
           href: 'https://www.instagram.com/cbnventures/',
           label: 'Instagram',
         },
         {
-          icon: 'mdi:github',
+          icon: 'ri:github-fill',
           href: 'https://github.com/cbnventures',
           label: 'GitHub',
         },
         {
-          icon: 'mdi:google-play',
+          icon: 'ri:google-play-fill',
           href: 'https://play.google.com/store/apps/dev?id=6419450160526226105',
           label: 'Google Play',
         },
         {
-          icon: 'mdi:linkedin',
+          icon: 'ri:linkedin-fill',
           href: 'https://www.linkedin.com/company/cbnventures/',
           label: 'LinkedIn',
         },
       ],
-      copyright: `Copyright \u00A9 2023-${String(new Date().getFullYear())} CBN Ventures LLC. All Rights Reserved.`,
+      copyright: identity['copyright'],
       credit: true,
       cta: undefined,
     },

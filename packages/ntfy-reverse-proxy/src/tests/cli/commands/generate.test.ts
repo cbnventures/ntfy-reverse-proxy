@@ -1,9 +1,9 @@
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import {
   existsSync, readFileSync, unlinkSync, writeFileSync,
-} from 'fs';
-import { tmpdir } from 'os';
-import { join } from 'path';
+} from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 import {
   afterEach, beforeEach, describe, expect, it,
@@ -12,21 +12,29 @@ import {
 import { generateWranglerToml } from '../../../cli/commands/generate.js';
 
 import type {
-  TestsCliCommandsGenerateConfigJson,
-  TestsCliCommandsGenerateTestConfigPath,
-  TestsCliCommandsGenerateTestOutputPath,
-  TestsCliCommandsGenerateTomlContent,
+  Tests_Cli_Commands_Generate_GenerateCommand_ConfigJson,
+  Tests_Cli_Commands_Generate_GenerateCommand_EmbedsConfigAsVars_Toml,
+  Tests_Cli_Commands_Generate_GenerateCommand_GeneratesEmailRoutingCommentsForEmailContexts_Toml,
+  Tests_Cli_Commands_Generate_GenerateCommand_GeneratesRoutesFromHTTPContextIdsAndBaseDomain_Toml,
+  Tests_Cli_Commands_Generate_GenerateCommand_GeneratesValidWranglerToml_Toml,
+  Tests_Cli_Commands_Generate_GenerateCommand_OmitsEmailRoutingSectionWhenNoEmailContextsExist_ConfigJson,
+  Tests_Cli_Commands_Generate_GenerateCommand_OmitsEmailRoutingSectionWhenNoEmailContextsExist_Toml,
+  Tests_Cli_Commands_Generate_TestConfigPath,
+  Tests_Cli_Commands_Generate_TestConfigPathFragment,
+  Tests_Cli_Commands_Generate_TestConfigTmpDir,
+  Tests_Cli_Commands_Generate_TestOutputPath,
+  Tests_Cli_Commands_Generate_TestOutputPathFragment,
 } from '../../../types/tests/cli/commands/generate.test.d.ts';
 
-const testConfigPathFragment: TestsCliCommandsGenerateTestConfigPath = `ntfy-test-gen-config-${randomUUID()}.json`;
+const testConfigPathFragment: Tests_Cli_Commands_Generate_TestConfigPathFragment = `ntfy-test-gen-config-${randomUUID()}.json`;
 
-const testConfigTmpDir: TestsCliCommandsGenerateTestConfigPath = tmpdir();
+const testConfigTmpDir: Tests_Cli_Commands_Generate_TestConfigTmpDir = tmpdir();
 
-const testConfigPath: TestsCliCommandsGenerateTestConfigPath = join(testConfigTmpDir, testConfigPathFragment);
+const testConfigPath: Tests_Cli_Commands_Generate_TestConfigPath = join(testConfigTmpDir, testConfigPathFragment);
 
-const testOutputPathFragment: TestsCliCommandsGenerateTestOutputPath = `ntfy-test-gen-wrangler-${randomUUID()}.toml`;
+const testOutputPathFragment: Tests_Cli_Commands_Generate_TestOutputPathFragment = `ntfy-test-gen-wrangler-${randomUUID()}.toml`;
 
-const testOutputPath: TestsCliCommandsGenerateTestOutputPath = join(testConfigTmpDir, testOutputPathFragment);
+const testOutputPath: Tests_Cli_Commands_Generate_TestOutputPath = join(testConfigTmpDir, testOutputPathFragment);
 
 /**
  * Tests - CLI - Commands - Generate - Generate Command.
@@ -35,21 +43,39 @@ const testOutputPath: TestsCliCommandsGenerateTestOutputPath = join(testConfigTm
  */
 describe('generate command', () => {
   beforeEach(() => {
-    const configJson: TestsCliCommandsGenerateConfigJson = JSON.stringify({
+    const configJson: Tests_Cli_Commands_Generate_GenerateCommand_ConfigJson = JSON.stringify({
       settings: {
-        worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
       },
       servers: [{
-        name: 'alpha', server: 'https://ntfy.example.com', token: 'tk_abc',
+        name: 'alpha',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
       }],
       contexts: [
         {
-          id: 'abc123', name: 'test', type: 'http', interpreter: 'plain-text', topic: 'test',
-          mode: 'send-once', show_visitor_info: false, primary_server: 'alpha', servers: ['alpha'],
+          id: 'abc123',
+          name: 'test',
+          type: 'http',
+          interpreter: 'plain-text',
+          topic: 'test',
+          mode: 'send-once',
+          show_visitor_info: false,
+          primary_server: 'alpha',
+          servers: ['alpha'],
         },
         {
-          id: 'pfsense', name: 'email-test', type: 'email', interpreter: 'pfsense', topic: 'email-alerts',
-          mode: 'send-once', show_visitor_info: false, primary_server: 'alpha', servers: ['alpha'],
+          id: 'pfsense',
+          name: 'email-test',
+          type: 'email',
+          interpreter: 'pfsense',
+          topic: 'email-alerts',
+          mode: 'send-once',
+          show_visitor_info: false,
+          primary_server: 'alpha',
+          servers: ['alpha'],
         },
       ],
     });
@@ -74,7 +100,7 @@ describe('generate command', () => {
   it('generates valid wrangler.toml', () => {
     generateWranglerToml(testConfigPath, testOutputPath);
 
-    const toml: TestsCliCommandsGenerateTomlContent = readFileSync(testOutputPath, 'utf-8');
+    const toml: Tests_Cli_Commands_Generate_GenerateCommand_GeneratesValidWranglerToml_Toml = readFileSync(testOutputPath, 'utf-8');
 
     expect(toml).toContain('name = "test-worker"');
 
@@ -88,7 +114,7 @@ describe('generate command', () => {
   it('generates routes from HTTP context ids and base_domain', () => {
     generateWranglerToml(testConfigPath, testOutputPath);
 
-    const toml: TestsCliCommandsGenerateTomlContent = readFileSync(testOutputPath, 'utf-8');
+    const toml: Tests_Cli_Commands_Generate_GenerateCommand_GeneratesRoutesFromHTTPContextIdsAndBaseDomain_Toml = readFileSync(testOutputPath, 'utf-8');
 
     expect(toml).toContain('abc123.ntfy.example.com');
 
@@ -100,7 +126,7 @@ describe('generate command', () => {
   it('embeds config as vars', () => {
     generateWranglerToml(testConfigPath, testOutputPath);
 
-    const toml: TestsCliCommandsGenerateTomlContent = readFileSync(testOutputPath, 'utf-8');
+    const toml: Tests_Cli_Commands_Generate_GenerateCommand_EmbedsConfigAsVars_Toml = readFileSync(testOutputPath, 'utf-8');
 
     expect(toml).toContain('[vars]');
 
@@ -110,7 +136,7 @@ describe('generate command', () => {
   it('generates email routing comments for email contexts', () => {
     generateWranglerToml(testConfigPath, testOutputPath);
 
-    const toml: TestsCliCommandsGenerateTomlContent = readFileSync(testOutputPath, 'utf-8');
+    const toml: Tests_Cli_Commands_Generate_GenerateCommand_GeneratesEmailRoutingCommentsForEmailContexts_Toml = readFileSync(testOutputPath, 'utf-8');
 
     expect(toml).toContain('Email Routing');
 
@@ -120,16 +146,27 @@ describe('generate command', () => {
   });
 
   it('omits email routing section when no email contexts exist', () => {
-    const configJson: TestsCliCommandsGenerateConfigJson = JSON.stringify({
+    const configJson: Tests_Cli_Commands_Generate_GenerateCommand_OmitsEmailRoutingSectionWhenNoEmailContextsExist_ConfigJson = JSON.stringify({
       settings: {
-        worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
       },
       servers: [{
-        name: 'alpha', server: 'https://ntfy.example.com', token: 'tk_abc',
+        name: 'alpha',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
       }],
       contexts: [{
-        id: 'xyz789', name: 'http-only', type: 'http', interpreter: 'plain-text', topic: 'test',
-        mode: 'send-once', show_visitor_info: false, primary_server: 'alpha', servers: ['alpha'],
+        id: 'xyz789',
+        name: 'http-only',
+        type: 'http',
+        interpreter: 'plain-text',
+        topic: 'test',
+        mode: 'send-once',
+        show_visitor_info: false,
+        primary_server: 'alpha',
+        servers: ['alpha'],
       }],
     });
 
@@ -137,7 +174,7 @@ describe('generate command', () => {
 
     generateWranglerToml(testConfigPath, testOutputPath);
 
-    const toml: TestsCliCommandsGenerateTomlContent = readFileSync(testOutputPath, 'utf-8');
+    const toml: Tests_Cli_Commands_Generate_GenerateCommand_OmitsEmailRoutingSectionWhenNoEmailContextsExist_Toml = readFileSync(testOutputPath, 'utf-8');
 
     expect(toml).not.toContain('Email Routing');
 

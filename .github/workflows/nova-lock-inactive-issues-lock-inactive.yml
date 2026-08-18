@@ -4,9 +4,9 @@
 # Run `nova generate github workflows` to regenerate.
 # See: https://nova.cbnventures.io/docs/cli/generators/github/workflows
 
-name: "Lock Inactive Issues (project)"
+name: "Lock Inactive Issues (lock-inactive)"
 
-run-name: "Locking inactive issues (project)${{ github.event_name == 'workflow_dispatch' && inputs.dry-run && ' (dry run)' || '' }}"
+run-name: "Locking inactive issues (lock-inactive)${{ github.event_name == 'workflow_dispatch' && inputs.dry-run && ' (dry run)' || '' }}"
 
 on:
   schedule:

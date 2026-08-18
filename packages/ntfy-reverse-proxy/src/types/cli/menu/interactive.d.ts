@@ -1,11 +1,10 @@
 import type prompts from 'prompts';
 
 import type {
-  LibSchemaContextConfig,
-  LibSchemaContextConfigInterpreter,
-  LibSchemaContextConfigMode,
-  LibSchemaServerConfig,
-  LibSchemaSettingsConfig,
+  Lib_Schema_ContextConfig,
+  Lib_Schema_ContextConfigErrorEvent,
+  Lib_Schema_ServerConfig,
+  Lib_Schema_SettingsConfig,
 } from '../../lib/schema.d.ts';
 
 /**
@@ -13,369 +12,425 @@ import type {
  *
  * @since 2.0.0
  */
-export type CliMenuInteractiveAddContextFlowConfigPath = string;
+export type Cli_Menu_Interactive_AddContextFlow_ConfigPath = string;
 
-export type CliMenuInteractiveAddContextFlowServers = LibSchemaServerConfig[];
+export type Cli_Menu_Interactive_AddContextFlow_Servers = Lib_Schema_ServerConfig[];
 
-export type CliMenuInteractiveAddContextFlowReturn = Promise<void>;
+export type Cli_Menu_Interactive_AddContextFlow_Returns = Promise<void>;
 
-export type CliMenuInteractiveAddContextFlowAutoId = string;
+export type Cli_Menu_Interactive_AddContextFlow_AutoId = string;
 
-export type CliMenuInteractiveAddContextFlowTypeResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_AddContextFlow_TypeResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveAddContextFlowContextType = string | undefined;
+export type Cli_Menu_Interactive_AddContextFlow_ContextType = string | undefined;
 
-export type CliMenuInteractiveAddContextFlowChoiceTitle = string;
+export type Cli_Menu_Interactive_AddContextFlow_ChoiceTitle = string;
 
-export type CliMenuInteractiveAddContextFlowChoiceValue = string;
+export type Cli_Menu_Interactive_AddContextFlow_ChoiceValue = string;
 
-export type CliMenuInteractiveAddContextFlowChoice = {
-  title: CliMenuInteractiveAddContextFlowChoiceTitle;
-  value: CliMenuInteractiveAddContextFlowChoiceValue;
+export type Cli_Menu_Interactive_AddContextFlow_Choice = {
+  title: Cli_Menu_Interactive_AddContextFlow_ChoiceTitle;
+  value: Cli_Menu_Interactive_AddContextFlow_ChoiceValue;
 };
 
-export type CliMenuInteractiveAddContextFlowHttpInterpreters = CliMenuInteractiveAddContextFlowChoice[];
+export type Cli_Menu_Interactive_AddContextFlow_HttpInterpreters = Cli_Menu_Interactive_AddContextFlow_Choice[];
 
-export type CliMenuInteractiveAddContextFlowEmailInterpreters = CliMenuInteractiveAddContextFlowChoice[];
+export type Cli_Menu_Interactive_AddContextFlow_EmailInterpreters = Cli_Menu_Interactive_AddContextFlow_Choice[];
 
-export type CliMenuInteractiveAddContextFlowNameResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_AddContextFlow_NameResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveAddContextFlowNameValidateValue = string;
+export type Cli_Menu_Interactive_AddContextFlow_NameValidateValue = string;
 
-export type CliMenuInteractiveAddContextFlowName = string | undefined;
+export type Cli_Menu_Interactive_AddContextFlow_Name = string | undefined;
 
-export type CliMenuInteractiveAddContextFlowIdMessage = string;
+export type Cli_Menu_Interactive_AddContextFlow_IdMessage = string;
 
-export type CliMenuInteractiveAddContextFlowIdResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_AddContextFlow_IdResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveAddContextFlowIdValidateValue = string;
+export type Cli_Menu_Interactive_AddContextFlow_IdValidateValue = string;
 
-export type CliMenuInteractiveAddContextFlowRawId = string | undefined;
+export type Cli_Menu_Interactive_AddContextFlow_RawId = string | undefined;
 
-export type CliMenuInteractiveAddContextFlowInterpreterChoices = CliMenuInteractiveAddContextFlowChoice[];
+export type Cli_Menu_Interactive_AddContextFlow_InterpreterChoices = Cli_Menu_Interactive_AddContextFlow_Choice[];
 
-export type CliMenuInteractiveAddContextFlowInterpreterResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_AddContextFlow_InterpreterResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveAddContextFlowInterpreter = string | undefined;
+export type Cli_Menu_Interactive_AddContextFlow_Interpreter = string | undefined;
 
-export type CliMenuInteractiveAddContextFlowTopicResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_AddContextFlow_TopicResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveAddContextFlowTopicValidateValue = string;
+export type Cli_Menu_Interactive_AddContextFlow_TopicValidateValue = string;
 
-export type CliMenuInteractiveAddContextFlowTopic = string | undefined;
+export type Cli_Menu_Interactive_AddContextFlow_Topic = string | undefined;
 
-export type CliMenuInteractiveAddContextFlowErrorTopicResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_AddContextFlow_ErrorTopicResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveAddContextFlowErrorTopic = string | undefined;
+export type Cli_Menu_Interactive_AddContextFlow_ErrorTopic = string | undefined;
 
-export type CliMenuInteractiveAddContextFlowModeResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_AddContextFlow_ErrorEventsResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveAddContextFlowMode = string | undefined;
+export type Cli_Menu_Interactive_AddContextFlow_ErrorEvents = string[] | undefined;
 
-export type CliMenuInteractiveAddContextFlowShowVisitorInfoResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_AddContextFlow_ModeResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveAddContextFlowShowVisitorInfo = boolean | undefined;
+export type Cli_Menu_Interactive_AddContextFlow_Mode = string | undefined;
 
-export type CliMenuInteractiveAddContextFlowPrimaryServerResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_AddContextFlow_ShowVisitorInfoResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveAddContextFlowPrimaryServer = string | undefined;
+export type Cli_Menu_Interactive_AddContextFlow_ShowVisitorInfo = boolean | undefined;
 
-export type CliMenuInteractiveAddContextFlowSelectedServersResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_AddContextFlow_PrimaryServerResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveAddContextFlowSelectedServers = string[] | undefined;
+export type Cli_Menu_Interactive_AddContextFlow_PrimaryServer = string | undefined;
 
-export type CliMenuInteractiveAddContextFlowRawIdString = string;
+export type Cli_Menu_Interactive_AddContextFlow_SelectedServersResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveAddContextFlowIdTrimmed = string;
+export type Cli_Menu_Interactive_AddContextFlow_SelectedServers = string[] | undefined;
 
-export type CliMenuInteractiveAddContextFlowResolvedId = string;
+export type Cli_Menu_Interactive_AddContextFlow_RawIdString = string;
 
-export type CliMenuInteractiveAddContextFlowErrorTopicString = string;
+export type Cli_Menu_Interactive_AddContextFlow_IdTrimmed = string;
 
-export type CliMenuInteractiveAddContextFlowErrorTopicTrimmed = string;
+export type Cli_Menu_Interactive_AddContextFlow_ResolvedId = string;
 
-export type CliMenuInteractiveAddContextFlowResolvedErrorTopic = string | undefined;
+export type Cli_Menu_Interactive_AddContextFlow_ErrorTopicString = string;
 
-export type CliMenuInteractiveAddContextFlowTopicString = string;
+export type Cli_Menu_Interactive_AddContextFlow_ErrorTopicTrimmed = string;
 
-export type CliMenuInteractiveAddContextFlowTypedInterpreter = LibSchemaContextConfigInterpreter;
+export type Cli_Menu_Interactive_AddContextFlow_ResolvedErrorTopic = string | undefined;
 
-export type CliMenuInteractiveAddContextFlowTypedMode = LibSchemaContextConfigMode;
+export type Cli_Menu_Interactive_AddContextFlow_TopicString = string;
 
-export type CliMenuInteractiveAddContextFlowAutoToken = string;
+export type Cli_Menu_Interactive_AddContextFlow_TypedInterpreter = 'plain-text' | 'ntfy-json' | 'seerr' | 'synology' | 'statuspage' | 'pfsense' | 'unifi';
 
-export type CliMenuInteractiveAddContextFlowTokenResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_AddContextFlow_TypedMode = 'send-once' | 'send-all';
 
-export type CliMenuInteractiveAddContextFlowRawToken = string | undefined;
+export type Cli_Menu_Interactive_AddContextFlow_TypedErrorEvents = Array<Lib_Schema_ContextConfigErrorEvent> | undefined;
 
-export type CliMenuInteractiveAddContextFlowTokenTrimmed = string;
+export type Cli_Menu_Interactive_AddContextFlow_AutoToken = string;
 
-export type CliMenuInteractiveAddContextFlowResolvedToken = string | undefined;
+export type Cli_Menu_Interactive_AddContextFlow_TokenResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveAddContextFlowAllowedFromResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_AddContextFlow_RawToken = string | undefined;
 
-export type CliMenuInteractiveAddContextFlowRawAllowedFrom = string | undefined;
+export type Cli_Menu_Interactive_AddContextFlow_TokenTrimmed = string;
 
-export type CliMenuInteractiveAddContextFlowAllowedFromTrimmed = string;
+export type Cli_Menu_Interactive_AddContextFlow_ResolvedToken = string | undefined;
 
-export type CliMenuInteractiveAddContextFlowResolvedAllowedFrom = string | undefined;
+export type Cli_Menu_Interactive_AddContextFlow_AllowedFromResponse = prompts.Answers<string>;
+
+export type Cli_Menu_Interactive_AddContextFlow_RawAllowedFrom = string | undefined;
+
+export type Cli_Menu_Interactive_AddContextFlow_AllowedFromTrimmed = string;
+
+export type Cli_Menu_Interactive_AddContextFlow_ResolvedAllowedFrom = string | undefined;
 
 /**
  * CLI - Menu - Interactive - Context Menu.
  *
  * @since 2.0.0
  */
-export type CliMenuInteractiveContextMenuConfigPath = string;
+export type Cli_Menu_Interactive_ContextMenu_ConfigPath = string;
 
-export type CliMenuInteractiveContextMenuReturn = Promise<void>;
+export type Cli_Menu_Interactive_ContextMenu_Returns = Promise<void>;
 
-export type CliMenuInteractiveContextMenuInMenu = boolean;
+export type Cli_Menu_Interactive_ContextMenu_InMenu = boolean;
 
-export type CliMenuInteractiveContextMenuResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_ContextMenu_Response = prompts.Answers<string>;
 
-export type CliMenuInteractiveContextMenuAction = string | undefined;
+export type Cli_Menu_Interactive_ContextMenu_Action = string | undefined;
 
-export type CliMenuInteractiveContextMenuServers = LibSchemaServerConfig[];
+export type Cli_Menu_Interactive_ContextMenu_Servers = Array<Lib_Schema_ServerConfig>;
 
-export type CliMenuInteractiveContextMenuErrorMessage = string;
+export type Cli_Menu_Interactive_ContextMenu_ErrorMessage = string;
 
-export type CliMenuInteractiveContextMenuContexts = LibSchemaContextConfig[];
+export type Cli_Menu_Interactive_ContextMenu_Contexts = Array<Lib_Schema_ContextConfig>;
 
-export type CliMenuInteractiveContextMenuSelectResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_ContextMenu_SelectResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveContextMenuName = string | undefined;
+export type Cli_Menu_Interactive_ContextMenu_Name = string | undefined;
 
-export type CliMenuInteractiveContextMenuCurrent = LibSchemaContextConfig | undefined;
+export type Cli_Menu_Interactive_ContextMenu_Current = Lib_Schema_ContextConfig | undefined;
 
-export type CliMenuInteractiveContextMenuServerChoices = Array<{
+export type Cli_Menu_Interactive_ContextMenu_EditServers = Array<Lib_Schema_ServerConfig>;
+
+export type Cli_Menu_Interactive_ContextMenu_ServerChoices = Array<{
   title: string;
   value: string;
 }>;
 
-export type CliMenuInteractiveContextMenuKeepIdResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_ContextMenu_KeepIdResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveContextMenuKeepId = boolean | undefined;
+export type Cli_Menu_Interactive_ContextMenu_KeepId = boolean | undefined;
 
-export type CliMenuInteractiveContextMenuId = string | undefined;
+export type Cli_Menu_Interactive_ContextMenu_Id = string | undefined;
 
-export type CliMenuInteractiveContextMenuChoiceTitle = string;
+export type Cli_Menu_Interactive_ContextMenu_ChoiceTitle = string;
 
-export type CliMenuInteractiveContextMenuChoiceValue = string;
+export type Cli_Menu_Interactive_ContextMenu_ChoiceValue = string;
 
-export type CliMenuInteractiveContextMenuChoice = {
-  title: CliMenuInteractiveContextMenuChoiceTitle;
-  value: CliMenuInteractiveContextMenuChoiceValue;
+export type Cli_Menu_Interactive_ContextMenu_Choice = {
+  title: Cli_Menu_Interactive_ContextMenu_ChoiceTitle;
+  value: Cli_Menu_Interactive_ContextMenu_ChoiceValue;
 };
 
-export type CliMenuInteractiveContextMenuHttpChoices = CliMenuInteractiveContextMenuChoice[];
+export type Cli_Menu_Interactive_ContextMenu_HttpChoices = Cli_Menu_Interactive_ContextMenu_Choice[];
 
-export type CliMenuInteractiveContextMenuEmailChoices = CliMenuInteractiveContextMenuChoice[];
+export type Cli_Menu_Interactive_ContextMenu_EmailChoices = Cli_Menu_Interactive_ContextMenu_Choice[];
 
-export type CliMenuInteractiveContextMenuKnownChoices = CliMenuInteractiveContextMenuChoice[];
+export type Cli_Menu_Interactive_ContextMenu_KnownChoices = Cli_Menu_Interactive_ContextMenu_Choice[];
 
-export type CliMenuInteractiveContextMenuExists = boolean;
+export type Cli_Menu_Interactive_ContextMenu_Exists = boolean;
 
-export type CliMenuInteractiveContextMenuKnownValues = string[];
+export type Cli_Menu_Interactive_ContextMenu_HttpValues = string[];
 
-export type CliMenuInteractiveContextMenuIdx = number;
+export type Cli_Menu_Interactive_ContextMenu_EmailValues = string[];
 
-export type CliMenuInteractiveContextMenuInterpreterResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_ContextMenu_KnownValues = string[];
 
-export type CliMenuInteractiveContextMenuInterpreter = string | undefined;
+export type Cli_Menu_Interactive_ContextMenu_InterpreterIdx = number;
 
-export type CliMenuInteractiveContextMenuTopicResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_ContextMenu_InterpreterInitial = number;
 
-export type CliMenuInteractiveContextMenuTopicValidateValue = string;
+export type Cli_Menu_Interactive_ContextMenu_InterpreterResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveContextMenuTopic = string | undefined;
+export type Cli_Menu_Interactive_ContextMenu_Interpreter = string | undefined;
 
-export type CliMenuInteractiveContextMenuErrorTopic = string | undefined;
+export type Cli_Menu_Interactive_ContextMenu_TopicResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveContextMenuErrorTopicResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_ContextMenu_TopicValidateValue = string;
 
-export type CliMenuInteractiveContextMenuModeResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_ContextMenu_Topic = string | undefined;
 
-export type CliMenuInteractiveContextMenuMode = string | undefined;
+export type Cli_Menu_Interactive_ContextMenu_CurrentErrorTopic = string;
 
-export type CliMenuInteractiveContextMenuShowVisitorInfoResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_ContextMenu_ErrorTopicResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveContextMenuShowVisitorInfo = boolean | undefined;
+export type Cli_Menu_Interactive_ContextMenu_ErrorTopic = string | undefined;
 
-export type CliMenuInteractiveContextMenuPrimaryServerIdx = number;
+export type Cli_Menu_Interactive_ContextMenu_CurrentErrorEvents = Array<Lib_Schema_ContextConfigErrorEvent> | undefined;
 
-export type CliMenuInteractiveContextMenuPrimaryServerResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_ContextMenu_ErrorEventsResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveContextMenuPrimaryServer = string | undefined;
+export type Cli_Menu_Interactive_ContextMenu_ErrorEvents = string[] | undefined;
 
-export type CliMenuInteractiveContextMenuSelectedServersResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_ContextMenu_ModeInitial = number;
 
-export type CliMenuInteractiveContextMenuSelectedServers = string[] | undefined;
+export type Cli_Menu_Interactive_ContextMenu_ModeResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveContextMenuUpdates = Record<string, unknown>;
+export type Cli_Menu_Interactive_ContextMenu_Mode = string | undefined;
 
-export type CliMenuInteractiveContextMenuErrorTopicValue = string | undefined;
+export type Cli_Menu_Interactive_ContextMenu_ShowVisitorInfoResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveContextMenuErrorTopicTrimmed = string;
+export type Cli_Menu_Interactive_ContextMenu_ShowVisitorInfo = boolean | undefined;
 
-export type CliMenuInteractiveContextMenuKeepTokenResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_ContextMenu_PrimaryServerIdx = number;
 
-export type CliMenuInteractiveContextMenuKeepToken = boolean | undefined;
+export type Cli_Menu_Interactive_ContextMenu_PrimaryServerInitial = number;
 
-export type CliMenuInteractiveContextMenuNewToken = string;
+export type Cli_Menu_Interactive_ContextMenu_PrimaryServerResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveContextMenuAddTokenResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_ContextMenu_PrimaryServer = string | undefined;
 
-export type CliMenuInteractiveContextMenuAddToken = boolean | undefined;
+export type Cli_Menu_Interactive_ContextMenu_SelectedServersResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveContextMenuAllowedFrom = string | undefined;
+export type Cli_Menu_Interactive_ContextMenu_SelectedServers = string[] | undefined;
 
-export type CliMenuInteractiveContextMenuAllowedFromResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_ContextMenu_Updates = Record<string, unknown>;
 
-export type CliMenuInteractiveContextMenuAllowedFromTrimmed = string;
+export type Cli_Menu_Interactive_ContextMenu_ErrorTopicValue = string | undefined;
 
-export type CliMenuInteractiveContextMenuEditImportEditContext = (configPath: string, name: string, updates: Partial<LibSchemaContextConfig>) => void;
+export type Cli_Menu_Interactive_ContextMenu_ErrorTopicTrimmed = string;
 
-export type CliMenuInteractiveContextMenuEditImport = {
-  editContext: CliMenuInteractiveContextMenuEditImportEditContext;
+export type Cli_Menu_Interactive_ContextMenu_ResolvedErrorTopic = string | undefined;
+
+export type Cli_Menu_Interactive_ContextMenu_KeepTokenResponse = prompts.Answers<string>;
+
+export type Cli_Menu_Interactive_ContextMenu_KeepToken = boolean | undefined;
+
+export type Cli_Menu_Interactive_ContextMenu_NewToken = string;
+
+export type Cli_Menu_Interactive_ContextMenu_AddTokenResponse = prompts.Answers<string>;
+
+export type Cli_Menu_Interactive_ContextMenu_AddToken = boolean | undefined;
+
+export type Cli_Menu_Interactive_ContextMenu_AddNewToken = string;
+
+export type Cli_Menu_Interactive_ContextMenu_CurrentAllowedFrom = string;
+
+export type Cli_Menu_Interactive_ContextMenu_AllowedFromResponse = prompts.Answers<string>;
+
+export type Cli_Menu_Interactive_ContextMenu_AllowedFrom = string | undefined;
+
+export type Cli_Menu_Interactive_ContextMenu_AllowedFromTrimmed = string;
+
+export type Cli_Menu_Interactive_ContextMenu_ResolvedAllowedFrom = string | undefined;
+
+export type Cli_Menu_Interactive_ContextMenu_EditImportEditContext = (configPath: string, name: string, updates: Partial<Lib_Schema_ContextConfig>) => void;
+
+export type Cli_Menu_Interactive_ContextMenu_EditImport = {
+  editContext: Cli_Menu_Interactive_ContextMenu_EditImportEditContext;
 };
 
-export type CliMenuInteractiveContextMenuConfirmResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_ContextMenu_EditErrorMessage = string;
 
-export type CliMenuInteractiveContextMenuConfirmed = boolean | undefined;
+export type Cli_Menu_Interactive_ContextMenu_RemoveContexts = Array<Lib_Schema_ContextConfig>;
+
+export type Cli_Menu_Interactive_ContextMenu_RemoveSelectResponse = prompts.Answers<string>;
+
+export type Cli_Menu_Interactive_ContextMenu_RemoveName = string | undefined;
+
+export type Cli_Menu_Interactive_ContextMenu_ConfirmResponse = prompts.Answers<string>;
+
+export type Cli_Menu_Interactive_ContextMenu_Confirmed = boolean | undefined;
+
+export type Cli_Menu_Interactive_ContextMenu_RemoveErrorMessage = string;
 
 /**
  * CLI - Menu - Interactive - Interactive Menu.
  *
  * @since 2.0.0
  */
-export type CliMenuInteractiveInteractiveMenuConfigDirs = string[];
+export type Cli_Menu_Interactive_InteractiveMenu_ConfigDirs = string[];
 
-export type CliMenuInteractiveInteractiveMenuReturn = Promise<void>;
+export type Cli_Menu_Interactive_InteractiveMenu_Returns = Promise<void>;
 
-export type CliMenuInteractiveInteractiveMenuCurrentFilePath = string;
+export type Cli_Menu_Interactive_InteractiveMenu_CurrentFilePath = string;
 
-export type CliMenuInteractiveInteractiveMenuDir = string;
+export type Cli_Menu_Interactive_InteractiveMenu_Dir = string;
 
-export type CliMenuInteractiveInteractiveMenuVersion = string;
+export type Cli_Menu_Interactive_InteractiveMenu_Version = string;
 
-export type CliMenuInteractiveInteractiveMenuPackageJsonPath = string;
+export type Cli_Menu_Interactive_InteractiveMenu_PackageJsonPath = string;
 
-export type CliMenuInteractiveInteractiveMenuPackageJsonRaw = string;
+export type Cli_Menu_Interactive_InteractiveMenu_PackageJsonRaw = string;
 
-export type CliMenuInteractiveInteractiveMenuPackageJsonParsed = Record<string, unknown>;
+export type Cli_Menu_Interactive_InteractiveMenu_PackageJsonParsed = Record<string, unknown>;
 
-export type CliMenuInteractiveInteractiveMenuParent = string;
+export type Cli_Menu_Interactive_InteractiveMenu_Parent = string;
 
-export type CliMenuInteractiveInteractiveMenuHeader = string;
+export type Cli_Menu_Interactive_InteractiveMenu_Header = string;
 
-export type CliMenuInteractiveInteractiveMenuInteractiveConfigPath = string | undefined;
+export type Cli_Menu_Interactive_InteractiveMenu_ConfigPath = string | undefined;
 
-export type CliMenuInteractiveInteractiveMenuConfigDirResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_InteractiveMenu_ConfigDirResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveInteractiveMenuDefaultConfigDir = string;
+export type Cli_Menu_Interactive_InteractiveMenu_DefaultConfigDir = string;
 
-export type CliMenuInteractiveInteractiveMenuRunning = boolean;
+export type Cli_Menu_Interactive_InteractiveMenu_Running = boolean;
 
-export type CliMenuInteractiveInteractiveMenuResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_InteractiveMenu_Response = prompts.Answers<string>;
 
-export type CliMenuInteractiveInteractiveMenuAction = string | undefined;
+export type Cli_Menu_Interactive_InteractiveMenu_Action = string | undefined;
 
-export type CliMenuInteractiveInteractiveMenuErrorMessage = string;
+export type Cli_Menu_Interactive_InteractiveMenu_ErrorMessage = string;
 
 /**
  * CLI - Menu - Interactive - Server Menu.
  *
  * @since 2.0.0
  */
-export type CliMenuInteractiveServerMenuConfigPath = string;
+export type Cli_Menu_Interactive_ServerMenu_ConfigPath = string;
 
-export type CliMenuInteractiveServerMenuReturn = Promise<void>;
+export type Cli_Menu_Interactive_ServerMenu_Returns = Promise<void>;
 
-export type CliMenuInteractiveServerMenuInMenu = boolean;
+export type Cli_Menu_Interactive_ServerMenu_InMenu = boolean;
 
-export type CliMenuInteractiveServerMenuResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_ServerMenu_Response = prompts.Answers<string>;
 
-export type CliMenuInteractiveServerMenuAction = string | undefined;
+export type Cli_Menu_Interactive_ServerMenu_Action = string | undefined;
 
-export type CliMenuInteractiveServerMenuAnswers = prompts.Answers<string>;
+export type Cli_Menu_Interactive_ServerMenu_Answers = prompts.Answers<string>;
 
-export type CliMenuInteractiveServerMenuNameValidateValue = string;
+export type Cli_Menu_Interactive_ServerMenu_UrlInstance = URL;
 
-export type CliMenuInteractiveServerMenuServerValidateValue = string;
+export type Cli_Menu_Interactive_ServerMenu_AnswersName = string | undefined;
 
-export type CliMenuInteractiveServerMenuUrlInstance = URL;
+export type Cli_Menu_Interactive_ServerMenu_AnswersServer = string | undefined;
 
-export type CliMenuInteractiveServerMenuTokenValidateValue = string;
+export type Cli_Menu_Interactive_ServerMenu_AnswersToken = string | undefined;
 
-export type CliMenuInteractiveServerMenuName = string | undefined;
+export type Cli_Menu_Interactive_ServerMenu_ErrorMessage = string;
 
-export type CliMenuInteractiveServerMenuServer = string | undefined;
+export type Cli_Menu_Interactive_ServerMenu_Servers = Array<Lib_Schema_ServerConfig>;
 
-export type CliMenuInteractiveServerMenuToken = string | undefined;
+export type Cli_Menu_Interactive_ServerMenu_SelectResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveServerMenuErrorMessage = string;
+export type Cli_Menu_Interactive_ServerMenu_Name = string | undefined;
 
-export type CliMenuInteractiveServerMenuServers = LibSchemaServerConfig[];
+export type Cli_Menu_Interactive_ServerMenu_Current = Lib_Schema_ServerConfig | undefined;
 
-export type CliMenuInteractiveServerMenuSelectResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_ServerMenu_CurrentServer = string | undefined;
 
-export type CliMenuInteractiveServerMenuCurrent = LibSchemaServerConfig | undefined;
+export type Cli_Menu_Interactive_ServerMenu_Updates = prompts.Answers<string>;
 
-export type CliMenuInteractiveServerMenuUpdates = prompts.Answers<string>;
+export type Cli_Menu_Interactive_ServerMenu_EditUrlInstance = URL;
 
-export type CliMenuInteractiveServerMenuTrimmedEmpty = boolean;
+export type Cli_Menu_Interactive_ServerMenu_TrimmedEmpty = boolean;
 
-export type CliMenuInteractiveServerMenuStartsWithTk = boolean;
+export type Cli_Menu_Interactive_ServerMenu_StartsWithTk = boolean;
 
-export type CliMenuInteractiveServerMenuEditImportEditServer = (configPath: string, name: string, updates: Partial<LibSchemaServerConfig>) => void;
+export type Cli_Menu_Interactive_ServerMenu_EditImportEditServer = (configPath: string, name: string, updates: Partial<Lib_Schema_ServerConfig>) => void;
 
-export type CliMenuInteractiveServerMenuEditImport = {
-  editServer: CliMenuInteractiveServerMenuEditImportEditServer;
+export type Cli_Menu_Interactive_ServerMenu_EditImport = {
+  editServer: Cli_Menu_Interactive_ServerMenu_EditImportEditServer;
 };
 
-export type CliMenuInteractiveServerMenuUpdatesServerString = string;
+export type Cli_Menu_Interactive_ServerMenu_UpdatesServerString = string;
 
-export type CliMenuInteractiveServerMenuServerUrlTrimmed = string;
+export type Cli_Menu_Interactive_ServerMenu_ServerUrlTrimmed = string;
 
-export type CliMenuInteractiveServerMenuServerUrl = string | undefined;
+export type Cli_Menu_Interactive_ServerMenu_ServerUrl = string | undefined;
 
-export type CliMenuInteractiveServerMenuUpdatesTokenString = string;
+export type Cli_Menu_Interactive_ServerMenu_UpdatesTokenString = string;
 
-export type CliMenuInteractiveServerMenuTokenTrimmed = string;
+export type Cli_Menu_Interactive_ServerMenu_TokenTrimmed = string;
 
-export type CliMenuInteractiveServerMenuTokenValue = string | undefined;
+export type Cli_Menu_Interactive_ServerMenu_TokenValue = string | undefined;
 
-export type CliMenuInteractiveServerMenuEditUpdates = Partial<LibSchemaServerConfig>;
+export type Cli_Menu_Interactive_ServerMenu_EditUpdates = Partial<Lib_Schema_ServerConfig>;
 
-export type CliMenuInteractiveServerMenuConfirmResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_ServerMenu_EditErrorMessage = string;
 
-export type CliMenuInteractiveServerMenuConfirmed = boolean | undefined;
+export type Cli_Menu_Interactive_ServerMenu_RemoveServers = Array<Lib_Schema_ServerConfig>;
+
+export type Cli_Menu_Interactive_ServerMenu_RemoveSelectResponse = prompts.Answers<string>;
+
+export type Cli_Menu_Interactive_ServerMenu_RemoveName = string | undefined;
+
+export type Cli_Menu_Interactive_ServerMenu_ConfirmResponse = prompts.Answers<string>;
+
+export type Cli_Menu_Interactive_ServerMenu_Confirmed = boolean | undefined;
+
+export type Cli_Menu_Interactive_ServerMenu_RemoveErrorMessage = string;
 
 /**
  * CLI - Menu - Interactive - Settings Flow.
  *
  * @since 2.0.0
  */
-export type CliMenuInteractiveSettingsFlowConfigPath = string;
+export type Cli_Menu_Interactive_SettingsFlow_ConfigPath = string;
 
-export type CliMenuInteractiveSettingsFlowReturn = Promise<void>;
+export type Cli_Menu_Interactive_SettingsFlow_Returns = Promise<void>;
 
-export type CliMenuInteractiveSettingsFlowCurrentSettings = LibSchemaSettingsConfig | undefined;
+export type Cli_Menu_Interactive_SettingsFlow_CurrentSettings = Lib_Schema_SettingsConfig | undefined;
 
-export type CliMenuInteractiveSettingsFlowErrorMessage = string;
+export type Cli_Menu_Interactive_SettingsFlow_ErrorMessage = string;
 
-export type CliMenuInteractiveSettingsFlowWorkerNameResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_SettingsFlow_WorkerNameResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveSettingsFlowWorkerNameValidateValue = string;
+export type Cli_Menu_Interactive_SettingsFlow_WorkerNameValidateValue = string;
 
-export type CliMenuInteractiveSettingsFlowWorkerName = string | undefined;
+export type Cli_Menu_Interactive_SettingsFlow_WorkerName = string | undefined;
 
-export type CliMenuInteractiveSettingsFlowBaseDomainResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_SettingsFlow_BaseDomainResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveSettingsFlowBaseDomainValidateValue = string;
+export type Cli_Menu_Interactive_SettingsFlow_BaseDomainValidateValue = string;
 
-export type CliMenuInteractiveSettingsFlowBaseDomain = string | undefined;
+export type Cli_Menu_Interactive_SettingsFlow_BaseDomain = string | undefined;
 
-export type CliMenuInteractiveSettingsFlowShowResponseOutputResponse = prompts.Answers<string>;
+export type Cli_Menu_Interactive_SettingsFlow_ShowResponseOutputResponse = prompts.Answers<string>;
 
-export type CliMenuInteractiveSettingsFlowShowResponseOutput = boolean | undefined;
+export type Cli_Menu_Interactive_SettingsFlow_ShowResponseOutput = boolean | undefined;
+
+export type Cli_Menu_Interactive_SettingsFlow_UpdateErrorMessage = string;

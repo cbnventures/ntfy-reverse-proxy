@@ -1,75 +1,79 @@
 ---
 id: cli
 title: CLI Reference
-description: Manage configuration, validate settings, and deploy Reverse Proxy for ntfy using the interactive CLI.
+description: Manage configuration, validate settings, generate wrangler.toml, and deploy Reverse Proxy for ntfy to Cloudflare Workers using the interactive CLI.
 sidebar_position: 1
 keywords:
   - ntfy reverse proxy
   - CLI reference
   - commands
   - interactive menu
-  - npm run manage
+  - nrp
 tags:
   - reference
   - CLI
 ---
 
+import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
+
 Use the CLI to manage `config.json`, validate settings, generate `wrangler.toml`, and deploy to Cloudflare Workers.
 
 ## Overview
 
-The CLI manages the `config.json` file that the Cloudflare Worker reads at runtime. You can run it in two ways:
+The CLI manages the `config.json` file that the Cloudflare <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">Worker</Terminology> reads at runtime. You can run it in two ways:
 
-- **Interactive mode** — `npm run manage` (no arguments) launches a TUI menu.
-- **Direct commands** — `npm run manage <command>` for scripting and automation.
+- **Interactive mode** — `nrp` (no arguments) launches a TUI menu.
+- **Direct commands** — `nrp <command>` for scripting and automation.
 
-After publishing to npm, it is also available as `npx ntfy-reverse-proxy` or `npx nrp`.
+`ntfy-reverse-proxy` and `nrp` are registered as CLI aliases. To run it once without installing, use `npx ntfy-reverse-proxy`.
+
+When working inside a clone of the repository, the same CLI is available as `npm run manage` and `npm run manage <command>`.
 
 ## Interactive Menu
 
 When launched without arguments, the CLI presents a menu with these options:
 
-- **Manage Servers** — Manage ntfy server definitions (submenu: add, edit, remove).
-- **Manage Contexts** — Manage notification contexts (submenu: add, edit, remove).
-- **Settings** — View and update global settings (worker name, base domain, debug output).
-- **Deploy** — Validate config, verify Cloudflare permissions, create KV namespace, generate `wrangler.toml`, lint, deploy worker, and configure email routing — all in one step.
+- **Manage Servers** — Manage ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> definitions (submenu: add, edit, remove).
+- **Manage Contexts** — Manage notification <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology> (submenu: add, edit, remove).
+- **Settings** — View and update global settings (<Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> name, <Terminology title="single domain all context subdomains register under" to="/docs/reference/terminology#base-domain">base domain</Terminology>, <Terminology title="the show_response_output setting" to="/docs/reference/terminology#debug-mode">debug output</Terminology>).
+- **Deploy** — Validate config, verify Cloudflare permissions, create <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology>, generate `wrangler.toml`, lint, deploy <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology>, and configure email routing — all in one step.
 - **Exit** — Exit the CLI.
 
 The interactive menu uses `prompts` for terminal UI. It walks you through each field with validation.
 
 ### Server Submenu
 
-- **Add** — Prompts for name, server URL (must start with `https://`), and token (must start with `tk_`).
-- **Edit** — Select an existing server, then update its URL or token. Leave a field blank to keep the current value.
-- **Remove** — Select a server to remove. Fails if any context references it.
+- **Add** — Prompts for name, <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> URL (must start with `https://`), and token (must start with `tk_`).
+- **Edit** — Select an existing <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>, then update its URL or token. Leave a field blank to keep the current value.
+- **Remove** — Select a <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> to remove. Fails if any <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> references it.
 
 ### Context Submenu
 
-- **Add** — Prompts for name, type (HTTP or email), interpreter, topic, primary server, selected servers, and visitor info toggle. The context ID (20 lowercase alphanumeric characters) and token (64 mixed-case alphanumeric characters) are auto-generated. Requires at least one server to exist first.
-- **Edit** — Select an existing context, then update individual fields.
-- **Remove** — Select a context to remove.
+- **Add** — Prompts for name, type (HTTP or email), <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>, <Terminology title="the ntfy channel a context publishes notifications to" to="/docs/reference/terminology#topic">topic</Terminology>, <Terminology title="preferred ntfy server, tried first" to="/docs/reference/terminology#primary-server">primary server</Terminology>, selected <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology>, and visitor info toggle. The <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> ID (20 lowercase alphanumeric characters) and token (64 mixed-case alphanumeric characters) are auto-generated. Requires at least one <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> to exist first.
+- **Edit** — Select an existing <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>, then update individual fields.
+- **Remove** — Select a <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> to remove.
 
 :::info
-Context tokens do not use the `tk_` prefix — that format is only for server tokens. Context tokens are 64-character mixed-case alphanumeric strings auto-generated by the CLI.
+<Terminology title="a notification source configuration" to="/docs/reference/terminology#context">Context</Terminology> tokens do not use the `tk_` prefix — that format is only for <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> tokens. <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">Context</Terminology> tokens are 64-character mixed-case alphanumeric strings auto-generated by the CLI.
 :::
 
 ## Commands
 
 ### `server remove <name>`
 
-Removes a server definition by name. Fails if any context still references the server in its `primary_server` or `servers` list — you will need to update those contexts first.
+Removes a <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> definition by name. Fails if any <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> still references the <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> in its `primary_server` or `servers` list — you will need to update those <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology> first.
 
 ### `context remove <name>`
 
-Removes a context by name.
+Removes a <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> by name.
 
 ### `validate`
 
 Validates the current config file. Checks:
 
 - Schema validation (required fields, correct types)
-- Server reference integrity (all `primary_server` and `servers` entries point to existing servers)
-- No duplicate context IDs
+- <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">Server</Terminology> reference integrity (all `primary_server` and `servers` entries point to existing <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology>)
+- No duplicate <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> IDs
 
 Returns a list of errors if any are found.
 
@@ -77,11 +81,11 @@ Returns a list of errors if any are found.
 
 Generates a `wrangler.toml` file from the config. The generated file includes:
 
-- Worker name, main entry point, and compatibility date
-- Routes array with `{context-id}.{base_domain}` patterns for each HTTP context
-- Email routing section showing required forwarding addresses for email contexts
+- <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">Worker</Terminology> name, main entry point, and compatibility date
+- Routes array with `{context-id}.{base_domain}` patterns for each HTTP <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>
+- Email routing section showing required forwarding addresses for email <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology>
 - Environment variables (`SETTINGS`, `SERVERS`, `CONTEXTS`) as JSON strings
-- KV namespace bindings if a namespace ID is provided
+- <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology> bindings if a namespace ID is provided
 
 ### `deploy`
 
@@ -89,12 +93,12 @@ Runs the full deployment pipeline:
 
 1. Resolves the Cloudflare API token (from `.env` or interactive prompt).
 2. Validates config integrity.
-3. Verifies Cloudflare API permissions (Workers, KV, and optionally Email Routing).
-4. Creates or locates a KV namespace for Statuspage deduplication.
-5. Generates `wrangler.toml`.
-6. Runs ESLint.
-7. Deploys the worker via Wrangler.
-8. Configures Cloudflare Email Routing rules for email contexts (if any).
+3. Runs ESLint.
+4. Verifies Cloudflare API permissions (Workers, KV, and optionally Email Routing).
+5. Creates or locates a <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology> for Statuspage deduplication.
+6. Generates `wrangler.toml`.
+7. Deploys the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> via Wrangler.
+8. Configures <Terminology title="Cloudflare feature that forwards email to the Worker" to="/docs/reference/terminology#cloudflare-email-routing">Cloudflare Email Routing</Terminology> rules for email <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology> (if any).
 9. Prints a summary of deployed URLs and email addresses.
 
 ## Config File Resolution

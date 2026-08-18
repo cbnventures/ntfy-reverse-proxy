@@ -3,8 +3,46 @@ import { describe, expect, it } from 'vitest';
 import { configSchema } from '../../lib/schema.js';
 
 import type {
-  TestsLibSchemaInput,
-  TestsLibSchemaParseResult,
+  Tests_Lib_Schema_ConfigSchema_AllowsOptionalAllowedFromOnEmailContext_Result,
+  Tests_Lib_Schema_ConfigSchema_AllowsOptionalAllowedFromOnEmailContext_Valid,
+  Tests_Lib_Schema_ConfigSchema_AllowsOptionalErrorEvents_Result,
+  Tests_Lib_Schema_ConfigSchema_AllowsOptionalErrorEvents_Valid,
+  Tests_Lib_Schema_ConfigSchema_AllowsOptionalErrorEventsOnEmailContext_Result,
+  Tests_Lib_Schema_ConfigSchema_AllowsOptionalErrorEventsOnEmailContext_Valid,
+  Tests_Lib_Schema_ConfigSchema_AllowsOptionalErrorTopic_Result,
+  Tests_Lib_Schema_ConfigSchema_AllowsOptionalErrorTopic_Valid,
+  Tests_Lib_Schema_ConfigSchema_AllowsOptionalTokenOnHTTPContext_Result,
+  Tests_Lib_Schema_ConfigSchema_AllowsOptionalTokenOnHTTPContext_Valid,
+  Tests_Lib_Schema_ConfigSchema_RejectsAllowedFromFieldOnHTTPContext_Invalid,
+  Tests_Lib_Schema_ConfigSchema_RejectsAllowedFromFieldOnHTTPContext_Result,
+  Tests_Lib_Schema_ConfigSchema_RejectsContextWithoutTypeDiscriminator_Invalid,
+  Tests_Lib_Schema_ConfigSchema_RejectsContextWithoutTypeDiscriminator_Result,
+  Tests_Lib_Schema_ConfigSchema_RejectsInvalidErrorEventsValues_Invalid,
+  Tests_Lib_Schema_ConfigSchema_RejectsInvalidErrorEventsValues_Result,
+  Tests_Lib_Schema_ConfigSchema_RejectsInvalidInterpreterNames_Invalid,
+  Tests_Lib_Schema_ConfigSchema_RejectsInvalidInterpreterNames_Result,
+  Tests_Lib_Schema_ConfigSchema_RejectsInvalidModeValues_Invalid,
+  Tests_Lib_Schema_ConfigSchema_RejectsInvalidModeValues_Result,
+  Tests_Lib_Schema_ConfigSchema_RejectsInvalidTypeDiscriminatorValue_Invalid,
+  Tests_Lib_Schema_ConfigSchema_RejectsInvalidTypeDiscriminatorValue_Result,
+  Tests_Lib_Schema_ConfigSchema_RejectsServerURLsNotStartingWithHttps_Invalid,
+  Tests_Lib_Schema_ConfigSchema_RejectsServerURLsNotStartingWithHttps_Result,
+  Tests_Lib_Schema_ConfigSchema_RejectsTokenFieldOnEmailContext_Invalid,
+  Tests_Lib_Schema_ConfigSchema_RejectsTokenFieldOnEmailContext_Result,
+  Tests_Lib_Schema_ConfigSchema_RejectsTokensNotStartingWithTk_Invalid,
+  Tests_Lib_Schema_ConfigSchema_RejectsTokensNotStartingWithTk_Result,
+  Tests_Lib_Schema_ConfigSchema_ValidatesACompleteValidEmailContextConfig_Result,
+  Tests_Lib_Schema_ConfigSchema_ValidatesACompleteValidEmailContextConfig_Valid,
+  Tests_Lib_Schema_ConfigSchema_ValidatesACompleteValidHTTPContextConfig_Result,
+  Tests_Lib_Schema_ConfigSchema_ValidatesACompleteValidHTTPContextConfig_Valid,
+  Tests_Lib_Schema_ConfigSchema_ValidatesConfigWithMixedHTTPAndEmailContexts_Result,
+  Tests_Lib_Schema_ConfigSchema_ValidatesConfigWithMixedHTTPAndEmailContexts_Valid,
+  Tests_Lib_Schema_ConfigSchema_ValidatesEmailInterpreter_Result,
+  Tests_Lib_Schema_ConfigSchema_ValidatesEmailInterpreter_Valid,
+  Tests_Lib_Schema_ConfigSchema_ValidatesPfsenseInterpreter_Result,
+  Tests_Lib_Schema_ConfigSchema_ValidatesPfsenseInterpreter_Valid,
+  Tests_Lib_Schema_ConfigSchema_ValidatesUnifiInterpreter_Result,
+  Tests_Lib_Schema_ConfigSchema_ValidatesUnifiInterpreter_Valid,
 } from '../../types/tests/lib/schema.test.d.ts';
 
 /**
@@ -14,14 +52,16 @@ import type {
  */
 describe('configSchema', () => {
   it('validates a complete valid HTTP context config', () => {
-    const valid: TestsLibSchemaInput = {
+    const valid: Tests_Lib_Schema_ConfigSchema_ValidatesACompleteValidHTTPContextConfig_Valid = {
       settings: {
         worker_name: 'test-worker',
         base_domain: 'ntfy.example.com',
         show_response_output: false,
       },
       servers: [{
-        name: 'primary', server: 'https://ntfy.example.com', token: 'tk_abc123',
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc123',
       }],
       contexts: [{
         name: 'test-context',
@@ -36,7 +76,7 @@ describe('configSchema', () => {
       }],
     };
 
-    const result: TestsLibSchemaParseResult = configSchema.safeParse(valid);
+    const result: Tests_Lib_Schema_ConfigSchema_ValidatesACompleteValidHTTPContextConfig_Result = configSchema.safeParse(valid);
 
     expect(result['success']).toBe(true);
 
@@ -44,14 +84,16 @@ describe('configSchema', () => {
   });
 
   it('validates a complete valid email context config', () => {
-    const valid: TestsLibSchemaInput = {
+    const valid: Tests_Lib_Schema_ConfigSchema_ValidatesACompleteValidEmailContextConfig_Valid = {
       settings: {
         worker_name: 'test-worker',
         base_domain: 'ntfy.example.com',
         show_response_output: false,
       },
       servers: [{
-        name: 'primary', server: 'https://ntfy.example.com', token: 'tk_abc123',
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc123',
       }],
       contexts: [{
         name: 'pfsense',
@@ -67,7 +109,7 @@ describe('configSchema', () => {
       }],
     };
 
-    const result: TestsLibSchemaParseResult = configSchema.safeParse(valid);
+    const result: Tests_Lib_Schema_ConfigSchema_ValidatesACompleteValidEmailContextConfig_Result = configSchema.safeParse(valid);
 
     expect(result['success']).toBe(true);
 
@@ -75,17 +117,21 @@ describe('configSchema', () => {
   });
 
   it('rejects tokens not starting with tk_', () => {
-    const invalid: TestsLibSchemaInput = {
+    const invalid: Tests_Lib_Schema_ConfigSchema_RejectsTokensNotStartingWithTk_Invalid = {
       settings: {
-        worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
       },
       servers: [{
-        name: 'primary', server: 'https://ntfy.example.com', token: 'bad_token',
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'bad_token',
       }],
       contexts: [],
     };
 
-    const result: TestsLibSchemaParseResult = configSchema.safeParse(invalid);
+    const result: Tests_Lib_Schema_ConfigSchema_RejectsTokensNotStartingWithTk_Result = configSchema.safeParse(invalid);
 
     expect(result['success']).toBe(false);
 
@@ -93,12 +139,16 @@ describe('configSchema', () => {
   });
 
   it('rejects invalid interpreter names', () => {
-    const invalid: TestsLibSchemaInput = {
+    const invalid: Tests_Lib_Schema_ConfigSchema_RejectsInvalidInterpreterNames_Invalid = {
       settings: {
-        worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
       },
       servers: [{
-        name: 'primary', server: 'https://ntfy.example.com', token: 'tk_abc',
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
       }],
       contexts: [{
         name: 'test',
@@ -113,7 +163,7 @@ describe('configSchema', () => {
       }],
     };
 
-    const result: TestsLibSchemaParseResult = configSchema.safeParse(invalid);
+    const result: Tests_Lib_Schema_ConfigSchema_RejectsInvalidInterpreterNames_Result = configSchema.safeParse(invalid);
 
     expect(result['success']).toBe(false);
 
@@ -121,12 +171,16 @@ describe('configSchema', () => {
   });
 
   it('rejects invalid mode values', () => {
-    const invalid: TestsLibSchemaInput = {
+    const invalid: Tests_Lib_Schema_ConfigSchema_RejectsInvalidModeValues_Invalid = {
       settings: {
-        worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
       },
       servers: [{
-        name: 'primary', server: 'https://ntfy.example.com', token: 'tk_abc',
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
       }],
       contexts: [{
         name: 'test',
@@ -141,7 +195,7 @@ describe('configSchema', () => {
       }],
     };
 
-    const result: TestsLibSchemaParseResult = configSchema.safeParse(invalid);
+    const result: Tests_Lib_Schema_ConfigSchema_RejectsInvalidModeValues_Result = configSchema.safeParse(invalid);
 
     expect(result['success']).toBe(false);
 
@@ -149,12 +203,16 @@ describe('configSchema', () => {
   });
 
   it('allows optional error_topic', () => {
-    const valid: TestsLibSchemaInput = {
+    const valid: Tests_Lib_Schema_ConfigSchema_AllowsOptionalErrorTopic_Valid = {
       settings: {
-        worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
       },
       servers: [{
-        name: 'primary', server: 'https://ntfy.example.com', token: 'tk_abc',
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
       }],
       contexts: [{
         name: 'test',
@@ -170,25 +228,131 @@ describe('configSchema', () => {
       }],
     };
 
-    const result: TestsLibSchemaParseResult = configSchema.safeParse(valid);
+    const result: Tests_Lib_Schema_ConfigSchema_AllowsOptionalErrorTopic_Result = configSchema.safeParse(valid);
 
     expect(result['success']).toBe(true);
 
     return;
   });
 
-  it('rejects server URLs not starting with https://', () => {
-    const invalid: TestsLibSchemaInput = {
+  it('allows optional error_events', () => {
+    const valid: Tests_Lib_Schema_ConfigSchema_AllowsOptionalErrorEvents_Valid = {
       settings: {
-        worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
       },
       servers: [{
-        name: 'primary', server: 'http://ntfy.example.com', token: 'tk_abc',
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
+      }],
+      contexts: [{
+        name: 'test',
+        type: 'http',
+        id: 'abc',
+        interpreter: 'plain-text',
+        topic: 'test',
+        error_topic: 'errors',
+        error_events: ['interpretation'],
+        mode: 'send-once',
+        show_visitor_info: false,
+        primary_server: 'primary',
+        servers: ['primary'],
+      }],
+    };
+
+    const result: Tests_Lib_Schema_ConfigSchema_AllowsOptionalErrorEvents_Result = configSchema.safeParse(valid);
+
+    expect(result['success']).toBe(true);
+
+    return;
+  });
+
+  it('allows optional error_events on email context', () => {
+    const valid: Tests_Lib_Schema_ConfigSchema_AllowsOptionalErrorEventsOnEmailContext_Valid = {
+      settings: {
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
+      },
+      servers: [{
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
+      }],
+      contexts: [{
+        name: 'test',
+        type: 'email',
+        id: 'abc',
+        interpreter: 'pfsense',
+        topic: 'test',
+        error_topic: 'errors',
+        error_events: ['authentication'],
+        mode: 'send-once',
+        show_visitor_info: false,
+        primary_server: 'primary',
+        servers: ['primary'],
+      }],
+    };
+
+    const result: Tests_Lib_Schema_ConfigSchema_AllowsOptionalErrorEventsOnEmailContext_Result = configSchema.safeParse(valid);
+
+    expect(result['success']).toBe(true);
+
+    return;
+  });
+
+  it('rejects invalid error_events values', () => {
+    const invalid: Tests_Lib_Schema_ConfigSchema_RejectsInvalidErrorEventsValues_Invalid = {
+      settings: {
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
+      },
+      servers: [{
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
+      }],
+      contexts: [{
+        name: 'test',
+        type: 'http',
+        id: 'abc',
+        interpreter: 'plain-text',
+        topic: 'test',
+        error_topic: 'errors',
+        error_events: ['not-a-category'],
+        mode: 'send-once',
+        show_visitor_info: false,
+        primary_server: 'primary',
+        servers: ['primary'],
+      }],
+    };
+
+    const result: Tests_Lib_Schema_ConfigSchema_RejectsInvalidErrorEventsValues_Result = configSchema.safeParse(invalid);
+
+    expect(result['success']).toBe(false);
+
+    return;
+  });
+
+  it('rejects server URLs not starting with https://', () => {
+    const invalid: Tests_Lib_Schema_ConfigSchema_RejectsServerURLsNotStartingWithHttps_Invalid = {
+      settings: {
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
+      },
+      servers: [{
+        name: 'primary',
+        server: 'http://ntfy.example.com',
+        token: 'tk_abc',
       }],
       contexts: [],
     };
 
-    const result: TestsLibSchemaParseResult = configSchema.safeParse(invalid);
+    const result: Tests_Lib_Schema_ConfigSchema_RejectsServerURLsNotStartingWithHttps_Result = configSchema.safeParse(invalid);
 
     expect(result['success']).toBe(false);
 
@@ -196,12 +360,16 @@ describe('configSchema', () => {
   });
 
   it('rejects context without type discriminator', () => {
-    const invalid: TestsLibSchemaInput = {
+    const invalid: Tests_Lib_Schema_ConfigSchema_RejectsContextWithoutTypeDiscriminator_Invalid = {
       settings: {
-        worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
       },
       servers: [{
-        name: 'primary', server: 'https://ntfy.example.com', token: 'tk_abc',
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
       }],
       contexts: [{
         name: 'test',
@@ -215,7 +383,7 @@ describe('configSchema', () => {
       }],
     };
 
-    const result: TestsLibSchemaParseResult = configSchema.safeParse(invalid);
+    const result: Tests_Lib_Schema_ConfigSchema_RejectsContextWithoutTypeDiscriminator_Result = configSchema.safeParse(invalid);
 
     expect(result['success']).toBe(false);
 
@@ -223,12 +391,16 @@ describe('configSchema', () => {
   });
 
   it('rejects invalid type discriminator value', () => {
-    const invalid: TestsLibSchemaInput = {
+    const invalid: Tests_Lib_Schema_ConfigSchema_RejectsInvalidTypeDiscriminatorValue_Invalid = {
       settings: {
-        worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
       },
       servers: [{
-        name: 'primary', server: 'https://ntfy.example.com', token: 'tk_abc',
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
       }],
       contexts: [{
         name: 'test',
@@ -243,7 +415,7 @@ describe('configSchema', () => {
       }],
     };
 
-    const result: TestsLibSchemaParseResult = configSchema.safeParse(invalid);
+    const result: Tests_Lib_Schema_ConfigSchema_RejectsInvalidTypeDiscriminatorValue_Result = configSchema.safeParse(invalid);
 
     expect(result['success']).toBe(false);
 
@@ -251,12 +423,16 @@ describe('configSchema', () => {
   });
 
   it('allows optional token on HTTP context', () => {
-    const valid: TestsLibSchemaInput = {
+    const valid: Tests_Lib_Schema_ConfigSchema_AllowsOptionalTokenOnHTTPContext_Valid = {
       settings: {
-        worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
       },
       servers: [{
-        name: 'primary', server: 'https://ntfy.example.com', token: 'tk_abc',
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
       }],
       contexts: [{
         name: 'homebridge',
@@ -272,7 +448,7 @@ describe('configSchema', () => {
       }],
     };
 
-    const result: TestsLibSchemaParseResult = configSchema.safeParse(valid);
+    const result: Tests_Lib_Schema_ConfigSchema_AllowsOptionalTokenOnHTTPContext_Result = configSchema.safeParse(valid);
 
     expect(result['success']).toBe(true);
 
@@ -280,12 +456,16 @@ describe('configSchema', () => {
   });
 
   it('allows optional allowed_from on email context', () => {
-    const valid: TestsLibSchemaInput = {
+    const valid: Tests_Lib_Schema_ConfigSchema_AllowsOptionalAllowedFromOnEmailContext_Valid = {
       settings: {
-        worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
       },
       servers: [{
-        name: 'primary', server: 'https://ntfy.example.com', token: 'tk_abc',
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
       }],
       contexts: [{
         name: 'pfsense',
@@ -301,7 +481,7 @@ describe('configSchema', () => {
       }],
     };
 
-    const result: TestsLibSchemaParseResult = configSchema.safeParse(valid);
+    const result: Tests_Lib_Schema_ConfigSchema_AllowsOptionalAllowedFromOnEmailContext_Result = configSchema.safeParse(valid);
 
     expect(result['success']).toBe(true);
 
@@ -309,12 +489,16 @@ describe('configSchema', () => {
   });
 
   it('rejects token field on email context', () => {
-    const invalid: TestsLibSchemaInput = {
+    const invalid: Tests_Lib_Schema_ConfigSchema_RejectsTokenFieldOnEmailContext_Invalid = {
       settings: {
-        worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
       },
       servers: [{
-        name: 'primary', server: 'https://ntfy.example.com', token: 'tk_abc',
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
       }],
       contexts: [{
         name: 'test',
@@ -330,7 +514,7 @@ describe('configSchema', () => {
       }],
     };
 
-    const result: TestsLibSchemaParseResult = configSchema.safeParse(invalid);
+    const result: Tests_Lib_Schema_ConfigSchema_RejectsTokenFieldOnEmailContext_Result = configSchema.safeParse(invalid);
 
     expect(result['success']).toBe(false);
 
@@ -338,12 +522,16 @@ describe('configSchema', () => {
   });
 
   it('rejects allowed_from field on HTTP context', () => {
-    const invalid: TestsLibSchemaInput = {
+    const invalid: Tests_Lib_Schema_ConfigSchema_RejectsAllowedFromFieldOnHTTPContext_Invalid = {
       settings: {
-        worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
       },
       servers: [{
-        name: 'primary', server: 'https://ntfy.example.com', token: 'tk_abc',
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
       }],
       contexts: [{
         name: 'test',
@@ -359,7 +547,7 @@ describe('configSchema', () => {
       }],
     };
 
-    const result: TestsLibSchemaParseResult = configSchema.safeParse(invalid);
+    const result: Tests_Lib_Schema_ConfigSchema_RejectsAllowedFromFieldOnHTTPContext_Result = configSchema.safeParse(invalid);
 
     expect(result['success']).toBe(false);
 
@@ -367,12 +555,16 @@ describe('configSchema', () => {
   });
 
   it('validates pfsense interpreter', () => {
-    const valid: TestsLibSchemaInput = {
+    const valid: Tests_Lib_Schema_ConfigSchema_ValidatesPfsenseInterpreter_Valid = {
       settings: {
-        worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
       },
       servers: [{
-        name: 'primary', server: 'https://ntfy.example.com', token: 'tk_abc',
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
       }],
       contexts: [{
         name: 'test',
@@ -387,7 +579,7 @@ describe('configSchema', () => {
       }],
     };
 
-    const result: TestsLibSchemaParseResult = configSchema.safeParse(valid);
+    const result: Tests_Lib_Schema_ConfigSchema_ValidatesPfsenseInterpreter_Result = configSchema.safeParse(valid);
 
     expect(result['success']).toBe(true);
 
@@ -395,12 +587,16 @@ describe('configSchema', () => {
   });
 
   it('validates unifi interpreter', () => {
-    const valid: TestsLibSchemaInput = {
+    const valid: Tests_Lib_Schema_ConfigSchema_ValidatesUnifiInterpreter_Valid = {
       settings: {
-        worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
       },
       servers: [{
-        name: 'primary', server: 'https://ntfy.example.com', token: 'tk_abc',
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
       }],
       contexts: [{
         name: 'test',
@@ -415,7 +611,7 @@ describe('configSchema', () => {
       }],
     };
 
-    const result: TestsLibSchemaParseResult = configSchema.safeParse(valid);
+    const result: Tests_Lib_Schema_ConfigSchema_ValidatesUnifiInterpreter_Result = configSchema.safeParse(valid);
 
     expect(result['success']).toBe(true);
 
@@ -423,12 +619,16 @@ describe('configSchema', () => {
   });
 
   it('validates email interpreter', () => {
-    const valid: TestsLibSchemaInput = {
+    const valid: Tests_Lib_Schema_ConfigSchema_ValidatesEmailInterpreter_Valid = {
       settings: {
-        worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
       },
       servers: [{
-        name: 'primary', server: 'https://ntfy.example.com', token: 'tk_abc',
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
       }],
       contexts: [{
         name: 'test',
@@ -443,7 +643,7 @@ describe('configSchema', () => {
       }],
     };
 
-    const result: TestsLibSchemaParseResult = configSchema.safeParse(valid);
+    const result: Tests_Lib_Schema_ConfigSchema_ValidatesEmailInterpreter_Result = configSchema.safeParse(valid);
 
     expect(result['success']).toBe(true);
 
@@ -451,16 +651,22 @@ describe('configSchema', () => {
   });
 
   it('validates config with mixed HTTP and email contexts', () => {
-    const valid: TestsLibSchemaInput = {
+    const valid: Tests_Lib_Schema_ConfigSchema_ValidatesConfigWithMixedHTTPAndEmailContexts_Valid = {
       settings: {
-        worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
       },
       servers: [
         {
-          name: 'alpha', server: 'https://alpha.example.com', token: 'tk_alpha',
+          name: 'alpha',
+          server: 'https://alpha.example.com',
+          token: 'tk_alpha',
         },
         {
-          name: 'beta', server: 'https://beta.example.com', token: 'tk_beta',
+          name: 'beta',
+          server: 'https://beta.example.com',
+          token: 'tk_beta',
         },
       ],
       contexts: [
@@ -499,7 +705,7 @@ describe('configSchema', () => {
       ],
     };
 
-    const result: TestsLibSchemaParseResult = configSchema.safeParse(valid);
+    const result: Tests_Lib_Schema_ConfigSchema_ValidatesConfigWithMixedHTTPAndEmailContexts_Result = configSchema.safeParse(valid);
 
     expect(result['success']).toBe(true);
 

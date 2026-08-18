@@ -5,13 +5,51 @@ import {
 import { handleEmail, handleRequest } from '../../worker/handlers.js';
 
 import type {
-  TestsWorkerIndexConfig,
-  TestsWorkerIndexContentType,
-  TestsWorkerIndexMockFetch,
-  TestsWorkerIndexRawEmail,
-  TestsWorkerIndexRequest,
-  TestsWorkerIndexResponse,
-  TestsWorkerIndexResponseBody,
+  Tests_Worker_Index_HandleEmail_AcceptsEmailFromAuthorizedSender_MockFetch,
+  Tests_Worker_Index_HandleEmail_AcceptsEmailFromAuthorizedSender_RawEmail,
+  Tests_Worker_Index_HandleEmail_AllowsEmailWhenNoAllowedFromIsConfigured_MockFetch,
+  Tests_Worker_Index_HandleEmail_AllowsEmailWhenNoAllowedFromIsConfigured_RawEmail,
+  Tests_Worker_Index_HandleEmail_ProcessesAValidEmailThroughThePipeline_MockFetch,
+  Tests_Worker_Index_HandleEmail_ProcessesAValidEmailThroughThePipeline_RawEmail,
+  Tests_Worker_Index_HandleEmail_RejectsEmailFromUnauthorizedSender_MockFetch,
+  Tests_Worker_Index_HandleEmail_RejectsEmailFromUnauthorizedSender_RawEmail,
+  Tests_Worker_Index_HandleEmail_SilentlyIgnoresEmailsWithNoMatchingContext_MockFetch,
+  Tests_Worker_Index_HandleEmail_SilentlyIgnoresEmailsWithNoMatchingContext_RawEmail,
+  Tests_Worker_Index_HandleEmail_SuppressesAuthErrorNotificationWhenEmailErrorEventsExcludesAuthentication_MockFetch,
+  Tests_Worker_Index_HandleEmail_SuppressesAuthErrorNotificationWhenEmailErrorEventsExcludesAuthentication_RawEmail,
+  Tests_Worker_Index_HandleRequest_PassesThroughWhenNoTokenConfigured_Request,
+  Tests_Worker_Index_HandleRequest_PassesThroughWhenNoTokenConfigured_Response,
+  Tests_Worker_Index_HandleRequest_ProcessesAValidPOSTRequestThroughThePipeline_Body,
+  Tests_Worker_Index_HandleRequest_ProcessesAValidPOSTRequestThroughThePipeline_Request,
+  Tests_Worker_Index_HandleRequest_ProcessesAValidPOSTRequestThroughThePipeline_Response,
+  Tests_Worker_Index_HandleRequest_Returns403WithNoAuthorizationHeaderWhenTokenRequired_Request,
+  Tests_Worker_Index_HandleRequest_Returns403WithNoAuthorizationHeaderWhenTokenRequired_Response,
+  Tests_Worker_Index_HandleRequest_Returns403WithWrongToken_Body,
+  Tests_Worker_Index_HandleRequest_Returns403WithWrongToken_Request,
+  Tests_Worker_Index_HandleRequest_Returns403WithWrongToken_Response,
+  Tests_Worker_Index_HandleRequest_Returns404ForUnmatchedSubdomain_Request,
+  Tests_Worker_Index_HandleRequest_Returns404ForUnmatchedSubdomain_Response,
+  Tests_Worker_Index_HandleRequest_Returns405ForUnsupportedMethods_Request,
+  Tests_Worker_Index_HandleRequest_Returns405ForUnsupportedMethods_Response,
+  Tests_Worker_Index_HandleRequest_SendsErrorNotificationWhenAuthFailsAndErrorTopicConfigured_MockFetch,
+  Tests_Worker_Index_HandleRequest_SendsErrorNotificationWhenAuthFailsAndErrorTopicConfigured_Request,
+  Tests_Worker_Index_HandleRequest_SendsErrorNotificationWhenAuthFailsAndErrorTopicConfigured_Response,
+  Tests_Worker_Index_HandleRequest_ServesLandingPageForGETRequests_ContentType,
+  Tests_Worker_Index_HandleRequest_ServesLandingPageForGETRequests_Request,
+  Tests_Worker_Index_HandleRequest_ServesLandingPageForGETRequests_Response,
+  Tests_Worker_Index_HandleRequest_SucceedsWithCorrectTokenInAuthorizationHeader_Body,
+  Tests_Worker_Index_HandleRequest_SucceedsWithCorrectTokenInAuthorizationHeader_Request,
+  Tests_Worker_Index_HandleRequest_SucceedsWithCorrectTokenInAuthorizationHeader_Response,
+  Tests_Worker_Index_HandleRequest_SuppressesAuthErrorNotificationWhenErrorEventsExcludesAuthentication_MockFetch,
+  Tests_Worker_Index_HandleRequest_SuppressesAuthErrorNotificationWhenErrorEventsExcludesAuthentication_Request,
+  Tests_Worker_Index_HandleRequest_SuppressesAuthErrorNotificationWhenErrorEventsExcludesAuthentication_Response,
+  Tests_Worker_Index_MockConfig,
+  Tests_Worker_Index_MockConfigWithErrorTopic,
+  Tests_Worker_Index_MockConfigWithErrorTopicAndErrorEvents,
+  Tests_Worker_Index_MockConfigWithToken,
+  Tests_Worker_Index_MockEmailConfig,
+  Tests_Worker_Index_MockEmailConfigWithAllowedFrom,
+  Tests_Worker_Index_MockEmailConfigWithErrorTopicAndErrorEvents,
 } from '../../types/tests/worker/index.test.d.ts';
 
 /**
@@ -26,12 +64,16 @@ vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('ok', { status: 20
  *
  * @since 2.0.0
  */
-const mockConfig: TestsWorkerIndexConfig = {
+const mockConfig: Tests_Worker_Index_MockConfig = {
   settings: {
-    worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+    worker_name: 'test-worker',
+    base_domain: 'ntfy.example.com',
+    show_response_output: false,
   },
   servers: [{
-    name: 'alpha', server: 'https://ntfy.alpha.example.com', token: 'tk_abc',
+    name: 'alpha',
+    server: 'https://ntfy.alpha.example.com',
+    token: 'tk_abc',
   }],
   contexts: [{
     id: 'abc123',
@@ -53,12 +95,16 @@ const mockConfig: TestsWorkerIndexConfig = {
  *
  * @since 2.0.0
  */
-const mockConfigWithToken: TestsWorkerIndexConfig = {
+const mockConfigWithToken: Tests_Worker_Index_MockConfigWithToken = {
   settings: {
-    worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+    worker_name: 'test-worker',
+    base_domain: 'ntfy.example.com',
+    show_response_output: false,
   },
   servers: [{
-    name: 'alpha', server: 'https://ntfy.alpha.example.com', token: 'tk_abc',
+    name: 'alpha',
+    server: 'https://ntfy.alpha.example.com',
+    token: 'tk_abc',
   }],
   contexts: [{
     id: 'secured',
@@ -80,12 +126,16 @@ const mockConfigWithToken: TestsWorkerIndexConfig = {
  *
  * @since 2.0.0
  */
-const mockConfigWithErrorTopic: TestsWorkerIndexConfig = {
+const mockConfigWithErrorTopic: Tests_Worker_Index_MockConfigWithErrorTopic = {
   settings: {
-    worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+    worker_name: 'test-worker',
+    base_domain: 'ntfy.example.com',
+    show_response_output: false,
   },
   servers: [{
-    name: 'alpha', server: 'https://ntfy.alpha.example.com', token: 'tk_abc',
+    name: 'alpha',
+    server: 'https://ntfy.alpha.example.com',
+    token: 'tk_abc',
   }],
   contexts: [{
     id: 'errctx',
@@ -107,12 +157,16 @@ const mockConfigWithErrorTopic: TestsWorkerIndexConfig = {
  *
  * @since 2.0.0
  */
-const mockEmailConfig: TestsWorkerIndexConfig = {
+const mockEmailConfig: Tests_Worker_Index_MockEmailConfig = {
   settings: {
-    worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+    worker_name: 'test-worker',
+    base_domain: 'ntfy.example.com',
+    show_response_output: false,
   },
   servers: [{
-    name: 'alpha', server: 'https://ntfy.alpha.example.com', token: 'tk_abc',
+    name: 'alpha',
+    server: 'https://ntfy.alpha.example.com',
+    token: 'tk_abc',
   }],
   contexts: [{
     id: 'pfsense',
@@ -134,12 +188,16 @@ const mockEmailConfig: TestsWorkerIndexConfig = {
  *
  * @since 2.0.0
  */
-const mockEmailConfigWithAllowedFrom: TestsWorkerIndexConfig = {
+const mockEmailConfigWithAllowedFrom: Tests_Worker_Index_MockEmailConfigWithAllowedFrom = {
   settings: {
-    worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+    worker_name: 'test-worker',
+    base_domain: 'ntfy.example.com',
+    show_response_output: false,
   },
   servers: [{
-    name: 'alpha', server: 'https://ntfy.alpha.example.com', token: 'tk_abc',
+    name: 'alpha',
+    server: 'https://ntfy.alpha.example.com',
+    token: 'tk_abc',
   }],
   contexts: [{
     id: 'restricted',
@@ -157,6 +215,70 @@ const mockEmailConfigWithAllowedFrom: TestsWorkerIndexConfig = {
 };
 
 /**
+ * Tests - Worker - Mock Email Config With Error Topic And Error Events.
+ *
+ * @since 2.1.0
+ */
+const mockEmailConfigWithErrorTopicAndErrorEvents: Tests_Worker_Index_MockEmailConfigWithErrorTopicAndErrorEvents = {
+  settings: {
+    worker_name: 'test-worker',
+    base_domain: 'ntfy.example.com',
+    show_response_output: false,
+  },
+  servers: [{
+    name: 'alpha',
+    server: 'https://ntfy.alpha.example.com',
+    token: 'tk_abc',
+  }],
+  contexts: [{
+    id: 'email-filtered',
+    name: 'email-filtered-context',
+    type: 'email' as const,
+    interpreter: 'pfsense' as const,
+    topic: 'email-filtered-topic',
+    error_topic: 'error-notifications',
+    error_events: ['interpretation'] as const,
+    mode: 'send-once' as const,
+    show_visitor_info: false,
+    primary_server: 'alpha',
+    servers: ['alpha'],
+    allowed_from: 'trusted@example.com',
+  }],
+};
+
+/**
+ * Tests - Worker - Mock Config With Error Topic And Error Events.
+ *
+ * @since 2.1.0
+ */
+const mockConfigWithErrorTopicAndErrorEvents: Tests_Worker_Index_MockConfigWithErrorTopicAndErrorEvents = {
+  settings: {
+    worker_name: 'test-worker',
+    base_domain: 'ntfy.example.com',
+    show_response_output: false,
+  },
+  servers: [{
+    name: 'alpha',
+    server: 'https://ntfy.alpha.example.com',
+    token: 'tk_abc',
+  }],
+  contexts: [{
+    id: 'filtered',
+    name: 'filtered-error-context',
+    type: 'http' as const,
+    interpreter: 'plain-text' as const,
+    topic: 'filtered-topic',
+    error_topic: 'error-notifications',
+    error_events: ['interpretation'] as const,
+    mode: 'send-once' as const,
+    show_visitor_info: false,
+    primary_server: 'alpha',
+    servers: ['alpha'],
+    token: 'my-secret-token',
+  }],
+};
+
+/**
  * Tests - Worker - Handle Request.
  *
  * @since 2.0.0
@@ -168,15 +290,15 @@ describe('handleRequest', () => {
    * @since 2.0.0
    */
   it('processes a valid POST request through the pipeline', async () => {
-    const request: TestsWorkerIndexRequest = new Request('https://abc123.ntfy.example.com/', {
+    const request: Tests_Worker_Index_HandleRequest_ProcessesAValidPOSTRequestThroughThePipeline_Request = new Request('https://abc123.ntfy.example.com/', {
       method: 'POST',
       body: 'Hello world',
     });
-    const response: TestsWorkerIndexResponse = await handleRequest(request, mockConfig, undefined);
+    const response: Tests_Worker_Index_HandleRequest_ProcessesAValidPOSTRequestThroughThePipeline_Response = await handleRequest(request, mockConfig, undefined);
 
     expect(response['status']).toBe(200);
 
-    const body: TestsWorkerIndexResponseBody = await response.json();
+    const body: Tests_Worker_Index_HandleRequest_ProcessesAValidPOSTRequestThroughThePipeline_Body = await response.json();
 
     expect(body['status']).toBe('success');
 
@@ -189,11 +311,11 @@ describe('handleRequest', () => {
    * @since 2.0.0
    */
   it('serves landing page for GET requests', async () => {
-    const request: TestsWorkerIndexRequest = new Request('https://abc123.ntfy.example.com/', {
+    const request: Tests_Worker_Index_HandleRequest_ServesLandingPageForGETRequests_Request = new Request('https://abc123.ntfy.example.com/', {
       method: 'GET',
     });
-    const response: TestsWorkerIndexResponse = await handleRequest(request, mockConfig, undefined);
-    const contentType: TestsWorkerIndexContentType = response.headers.get('content-type');
+    const response: Tests_Worker_Index_HandleRequest_ServesLandingPageForGETRequests_Response = await handleRequest(request, mockConfig, undefined);
+    const contentType: Tests_Worker_Index_HandleRequest_ServesLandingPageForGETRequests_ContentType = response.headers.get('content-type');
 
     expect(contentType).toContain('text/html');
 
@@ -206,10 +328,10 @@ describe('handleRequest', () => {
    * @since 2.0.0
    */
   it('returns 405 for unsupported methods', async () => {
-    const request: TestsWorkerIndexRequest = new Request('https://abc123.ntfy.example.com/', {
+    const request: Tests_Worker_Index_HandleRequest_Returns405ForUnsupportedMethods_Request = new Request('https://abc123.ntfy.example.com/', {
       method: 'DELETE',
     });
-    const response: TestsWorkerIndexResponse = await handleRequest(request, mockConfig, undefined);
+    const response: Tests_Worker_Index_HandleRequest_Returns405ForUnsupportedMethods_Response = await handleRequest(request, mockConfig, undefined);
 
     expect(response['status']).toBe(405);
 
@@ -222,11 +344,11 @@ describe('handleRequest', () => {
    * @since 2.0.0
    */
   it('returns 404 for unmatched subdomain', async () => {
-    const request: TestsWorkerIndexRequest = new Request('https://unknown.ntfy.example.com/', {
+    const request: Tests_Worker_Index_HandleRequest_Returns404ForUnmatchedSubdomain_Request = new Request('https://unknown.ntfy.example.com/', {
       method: 'POST',
       body: 'test',
     });
-    const response: TestsWorkerIndexResponse = await handleRequest(request, mockConfig, undefined);
+    const response: Tests_Worker_Index_HandleRequest_Returns404ForUnmatchedSubdomain_Response = await handleRequest(request, mockConfig, undefined);
 
     expect(response['status']).toBe(404);
 
@@ -239,16 +361,16 @@ describe('handleRequest', () => {
    * @since 2.0.0
    */
   it('succeeds with correct token in Authorization header', async () => {
-    const request: TestsWorkerIndexRequest = new Request('https://secured.ntfy.example.com/', {
+    const request: Tests_Worker_Index_HandleRequest_SucceedsWithCorrectTokenInAuthorizationHeader_Request = new Request('https://secured.ntfy.example.com/', {
       method: 'POST',
       body: 'Authenticated request',
       headers: { Authorization: 'Bearer my-secret-token' },
     });
-    const response: TestsWorkerIndexResponse = await handleRequest(request, mockConfigWithToken, undefined);
+    const response: Tests_Worker_Index_HandleRequest_SucceedsWithCorrectTokenInAuthorizationHeader_Response = await handleRequest(request, mockConfigWithToken, undefined);
 
     expect(response['status']).toBe(200);
 
-    const body: TestsWorkerIndexResponseBody = await response.json();
+    const body: Tests_Worker_Index_HandleRequest_SucceedsWithCorrectTokenInAuthorizationHeader_Body = await response.json();
 
     expect(body['status']).toBe('success');
 
@@ -261,16 +383,16 @@ describe('handleRequest', () => {
    * @since 2.0.0
    */
   it('returns 403 with wrong token', async () => {
-    const request: TestsWorkerIndexRequest = new Request('https://secured.ntfy.example.com/', {
+    const request: Tests_Worker_Index_HandleRequest_Returns403WithWrongToken_Request = new Request('https://secured.ntfy.example.com/', {
       method: 'POST',
       body: 'Authenticated request',
       headers: { Authorization: 'Bearer wrong-token' },
     });
-    const response: TestsWorkerIndexResponse = await handleRequest(request, mockConfigWithToken, undefined);
+    const response: Tests_Worker_Index_HandleRequest_Returns403WithWrongToken_Response = await handleRequest(request, mockConfigWithToken, undefined);
 
     expect(response['status']).toBe(403);
 
-    const body: TestsWorkerIndexResponseBody = await response.json();
+    const body: Tests_Worker_Index_HandleRequest_Returns403WithWrongToken_Body = await response.json();
 
     expect(body['message']).toBe('Unauthorized');
 
@@ -283,11 +405,11 @@ describe('handleRequest', () => {
    * @since 2.0.0
    */
   it('returns 403 with no Authorization header when token required', async () => {
-    const request: TestsWorkerIndexRequest = new Request('https://secured.ntfy.example.com/', {
+    const request: Tests_Worker_Index_HandleRequest_Returns403WithNoAuthorizationHeaderWhenTokenRequired_Request = new Request('https://secured.ntfy.example.com/', {
       method: 'POST',
       body: 'No auth header',
     });
-    const response: TestsWorkerIndexResponse = await handleRequest(request, mockConfigWithToken, undefined);
+    const response: Tests_Worker_Index_HandleRequest_Returns403WithNoAuthorizationHeaderWhenTokenRequired_Response = await handleRequest(request, mockConfigWithToken, undefined);
 
     expect(response['status']).toBe(403);
 
@@ -300,11 +422,11 @@ describe('handleRequest', () => {
    * @since 2.0.0
    */
   it('passes through when no token configured', async () => {
-    const request: TestsWorkerIndexRequest = new Request('https://abc123.ntfy.example.com/', {
+    const request: Tests_Worker_Index_HandleRequest_PassesThroughWhenNoTokenConfigured_Request = new Request('https://abc123.ntfy.example.com/', {
       method: 'POST',
       body: 'No auth needed',
     });
-    const response: TestsWorkerIndexResponse = await handleRequest(request, mockConfig, undefined);
+    const response: Tests_Worker_Index_HandleRequest_PassesThroughWhenNoTokenConfigured_Response = await handleRequest(request, mockConfig, undefined);
 
     expect(response['status']).toBe(200);
 
@@ -317,20 +439,44 @@ describe('handleRequest', () => {
    * @since 2.0.0
    */
   it('sends error notification when auth fails and error_topic configured', async () => {
-    const mockFetch: TestsWorkerIndexMockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
+    const mockFetch: Tests_Worker_Index_HandleRequest_SendsErrorNotificationWhenAuthFailsAndErrorTopicConfigured_MockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
 
     vi.stubGlobal('fetch', mockFetch);
 
-    const request: TestsWorkerIndexRequest = new Request('https://errctx.ntfy.example.com/', {
+    const request: Tests_Worker_Index_HandleRequest_SendsErrorNotificationWhenAuthFailsAndErrorTopicConfigured_Request = new Request('https://errctx.ntfy.example.com/', {
       method: 'POST',
       body: 'Bad auth',
       headers: { Authorization: 'Bearer wrong' },
     });
-    const response: TestsWorkerIndexResponse = await handleRequest(request, mockConfigWithErrorTopic, undefined);
+    const response: Tests_Worker_Index_HandleRequest_SendsErrorNotificationWhenAuthFailsAndErrorTopicConfigured_Response = await handleRequest(request, mockConfigWithErrorTopic, undefined);
 
     expect(response['status']).toBe(403);
 
     expect(mockFetch).toHaveBeenCalled();
+
+    return;
+  });
+
+  /**
+   * Tests - Worker.
+   *
+   * @since 2.1.0
+   */
+  it('suppresses auth error notification when error_events excludes authentication', async () => {
+    const mockFetch: Tests_Worker_Index_HandleRequest_SuppressesAuthErrorNotificationWhenErrorEventsExcludesAuthentication_MockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
+
+    vi.stubGlobal('fetch', mockFetch);
+
+    const request: Tests_Worker_Index_HandleRequest_SuppressesAuthErrorNotificationWhenErrorEventsExcludesAuthentication_Request = new Request('https://filtered.ntfy.example.com/', {
+      method: 'POST',
+      body: 'Bad auth',
+      headers: { Authorization: 'Bearer wrong' },
+    });
+    const response: Tests_Worker_Index_HandleRequest_SuppressesAuthErrorNotificationWhenErrorEventsExcludesAuthentication_Response = await handleRequest(request, mockConfigWithErrorTopicAndErrorEvents, undefined);
+
+    expect(response['status']).toBe(403);
+
+    expect(mockFetch).not.toHaveBeenCalled();
 
     return;
   });
@@ -350,11 +496,11 @@ describe('handleEmail', () => {
    * @since 2.0.0
    */
   it('processes a valid email through the pipeline', async () => {
-    const mockFetch: TestsWorkerIndexMockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
+    const mockFetch: Tests_Worker_Index_HandleEmail_ProcessesAValidEmailThroughThePipeline_MockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
 
     vi.stubGlobal('fetch', mockFetch);
 
-    const rawEmail: TestsWorkerIndexRawEmail = [
+    const rawEmail: Tests_Worker_Index_HandleEmail_ProcessesAValidEmailThroughThePipeline_RawEmail = [
       'From: sender@example.com',
       'To: pfsense@ntfy.example.com',
       'Subject: Test Alert',
@@ -376,11 +522,11 @@ describe('handleEmail', () => {
    * @since 2.0.0
    */
   it('silently ignores emails with no matching context', async () => {
-    const mockFetch: TestsWorkerIndexMockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
+    const mockFetch: Tests_Worker_Index_HandleEmail_SilentlyIgnoresEmailsWithNoMatchingContext_MockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
 
     vi.stubGlobal('fetch', mockFetch);
 
-    const rawEmail: TestsWorkerIndexRawEmail = [
+    const rawEmail: Tests_Worker_Index_HandleEmail_SilentlyIgnoresEmailsWithNoMatchingContext_RawEmail = [
       'From: sender@example.com',
       'To: unknown@ntfy.example.com',
       'Subject: Test',
@@ -402,11 +548,11 @@ describe('handleEmail', () => {
    * @since 2.0.0
    */
   it('allows email when no allowed_from is configured', async () => {
-    const mockFetch: TestsWorkerIndexMockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
+    const mockFetch: Tests_Worker_Index_HandleEmail_AllowsEmailWhenNoAllowedFromIsConfigured_MockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
 
     vi.stubGlobal('fetch', mockFetch);
 
-    const rawEmail: TestsWorkerIndexRawEmail = [
+    const rawEmail: Tests_Worker_Index_HandleEmail_AllowsEmailWhenNoAllowedFromIsConfigured_RawEmail = [
       'From: anyone@anywhere.com',
       'To: pfsense@ntfy.example.com',
       'Subject: Open Relay',
@@ -428,11 +574,11 @@ describe('handleEmail', () => {
    * @since 2.0.0
    */
   it('rejects email from unauthorized sender', async () => {
-    const mockFetch: TestsWorkerIndexMockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
+    const mockFetch: Tests_Worker_Index_HandleEmail_RejectsEmailFromUnauthorizedSender_MockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
 
     vi.stubGlobal('fetch', mockFetch);
 
-    const rawEmail: TestsWorkerIndexRawEmail = [
+    const rawEmail: Tests_Worker_Index_HandleEmail_RejectsEmailFromUnauthorizedSender_RawEmail = [
       'From: untrusted@example.com',
       'To: restricted@ntfy.example.com',
       'Subject: Unauthorized',
@@ -454,11 +600,11 @@ describe('handleEmail', () => {
    * @since 2.0.0
    */
   it('accepts email from authorized sender', async () => {
-    const mockFetch: TestsWorkerIndexMockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
+    const mockFetch: Tests_Worker_Index_HandleEmail_AcceptsEmailFromAuthorizedSender_MockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
 
     vi.stubGlobal('fetch', mockFetch);
 
-    const rawEmail: TestsWorkerIndexRawEmail = [
+    const rawEmail: Tests_Worker_Index_HandleEmail_AcceptsEmailFromAuthorizedSender_RawEmail = [
       'From: trusted@example.com',
       'To: restricted@ntfy.example.com',
       'Subject: Authorized',
@@ -470,6 +616,32 @@ describe('handleEmail', () => {
     await handleEmail(rawEmail, 'trusted@example.com', mockEmailConfigWithAllowedFrom, undefined);
 
     expect(mockFetch).toHaveBeenCalled();
+
+    return;
+  });
+
+  /**
+   * Tests - Worker.
+   *
+   * @since 2.1.0
+   */
+  it('suppresses auth error notification when email error_events excludes authentication', async () => {
+    const mockFetch: Tests_Worker_Index_HandleEmail_SuppressesAuthErrorNotificationWhenEmailErrorEventsExcludesAuthentication_MockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
+
+    vi.stubGlobal('fetch', mockFetch);
+
+    const rawEmail: Tests_Worker_Index_HandleEmail_SuppressesAuthErrorNotificationWhenEmailErrorEventsExcludesAuthentication_RawEmail = [
+      'From: sender@example.com',
+      'To: email-filtered@ntfy.example.com',
+      'Subject: Test Alert',
+      'Content-Type: text/plain',
+      '',
+      'This is a test email body.',
+    ].join('\r\n');
+
+    await handleEmail(rawEmail, 'sender@example.com', mockEmailConfigWithErrorTopicAndErrorEvents, undefined);
+
+    expect(mockFetch).not.toHaveBeenCalled();
 
     return;
   });

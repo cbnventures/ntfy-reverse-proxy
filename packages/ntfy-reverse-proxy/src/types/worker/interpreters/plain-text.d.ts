@@ -1,6 +1,6 @@
 import type {
-  WorkerPipelineInterpretInput,
-  WorkerPipelineInterpretResult,
+  Worker_Pipeline_Interpret_Input,
+  Worker_Pipeline_Interpret_Result,
 } from '../pipeline/interpret.d.ts';
 
 /**
@@ -8,17 +8,17 @@ import type {
  *
  * @since 2.0.0
  */
-export type WorkerInterpretersPlainTextInput = WorkerPipelineInterpretInput;
+export type Worker_Interpreters_PlainText_Input = Worker_Pipeline_Interpret_Input;
 
-export type WorkerInterpretersPlainTextResult = WorkerPipelineInterpretResult;
+export type Worker_Interpreters_PlainText_Result = Worker_Pipeline_Interpret_Result;
 
-export type WorkerInterpretersPlainTextInterpreter = (input: WorkerInterpretersPlainTextInput) => WorkerInterpretersPlainTextResult;
+export type Worker_Interpreters_PlainText_PlainTextInterpreter = (input: Worker_Interpreters_PlainText_Input) => Worker_Interpreters_PlainText_Result;
 
 /**
  * Worker - Interpreters - Plain Text - Plain Text Interpreter.
  *
  * @since 2.0.0
  */
-export type WorkerInterpretersPlainTextPlainTextInterpreterBody = string | undefined;
+export type Worker_Interpreters_PlainText_PlainTextInterpreter_Body = string | undefined;
 
-export type WorkerInterpretersPlainTextPlainTextInterpreterDecoder = TextDecoder;
+export type Worker_Interpreters_PlainText_PlainTextInterpreter_Decoder = TextDecoder;

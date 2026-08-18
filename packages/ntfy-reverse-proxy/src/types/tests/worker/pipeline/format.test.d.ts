@@ -3,36 +3,116 @@
  *
  * @since 2.0.0
  */
-export type TestsWorkerPipelineFormatBaseNotification = {
-  title: string;
-  body: string;
-  priority: 3;
-  tags: string[];
-  markdown: boolean;
+export type Tests_Worker_Pipeline_Format_BaseNotificationTitle = string;
+
+export type Tests_Worker_Pipeline_Format_BaseNotificationBody = string;
+
+export type Tests_Worker_Pipeline_Format_BaseNotificationPriority = 3;
+
+export type Tests_Worker_Pipeline_Format_BaseNotificationTags = string[];
+
+export type Tests_Worker_Pipeline_Format_BaseNotificationMarkdown = boolean;
+
+export type Tests_Worker_Pipeline_Format_BaseNotification = {
+  title: Tests_Worker_Pipeline_Format_BaseNotificationTitle;
+  body: Tests_Worker_Pipeline_Format_BaseNotificationBody;
+  priority: Tests_Worker_Pipeline_Format_BaseNotificationPriority;
+  tags: Tests_Worker_Pipeline_Format_BaseNotificationTags;
+  markdown: Tests_Worker_Pipeline_Format_BaseNotificationMarkdown;
 };
 
-export type TestsWorkerPipelineFormatResult = {
-  body: string;
-  headers: Record<string, string>;
+export type Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_CfPropertiesCountry = string;
+
+export type Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_CfPropertiesRegion = string;
+
+export type Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_CfPropertiesCity = string;
+
+export type Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_CfPropertiesColo = string;
+
+export type Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_CfPropertiesLatitude = string;
+
+export type Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_CfPropertiesLongitude = string;
+
+export type Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_CfPropertiesAsn = number;
+
+export type Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_CfPropertiesAsOrganization = string;
+
+export type Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_CfProperties = {
+  country: Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_CfPropertiesCountry;
+  region: Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_CfPropertiesRegion;
+  city: Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_CfPropertiesCity;
+  colo: Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_CfPropertiesColo;
+  latitude: Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_CfPropertiesLatitude;
+  longitude: Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_CfPropertiesLongitude;
+  asn: Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_CfPropertiesAsn;
+  asOrganization: Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_CfPropertiesAsOrganization;
 };
 
-export type TestsWorkerPipelineFormatCfProperties = {
-  country: string;
-  region: string;
-  city: string;
-  colo: string;
-  latitude: string;
-  longitude: string;
-  asn: number;
-  asOrganization: string;
+export type Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_ResultBody = string;
+
+export type Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_ResultHeaders = Record<string, string>;
+
+export type Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_Result = {
+  body: Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_ResultBody;
+  headers: Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_ResultHeaders;
 };
 
-export type TestsWorkerPipelineFormatNotificationWithOptionals = {
-  title: string;
-  body: string;
-  priority: 3;
-  tags: string[];
-  markdown: boolean;
-  icon: string;
-  actions: string;
+export type Tests_Worker_Pipeline_Format_Format_DoesNotIncludeVisitorInfoWhenDisabled_ResultBody = string;
+
+export type Tests_Worker_Pipeline_Format_Format_DoesNotIncludeVisitorInfoWhenDisabled_ResultHeaders = Record<string, string>;
+
+export type Tests_Worker_Pipeline_Format_Format_DoesNotIncludeVisitorInfoWhenDisabled_Result = {
+  body: Tests_Worker_Pipeline_Format_Format_DoesNotIncludeVisitorInfoWhenDisabled_ResultBody;
+  headers: Tests_Worker_Pipeline_Format_Format_DoesNotIncludeVisitorInfoWhenDisabled_ResultHeaders;
+};
+
+export type Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_NotificationTitle = string;
+
+export type Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_NotificationBody = string;
+
+export type Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_NotificationPriority = 3;
+
+export type Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_NotificationTags = string[];
+
+export type Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_NotificationMarkdown = boolean;
+
+export type Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_NotificationIcon = string;
+
+export type Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_NotificationActions = string;
+
+export type Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_Notification = {
+  title: Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_NotificationTitle;
+  body: Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_NotificationBody;
+  priority: Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_NotificationPriority;
+  tags: Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_NotificationTags;
+  markdown: Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_NotificationMarkdown;
+  icon: Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_NotificationIcon;
+  actions: Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_NotificationActions;
+};
+
+export type Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_ResultBody = string;
+
+export type Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_ResultHeaders = Record<string, string>;
+
+export type Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_Result = {
+  body: Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_ResultBody;
+  headers: Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_ResultHeaders;
+};
+
+export type Tests_Worker_Pipeline_Format_Format_OmitsUndefinedOptionalHeaders_ResultBody = string;
+
+export type Tests_Worker_Pipeline_Format_Format_OmitsUndefinedOptionalHeaders_ResultHeaders = Record<string, string>;
+
+export type Tests_Worker_Pipeline_Format_Format_OmitsUndefinedOptionalHeaders_Result = {
+  body: Tests_Worker_Pipeline_Format_Format_OmitsUndefinedOptionalHeaders_ResultBody;
+  headers: Tests_Worker_Pipeline_Format_Format_OmitsUndefinedOptionalHeaders_ResultHeaders;
+};
+
+export type Tests_Worker_Pipeline_Format_Format_ReturnsFormattedBodyAndNtfyHeaders_ResultBody = string;
+
+export type Tests_Worker_Pipeline_Format_Format_ReturnsFormattedBodyAndNtfyHeaders_ResultHeaders = Record<string, string>;
+
+export type Tests_Worker_Pipeline_Format_Format_ReturnsFormattedBodyAndNtfyHeaders_Result = {
+  body: Tests_Worker_Pipeline_Format_Format_ReturnsFormattedBodyAndNtfyHeaders_ResultBody;
+  headers: Tests_Worker_Pipeline_Format_Format_ReturnsFormattedBodyAndNtfyHeaders_ResultHeaders;
 };

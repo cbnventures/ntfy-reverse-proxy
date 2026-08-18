@@ -87,13 +87,15 @@ The right reader should feel informed; the wrong reader should not feel talked d
 
 ## Frontmatter
 
-Every MDX page requires these fields:
+### Documentation Pages
+
+Every documentation page requires these fields:
 
 - `id` — kebab-case, matches filename without extension. No prefixes. For `index.mdx` files that serve as a category landing page, use a descriptive id that reflects the page's purpose (e.g., `overview`) instead of `index`.
-- `title` — Title Case, 2-5 words. No trailing periods.
-- `description` — One sentence, 50-160 characters, SEO-optimized. Starts with a verb or feature name.
-- `keywords` — 5-15 terms. Always include the project name first, then the feature name, category, synonyms, and related concepts. Focused pages naturally have fewer keywords; do not pad with filler.
-- `tags` — 3-7 terms. First tag is the category (cli, rules, toolkit, quickstart).
+- `title` — Title Case, 1-5 words. Unique enough to distinguish pages in a sidebar. No trailing periods.
+- `description` — One sentence, 120-160 characters. Starts with a verb or the feature name (never "This page explains...", "Learn how to...", or "Discover how...").
+- `keywords` — 3-8 terms. Project name first, then feature name, category, and synonyms. Serves Docusaurus local search only (Google has not used meta keywords for ranking since 2009). Do not repeat the same word in different forms (e.g., "lint" and "linting").
+- `tags` — 1-5 terms. First tag is the category (cli, rules, toolkit, quickstart). Optimized for Docusaurus local search, not external SEO.
 
 ```yaml
 ---
@@ -115,11 +117,20 @@ tags:
 ---
 ```
 
+### Blog Posts
+
+Blog post frontmatter follows the same field set with adjusted ranges for headlines and social sharing:
+
+- `title` — Title Case, no word limit. Target under 60 characters for search engine display; subtitles after a colon are acceptable.
+- `description` — One sentence, 120-160 characters. Core message in the first 120 characters (mobile search results truncate there).
+- `keywords` — 3-8 terms.
+- `tags` — 1-5 terms.
+
 ## SEO
 
-- `description` reads as a natural sentence that a search engine would display as a snippet.
-- Start with a verb or the feature name, never "This page explains..." or "Learn how to..."
-- `keywords` include the feature name, category, synonyms, and related concepts. Do not repeat the same word in different forms (e.g., "lint" and "linting").
+- `description` reads as a natural sentence that a search engine would display as a snippet. Write the core message in the first 120 characters for mobile display; use up to 160 for desktop completeness.
+- Start with a verb or the feature name, never "This page explains...", "Learn how to...", or "Discover how..."
+- `keywords` serve Docusaurus local search only. Google has not used the meta keywords tag for ranking since 2009; Bing treats keyword-stuffed meta keywords as a spam signal.
 - `tags` are optimized for Docusaurus local search, not external SEO.
 
 ## Page Templates

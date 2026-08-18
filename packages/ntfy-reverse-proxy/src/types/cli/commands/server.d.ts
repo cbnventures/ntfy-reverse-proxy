@@ -1,65 +1,65 @@
-import type { LibSchemaConfigSchema, LibSchemaContextConfig, LibSchemaServerConfig } from '../../lib/schema.d.ts';
+import type { Lib_Schema_ConfigSchema, Lib_Schema_ServerConfig } from '../../lib/schema.d.ts';
 
 /**
  * CLI - Commands - Server - Add Server.
  *
  * @since 2.0.0
  */
-export type CliCommandsServerAddServerConfigPath = string;
+export type Cli_Commands_Server_AddServer_ConfigPath = string;
 
-export type CliCommandsServerAddServerServer = LibSchemaServerConfig;
+export type Cli_Commands_Server_AddServer_Server = Lib_Schema_ServerConfig;
 
-export type CliCommandsServerAddServerReturn = void;
+export type Cli_Commands_Server_AddServer_Returns = void;
 
-export type CliCommandsServerAddServerConfig = LibSchemaConfigSchema;
+export type Cli_Commands_Server_AddServer_Config = { [Key in keyof Lib_Schema_ConfigSchema]: Lib_Schema_ConfigSchema[Key] };
 
-export type CliCommandsServerAddServerDuplicate = boolean;
+export type Cli_Commands_Server_AddServer_Duplicate = boolean;
 
 /**
  * CLI - Commands - Server - Edit Server.
  *
  * @since 2.0.0
  */
-export type CliCommandsServerEditServerConfigPath = string;
+export type Cli_Commands_Server_EditServer_ConfigPath = string;
 
-export type CliCommandsServerEditServerName = string;
+export type Cli_Commands_Server_EditServer_Name = string;
 
-export type CliCommandsServerEditServerUpdates = Partial<LibSchemaServerConfig>;
+export type Cli_Commands_Server_EditServer_Updates = Partial<Lib_Schema_ServerConfig>;
 
-export type CliCommandsServerEditServerReturn = void;
+export type Cli_Commands_Server_EditServer_Returns = void;
 
-export type CliCommandsServerEditServerConfig = LibSchemaConfigSchema;
+export type Cli_Commands_Server_EditServer_Config = { [Key in keyof Lib_Schema_ConfigSchema]: Lib_Schema_ConfigSchema[Key] };
 
-export type CliCommandsServerEditServerIndex = number;
+export type Cli_Commands_Server_EditServer_Index = number;
 
-export type CliCommandsServerEditServerMerged = LibSchemaServerConfig;
+export type Cli_Commands_Server_EditServer_Merged = { [Key in keyof Lib_Schema_ServerConfig]: Lib_Schema_ServerConfig[Key] };
 
 /**
  * CLI - Commands - Server - List Servers.
  *
  * @since 2.0.0
  */
-export type CliCommandsServerListServersConfigPath = string;
+export type Cli_Commands_Server_ListServers_ConfigPath = string;
 
-export type CliCommandsServerListServersReturn = LibSchemaServerConfig[];
+export type Cli_Commands_Server_ListServers_Returns = Lib_Schema_ServerConfig[];
 
-export type CliCommandsServerListServersConfig = LibSchemaConfigSchema;
+export type Cli_Commands_Server_ListServers_Config = Lib_Schema_ConfigSchema;
 
 /**
  * CLI - Commands - Server - Remove Server.
  *
  * @since 2.0.0
  */
-export type CliCommandsServerRemoveServerConfigPath = string;
+export type Cli_Commands_Server_RemoveServer_ConfigPath = string;
 
-export type CliCommandsServerRemoveServerName = string;
+export type Cli_Commands_Server_RemoveServer_Name = string;
 
-export type CliCommandsServerRemoveServerReturn = void;
+export type Cli_Commands_Server_RemoveServer_Returns = void;
 
-export type CliCommandsServerRemoveServerConfig = LibSchemaConfigSchema;
+export type Cli_Commands_Server_RemoveServer_Config = { [Key in keyof Lib_Schema_ConfigSchema]: Lib_Schema_ConfigSchema[Key] };
 
-export type CliCommandsServerRemoveServerReferencedContexts = LibSchemaContextConfig[];
+export type Cli_Commands_Server_RemoveServer_ReferencedContexts = Lib_Schema_ConfigSchema['contexts'];
 
-export type CliCommandsServerRemoveServerContextNames = string;
+export type Cli_Commands_Server_RemoveServer_ContextNames = string;
 
-export type CliCommandsServerRemoveServerFiltered = LibSchemaServerConfig[];
+export type Cli_Commands_Server_RemoveServer_Filtered = Lib_Schema_ConfigSchema['servers'];

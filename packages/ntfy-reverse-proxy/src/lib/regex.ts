@@ -149,6 +149,28 @@ const LIB_REGEX_UNIFI_TIME_LINE = /Time:\s*(.+)/;
 const LIB_REGEX_UNIFI_DEVICE_URL_LINE = /Device url:\s*(https?:\/\/\S+)/;
 
 /**
+ * Lib - Regex - Worker Name.
+ *
+ * Matches a valid Cloudflare Worker name: lowercase alphanumeric
+ * characters and hyphens, not starting or ending with a hyphen.
+ * Used by the settings schema to validate the worker_name field.
+ *
+ * @since 2.1.0
+ */
+const LIB_REGEX_WORKER_NAME = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/;
+
+/**
+ * Lib - Regex - Base Domain.
+ *
+ * Matches a valid domain name: lowercase alphanumeric labels
+ * separated by dots, with hyphens allowed within each label.
+ * Used by the settings schema to validate the base_domain field.
+ *
+ * @since 2.1.0
+ */
+const LIB_REGEX_BASE_DOMAIN = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/;
+
+/**
  * Lib - Regex - Email Angle Bracket.
  *
  * Captures the email address inside angle brackets so the
@@ -269,6 +291,16 @@ const REGEX_MIME_BOUNDARY = /boundary="?([^";\s]+)"?/;
 const REGEX_PARENTHETICAL_CONTENT = /\s*\(.*?\)\s*/;
 
 /**
+ * Lib - Regex - Title Part Suffix.
+ *
+ * Matches a trailing parenthesized part indicator such as
+ * " (1/3)" or " (2/5)" at the end of a notification title.
+ *
+ * @since 2.1.0
+ */
+const REGEX_TITLE_PART_SUFFIX = / \(\d+\/\d+\)$/;
+
+/**
  * Lib - Regex - Referenced.
  *
  * Matches the word "referenced" in an error message string so
@@ -280,6 +312,7 @@ const LIB_REGEX_REFERENCED = /referenced/;
 
 export {
   LIB_REGEX_AMPERSAND,
+  LIB_REGEX_BASE_DOMAIN,
   LIB_REGEX_DOUBLE_QUOTE,
   LIB_REGEX_GREATER_THAN,
   LIB_REGEX_LESS_THAN,
@@ -295,6 +328,7 @@ export {
   LIB_REGEX_UNIFI_DEVICE_URL_LINE,
   LIB_REGEX_UNIFI_SUBJECT_PREFIX,
   LIB_REGEX_UNIFI_TIME_LINE,
+  LIB_REGEX_WORKER_NAME,
   REGEX_EMAIL_ANGLE_BRACKET,
   REGEX_EMBEDDED_MIME_BOUNDARY,
   REGEX_HEADER_CONTINUATION,
@@ -307,4 +341,5 @@ export {
   REGEX_HTML_TAG,
   REGEX_MIME_BOUNDARY,
   REGEX_PARENTHETICAL_CONTENT,
+  REGEX_TITLE_PART_SUFFIX,
 };

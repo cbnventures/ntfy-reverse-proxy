@@ -1,20 +1,11 @@
 {
-  "extends": [
-    "@cbnventures/nova/presets/tsconfig/dx-essentials.json",
-    "@cbnventures/nova/presets/tsconfig/dx-strict.json"
+  "references": [
+    {
+      "path": "./tsconfig.config.json"
+    },
+    {
+      "path": "./tsconfig.scripts.json"
+    }
   ],
-  "compilerOptions": {
-    "allowJs": true,
-    "checkJs": false,
-    "declaration": false,
-    "declarationMap": false,
-    "noEmit": true,
-    "types": [
-      "@types/node"
-    ]
-  },
-  "include": [
-    "./eslint.config.ts",
-    "./scripts/**/*.mjs"
-  ]
+  "files": []
 }

@@ -3,132 +3,140 @@
  *
  * @since 2.0.0
  */
-export type LibSchemaConfigSchemaSettings = LibSchemaSettingsConfig;
+export type Lib_Schema_ContextConfigName = string;
 
-export type LibSchemaConfigSchemaServers = LibSchemaServerConfig[];
+export type Lib_Schema_ContextConfigType = 'http' | 'email';
 
-export type LibSchemaConfigSchemaContexts = LibSchemaContextConfig[];
+export type Lib_Schema_ContextConfigId = string;
 
-export type LibSchemaConfigSchema = {
-  settings: LibSchemaConfigSchemaSettings;
-  servers: LibSchemaConfigSchemaServers;
-  contexts: LibSchemaConfigSchemaContexts;
+export type Lib_Schema_ContextConfigInterpreter = 'plain-text' | 'ntfy-json' | 'seerr' | 'synology' | 'statuspage' | 'pfsense' | 'unifi';
+
+export type Lib_Schema_ContextConfigTopic = string;
+
+export type Lib_Schema_ContextConfigErrorTopic = string | undefined;
+
+export type Lib_Schema_ContextConfigErrorEvent = 'authentication' | 'interpretation';
+
+export type Lib_Schema_ContextConfigMode = 'send-once' | 'send-all';
+
+export type Lib_Schema_ContextConfigShowVisitorInfo = boolean;
+
+export type Lib_Schema_ContextConfigPrimaryServer = string;
+
+export type Lib_Schema_ContextConfigServers = string[];
+
+export type Lib_Schema_EmailContextConfigName = string;
+
+export type Lib_Schema_EmailContextConfigType = 'email';
+
+export type Lib_Schema_EmailContextConfigId = string;
+
+export type Lib_Schema_EmailContextConfigInterpreter = Lib_Schema_ContextConfigInterpreter;
+
+export type Lib_Schema_EmailContextConfigTopic = string;
+
+export type Lib_Schema_EmailContextConfigErrorTopic = string | undefined;
+
+export type Lib_Schema_EmailContextConfigErrorEvents = Lib_Schema_ContextConfigErrorEvent[] | undefined;
+
+export type Lib_Schema_EmailContextConfigMode = 'send-once' | 'send-all';
+
+export type Lib_Schema_EmailContextConfigShowVisitorInfo = boolean;
+
+export type Lib_Schema_EmailContextConfigPrimaryServer = string;
+
+export type Lib_Schema_EmailContextConfigServers = string[];
+
+export type Lib_Schema_EmailContextConfigAllowedFrom = string | undefined;
+
+export type Lib_Schema_EmailContextConfig = {
+  name: Lib_Schema_EmailContextConfigName;
+  type: Lib_Schema_EmailContextConfigType;
+  id: Lib_Schema_EmailContextConfigId;
+  interpreter: Lib_Schema_EmailContextConfigInterpreter;
+  topic: Lib_Schema_EmailContextConfigTopic;
+  error_topic?: Lib_Schema_EmailContextConfigErrorTopic | undefined;
+  error_events?: Lib_Schema_EmailContextConfigErrorEvents | undefined;
+  mode: Lib_Schema_EmailContextConfigMode;
+  show_visitor_info: Lib_Schema_EmailContextConfigShowVisitorInfo;
+  primary_server: Lib_Schema_EmailContextConfigPrimaryServer;
+  servers: Lib_Schema_EmailContextConfigServers;
+  allowed_from?: Lib_Schema_EmailContextConfigAllowedFrom | undefined;
 };
 
-export type LibSchemaContextConfigName = string;
+export type Lib_Schema_HttpContextConfigName = string;
 
-export type LibSchemaContextConfigType = 'http' | 'email';
+export type Lib_Schema_HttpContextConfigType = 'http';
 
-export type LibSchemaContextConfigId = string;
+export type Lib_Schema_HttpContextConfigId = string;
 
-export type LibSchemaContextConfigInterpreter = 'plain-text' | 'ntfy-json' | 'seerr' | 'synology' | 'statuspage' | 'pfsense' | 'unifi';
+export type Lib_Schema_HttpContextConfigInterpreter = Lib_Schema_ContextConfigInterpreter;
 
-export type LibSchemaContextConfigTopic = string;
+export type Lib_Schema_HttpContextConfigTopic = string;
 
-export type LibSchemaContextConfigErrorTopic = string | undefined;
+export type Lib_Schema_HttpContextConfigErrorTopic = string | undefined;
 
-export type LibSchemaContextConfigMode = 'send-once' | 'send-all';
+export type Lib_Schema_HttpContextConfigErrorEvents = Lib_Schema_ContextConfigErrorEvent[] | undefined;
 
-export type LibSchemaContextConfigShowVisitorInfo = boolean;
+export type Lib_Schema_HttpContextConfigMode = 'send-once' | 'send-all';
 
-export type LibSchemaContextConfigPrimaryServer = string;
+export type Lib_Schema_HttpContextConfigShowVisitorInfo = boolean;
 
-export type LibSchemaContextConfigServers = string[];
+export type Lib_Schema_HttpContextConfigPrimaryServer = string;
 
-export type LibSchemaEmailContextConfigName = string;
+export type Lib_Schema_HttpContextConfigServers = string[];
 
-export type LibSchemaEmailContextConfigType = 'email';
+export type Lib_Schema_HttpContextConfigToken = string | undefined;
 
-export type LibSchemaEmailContextConfigId = string;
-
-export type LibSchemaEmailContextConfigInterpreter = LibSchemaContextConfigInterpreter;
-
-export type LibSchemaEmailContextConfigTopic = string;
-
-export type LibSchemaEmailContextConfigErrorTopic = string | undefined;
-
-export type LibSchemaEmailContextConfigMode = 'send-once' | 'send-all';
-
-export type LibSchemaEmailContextConfigShowVisitorInfo = boolean;
-
-export type LibSchemaEmailContextConfigPrimaryServer = string;
-
-export type LibSchemaEmailContextConfigServers = string[];
-
-export type LibSchemaEmailContextConfigAllowedFrom = string | undefined;
-
-export type LibSchemaEmailContextConfig = {
-  name: LibSchemaEmailContextConfigName;
-  type: LibSchemaEmailContextConfigType;
-  id: LibSchemaEmailContextConfigId;
-  interpreter: LibSchemaEmailContextConfigInterpreter;
-  topic: LibSchemaEmailContextConfigTopic;
-  error_topic?: LibSchemaEmailContextConfigErrorTopic | undefined;
-  mode: LibSchemaEmailContextConfigMode;
-  show_visitor_info: LibSchemaEmailContextConfigShowVisitorInfo;
-  primary_server: LibSchemaEmailContextConfigPrimaryServer;
-  servers: LibSchemaEmailContextConfigServers;
-  allowed_from?: LibSchemaEmailContextConfigAllowedFrom | undefined;
+export type Lib_Schema_HttpContextConfig = {
+  name: Lib_Schema_HttpContextConfigName;
+  type: Lib_Schema_HttpContextConfigType;
+  id: Lib_Schema_HttpContextConfigId;
+  interpreter: Lib_Schema_HttpContextConfigInterpreter;
+  topic: Lib_Schema_HttpContextConfigTopic;
+  error_topic?: Lib_Schema_HttpContextConfigErrorTopic | undefined;
+  error_events?: Lib_Schema_HttpContextConfigErrorEvents | undefined;
+  mode: Lib_Schema_HttpContextConfigMode;
+  show_visitor_info: Lib_Schema_HttpContextConfigShowVisitorInfo;
+  primary_server: Lib_Schema_HttpContextConfigPrimaryServer;
+  servers: Lib_Schema_HttpContextConfigServers;
+  token?: Lib_Schema_HttpContextConfigToken | undefined;
 };
 
-export type LibSchemaHttpContextConfigName = string;
+export type Lib_Schema_ContextConfig = Lib_Schema_HttpContextConfig | Lib_Schema_EmailContextConfig;
 
-export type LibSchemaHttpContextConfigType = 'http';
+export type Lib_Schema_ServerConfigName = string;
 
-export type LibSchemaHttpContextConfigId = string;
+export type Lib_Schema_ServerConfigServer = string;
 
-export type LibSchemaHttpContextConfigInterpreter = LibSchemaContextConfigInterpreter;
+export type Lib_Schema_ServerConfigToken = string;
 
-export type LibSchemaHttpContextConfigTopic = string;
-
-export type LibSchemaHttpContextConfigErrorTopic = string | undefined;
-
-export type LibSchemaHttpContextConfigMode = 'send-once' | 'send-all';
-
-export type LibSchemaHttpContextConfigShowVisitorInfo = boolean;
-
-export type LibSchemaHttpContextConfigPrimaryServer = string;
-
-export type LibSchemaHttpContextConfigServers = string[];
-
-export type LibSchemaHttpContextConfigToken = string | undefined;
-
-export type LibSchemaHttpContextConfig = {
-  name: LibSchemaHttpContextConfigName;
-  type: LibSchemaHttpContextConfigType;
-  id: LibSchemaHttpContextConfigId;
-  interpreter: LibSchemaHttpContextConfigInterpreter;
-  topic: LibSchemaHttpContextConfigTopic;
-  error_topic?: LibSchemaHttpContextConfigErrorTopic | undefined;
-  mode: LibSchemaHttpContextConfigMode;
-  show_visitor_info: LibSchemaHttpContextConfigShowVisitorInfo;
-  primary_server: LibSchemaHttpContextConfigPrimaryServer;
-  servers: LibSchemaHttpContextConfigServers;
-  token?: LibSchemaHttpContextConfigToken | undefined;
+export type Lib_Schema_ServerConfig = {
+  name: Lib_Schema_ServerConfigName;
+  server: Lib_Schema_ServerConfigServer;
+  token: Lib_Schema_ServerConfigToken;
 };
 
-export type LibSchemaContextConfig = LibSchemaHttpContextConfig | LibSchemaEmailContextConfig;
+export type Lib_Schema_SettingsConfigWorkerName = string;
 
-export type LibSchemaServerConfigName = string;
+export type Lib_Schema_SettingsConfigBaseDomain = string;
 
-export type LibSchemaServerConfigServer = string;
+export type Lib_Schema_SettingsConfigShowResponseOutput = boolean;
 
-export type LibSchemaServerConfigToken = string;
-
-export type LibSchemaServerConfig = {
-  name: LibSchemaServerConfigName;
-  server: LibSchemaServerConfigServer;
-  token: LibSchemaServerConfigToken;
+export type Lib_Schema_SettingsConfig = {
+  worker_name: Lib_Schema_SettingsConfigWorkerName;
+  base_domain: Lib_Schema_SettingsConfigBaseDomain;
+  show_response_output: Lib_Schema_SettingsConfigShowResponseOutput;
 };
 
-export type LibSchemaSettingsConfigWorkerName = string;
+export type Lib_Schema_ConfigSchemaSettings = Lib_Schema_SettingsConfig;
 
-export type LibSchemaSettingsConfigBaseDomain = string;
+export type Lib_Schema_ConfigSchemaServers = Lib_Schema_ServerConfig[];
 
-export type LibSchemaSettingsConfigShowResponseOutput = boolean;
+export type Lib_Schema_ConfigSchemaContexts = Lib_Schema_ContextConfig[];
 
-export type LibSchemaSettingsConfig = {
-  worker_name: LibSchemaSettingsConfigWorkerName;
-  base_domain: LibSchemaSettingsConfigBaseDomain;
-  show_response_output: LibSchemaSettingsConfigShowResponseOutput;
+export type Lib_Schema_ConfigSchema = {
+  settings: Lib_Schema_ConfigSchemaSettings;
+  servers: Lib_Schema_ConfigSchemaServers;
+  contexts: Lib_Schema_ConfigSchemaContexts;
 };

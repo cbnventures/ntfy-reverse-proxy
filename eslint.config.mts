@@ -1,8 +1,7 @@
 import {
   dxCodeStyle,
   dxIgnore,
-  langTypescript,
-  runtimeCloudflareWorkers,
+  langJavascript,
   runtimeNode,
 } from '@cbnventures/nova/presets/eslint';
 import {
@@ -39,12 +38,16 @@ import {
   RequireJsdocHierarchy,
   RequireJsdocParamAlignment,
   RequireJsdocParamName,
+  RequireJsdocPresence,
   RequireJsdocPrivate,
+  RequireJsdocReturns,
   RequireJsdocSince,
+  RequireJsdocTagOrder,
   RequireKebabCaseFilename,
   RequireMultilineConditionGroups,
   RequireMultilineConditions,
   RequireNamingConvention,
+  RequireNodeProtocol,
   RequirePaddingLines,
   RequireTernaryParens,
   RequireTypeNaming,
@@ -55,42 +58,30 @@ import {
 /**
  * ESLint Configuration.
  *
- * Defines the full set of custom lint rules and presets used
- * across all source files in this package.
+ * Composes nova preset configs with project-local rule options and applies
+ * the full nova custom rule set across the repo's bootstrap scripts.
  *
- * @since 0.11.0
+ * @since 2.0.0
  */
 export default [
   ...dxIgnore,
   ...dxCodeStyle,
-  ...langTypescript,
-  ...runtimeCloudflareWorkers,
+  ...langJavascript,
   ...runtimeNode,
   {
     name: 'custom-ignores',
-    ignores: ['./worker-configuration.d.ts'],
-  },
-  {
-    name: 'worker-console-override',
-    files: ['src/worker/**/*.ts'],
-    rules: {
-      'no-console': [
-        'error',
-        {
-          allow: ['info'],
-        },
-      ],
-    },
+    ignores: [
+      'apps/**',
+      'packages/**',
+    ],
   },
   {
     name: 'custom-tsconfig',
     languageOptions: {
       parserOptions: {
         project: [
-          './tsconfig.cli.json',
           './tsconfig.config.json',
-          './tsconfig.tests.json',
-          './tsconfig.worker.json',
+          './tsconfig.scripts.json',
         ],
       },
     },
@@ -143,12 +134,16 @@ export default [
           'require-jsdoc-hierarchy': RequireJsdocHierarchy['rule'],
           'require-jsdoc-param-alignment': RequireJsdocParamAlignment['rule'],
           'require-jsdoc-param-name': RequireJsdocParamName['rule'],
+          'require-jsdoc-presence': RequireJsdocPresence['rule'],
           'require-jsdoc-private': RequireJsdocPrivate['rule'],
+          'require-jsdoc-returns': RequireJsdocReturns['rule'],
           'require-jsdoc-since': RequireJsdocSince['rule'],
+          'require-jsdoc-tag-order': RequireJsdocTagOrder['rule'],
           'require-kebab-case-filename': RequireKebabCaseFilename['rule'],
           'require-multiline-condition-groups': RequireMultilineConditionGroups['rule'],
           'require-multiline-conditions': RequireMultilineConditions['rule'],
           'require-naming-convention': RequireNamingConvention['rule'],
+          'require-node-protocol': RequireNodeProtocol['rule'],
           'require-padding-lines': RequirePaddingLines['rule'],
           'require-ternary-parens': RequireTernaryParens['rule'],
           'require-type-naming': RequireTypeNaming['rule'],
@@ -315,7 +310,7 @@ export default [
         'error',
         {
           ignoreFiles: [],
-          regexFile: './src/lib/regex.ts',
+          regexFile: './scripts/lib/regex.mjs',
         },
       ],
 
@@ -342,7 +337,7 @@ export default [
         'error',
         {
           ignoreFiles: [],
-          sharedFiles: [],
+          sharedFiles: ['shared.d.ts'],
         },
       ],
 
@@ -415,10 +410,7 @@ export default [
       '@cbnventures/nova/require-jsdoc-body': [
         'error',
         {
-          ignoreFiles: [
-            './eslint.config.ts',
-            './vitest.config.ts',
-          ],
+          ignoreFiles: ['./eslint.config.mts'],
           maxLines: 3,
           maxWidth: 90,
           minLines: 2,
@@ -434,15 +426,8 @@ export default [
       '@cbnventures/nova/require-jsdoc-hierarchy': [
         'error',
         {
-          anchorDirectories: [
-            'src',
-            'utils',
-          ],
-          ignoreFiles: [
-            './eslint.config.ts',
-            './vitest.config.ts',
-            './vitest.setup.ts',
-          ],
+          anchorDirectories: ['scripts'],
+          ignoreFiles: ['./eslint.config.mts'],
           knownNames: {},
           stripDirectories: ['types'],
         },
@@ -464,8 +449,28 @@ export default [
         },
       ],
 
+      // Require a leading JSDoc block on every documentable symbol.
+      '@cbnventures/nova/require-jsdoc-presence': [
+        'error',
+        {
+          ignoreFiles: ['./eslint.config.mts'],
+          skipDirectories: [
+            'tests',
+            'types',
+          ],
+        },
+      ],
+
       // Require a @private tag in JSDoc blocks for private class members.
       '@cbnventures/nova/require-jsdoc-private': [
+        'error',
+        {
+          ignoreFiles: [],
+        },
+      ],
+
+      // Require @returns tags to contain only a type in braces.
+      '@cbnventures/nova/require-jsdoc-returns': [
         'error',
         {
           ignoreFiles: [],
@@ -480,16 +485,20 @@ export default [
         },
       ],
 
+      // Require canonical ordering and spacing of JSDoc tags.
+      '@cbnventures/nova/require-jsdoc-tag-order': [
+        'error',
+        {
+          ignoreFiles: [],
+        },
+      ],
+
       // Require kebab-case filenames so naming stays consistent across the project.
       '@cbnventures/nova/require-kebab-case-filename': [
         'error',
         {
           extraExtensions: [],
-          ignoreFiles: [
-            './eslint.config.ts',
-            './vitest.config.ts',
-            './vitest.setup.ts',
-          ],
+          ignoreFiles: ['./eslint.config.mts'],
         },
       ],
 
@@ -511,7 +520,7 @@ export default [
         },
       ],
 
-      // Require PascalCase for classes/types, camelCase for functions/variables, UPPER_SNAKE for constants.
+      // Require PascalCase for classes, UnderscorePascalCase for type aliases, camelCase for functions/variables, UPPER_SNAKE for constants.
       '@cbnventures/nova/require-naming-convention': [
         'error',
         {
@@ -526,10 +535,13 @@ export default [
           interface: 'PascalCase',
           parameter: 'camelCase',
           reactComponent: 'PascalCase',
-          typeAlias: 'PascalCase',
+          typeAlias: 'UnderscorePascalCase',
           variable: 'camelCase',
         },
       ],
+
+      // Require the "node:" protocol when importing Node.js built-in modules.
+      '@cbnventures/nova/require-node-protocol': ['error'],
 
       // Require blank lines between declaration blocks and operations for visual separation.
       '@cbnventures/nova/require-padding-lines': [
@@ -577,6 +589,47 @@ export default [
           requireDefault: true,
         },
       ],
+    },
+  },
+  {
+    name: 'nova-rules/mdx',
+    files: ['**/*.mdx'],
+    plugins: {
+      '@cbnventures/nova': {
+        rules: {
+          'no-raw-text-in-code': NoRawTextInCode['rule'],
+        },
+      },
+    },
+    rules: {
+      // Ban raw text outside JSX elements in MDX files so all content is wrapped in proper markup.
+      '@cbnventures/nova/no-raw-text-in-code': [
+        'error',
+        {
+          ignoreFiles: [],
+        },
+      ],
+    },
+  },
+  {
+    name: 'scripts-overrides',
+    files: ['scripts/**/*.mjs'],
+    rules: {
+      // Run-directly scripts are entry points (invoked as `node scripts/x.mjs`,
+      // never imported), so process.exit is the correct way to set a precise
+      // exit code - nova-run-scripts relies on it to propagate child exit codes,
+      // and throwing would collapse every failure to code 1. The rule targets
+      // importable modules, so it is a false positive on these files.
+      'no-process-exit': 'off',
+      'n/no-process-exit': 'off',
+
+      // no-inline-type-annotation is a TypeScript-only rule (it wants a named
+      // .d.ts type in place of an inferred one), which untyped .mjs JavaScript
+      // cannot satisfy. It stays registered on every extension in the rules
+      // block above - kept armed against JavaScript so a rule bug there would
+      // surface rather than be silently scoped away - and is switched off only
+      // for these script files.
+      '@cbnventures/nova/no-inline-type-annotation': 'off',
     },
   },
 ];

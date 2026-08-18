@@ -1,7 +1,7 @@
 ---
 id: ntfy-json
 title: ntfy JSON
-description: Send pre-formatted notifications with full control over title, priority, tags, and attachments.
+description: Send pre-formatted notifications with full control over title, priority, tags, actions, markdown rendering, and file attachments via a JSON payload.
 sidebar_position: 2
 keywords:
   - ntfy reverse proxy
@@ -13,21 +13,23 @@ tags:
   - ntfy-json
 ---
 
-Map a JSON payload with ntfy-compatible fields directly to the notification object for full control over every field.
+import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
+
+Map a JSON payload with ntfy-compatible fields directly to the <Terminology title="standardized result an interpreter returns" to="/docs/reference/terminology#notification-object">notification object</Terminology> for full control over every field.
 
 ## Payload Schema
 
-| Field      | Type       | Required | Description                                        |
-|------------|------------|----------|----------------------------------------------------|
-| `body`     | `string`   | Yes      | The notification message body.                     |
-| `title`    | `string`   | No       | Notification title.                                |
-| `priority` | `1-5`      | No       | Priority level (1 = min, 3 = default, 5 = max).    |
-| `tags`     | `string[]` | No       | Array of tag strings (emoji shortcodes or labels). |
-| `icon`     | `string`   | No       | URL of the notification icon.                      |
-| `actions`  | `string`   | No       | ntfy action string (view, broadcast, http).        |
-| `attach`   | `string`   | No       | URL of a file to attach.                           |
-| `filename` | `string`   | No       | Filename for the attachment.                       |
-| `markdown` | `boolean`  | No       | Set to `true` to enable markdown rendering.        |
+| Field      | Type       | Required | Description                                                                                                                                                  |
+|------------|------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `body`     | `string`   | Yes      | The notification message body.                                                                                                                               |
+| `title`    | `string`   | No       | Notification title.                                                                                                                                          |
+| `priority` | `1-5`      | No       | Priority level (1 = min, 3 = default, 5 = max).                                                                                                              |
+| `tags`     | `string[]` | No       | Array of tag strings (emoji shortcodes or labels).                                                                                                           |
+| `icon`     | `string`   | No       | URL of the notification icon.                                                                                                                                |
+| `actions`  | `string`   | No       | ntfy action string (view, broadcast, http).                                                                                                                  |
+| `attach`   | `string`   | No       | URL of a file to attach.                                                                                                                                     |
+| `filename` | `string`   | No       | Filename for the <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology>. |
+| `markdown` | `boolean`  | No       | Set to `true` to enable markdown rendering.                                                                                                                  |
 
 ## Example Payload
 
@@ -48,5 +50,5 @@ Map a JSON payload with ntfy-compatible fields directly to the notification obje
 - When you want full control over every ntfy field from the sender side.
 
 :::tip
-The `ntfy-json` interpreter is the only interpreter that supports all ntfy notification fields directly from the payload. Use it when you need fine-grained control over titles, priorities, tags, icons, actions, and attachments.
+The `ntfy-json` <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> is the only <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> that supports all ntfy notification fields directly from the payload. Use it when you need fine-grained control over titles, priorities, tags, icons, actions, and <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachments</Terminology>.
 :::

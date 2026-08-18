@@ -1,0 +1,131 @@
+.hero {
+  overflow-x: clip;
+}
+
+.heroInner {
+  position: relative;
+  min-height: 28rem;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  max-width: var(--nova-grid-container-max);
+  margin-inline: auto;
+  padding-inline: var(--nova-grid-padding);
+  padding-block: 3rem;
+}
+
+.heroHeading {
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+}
+
+.heroActions {
+  justify-content: flex-start;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  flex: 3;
+  min-width: 0;
+}
+
+.termWrap {
+  flex: 2;
+  min-width: 0;
+}
+
+.term {
+  border-radius: calc(var(--nova-shape-radius) * 1.25);
+  overflow: hidden;
+  border: 1px solid var(--nova-color-primary-800);
+  background: var(--nova-color-primary-950);
+  box-shadow:
+    0 0 40px var(--nova-envoy-glow-violet),
+    0 20px 40px color-mix(in srgb, var(--nova-color-primary-950), transparent 50%);
+  font-family: var(--nova-font-code);
+  font-size: 0.75rem;
+  line-height: 1.65;
+  color: var(--nova-color-primary-200);
+}
+
+.termBar {
+  display: flex;
+  align-items: center;
+  gap: var(--nova-shape-gap);
+  padding: 0.625rem 0.875rem;
+  border-bottom: 1px solid var(--nova-color-primary-800);
+}
+
+.termDot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+}
+
+.termDotRed {
+  background: var(--nova-color-danger-500);
+}
+
+.termDotYellow {
+  background: var(--nova-color-warning-500);
+}
+
+.termDotGreen {
+  background: var(--nova-color-accent-500);
+}
+
+.termTitle {
+  margin-left: 0.5rem;
+  font-family: var(--nova-font-body);
+  font-size: 0.6875rem;
+  color: var(--nova-color-primary-500);
+}
+
+.termBody {
+  padding: var(--nova-shape-padding) calc(var(--nova-shape-padding) * 2.5) var(--nova-shape-padding) var(--nova-shape-padding);
+}
+
+.termLine {
+  display: block;
+}
+
+.termDim {
+  color: var(--nova-color-primary-500);
+}
+
+.termExposed {
+  color: var(--nova-color-danger-400);
+  text-decoration: line-through;
+}
+
+.termSafe {
+  color: var(--nova-color-accent-400);
+}
+
+.termNew {
+  color: var(--nova-color-primary-300);
+  font-weight: 600;
+}
+
+@media (max-width: 1120px) {
+  .hero {
+    margin-block: 1.5rem;
+  }
+
+  .heroInner {
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-block: 1.5rem;
+  }
+
+  .heroContent {
+    max-width: none;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  .termWrap {
+    max-width: 512px;
+    width: 100%;
+  }
+}

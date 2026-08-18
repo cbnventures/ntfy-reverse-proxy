@@ -1,7 +1,7 @@
 ---
 id: limitations
 title: Limitations
-description: Understand interpreter constraints including unsupported ntfy headers, HTML stripping, and notification suppression.
+description: Review interpreter constraints covering unsupported ntfy headers, automatic HTML stripping, notification suppression, and context availability.
 sidebar_position: 2
 keywords:
   - ntfy reverse proxy
@@ -15,30 +15,32 @@ tags:
   - reference
 ---
 
-Understand the constraints that apply to all interpreters, including which ntfy features are available and how input is processed.
+import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
+
+All <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreters</Terminology> share constraints on which ntfy features are available and how input is processed.
 
 ## Unsupported ntfy Headers
 
-The proxy builds outgoing headers from the interpreter's notification object. Only 8 headers are supported:
+The proxy builds outgoing headers from the <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>'s <Terminology title="standardized result an interpreter returns" to="/docs/reference/terminology#notification-object">notification object</Terminology>. Only 8 headers are supported:
 
-| Header       | Notification Field | Description                                |
-|--------------|--------------------|--------------------------------------------|
-| `X-Title`    | `title`            | Message title.                             |
-| `X-Priority` | `priority`         | Priority level from 1 (min) to 5 (max).    |
-| `X-Tags`     | `tags`             | Comma-separated tags and emoji shortcodes. |
-| `X-Markdown` | `markdown`         | Enable Markdown rendering.                 |
-| `X-Icon`     | `icon`             | URL of a custom notification icon.         |
-| `X-Actions`  | `actions`          | Action buttons (view, broadcast, http).    |
-| `X-Attach`   | `attach`           | URL of a file to attach.                   |
-| `X-Filename` | `filename`         | Filename for a binary attachment.          |
+| Header       | Notification Field | Description                                                                                                                                                       |
+|--------------|--------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `X-Title`    | `title`            | Message title.                                                                                                                                                    |
+| `X-Priority` | `priority`         | Priority level from 1 (min) to 5 (max).                                                                                                                           |
+| `X-Tags`     | `tags`             | Comma-separated tags and emoji shortcodes.                                                                                                                        |
+| `X-Markdown` | `markdown`         | Enable Markdown rendering.                                                                                                                                        |
+| `X-Icon`     | `icon`             | URL of a custom notification icon.                                                                                                                                |
+| `X-Actions`  | `actions`          | Action buttons (view, broadcast, http).                                                                                                                           |
+| `X-Attach`   | `attach`           | URL of a file to attach.                                                                                                                                          |
+| `X-Filename` | `filename`         | Filename for a binary <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology>. |
 
-ntfy supports additional headers that the proxy does **not** forward: `X-Click`, `X-Delay`, `X-Email`, `X-Call`, and `X-Template`. Incoming request headers are not passed through — the proxy constructs all outgoing headers from the interpreter output.
+ntfy supports additional headers that the proxy does **not** forward: `X-Click`, `X-Delay`, `X-Email`, `X-Call`, and `X-Template`. Incoming request headers are not passed through — the proxy constructs all outgoing headers from the <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> output.
 
-The `ntfy-json` interpreter provides the most control, but is still limited to the 8 fields above. For the full list of ntfy-supported headers, see the [ntfy publishing docs](https://docs.ntfy.sh/publish/).
+The `ntfy-json` <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> provides the most control, but is still limited to the 8 fields above. For the full list of ntfy-supported headers, see the [ntfy publishing docs](https://docs.ntfy.sh/publish/).
 
 ## HTML Stripping
 
-All interpreter output bodies have HTML tags removed and common entities decoded before delivery:
+All <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> output bodies have HTML tags removed and common entities decoded before delivery:
 
 - `&amp;` → `&`
 - `&lt;` → `<`
@@ -47,16 +49,16 @@ All interpreter output bodies have HTML tags removed and common entities decoded
 - `&#39;` → `'`
 - `&nbsp;` → ` `
 
-This applies after interpretation and before formatting, so interpreters can work with raw HTML internally.
+This applies after interpretation and before formatting, so <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreters</Terminology> can work with raw HTML internally.
 
 ## Notification Suppression
 
-Interpreters can return `null` to intentionally suppress a notification.
+<Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">Interpreters</Terminology> can return `null` to intentionally suppress a notification.
 
-- **HTTP contexts** — Returns `{"status": "ignored"}` with HTTP 200.
-- **Email contexts** — Silently drops the message. No response is sent to the sender.
+- **HTTP <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology>** — Returns `{"status": "ignored"}` with HTTP 200.
+- **Email <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology>** — Silently drops the message. No response is sent to the sender.
 
-Currently, only the `statuspage` interpreter uses suppression — for duplicate incident updates detected via KV and component-only updates without a bound KV namespace.
+Currently, only the `statuspage` <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> uses suppression — for duplicate incident updates detected via KV and component-only updates without a bound <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology>.
 
 ## Interpreter Availability by Context Type
 

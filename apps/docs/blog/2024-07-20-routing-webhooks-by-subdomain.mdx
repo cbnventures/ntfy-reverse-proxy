@@ -4,6 +4,12 @@ description: How ntfy-reverse-proxy routes webhooks from multiple services to th
 slug: routing-webhooks-by-subdomain
 authors:
   - mrjackyliang
+keywords:
+  - ntfy reverse proxy
+  - subdomain routing
+  - webhooks
+  - cloudflare workers
+  - notification routing
 tags:
   - ntfy
   - webhooks
@@ -12,6 +18,10 @@ tags:
   - home-lab
   - cloudflare-workers
 ---
+
+:::info
+This post describes version 1.x routing behavior. Version 2.0.0 uses context-based routing instead of subdomain-to-server mapping. See [What's New in v2.0.0](/blog/whats-new-in-v2/) for the current architecture.
+:::
 
 When you only have one or two services sending webhooks, routing is simple — point them at your ntfy server and pick a topic. But self-hosted environments and home labs tend to accumulate services. A NAS, a firewall, a media server, a monitoring dashboard. Each one needs its own topic, and some need different ntfy servers entirely.
 
@@ -47,4 +57,4 @@ If visitor info is enabled, the worker appends Cloudflare's request metadata (IP
 
 The key design decision is that routing is based on infrastructure (subdomains and server config), not on payload inspection. The worker doesn't need to understand what each service sends — it just routes and delivers. This keeps the worker small, fast, and easy to configure.
 
-See the [quickstart guide](/docs/getting-started/quick-start) for configuration details and examples.
+See the [quickstart guide](/docs/getting-started/quick-start/) for configuration details and examples.

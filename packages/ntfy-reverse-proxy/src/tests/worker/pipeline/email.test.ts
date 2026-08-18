@@ -3,9 +3,15 @@ import { describe, expect, it } from 'vitest';
 import { parseEmail } from '../../../worker/pipeline/email.js';
 
 import type {
-  TestsWorkerPipelineEmailBoundary,
-  TestsWorkerPipelineEmailRaw,
-  TestsWorkerPipelineEmailResult,
+  Tests_Worker_Pipeline_Email_ParseEmail_ExtractsFromAndToAddresses_Raw,
+  Tests_Worker_Pipeline_Email_ParseEmail_ExtractsFromAndToAddresses_Result,
+  Tests_Worker_Pipeline_Email_ParseEmail_ExtractsSubjectAndPlainTextBody_Raw,
+  Tests_Worker_Pipeline_Email_ParseEmail_ExtractsSubjectAndPlainTextBody_Result,
+  Tests_Worker_Pipeline_Email_ParseEmail_HandlesMultipartWithTextPlain_Boundary,
+  Tests_Worker_Pipeline_Email_ParseEmail_HandlesMultipartWithTextPlain_Raw,
+  Tests_Worker_Pipeline_Email_ParseEmail_HandlesMultipartWithTextPlain_Result,
+  Tests_Worker_Pipeline_Email_ParseEmail_StripsHTMLFromHTMLOnlyEmails_Raw,
+  Tests_Worker_Pipeline_Email_ParseEmail_StripsHTMLFromHTMLOnlyEmails_Result,
 } from '../../../types/tests/worker/pipeline/email.test.d.ts';
 
 /**
@@ -15,7 +21,7 @@ import type {
  */
 describe('parseEmail', () => {
   it('extracts subject and plain text body', async () => {
-    const raw: TestsWorkerPipelineEmailRaw = [
+    const raw: Tests_Worker_Pipeline_Email_ParseEmail_ExtractsSubjectAndPlainTextBody_Raw = [
       'From: admin@pfsense.local',
       'To: pfsense@ntfy.example.com',
       'Subject: firewall.example.com - Notification',
@@ -26,7 +32,7 @@ describe('parseEmail', () => {
       '14:32:05 Gateway WAN_DHCP is down',
     ].join('\r\n');
 
-    const result: TestsWorkerPipelineEmailResult = await parseEmail(raw);
+    const result: Tests_Worker_Pipeline_Email_ParseEmail_ExtractsSubjectAndPlainTextBody_Result = await parseEmail(raw);
 
     expect(result['subject']).toBe('firewall.example.com - Notification');
 
@@ -36,7 +42,7 @@ describe('parseEmail', () => {
   });
 
   it('strips HTML from HTML-only emails', async () => {
-    const raw: TestsWorkerPipelineEmailRaw = [
+    const raw: Tests_Worker_Pipeline_Email_ParseEmail_StripsHTMLFromHTMLOnlyEmails_Raw = [
       'From: noreply@ui.com',
       'To: unifi@ntfy.example.com',
       'Subject: [UniFi Network] AP Disconnected',
@@ -45,7 +51,7 @@ describe('parseEmail', () => {
       '<html><body><h1>Alert</h1><p>AP-LivingRoom has <b>disconnected</b></p></body></html>',
     ].join('\r\n');
 
-    const result: TestsWorkerPipelineEmailResult = await parseEmail(raw);
+    const result: Tests_Worker_Pipeline_Email_ParseEmail_StripsHTMLFromHTMLOnlyEmails_Result = await parseEmail(raw);
 
     expect(result['subject']).toBe('[UniFi Network] AP Disconnected');
 
@@ -57,8 +63,8 @@ describe('parseEmail', () => {
   });
 
   it('handles multipart with text/plain', async () => {
-    const boundary: TestsWorkerPipelineEmailBoundary = '----boundary123';
-    const raw: TestsWorkerPipelineEmailRaw = [
+    const boundary: Tests_Worker_Pipeline_Email_ParseEmail_HandlesMultipartWithTextPlain_Boundary = '----boundary123';
+    const raw: Tests_Worker_Pipeline_Email_ParseEmail_HandlesMultipartWithTextPlain_Raw = [
       'From: admin@pfsense.local',
       'To: pfsense@ntfy.example.com',
       'Subject: Test Multipart',
@@ -75,7 +81,7 @@ describe('parseEmail', () => {
       `--${boundary}--`,
     ].join('\r\n');
 
-    const result: TestsWorkerPipelineEmailResult = await parseEmail(raw);
+    const result: Tests_Worker_Pipeline_Email_ParseEmail_HandlesMultipartWithTextPlain_Result = await parseEmail(raw);
 
     expect(result['textBody']).toBe('This is plain text.');
 
@@ -83,7 +89,7 @@ describe('parseEmail', () => {
   });
 
   it('extracts from and to addresses', async () => {
-    const raw: TestsWorkerPipelineEmailRaw = [
+    const raw: Tests_Worker_Pipeline_Email_ParseEmail_ExtractsFromAndToAddresses_Raw = [
       'From: admin@pfsense.local',
       'To: pfsense@ntfy.example.com',
       'Subject: Test',
@@ -92,7 +98,7 @@ describe('parseEmail', () => {
       'body text',
     ].join('\r\n');
 
-    const result: TestsWorkerPipelineEmailResult = await parseEmail(raw);
+    const result: Tests_Worker_Pipeline_Email_ParseEmail_ExtractsFromAndToAddresses_Result = await parseEmail(raw);
 
     expect(result['from']).toBe('admin@pfsense.local');
 

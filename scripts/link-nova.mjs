@@ -1,43 +1,64 @@
-import { execSync } from 'child_process';
-import { existsSync, lstatSync } from 'fs';
-import { join } from 'path';
-
-const PACKAGES = [
-  '@cbnventures/nova',
-  '@cbnventures/docusaurus-preset-nova',
-];
+import { execSync } from 'node:child_process';
+import { existsSync, lstatSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
 
 /**
- * Scripts - Link Nova.
+ * Link Nova - Link Nova.
  *
- * @since 2.0.0
+ * Detects the @cbnventures packages this repo installs and links any that are
+ * globally npm-linked, exiting quietly when none are found.
+ *
+ * @returns {void}
+ *
+ * @since 0.0.0
  */
 function linkNova() {
+  const novaScope = join(process.cwd(), 'node_modules', '@cbnventures');
+  const packages = ((existsSync(novaScope) === true) ? readdirSync(novaScope) : [])
+    .filter((name) => name.startsWith('.') === false)
+    .map((name) => `@cbnventures/${name}`);
+
+  if (packages.length === 0) {
+    process.stdout.write('link-nova: No @cbnventures packages installed. Skipping.\n');
+
+    return;
+  }
+
   const globalPrefix = execSync('npm prefix -g', { encoding: 'utf-8' }).trim();
   const globalModules = join(globalPrefix, 'lib', 'node_modules');
   const missingLinks = [];
 
-  for (const packageName of PACKAGES) {
+  for (const packageName of packages) {
     const globalPath = join(globalModules, packageName);
-    const isLinked = existsSync(globalPath) && lstatSync(globalPath).isSymbolicLink();
+    const isLinked = existsSync(globalPath) === true && lstatSync(globalPath).isSymbolicLink() === true;
 
-    if (!isLinked) {
+    if (isLinked === false) {
       missingLinks.push(packageName);
     }
   }
 
   if (missingLinks.length > 0) {
-    console.log(`link-nova: Global links not found for ${missingLinks.join(', ')}. Skipping.`);
+    process.stdout.write(`link-nova: Global links not found for ${missingLinks.join(', ')}. Skipping.\n`);
 
     return;
   }
 
-  for (const packageName of PACKAGES) {
-    console.log(`link-nova: Linking ${packageName} ...`);
-    execSync(`npm link ${packageName}`, { stdio: 'inherit' });
+  process.stdout.write(`link-nova: Linking ${packages.join(', ')} ...\n`);
+
+  execSync(`npm link ${packages.join(' ')}`, { stdio: 'inherit' });
+
+  for (const packageName of packages) {
+    const localPath = join(process.cwd(), 'node_modules', packageName);
+    const isLinked = existsSync(localPath) === true && lstatSync(localPath).isSymbolicLink() === true;
+
+    if (isLinked === false) {
+      throw new Error(`link-nova: ${packageName} is a package copy, not a symlink. Run "npm link ${packages.join(' ')}" manually.`);
+    }
   }
 
-  console.log('link-nova: Done.');
+  process.stdout.write('link-nova: Done.\n');
+
+  return;
 }
 
 linkNova();

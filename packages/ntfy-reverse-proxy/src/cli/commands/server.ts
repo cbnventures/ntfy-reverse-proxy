@@ -2,27 +2,27 @@ import { configSchema } from '../../lib/schema.js';
 import { loadConfig, saveConfig } from './config-io.js';
 
 import type {
-  CliCommandsServerAddServerConfig,
-  CliCommandsServerAddServerConfigPath,
-  CliCommandsServerAddServerDuplicate,
-  CliCommandsServerAddServerReturn,
-  CliCommandsServerAddServerServer,
-  CliCommandsServerEditServerConfig,
-  CliCommandsServerEditServerConfigPath,
-  CliCommandsServerEditServerIndex,
-  CliCommandsServerEditServerMerged,
-  CliCommandsServerEditServerName,
-  CliCommandsServerEditServerReturn,
-  CliCommandsServerEditServerUpdates,
-  CliCommandsServerListServersConfigPath,
-  CliCommandsServerListServersReturn,
-  CliCommandsServerRemoveServerConfig,
-  CliCommandsServerRemoveServerConfigPath,
-  CliCommandsServerRemoveServerContextNames,
-  CliCommandsServerRemoveServerFiltered,
-  CliCommandsServerRemoveServerName,
-  CliCommandsServerRemoveServerReferencedContexts,
-  CliCommandsServerRemoveServerReturn,
+  Cli_Commands_Server_AddServer_Config,
+  Cli_Commands_Server_AddServer_ConfigPath,
+  Cli_Commands_Server_AddServer_Duplicate,
+  Cli_Commands_Server_AddServer_Returns,
+  Cli_Commands_Server_AddServer_Server,
+  Cli_Commands_Server_EditServer_Config,
+  Cli_Commands_Server_EditServer_ConfigPath,
+  Cli_Commands_Server_EditServer_Index,
+  Cli_Commands_Server_EditServer_Merged,
+  Cli_Commands_Server_EditServer_Name,
+  Cli_Commands_Server_EditServer_Returns,
+  Cli_Commands_Server_EditServer_Updates,
+  Cli_Commands_Server_ListServers_ConfigPath,
+  Cli_Commands_Server_ListServers_Returns,
+  Cli_Commands_Server_RemoveServer_Config,
+  Cli_Commands_Server_RemoveServer_ConfigPath,
+  Cli_Commands_Server_RemoveServer_ContextNames,
+  Cli_Commands_Server_RemoveServer_Filtered,
+  Cli_Commands_Server_RemoveServer_Name,
+  Cli_Commands_Server_RemoveServer_ReferencedContexts,
+  Cli_Commands_Server_RemoveServer_Returns,
 } from '../../types/cli/commands/server.d.ts';
 
 /**
@@ -33,9 +33,9 @@ import type {
  *
  * @since 2.0.0
  */
-function addServer(configPath: CliCommandsServerAddServerConfigPath, server: CliCommandsServerAddServerServer): CliCommandsServerAddServerReturn {
-  const config: CliCommandsServerAddServerConfig = configSchema.parse(loadConfig(configPath));
-  const duplicate: CliCommandsServerAddServerDuplicate = config['servers'].some((existingServer) => existingServer['name'] === server['name']);
+function addServer(configPath: Cli_Commands_Server_AddServer_ConfigPath, server: Cli_Commands_Server_AddServer_Server): Cli_Commands_Server_AddServer_Returns {
+  const config: Cli_Commands_Server_AddServer_Config = configSchema.parse(loadConfig(configPath));
+  const duplicate: Cli_Commands_Server_AddServer_Duplicate = config['servers'].some((existingServer) => existingServer['name'] === server['name']);
 
   if (duplicate === true) {
     throw new Error(`Server with name "${server['name']}" already exists.`);
@@ -56,7 +56,7 @@ function addServer(configPath: CliCommandsServerAddServerConfigPath, server: Cli
  *
  * @since 2.0.0
  */
-function listServers(configPath: CliCommandsServerListServersConfigPath): CliCommandsServerListServersReturn {
+function listServers(configPath: Cli_Commands_Server_ListServers_ConfigPath): Cli_Commands_Server_ListServers_Returns {
   return configSchema.parse(loadConfig(configPath))['servers'];
 }
 
@@ -68,18 +68,18 @@ function listServers(configPath: CliCommandsServerListServersConfigPath): CliCom
  *
  * @since 2.0.0
  */
-function editServer(configPath: CliCommandsServerEditServerConfigPath, name: CliCommandsServerEditServerName, updates: CliCommandsServerEditServerUpdates): CliCommandsServerEditServerReturn {
-  const config: CliCommandsServerEditServerConfig = configSchema.parse(loadConfig(configPath));
-  const index: CliCommandsServerEditServerIndex = config['servers'].findIndex((server) => server['name'] === name);
+function editServer(configPath: Cli_Commands_Server_EditServer_ConfigPath, name: Cli_Commands_Server_EditServer_Name, updates: Cli_Commands_Server_EditServer_Updates): Cli_Commands_Server_EditServer_Returns {
+  const config: Cli_Commands_Server_EditServer_Config = configSchema.parse(loadConfig(configPath));
+  const index: Cli_Commands_Server_EditServer_Index = config['servers'].findIndex((server) => server['name'] === name);
 
   if (index === -1) {
     throw new Error(`Server with name "${name}" not found.`);
   }
 
-  const merged: CliCommandsServerEditServerMerged = {
+  const merged: Cli_Commands_Server_EditServer_Merged = {
     ...config['servers'][index],
     ...updates,
-  } as CliCommandsServerEditServerMerged;
+  } as Cli_Commands_Server_EditServer_Merged;
 
   Reflect.set(config['servers'], index, merged);
 
@@ -96,19 +96,19 @@ function editServer(configPath: CliCommandsServerEditServerConfigPath, name: Cli
  *
  * @since 2.0.0
  */
-function removeServer(configPath: CliCommandsServerRemoveServerConfigPath, name: CliCommandsServerRemoveServerName): CliCommandsServerRemoveServerReturn {
-  const config: CliCommandsServerRemoveServerConfig = configSchema.parse(loadConfig(configPath));
-  const referencedContexts: CliCommandsServerRemoveServerReferencedContexts = config['contexts'].filter(
+function removeServer(configPath: Cli_Commands_Server_RemoveServer_ConfigPath, name: Cli_Commands_Server_RemoveServer_Name): Cli_Commands_Server_RemoveServer_Returns {
+  const config: Cli_Commands_Server_RemoveServer_Config = configSchema.parse(loadConfig(configPath));
+  const referencedContexts: Cli_Commands_Server_RemoveServer_ReferencedContexts = config['contexts'].filter(
     (context) => context['primary_server'] === name || context['servers'].includes(name),
   );
 
   if (referencedContexts['length'] > 0) {
-    const contextNames: CliCommandsServerRemoveServerContextNames = referencedContexts.map((context) => context['name']).join(', ');
+    const contextNames: Cli_Commands_Server_RemoveServer_ContextNames = referencedContexts.map((context) => context['name']).join(', ');
 
     throw new Error(`Server "${name}" is referenced by the following contexts: ${contextNames}.`);
   }
 
-  const filtered: CliCommandsServerRemoveServerFiltered = config['servers'].filter((server) => server['name'] !== name);
+  const filtered: Cli_Commands_Server_RemoveServer_Filtered = config['servers'].filter((server) => server['name'] !== name);
 
   Reflect.set(config, 'servers', filtered);
 

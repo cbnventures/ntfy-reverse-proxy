@@ -1,37 +1,37 @@
 import type { z } from 'zod';
 
-import type { LibSchemaConfigSchema } from '../../lib/schema.d.ts';
+import type { Lib_Schema_ConfigSchema } from '../../lib/schema.d.ts';
 
 /**
  * CLI - Commands - Validate - Validate Config.
  *
  * @since 2.0.0
  */
-export type CliCommandsValidateValidateConfigConfigPath = string;
+export type Cli_Commands_Validate_ValidateConfig_ConfigPath = string;
 
-export type CliCommandsValidateValidateConfigReturn = CliCommandsValidateValidateConfigResult;
+export type Cli_Commands_Validate_ValidateConfig_Returns = Cli_Commands_Validate_ValidateConfig_Result;
 
-export type CliCommandsValidateValidateConfigErrors = string[];
+export type Cli_Commands_Validate_ValidateConfig_Errors = string[];
 
-export type CliCommandsValidateValidateConfigRaw = unknown;
+export type Cli_Commands_Validate_ValidateConfig_Raw = unknown;
 
-export type CliCommandsValidateValidateConfigParseResult = z.ZodSafeParseResult<LibSchemaConfigSchema>;
+export type Cli_Commands_Validate_ValidateConfig_ParseResult = z.ZodSafeParseResult<Lib_Schema_ConfigSchema>;
 
-export type CliCommandsValidateValidateConfigConfig = LibSchemaConfigSchema;
+export type Cli_Commands_Validate_ValidateConfig_Config = { [Key in keyof Lib_Schema_ConfigSchema]: Lib_Schema_ConfigSchema[Key] };
 
-export type CliCommandsValidateValidateConfigServerNames = Set<string>;
+export type Cli_Commands_Validate_ValidateConfig_ServerNames = Set<string>;
 
-export type CliCommandsValidateValidateConfigIdCounts = Map<string, number>;
+export type Cli_Commands_Validate_ValidateConfig_IdCounts = Map<string, number>;
 
-export type CliCommandsValidateValidateConfigEntryId = string;
+export type Cli_Commands_Validate_ValidateConfig_EntryId = string;
 
-export type CliCommandsValidateValidateConfigEntryCount = number;
+export type Cli_Commands_Validate_ValidateConfig_EntryCount = number;
 
-export type CliCommandsValidateValidateConfigResultValid = boolean;
+export type Cli_Commands_Validate_ValidateConfig_ResultValid = boolean;
 
-export type CliCommandsValidateValidateConfigResultErrors = string[];
+export type Cli_Commands_Validate_ValidateConfig_ResultErrors = string[];
 
-export type CliCommandsValidateValidateConfigResult = {
-  valid: CliCommandsValidateValidateConfigResultValid;
-  errors: CliCommandsValidateValidateConfigResultErrors;
+export type Cli_Commands_Validate_ValidateConfig_Result = {
+  valid: Cli_Commands_Validate_ValidateConfig_ResultValid;
+  errors: Cli_Commands_Validate_ValidateConfig_ResultErrors;
 };

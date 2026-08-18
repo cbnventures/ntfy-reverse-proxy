@@ -1,35 +1,39 @@
 import type {
-  WorkerInterpretersPfsenseExtractContentTagsLower,
-  WorkerInterpretersPfsenseExtractContentTagsReturns,
-  WorkerInterpretersPfsenseExtractContentTagsTags,
-  WorkerInterpretersPfsenseExtractContentTagsText,
-  WorkerInterpretersPfsenseInput,
-  WorkerInterpretersPfsenseInterpreter,
-  WorkerInterpretersPfsenseInterpreterBody,
-  WorkerInterpretersPfsenseInterpreterContentTags,
-  WorkerInterpretersPfsenseInterpreterData,
-  WorkerInterpretersPfsenseInterpreterDecoder,
-  WorkerInterpretersPfsenseInterpreterEmojiTag,
-  WorkerInterpretersPfsenseInterpreterHostname,
-  WorkerInterpretersPfsenseInterpreterNotifications,
-  WorkerInterpretersPfsenseInterpreterPriority,
-  WorkerInterpretersPfsenseInterpreterRawSubject,
-  WorkerInterpretersPfsenseInterpreterRawTextBody,
-  WorkerInterpretersPfsenseInterpreterSubject,
-  WorkerInterpretersPfsenseInterpreterTags,
-  WorkerInterpretersPfsenseInterpreterTextBody,
-  WorkerInterpretersPfsenseMapKeywordsToPriorityLower,
-  WorkerInterpretersPfsenseMapKeywordsToPriorityReturns,
-  WorkerInterpretersPfsenseMapKeywordsToPriorityText,
-  WorkerInterpretersPfsenseMapPriorityToEmojiTagPriority,
-  WorkerInterpretersPfsenseMapPriorityToEmojiTagReturns,
-  WorkerInterpretersPfsenseParseNotificationsLines,
-  WorkerInterpretersPfsenseParseNotificationsNotifications,
-  WorkerInterpretersPfsenseParseNotificationsPastSeparator,
-  WorkerInterpretersPfsenseParseNotificationsReturns,
-  WorkerInterpretersPfsenseParseNotificationsTextBody,
-  WorkerInterpretersPfsenseParseNotificationsTrimmed,
-  WorkerInterpretersPfsenseResult,
+  Worker_Interpreters_Pfsense_ExtractContentTags_Lower,
+  Worker_Interpreters_Pfsense_ExtractContentTags_Returns,
+  Worker_Interpreters_Pfsense_ExtractContentTags_Tags,
+  Worker_Interpreters_Pfsense_ExtractContentTags_Text,
+  Worker_Interpreters_Pfsense_Input,
+  Worker_Interpreters_Pfsense_MapKeywordsToPriority_Lower,
+  Worker_Interpreters_Pfsense_MapKeywordsToPriority_Returns,
+  Worker_Interpreters_Pfsense_MapKeywordsToPriority_Text,
+  Worker_Interpreters_Pfsense_MapPriorityToEmojiTag_Priority,
+  Worker_Interpreters_Pfsense_MapPriorityToEmojiTag_Returns,
+  Worker_Interpreters_Pfsense_ParseNotifications_Lines,
+  Worker_Interpreters_Pfsense_ParseNotifications_Notifications,
+  Worker_Interpreters_Pfsense_ParseNotifications_Returns,
+  Worker_Interpreters_Pfsense_ParseNotifications_TextBody,
+  Worker_Interpreters_Pfsense_ParseNotifications_Trimmed,
+  Worker_Interpreters_Pfsense_PfsenseInterpreter,
+  Worker_Interpreters_Pfsense_PfsenseInterpreter_Body,
+  Worker_Interpreters_Pfsense_PfsenseInterpreter_BufferBody,
+  Worker_Interpreters_Pfsense_PfsenseInterpreter_BufferEmojiTag,
+  Worker_Interpreters_Pfsense_PfsenseInterpreter_BufferPriority,
+  Worker_Interpreters_Pfsense_PfsenseInterpreter_ContentTags,
+  Worker_Interpreters_Pfsense_PfsenseInterpreter_Data,
+  Worker_Interpreters_Pfsense_PfsenseInterpreter_Decoder,
+  Worker_Interpreters_Pfsense_PfsenseInterpreter_EmojiTag,
+  Worker_Interpreters_Pfsense_PfsenseInterpreter_Hostname,
+  Worker_Interpreters_Pfsense_PfsenseInterpreter_Notifications,
+  Worker_Interpreters_Pfsense_PfsenseInterpreter_Priority,
+  Worker_Interpreters_Pfsense_PfsenseInterpreter_RawSubject,
+  Worker_Interpreters_Pfsense_PfsenseInterpreter_RawTextBody,
+  Worker_Interpreters_Pfsense_PfsenseInterpreter_StringEmojiTag,
+  Worker_Interpreters_Pfsense_PfsenseInterpreter_StringPriority,
+  Worker_Interpreters_Pfsense_PfsenseInterpreter_Subject,
+  Worker_Interpreters_Pfsense_PfsenseInterpreter_Tags,
+  Worker_Interpreters_Pfsense_PfsenseInterpreter_TextBody,
+  Worker_Interpreters_Pfsense_Result,
 } from '../../types/worker/interpreters/pfsense.d.ts';
 
 /**
@@ -38,14 +42,14 @@ import type {
  * Scans the lowercased text for severity keywords and returns
  * the corresponding ntfy priority level for the notification.
  *
- * @param {WorkerInterpretersPfsenseMapKeywordsToPriorityText} text - Text.
+ * @param {Worker_Interpreters_Pfsense_MapKeywordsToPriority_Text} text - Text.
  *
- * @returns {WorkerInterpretersPfsenseMapKeywordsToPriorityReturns}
+ * @returns {Worker_Interpreters_Pfsense_MapKeywordsToPriority_Returns}
  *
  * @since 2.0.0
  */
-const mapKeywordsToPriority = (text: WorkerInterpretersPfsenseMapKeywordsToPriorityText): WorkerInterpretersPfsenseMapKeywordsToPriorityReturns => {
-  const lower: WorkerInterpretersPfsenseMapKeywordsToPriorityLower = text.toLowerCase();
+function mapKeywordsToPriority(text: Worker_Interpreters_Pfsense_MapKeywordsToPriority_Text): Worker_Interpreters_Pfsense_MapKeywordsToPriority_Returns {
+  const lower: Worker_Interpreters_Pfsense_MapKeywordsToPriority_Lower = text.toLowerCase();
 
   if (lower.includes('is down') === true) {
     return 5;
@@ -74,7 +78,7 @@ const mapKeywordsToPriority = (text: WorkerInterpretersPfsenseMapKeywordsToPrior
   }
 
   return 3;
-};
+}
 
 /**
  * Worker - Interpreters - Pfsense - Map Priority To Emoji Tag.
@@ -82,13 +86,13 @@ const mapKeywordsToPriority = (text: WorkerInterpretersPfsenseMapKeywordsToPrior
  * Converts a numeric ntfy priority level into the corresponding
  * emoji shortcode string used as a visual indicator in tags.
  *
- * @param {WorkerInterpretersPfsenseMapPriorityToEmojiTagPriority} priority - Priority.
+ * @param {Worker_Interpreters_Pfsense_MapPriorityToEmojiTag_Priority} priority - Priority.
  *
- * @returns {WorkerInterpretersPfsenseMapPriorityToEmojiTagReturns}
+ * @returns {Worker_Interpreters_Pfsense_MapPriorityToEmojiTag_Returns}
  *
  * @since 2.0.0
  */
-const mapPriorityToEmojiTag = (priority: WorkerInterpretersPfsenseMapPriorityToEmojiTagPriority): WorkerInterpretersPfsenseMapPriorityToEmojiTagReturns => {
+function mapPriorityToEmojiTag(priority: Worker_Interpreters_Pfsense_MapPriorityToEmojiTag_Priority): Worker_Interpreters_Pfsense_MapPriorityToEmojiTag_Returns {
   switch (priority) {
     case 5: {
       return 'rotating_light';
@@ -106,7 +110,7 @@ const mapPriorityToEmojiTag = (priority: WorkerInterpretersPfsenseMapPriorityToE
       return 'bell';
     }
   }
-};
+}
 
 /**
  * Worker - Interpreters - Pfsense - Extract Content Tags.
@@ -114,15 +118,15 @@ const mapPriorityToEmojiTag = (priority: WorkerInterpretersPfsenseMapPriorityToE
  * Scans the lowercased text for infrastructure keywords and builds
  * an array of matching tag strings for the notification payload.
  *
- * @param {WorkerInterpretersPfsenseExtractContentTagsText} text - Text.
+ * @param {Worker_Interpreters_Pfsense_ExtractContentTags_Text} text - Text.
  *
- * @returns {WorkerInterpretersPfsenseExtractContentTagsReturns}
+ * @returns {Worker_Interpreters_Pfsense_ExtractContentTags_Returns}
  *
  * @since 2.0.0
  */
-const extractContentTags = (text: WorkerInterpretersPfsenseExtractContentTagsText): WorkerInterpretersPfsenseExtractContentTagsReturns => {
-  const lower: WorkerInterpretersPfsenseExtractContentTagsLower = text.toLowerCase();
-  const tags: WorkerInterpretersPfsenseExtractContentTagsTags = [];
+function extractContentTags(text: Worker_Interpreters_Pfsense_ExtractContentTags_Text): Worker_Interpreters_Pfsense_ExtractContentTags_Returns {
+  const lower: Worker_Interpreters_Pfsense_ExtractContentTags_Lower = text.toLowerCase();
+  const tags: Worker_Interpreters_Pfsense_ExtractContentTags_Tags = [];
 
   if (lower.includes('gateway') === true) {
     tags.push('gateway');
@@ -155,7 +159,7 @@ const extractContentTags = (text: WorkerInterpretersPfsenseExtractContentTagsTex
   }
 
   return tags;
-};
+}
 
 /**
  * Worker - Interpreters - Pfsense - Parse Notifications.
@@ -163,23 +167,20 @@ const extractContentTags = (text: WorkerInterpretersPfsenseExtractContentTagsTex
  * Splits the pfSense email text body into individual notification
  * lines, skipping separator rows and empty lines.
  *
- * @param {WorkerInterpretersPfsenseParseNotificationsTextBody} textBody - Text body.
+ * @param {Worker_Interpreters_Pfsense_ParseNotifications_TextBody} textBody - Text body.
  *
- * @returns {WorkerInterpretersPfsenseParseNotificationsReturns}
+ * @returns {Worker_Interpreters_Pfsense_ParseNotifications_Returns}
  *
  * @since 2.0.0
  */
-const parseNotifications = (textBody: WorkerInterpretersPfsenseParseNotificationsTextBody): WorkerInterpretersPfsenseParseNotificationsReturns => {
-  const lines: WorkerInterpretersPfsenseParseNotificationsLines = textBody.split('\n');
-  const notifications: WorkerInterpretersPfsenseParseNotificationsNotifications = [];
-  let pastSeparator: WorkerInterpretersPfsenseParseNotificationsPastSeparator = false;
+function parseNotifications(textBody: Worker_Interpreters_Pfsense_ParseNotifications_TextBody): Worker_Interpreters_Pfsense_ParseNotifications_Returns {
+  const lines: Worker_Interpreters_Pfsense_ParseNotifications_Lines = textBody.split('\n');
+  const notifications: Worker_Interpreters_Pfsense_ParseNotifications_Notifications = [];
 
   for (const line of lines) {
-    const trimmed: WorkerInterpretersPfsenseParseNotificationsTrimmed = line.trim();
+    const trimmed: Worker_Interpreters_Pfsense_ParseNotifications_Trimmed = line.trim();
 
     if (trimmed.startsWith('====') === true) {
-      pastSeparator = true;
-
       continue;
     }
 
@@ -191,15 +192,11 @@ const parseNotifications = (textBody: WorkerInterpretersPfsenseParseNotification
       continue;
     }
 
-    if (pastSeparator === true) {
-      notifications.push(trimmed);
-    } else {
-      notifications.push(trimmed);
-    }
+    notifications.push(trimmed);
   }
 
   return notifications;
-};
+}
 
 /**
  * Worker - Interpreters - Pfsense - Interpreter.
@@ -207,26 +204,26 @@ const parseNotifications = (textBody: WorkerInterpretersPfsenseParseNotification
  * Parses pfSense notification payloads from string, binary, or email
  * object formats into structured ntfy notification results.
  *
- * @param {WorkerInterpretersPfsenseInput} input - Input.
+ * @param {Worker_Interpreters_Pfsense_Input} input - Input.
  *
- * @returns {WorkerInterpretersPfsenseResult}
+ * @returns {Worker_Interpreters_Pfsense_Result}
  *
  * @since 2.0.0
  */
-const pfsenseInterpreter: WorkerInterpretersPfsenseInterpreter = (input: WorkerInterpretersPfsenseInput): WorkerInterpretersPfsenseResult => {
+const pfsenseInterpreter: Worker_Interpreters_Pfsense_PfsenseInterpreter = (input: Worker_Interpreters_Pfsense_Input): Worker_Interpreters_Pfsense_Result => {
   if (typeof input === 'string') {
-    const priority: WorkerInterpretersPfsenseInterpreterPriority = mapKeywordsToPriority(input);
-    const emojiTag: WorkerInterpretersPfsenseInterpreterEmojiTag = mapPriorityToEmojiTag(priority);
+    const stringPriority: Worker_Interpreters_Pfsense_PfsenseInterpreter_StringPriority = mapKeywordsToPriority(input);
+    const stringEmojiTag: Worker_Interpreters_Pfsense_PfsenseInterpreter_StringEmojiTag = mapPriorityToEmojiTag(stringPriority);
 
     return {
       notification: {
         title: 'pfSense',
         body: input,
-        priority,
+        priority: stringPriority,
         tags: [
           'pfsense',
           ...extractContentTags(input),
-          emojiTag,
+          stringEmojiTag,
         ],
         markdown: true,
       },
@@ -234,39 +231,39 @@ const pfsenseInterpreter: WorkerInterpretersPfsenseInterpreter = (input: WorkerI
   }
 
   if (input instanceof ArrayBuffer) {
-    const decoder: WorkerInterpretersPfsenseInterpreterDecoder = new TextDecoder('utf-8');
-    const body: WorkerInterpretersPfsenseInterpreterBody = decoder.decode(input);
-    const priority: WorkerInterpretersPfsenseInterpreterPriority = mapKeywordsToPriority(body);
-    const emojiTag: WorkerInterpretersPfsenseInterpreterEmojiTag = mapPriorityToEmojiTag(priority);
+    const decoder: Worker_Interpreters_Pfsense_PfsenseInterpreter_Decoder = new TextDecoder('utf-8');
+    const bufferBody: Worker_Interpreters_Pfsense_PfsenseInterpreter_BufferBody = decoder.decode(input);
+    const bufferPriority: Worker_Interpreters_Pfsense_PfsenseInterpreter_BufferPriority = mapKeywordsToPriority(bufferBody);
+    const bufferEmojiTag: Worker_Interpreters_Pfsense_PfsenseInterpreter_BufferEmojiTag = mapPriorityToEmojiTag(bufferPriority);
 
     return {
       notification: {
         title: 'pfSense',
-        body,
-        priority,
+        body: bufferBody,
+        priority: bufferPriority,
         tags: [
           'pfsense',
-          ...extractContentTags(body),
-          emojiTag,
+          ...extractContentTags(bufferBody),
+          bufferEmojiTag,
         ],
         markdown: true,
       },
     };
   }
 
-  const data: WorkerInterpretersPfsenseInterpreterData = input as WorkerInterpretersPfsenseInterpreterData;
+  const data: Worker_Interpreters_Pfsense_PfsenseInterpreter_Data = input as Worker_Interpreters_Pfsense_PfsenseInterpreter_Data;
 
-  const rawSubject: WorkerInterpretersPfsenseInterpreterRawSubject = data['subject'];
-  const subject: WorkerInterpretersPfsenseInterpreterSubject = (typeof rawSubject === 'string') ? rawSubject : '';
+  const rawSubject: Worker_Interpreters_Pfsense_PfsenseInterpreter_RawSubject = data['subject'];
+  const subject: Worker_Interpreters_Pfsense_PfsenseInterpreter_Subject = (typeof rawSubject === 'string') ? rawSubject : '';
 
-  const rawTextBody: WorkerInterpretersPfsenseInterpreterRawTextBody = data['textBody'];
-  const textBody: WorkerInterpretersPfsenseInterpreterTextBody = (typeof rawTextBody === 'string') ? rawTextBody : JSON.stringify(data);
+  const rawTextBody: Worker_Interpreters_Pfsense_PfsenseInterpreter_RawTextBody = data['textBody'];
+  const textBody: Worker_Interpreters_Pfsense_PfsenseInterpreter_TextBody = (typeof rawTextBody === 'string') ? rawTextBody : JSON.stringify(data);
 
-  const hostname: WorkerInterpretersPfsenseInterpreterHostname = (subject.includes(' - Notification') === true) ? subject.replace(' - Notification', '').trim() : 'pfSense';
+  const hostname: Worker_Interpreters_Pfsense_PfsenseInterpreter_Hostname = (subject.includes(' - Notification') === true) ? subject.replace(' - Notification', '').trim() : 'pfSense';
 
-  const notifications: WorkerInterpretersPfsenseInterpreterNotifications = parseNotifications(textBody);
-  const priority: WorkerInterpretersPfsenseInterpreterPriority = mapKeywordsToPriority(textBody);
-  const contentTags: WorkerInterpretersPfsenseInterpreterContentTags = extractContentTags(textBody);
+  const notifications: Worker_Interpreters_Pfsense_PfsenseInterpreter_Notifications = parseNotifications(textBody);
+  const priority: Worker_Interpreters_Pfsense_PfsenseInterpreter_Priority = mapKeywordsToPriority(textBody);
+  const contentTags: Worker_Interpreters_Pfsense_PfsenseInterpreter_ContentTags = extractContentTags(textBody);
 
   /*
    * Level 1: Interpreter tag (identifies the source service).
@@ -274,15 +271,15 @@ const pfsenseInterpreter: WorkerInterpretersPfsenseInterpreter = (input: WorkerI
    * Level 3: Webhook tags (not applicable for pfSense email).
    * Level 4: Emoji tags (ntfy emoji shortcodes for visual indicators).
    */
-  const emojiTag: WorkerInterpretersPfsenseInterpreterEmojiTag = mapPriorityToEmojiTag(priority);
+  const emojiTag: Worker_Interpreters_Pfsense_PfsenseInterpreter_EmojiTag = mapPriorityToEmojiTag(priority);
 
-  const tags: WorkerInterpretersPfsenseInterpreterTags = [
+  const tags: Worker_Interpreters_Pfsense_PfsenseInterpreter_Tags = [
     'pfsense',
     ...contentTags,
     emojiTag,
   ];
 
-  const body: WorkerInterpretersPfsenseInterpreterBody = notifications.join('\n');
+  const body: Worker_Interpreters_Pfsense_PfsenseInterpreter_Body = notifications.join('\n');
 
   return {
     notification: {

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { copyFileSync, existsSync } from 'fs';
-import { join } from 'path';
+import { copyFileSync, existsSync } from 'node:fs';
+import { join } from 'node:path';
 
 import { Bootstrap, Logger } from '@cbnventures/nova/toolkit';
 import { Command } from 'commander';
@@ -14,25 +14,31 @@ import { validateConfig } from './commands/validate.js';
 import { interactiveMenu } from './menu/interactive.js';
 
 import type {
-  CliIndexConfigDir,
-  CliIndexConfigPath,
-  CliIndexEnvDir,
-  CliIndexGetConfigFilePathReturn,
-  CliIndexMainCatchError,
-  CliIndexMainConfigDirs,
-  CliIndexMainConfigPath,
-  CliIndexMainContextCommand,
-  CliIndexMainContextRemoveName,
-  CliIndexMainReturn,
-  CliIndexMainServerCommand,
-  CliIndexMainServerRemoveName,
-  CliIndexMainValidateError,
-  CliIndexMainValidateResult,
-  CliIndexProgram,
-  CliIndexSamplePath,
+  Cli_Index_ConfigDir,
+  Cli_Index_ConfigPath,
+  Cli_Index_EnvDir,
+  Cli_Index_GetConfigFilePath_DefaultDir,
+  Cli_Index_GetConfigFilePath_Returns,
+  Cli_Index_Main_ConfigDirs,
+  Cli_Index_Main_ConfigPath,
+  Cli_Index_Main_ContextCommand,
+  Cli_Index_Main_Message,
+  Cli_Index_Main_Result,
+  Cli_Index_Main_Returns,
+  Cli_Index_Main_ServerCommand,
+  Cli_Index_Program,
+  Cli_Index_SamplePath,
 } from '../types/cli/index.d.ts';
 
-const envDir: CliIndexEnvDir = Bootstrap.resolveFileDir(APP_NAME, '.env', [
+/**
+ * CLI - Env Dir.
+ *
+ * Directory that contains the dotenv file, resolved by searching
+ * the working directory, project root, and config directory.
+ *
+ * @since 2.1.0
+ */
+const envDir: Cli_Index_EnvDir = Bootstrap.resolveFileDir(APP_NAME, '.env', [
   'cwd',
   'project-root',
   'config-dir',
@@ -50,8 +56,8 @@ if (envDir !== undefined) {
  *
  * @since 2.0.0
  */
-function getConfigFilePath(): CliIndexGetConfigFilePathReturn {
-  const configDir: CliIndexConfigDir = Bootstrap.resolveFileDir(APP_NAME, 'config.json', [
+function getConfigFilePath(): Cli_Index_GetConfigFilePath_Returns {
+  const configDir: Cli_Index_ConfigDir = Bootstrap.resolveFileDir(APP_NAME, 'config.json', [
     'cwd',
     'project-root',
     'config-dir',
@@ -61,9 +67,9 @@ function getConfigFilePath(): CliIndexGetConfigFilePathReturn {
     return join(configDir, 'config.json');
   }
 
-  const defaultDir: CliIndexConfigPath = Bootstrap.getConfigDir(APP_NAME);
-  const configPath: CliIndexConfigPath = join(defaultDir, 'config.json');
-  const samplePath: CliIndexSamplePath = join(defaultDir, 'config.sample.json');
+  const defaultDir: Cli_Index_GetConfigFilePath_DefaultDir = Bootstrap.getConfigDir(APP_NAME);
+  const configPath: Cli_Index_ConfigPath = join(defaultDir, 'config.json');
+  const samplePath: Cli_Index_SamplePath = join(defaultDir, 'config.sample.json');
 
   if (existsSync(configPath) === false && existsSync(samplePath) === true) {
     copyFileSync(samplePath, configPath);
@@ -80,7 +86,7 @@ function getConfigFilePath(): CliIndexGetConfigFilePathReturn {
  *
  * @since 2.0.0
  */
-const program: CliIndexProgram = new Command();
+const program: Cli_Index_Program = new Command();
 
 program.name('ntfy-reverse-proxy').alias('nrp').description('CLI management tool').version('2.0.0');
 
@@ -92,9 +98,9 @@ program.name('ntfy-reverse-proxy').alias('nrp').description('CLI management tool
  *
  * @since 2.0.0
  */
-async function main(): CliIndexMainReturn {
+async function main(): Cli_Index_Main_Returns {
   if (process.argv['length'] <= 2) {
-    const configDirs: CliIndexMainConfigDirs = Bootstrap.resolveFileDirs(APP_NAME, 'config.json', [
+    const configDirs: Cli_Index_Main_ConfigDirs = Bootstrap.resolveFileDirs(APP_NAME, 'config.json', [
       'cwd',
       'project-root',
       'config-dir',
@@ -105,14 +111,14 @@ async function main(): CliIndexMainReturn {
     return;
   }
 
-  const configPath: CliIndexMainConfigPath = getConfigFilePath();
+  const configPath: Cli_Index_Main_ConfigPath = getConfigFilePath();
 
-  const serverCommand: CliIndexMainServerCommand = new Command('server').description('Manage servers');
+  const serverCommand: Cli_Index_Main_ServerCommand = new Command('server').description('Manage servers');
 
   serverCommand
     .command('remove <name>')
     .description('Remove a server by name')
-    .action((name: CliIndexMainServerRemoveName) => {
+    .action((name) => {
       removeServer(configPath, name);
 
       Logger.info(`Server "${name}" removed.`);
@@ -120,12 +126,12 @@ async function main(): CliIndexMainReturn {
       return;
     });
 
-  const contextCommand: CliIndexMainContextCommand = new Command('context').description('Manage contexts');
+  const contextCommand: Cli_Index_Main_ContextCommand = new Command('context').description('Manage contexts');
 
   contextCommand
     .command('remove <name>')
     .description('Remove a context by name')
-    .action((name: CliIndexMainContextRemoveName) => {
+    .action((name) => {
       removeContext(configPath, name);
 
       Logger.info(`Context "${name}" removed.`);
@@ -140,7 +146,7 @@ async function main(): CliIndexMainReturn {
     .command('validate')
     .description('Validate config')
     .action(() => {
-      const result: CliIndexMainValidateResult = validateConfig(configPath);
+      const result: Cli_Index_Main_Result = validateConfig(configPath);
 
       if (result['valid'] === true) {
         Logger.info('Config is valid.');
@@ -148,7 +154,7 @@ async function main(): CliIndexMainReturn {
         Logger.error('Config is invalid:');
 
         for (const error of result['errors']) {
-          const message: CliIndexMainValidateError = error;
+          const message: Cli_Index_Main_Message = error;
 
           Logger.error(`  - ${message}`);
         }
@@ -175,7 +181,7 @@ async function main(): CliIndexMainReturn {
       try {
         await deploy(configPath);
       } catch (error) {
-        Logger.error(error instanceof Error ? error['message'] : String(error));
+        Logger.error((error instanceof Error) ? error['message'] : String(error));
 
         process.exitCode = 1;
       }
@@ -188,8 +194,8 @@ async function main(): CliIndexMainReturn {
   return;
 }
 
-main().catch((error: CliIndexMainCatchError) => {
-  Logger.error(error instanceof Error ? error['message'] : String(error));
+main().catch((error) => {
+  Logger.error((error instanceof Error) ? error['message'] : String(error));
 
   process.exitCode = 1;
 

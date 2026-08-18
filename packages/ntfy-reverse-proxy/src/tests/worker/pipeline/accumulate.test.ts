@@ -3,12 +3,28 @@ import { describe, expect, it } from 'vitest';
 import { diffComponents, formatComponentLines } from '../../../worker/pipeline/accumulate.js';
 
 import type {
-  TestsWorkerPipelineAccumulateChangedEntries,
-  TestsWorkerPipelineAccumulateCurrent,
-  TestsWorkerPipelineAccumulateDiff,
-  TestsWorkerPipelineAccumulateLines,
-  TestsWorkerPipelineAccumulatePrevious,
-  TestsWorkerPipelineAccumulateUnchangedEntries,
+  Tests_Worker_Pipeline_Accumulate_DiffComponents_DetectsNewComponentsAsChanged_Current,
+  Tests_Worker_Pipeline_Accumulate_DiffComponents_DetectsNewComponentsAsChanged_Diff,
+  Tests_Worker_Pipeline_Accumulate_DiffComponents_DetectsNewComponentsAsChanged_Previous,
+  Tests_Worker_Pipeline_Accumulate_DiffComponents_DetectsStatusChangesAsChanged_Current,
+  Tests_Worker_Pipeline_Accumulate_DiffComponents_DetectsStatusChangesAsChanged_Diff,
+  Tests_Worker_Pipeline_Accumulate_DiffComponents_DetectsStatusChangesAsChanged_Previous,
+  Tests_Worker_Pipeline_Accumulate_DiffComponents_HandlesMultipleComponentsWithMixedChanges_Changed,
+  Tests_Worker_Pipeline_Accumulate_DiffComponents_HandlesMultipleComponentsWithMixedChanges_Current,
+  Tests_Worker_Pipeline_Accumulate_DiffComponents_HandlesMultipleComponentsWithMixedChanges_Diff,
+  Tests_Worker_Pipeline_Accumulate_DiffComponents_HandlesMultipleComponentsWithMixedChanges_Previous,
+  Tests_Worker_Pipeline_Accumulate_DiffComponents_HandlesMultipleComponentsWithMixedChanges_Unchanged,
+  Tests_Worker_Pipeline_Accumulate_DiffComponents_MarksUnchangedComponentsAsNotChanged_Current,
+  Tests_Worker_Pipeline_Accumulate_DiffComponents_MarksUnchangedComponentsAsNotChanged_Diff,
+  Tests_Worker_Pipeline_Accumulate_DiffComponents_MarksUnchangedComponentsAsNotChanged_Previous,
+  Tests_Worker_Pipeline_Accumulate_FormatComponentLines_FormatsComponentWithHumanizedStatus_Diff,
+  Tests_Worker_Pipeline_Accumulate_FormatComponentLines_FormatsComponentWithHumanizedStatus_Lines,
+  Tests_Worker_Pipeline_Accumulate_FormatComponentLines_FormatsUnchangedComponentTheSameWay_Diff,
+  Tests_Worker_Pipeline_Accumulate_FormatComponentLines_FormatsUnchangedComponentTheSameWay_Lines,
+  Tests_Worker_Pipeline_Accumulate_FormatComponentLines_HumanizesMultiWordStatus_Diff,
+  Tests_Worker_Pipeline_Accumulate_FormatComponentLines_HumanizesMultiWordStatus_Lines,
+  Tests_Worker_Pipeline_Accumulate_FormatComponentLines_HumanizesSingleWordStatus_Diff,
+  Tests_Worker_Pipeline_Accumulate_FormatComponentLines_HumanizesSingleWordStatus_Lines,
 } from '../../../types/tests/worker/pipeline/accumulate.test.d.ts';
 
 /**
@@ -18,14 +34,15 @@ import type {
  */
 describe('diffComponents', () => {
   it('detects new components as changed', () => {
-    const previous: TestsWorkerPipelineAccumulatePrevious = {};
-    const current: TestsWorkerPipelineAccumulateCurrent = {
+    const previous: Tests_Worker_Pipeline_Accumulate_DiffComponents_DetectsNewComponentsAsChanged_Previous = {};
+    const current: Tests_Worker_Pipeline_Accumulate_DiffComponents_DetectsNewComponentsAsChanged_Current = {
       abc: {
-        name: 'Actions', status: 'partial_outage',
+        name: 'Actions',
+        status: 'partial_outage',
       },
     };
 
-    const diff: TestsWorkerPipelineAccumulateDiff = diffComponents(previous, current);
+    const diff: Tests_Worker_Pipeline_Accumulate_DiffComponents_DetectsNewComponentsAsChanged_Diff = diffComponents(previous, current);
 
     expect(diff).toHaveLength(1);
 
@@ -41,18 +58,20 @@ describe('diffComponents', () => {
   });
 
   it('detects status changes as changed', () => {
-    const previous: TestsWorkerPipelineAccumulatePrevious = {
+    const previous: Tests_Worker_Pipeline_Accumulate_DiffComponents_DetectsStatusChangesAsChanged_Previous = {
       abc: {
-        name: 'Actions', status: 'partial_outage',
+        name: 'Actions',
+        status: 'partial_outage',
       },
     };
-    const current: TestsWorkerPipelineAccumulateCurrent = {
+    const current: Tests_Worker_Pipeline_Accumulate_DiffComponents_DetectsStatusChangesAsChanged_Current = {
       abc: {
-        name: 'Actions', status: 'operational',
+        name: 'Actions',
+        status: 'operational',
       },
     };
 
-    const diff: TestsWorkerPipelineAccumulateDiff = diffComponents(previous, current);
+    const diff: Tests_Worker_Pipeline_Accumulate_DiffComponents_DetectsStatusChangesAsChanged_Diff = diffComponents(previous, current);
 
     expect(diff[0]!['changed']).toBe(true);
 
@@ -64,18 +83,20 @@ describe('diffComponents', () => {
   });
 
   it('marks unchanged components as not changed', () => {
-    const previous: TestsWorkerPipelineAccumulatePrevious = {
+    const previous: Tests_Worker_Pipeline_Accumulate_DiffComponents_MarksUnchangedComponentsAsNotChanged_Previous = {
       abc: {
-        name: 'Actions', status: 'partial_outage',
+        name: 'Actions',
+        status: 'partial_outage',
       },
     };
-    const current: TestsWorkerPipelineAccumulateCurrent = {
+    const current: Tests_Worker_Pipeline_Accumulate_DiffComponents_MarksUnchangedComponentsAsNotChanged_Current = {
       abc: {
-        name: 'Actions', status: 'partial_outage',
+        name: 'Actions',
+        status: 'partial_outage',
       },
     };
 
-    const diff: TestsWorkerPipelineAccumulateDiff = diffComponents(previous, current);
+    const diff: Tests_Worker_Pipeline_Accumulate_DiffComponents_MarksUnchangedComponentsAsNotChanged_Diff = diffComponents(previous, current);
 
     expect(diff[0]!['changed']).toBe(false);
 
@@ -83,29 +104,34 @@ describe('diffComponents', () => {
   });
 
   it('handles multiple components with mixed changes', () => {
-    const previous: TestsWorkerPipelineAccumulatePrevious = {
+    const previous: Tests_Worker_Pipeline_Accumulate_DiffComponents_HandlesMultipleComponentsWithMixedChanges_Previous = {
       a: {
-        name: 'Actions', status: 'partial_outage',
+        name: 'Actions',
+        status: 'partial_outage',
       },
       b: {
-        name: 'Webhooks', status: 'partial_outage',
+        name: 'Webhooks',
+        status: 'partial_outage',
       },
     };
-    const current: TestsWorkerPipelineAccumulateCurrent = {
+    const current: Tests_Worker_Pipeline_Accumulate_DiffComponents_HandlesMultipleComponentsWithMixedChanges_Current = {
       a: {
-        name: 'Actions', status: 'operational',
+        name: 'Actions',
+        status: 'operational',
       },
       b: {
-        name: 'Webhooks', status: 'partial_outage',
+        name: 'Webhooks',
+        status: 'partial_outage',
       },
       c: {
-        name: 'Issues', status: 'partial_outage',
+        name: 'Issues',
+        status: 'partial_outage',
       },
     };
 
-    const diff: TestsWorkerPipelineAccumulateDiff = diffComponents(previous, current);
-    const changed: TestsWorkerPipelineAccumulateChangedEntries = diff.filter((d) => d['changed'] === true);
-    const unchanged: TestsWorkerPipelineAccumulateUnchangedEntries = diff.filter((d) => d['changed'] === false);
+    const diff: Tests_Worker_Pipeline_Accumulate_DiffComponents_HandlesMultipleComponentsWithMixedChanges_Diff = diffComponents(previous, current);
+    const changed: Tests_Worker_Pipeline_Accumulate_DiffComponents_HandlesMultipleComponentsWithMixedChanges_Changed = diff.filter((d) => d['changed'] === true);
+    const unchanged: Tests_Worker_Pipeline_Accumulate_DiffComponents_HandlesMultipleComponentsWithMixedChanges_Unchanged = diff.filter((d) => d['changed'] === false);
 
     expect(changed).toHaveLength(2);
 
@@ -124,11 +150,14 @@ describe('diffComponents', () => {
  */
 describe('formatComponentLines', () => {
   it('formats component with humanized status', () => {
-    const diff: TestsWorkerPipelineAccumulateDiff = [{
-      name: 'Actions', oldStatus: 'operational', newStatus: 'partial_outage', changed: true,
+    const diff: Tests_Worker_Pipeline_Accumulate_FormatComponentLines_FormatsComponentWithHumanizedStatus_Diff = [{
+      name: 'Actions',
+      oldStatus: 'operational',
+      newStatus: 'partial_outage',
+      changed: true,
     }];
 
-    const lines: TestsWorkerPipelineAccumulateLines = formatComponentLines(diff);
+    const lines: Tests_Worker_Pipeline_Accumulate_FormatComponentLines_FormatsComponentWithHumanizedStatus_Lines = formatComponentLines(diff);
 
     expect(lines[0]).toBe('- Actions (Partial Outage)');
 
@@ -136,11 +165,14 @@ describe('formatComponentLines', () => {
   });
 
   it('formats unchanged component the same way', () => {
-    const diff: TestsWorkerPipelineAccumulateDiff = [{
-      name: 'Webhooks', oldStatus: 'partial_outage', newStatus: 'partial_outage', changed: false,
+    const diff: Tests_Worker_Pipeline_Accumulate_FormatComponentLines_FormatsUnchangedComponentTheSameWay_Diff = [{
+      name: 'Webhooks',
+      oldStatus: 'partial_outage',
+      newStatus: 'partial_outage',
+      changed: false,
     }];
 
-    const lines: TestsWorkerPipelineAccumulateLines = formatComponentLines(diff);
+    const lines: Tests_Worker_Pipeline_Accumulate_FormatComponentLines_FormatsUnchangedComponentTheSameWay_Lines = formatComponentLines(diff);
 
     expect(lines[0]).toBe('- Webhooks (Partial Outage)');
 
@@ -148,11 +180,14 @@ describe('formatComponentLines', () => {
   });
 
   it('humanizes single-word status', () => {
-    const diff: TestsWorkerPipelineAccumulateDiff = [{
-      name: 'Issues', oldStatus: undefined, newStatus: 'operational', changed: true,
+    const diff: Tests_Worker_Pipeline_Accumulate_FormatComponentLines_HumanizesSingleWordStatus_Diff = [{
+      name: 'Issues',
+      oldStatus: undefined,
+      newStatus: 'operational',
+      changed: true,
     }];
 
-    const lines: TestsWorkerPipelineAccumulateLines = formatComponentLines(diff);
+    const lines: Tests_Worker_Pipeline_Accumulate_FormatComponentLines_HumanizesSingleWordStatus_Lines = formatComponentLines(diff);
 
     expect(lines[0]).toBe('- Issues (Operational)');
 
@@ -160,11 +195,14 @@ describe('formatComponentLines', () => {
   });
 
   it('humanizes multi-word status', () => {
-    const diff: TestsWorkerPipelineAccumulateDiff = [{
-      name: 'API', oldStatus: undefined, newStatus: 'degraded_performance', changed: true,
+    const diff: Tests_Worker_Pipeline_Accumulate_FormatComponentLines_HumanizesMultiWordStatus_Diff = [{
+      name: 'API',
+      oldStatus: undefined,
+      newStatus: 'degraded_performance',
+      changed: true,
     }];
 
-    const lines: TestsWorkerPipelineAccumulateLines = formatComponentLines(diff);
+    const lines: Tests_Worker_Pipeline_Accumulate_FormatComponentLines_HumanizesMultiWordStatus_Lines = formatComponentLines(diff);
 
     expect(lines[0]).toBe('- API (Degraded Performance)');
 

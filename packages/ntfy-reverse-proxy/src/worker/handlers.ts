@@ -11,72 +11,114 @@ import { send } from './pipeline/send.js';
 import { split } from './pipeline/split.js';
 
 import type {
-  WorkerAuthResult,
-  WorkerBody,
-  WorkerCloned,
-  WorkerCtx,
-  WorkerDebugRawEmailStr,
-  WorkerDebugRawRequestStr,
-  WorkerEmailAuthResult,
-  WorkerEmailCtx,
-  WorkerEmailDebugLogStr,
-  WorkerEmailErrorAttachmentBuffer,
-  WorkerEmailErrorAttachmentData,
-  WorkerEmailErrorAttachmentJson,
-  WorkerEmailErrorIssues,
-  WorkerEmailErrorIssuesRaw,
-  WorkerEmailErrorMessage,
-  WorkerEmailErrorName,
-  WorkerEmailErrorStack,
-  WorkerEmailFormatted,
-  WorkerEmailInput,
-  WorkerEmailInterpreted,
-  WorkerEmailMessages,
-  WorkerEmailParsed,
-  WorkerEmailPrimaryServer,
-  WorkerEmailResolvedServers,
-  WorkerEmailRouted,
-  WorkerEmailSendResult,
-  WorkerErrorAttachmentBuffer,
-  WorkerErrorAttachmentData,
-  WorkerErrorAttachmentHeaderEntries,
-  WorkerErrorAttachmentHeaderEntryName,
-  WorkerErrorAttachmentHeaderEntryValue,
-  WorkerErrorAttachmentHeaders,
-  WorkerErrorAttachmentJson,
-  WorkerErrorAttachmentParsed,
-  WorkerErrorIssues,
-  WorkerErrorIssuesRaw,
-  WorkerErrorMessage,
-  WorkerErrorName,
-  WorkerErrorStack,
-  WorkerFormatted,
-  WorkerHandleEmailConfig,
-  WorkerHandleEmailFrom,
-  WorkerHandleEmailKv,
-  WorkerHandleEmailRawEmail,
-  WorkerHandleEmailReturn,
-  WorkerHandleRequestConfig,
-  WorkerHandleRequestKv,
-  WorkerHandleRequestRequest,
-  WorkerHandleRequestReturn,
-  WorkerInput,
-  WorkerInterpreted,
-  WorkerMessages,
-  WorkerParsed,
-  WorkerPrimaryServer,
-  WorkerRawBodyJsonStr,
-  WorkerRawBodyText,
-  WorkerReceived,
-  WorkerRecipientLocalPart,
-  WorkerResolvedServers,
-  WorkerResponse,
-  WorkerResponseBody,
-  WorkerRouted,
-  WorkerSendResult,
-  WorkerSubdomain,
-  WorkerVisitorIpHeader,
-} from '../types/worker/index.d.ts';
+  Worker_Handlers_HandleEmail_AuthErrorAttachmentBuffer,
+  Worker_Handlers_HandleEmail_AuthErrorAttachmentData,
+  Worker_Handlers_HandleEmail_AuthErrorAttachmentJson,
+  Worker_Handlers_HandleEmail_AuthResult,
+  Worker_Handlers_HandleEmail_Config,
+  Worker_Handlers_HandleEmail_Ctx,
+  Worker_Handlers_HandleEmail_DebugLogStr,
+  Worker_Handlers_HandleEmail_DebugRawEmailStr,
+  Worker_Handlers_HandleEmail_EmailInput,
+  Worker_Handlers_HandleEmail_ErrorIssues,
+  Worker_Handlers_HandleEmail_ErrorIssuesRaw,
+  Worker_Handlers_HandleEmail_ErrorMessage,
+  Worker_Handlers_HandleEmail_ErrorName,
+  Worker_Handlers_HandleEmail_ErrorStack,
+  Worker_Handlers_HandleEmail_FatalDebugStr,
+  Worker_Handlers_HandleEmail_FatalErrorMessage,
+  Worker_Handlers_HandleEmail_Formatted,
+  Worker_Handlers_HandleEmail_From,
+  Worker_Handlers_HandleEmail_Interpreted,
+  Worker_Handlers_HandleEmail_InterpretErrorAttachmentBuffer,
+  Worker_Handlers_HandleEmail_InterpretErrorAttachmentData,
+  Worker_Handlers_HandleEmail_InterpretErrorAttachmentJson,
+  Worker_Handlers_HandleEmail_Kv,
+  Worker_Handlers_HandleEmail_Messages,
+  Worker_Handlers_HandleEmail_Parsed,
+  Worker_Handlers_HandleEmail_PrimaryServer,
+  Worker_Handlers_HandleEmail_RawEmail,
+  Worker_Handlers_HandleEmail_RecipientLocalPart,
+  Worker_Handlers_HandleEmail_ResolvedServers,
+  Worker_Handlers_HandleEmail_Returns,
+  Worker_Handlers_HandleEmail_Routed,
+  Worker_Handlers_HandleEmail_SendResult,
+  Worker_Handlers_HandleRequest_AuthEntryName,
+  Worker_Handlers_HandleRequest_AuthEntryValue,
+  Worker_Handlers_HandleRequest_AuthErrorAttachmentBuffer,
+  Worker_Handlers_HandleRequest_AuthErrorAttachmentData,
+  Worker_Handlers_HandleRequest_AuthErrorAttachmentHeaderEntries,
+  Worker_Handlers_HandleRequest_AuthErrorAttachmentHeaders,
+  Worker_Handlers_HandleRequest_AuthErrorAttachmentJson,
+  Worker_Handlers_HandleRequest_AuthErrorAttachmentParsed,
+  Worker_Handlers_HandleRequest_AuthResult,
+  Worker_Handlers_HandleRequest_Body,
+  Worker_Handlers_HandleRequest_Cloned,
+  Worker_Handlers_HandleRequest_Config,
+  Worker_Handlers_HandleRequest_Ctx,
+  Worker_Handlers_HandleRequest_DebugRawRequestStr,
+  Worker_Handlers_HandleRequest_FatalErrorMessage,
+  Worker_Handlers_HandleRequest_Formatted,
+  Worker_Handlers_HandleRequest_Input,
+  Worker_Handlers_HandleRequest_Interpreted,
+  Worker_Handlers_HandleRequest_InterpretEntryName,
+  Worker_Handlers_HandleRequest_InterpretEntryValue,
+  Worker_Handlers_HandleRequest_InterpretErrorAttachmentBuffer,
+  Worker_Handlers_HandleRequest_InterpretErrorAttachmentData,
+  Worker_Handlers_HandleRequest_InterpretErrorAttachmentHeaderEntries,
+  Worker_Handlers_HandleRequest_InterpretErrorAttachmentHeaders,
+  Worker_Handlers_HandleRequest_InterpretErrorAttachmentJson,
+  Worker_Handlers_HandleRequest_InterpretErrorIssues,
+  Worker_Handlers_HandleRequest_InterpretErrorIssuesRaw,
+  Worker_Handlers_HandleRequest_InterpretErrorMessage,
+  Worker_Handlers_HandleRequest_InterpretErrorName,
+  Worker_Handlers_HandleRequest_InterpretErrorStack,
+  Worker_Handlers_HandleRequest_Kv,
+  Worker_Handlers_HandleRequest_Messages,
+  Worker_Handlers_HandleRequest_Parsed,
+  Worker_Handlers_HandleRequest_PrimaryServer,
+  Worker_Handlers_HandleRequest_RawBodyJsonStr,
+  Worker_Handlers_HandleRequest_RawBodyText,
+  Worker_Handlers_HandleRequest_Received,
+  Worker_Handlers_HandleRequest_Request,
+  Worker_Handlers_HandleRequest_ResolvedServers,
+  Worker_Handlers_HandleRequest_Response,
+  Worker_Handlers_HandleRequest_ResponseBody,
+  Worker_Handlers_HandleRequest_Returns,
+  Worker_Handlers_HandleRequest_Routed,
+  Worker_Handlers_HandleRequest_SendResult,
+  Worker_Handlers_HandleRequest_Subdomain,
+  Worker_Handlers_HandleRequest_VisitorIpHeader,
+  Worker_Handlers_ShouldNotifyError_Category,
+  Worker_Handlers_ShouldNotifyError_Ctx,
+  Worker_Handlers_ShouldNotifyError_Returns,
+} from '../types/worker/handlers.d.ts';
+
+/**
+ * Worker - Handlers - Should Notify Error.
+ *
+ * Decides whether an error of the given category should trigger an
+ * error-topic notification for the context, honoring the optional
+ * error_events allow-list (absent means every category notifies).
+ *
+ * @param {Worker_Handlers_ShouldNotifyError_Ctx}      ctx      - Ctx.
+ * @param {Worker_Handlers_ShouldNotifyError_Category} category - Category.
+ *
+ * @returns {Worker_Handlers_ShouldNotifyError_Returns}
+ *
+ * @since 2.1.0
+ */
+function shouldNotifyError(ctx: Worker_Handlers_ShouldNotifyError_Ctx, category: Worker_Handlers_ShouldNotifyError_Category): Worker_Handlers_ShouldNotifyError_Returns {
+  if (ctx['error_topic'] === undefined) {
+    return false;
+  }
+
+  if (ctx['error_events'] === undefined) {
+    return true;
+  }
+
+  return ctx['error_events'].includes(category);
+}
 
 /**
  * Worker - Handlers - Handle Request.
@@ -84,12 +126,18 @@ import type {
  * Processes incoming HTTP requests through the full pipeline
  * of receive, route, authenticate, parse, interpret, and send.
  *
+ * @param {Worker_Handlers_HandleRequest_Request} request - Request.
+ * @param {Worker_Handlers_HandleRequest_Config}  config  - Config.
+ * @param {Worker_Handlers_HandleRequest_Kv}      kv      - Kv.
+ *
+ * @returns {Worker_Handlers_HandleRequest_Returns}
+ *
  * @since 2.0.0
  */
-async function handleRequest(request: WorkerHandleRequestRequest, config: WorkerHandleRequestConfig, kv: WorkerHandleRequestKv): WorkerHandleRequestReturn {
+async function handleRequest(request: Worker_Handlers_HandleRequest_Request, config: Worker_Handlers_HandleRequest_Config, kv: Worker_Handlers_HandleRequest_Kv): Worker_Handlers_HandleRequest_Returns {
   try {
     // 1. Receive.
-    const received: WorkerReceived = await receive(request, config['settings']['base_domain']);
+    const received: Worker_Handlers_HandleRequest_Received = await receive(request, config['settings']['base_domain']);
 
     if (received['redirect'] !== undefined) {
       return Response.redirect(received['redirect'], 301);
@@ -97,7 +145,8 @@ async function handleRequest(request: WorkerHandleRequestRequest, config: Worker
 
     if (received['error'] !== undefined) {
       return new Response(JSON.stringify({
-        status: 'error', message: received['error'],
+        status: 'error',
+        message: received['error'],
       }, null, 2), {
         status: 405,
         headers: { 'Content-Type': 'application/json' },
@@ -109,8 +158,8 @@ async function handleRequest(request: WorkerHandleRequestRequest, config: Worker
     }
 
     // 2. Route.
-    const subdomain: WorkerSubdomain = received['hostname'].split('.')[0] ?? '';
-    const routed: WorkerRouted = route('http', subdomain, config);
+    const subdomain: Worker_Handlers_HandleRequest_Subdomain = received['hostname'].split('.')[0] ?? '';
+    const routed: Worker_Handlers_HandleRequest_Routed = route('http', subdomain, config);
 
     if (
       routed['error'] !== undefined
@@ -119,53 +168,56 @@ async function handleRequest(request: WorkerHandleRequestRequest, config: Worker
       || routed['primaryServer'] === undefined
     ) {
       return new Response(JSON.stringify({
-        status: 'error', message: routed['error'] ?? 'No context found',
+        status: 'error',
+        message: routed['error'] ?? 'No context found',
       }, null, 2), {
         status: 404,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    const ctx: WorkerCtx = routed['context'] as WorkerCtx;
-    const resolvedServers: WorkerResolvedServers = routed['resolvedServers'];
-    const primaryServer: WorkerPrimaryServer = routed['primaryServer'];
+    const ctx: Worker_Handlers_HandleRequest_Ctx = routed['context'] as Worker_Handlers_HandleRequest_Ctx;
+    const resolvedServers: Worker_Handlers_HandleRequest_ResolvedServers = routed['resolvedServers'];
+    const primaryServer: Worker_Handlers_HandleRequest_PrimaryServer = routed['primaryServer'];
 
     // 3. Authenticate.
-    const authResult: WorkerAuthResult = authenticate(
+    const authResult: Worker_Handlers_HandleRequest_AuthResult = authenticate(
       {
-        type: 'http', ...(ctx['token'] !== undefined ? { token: ctx['token'] } : {}),
+        type: 'http',
+        ...((ctx['token'] !== undefined) ? { token: ctx['token'] } : {}),
       },
       {
-        authorization: received['headers'].get('authorization') ?? undefined, from: undefined,
+        authorization: received['headers'].get('authorization') ?? undefined,
+        from: undefined,
       },
     );
 
     if (authResult['authenticated'] === false) {
-      if (ctx['error_topic'] !== undefined) {
+      if (ctx['error_topic'] !== undefined && shouldNotifyError(ctx, 'authentication') === true) {
         try {
-          // Mask the authorization header value rather than stripping the field — matches Cloudflare tail behavior and signals whether the client even attempted to authenticate.
-          const errorAttachmentHeaderEntries: WorkerErrorAttachmentHeaderEntries = [...received['headers'].entries()].map((entry) => {
-            const entryName: WorkerErrorAttachmentHeaderEntryName = entry[0];
-            const entryValue: WorkerErrorAttachmentHeaderEntryValue = entry[1];
+          // Mask the authorization header value rather than stripping the field - matches Cloudflare tail behavior and signals whether the client even attempted to authenticate.
+          const authErrorAttachmentHeaderEntries: Worker_Handlers_HandleRequest_AuthErrorAttachmentHeaderEntries = [...received['headers'].entries()].map((entry) => {
+            const authEntryName: Worker_Handlers_HandleRequest_AuthEntryName = entry[0];
+            const authEntryValue: Worker_Handlers_HandleRequest_AuthEntryValue = entry[1];
 
-            if (entryName.toLowerCase() === 'authorization') {
+            if (authEntryName.toLowerCase() === 'authorization') {
               return [
-                entryName,
+                authEntryName,
                 'REDACTED',
               ];
             }
 
             return [
-              entryName,
-              entryValue,
+              authEntryName,
+              authEntryValue,
             ];
           });
-          const errorAttachmentHeaders: WorkerErrorAttachmentHeaders = Object.fromEntries(errorAttachmentHeaderEntries);
+          const authErrorAttachmentHeaders: Worker_Handlers_HandleRequest_AuthErrorAttachmentHeaders = Object.fromEntries(authErrorAttachmentHeaderEntries);
 
-          // Parse the body just for the attachment so the unauthorized payload is visible — auth runs before the main parse step.
-          const errorAttachmentParsed: WorkerErrorAttachmentParsed = parse(received['rawBody'], received['headers']);
+          // Parse the body just for the attachment so the unauthorized payload is visible - auth runs before the main parse step.
+          const authErrorAttachmentParsed: Worker_Handlers_HandleRequest_AuthErrorAttachmentParsed = parse(received['rawBody'], received['headers']);
 
-          const errorAttachmentData: WorkerErrorAttachmentData = {
+          const authErrorAttachmentData: Worker_Handlers_HandleRequest_AuthErrorAttachmentData = {
             timestamp: new Date().toISOString(),
             error: {
               type: 'authentication',
@@ -179,20 +231,20 @@ async function handleRequest(request: WorkerHandleRequestRequest, config: Worker
             request: {
               method: received['method'],
               url: received['url'],
-              headers: errorAttachmentHeaders,
-              ...(received['cfProperties'] !== undefined ? { cf: received['cfProperties'] } : {}),
+              headers: authErrorAttachmentHeaders,
+              ...((received['cfProperties'] !== undefined) ? { cf: received['cfProperties'] } : {}),
             },
             response: {
               status: 403,
             },
             body: {
-              type: errorAttachmentParsed['type'],
-              ...(errorAttachmentParsed['json'] !== undefined ? { json: errorAttachmentParsed['json'] } : {}),
-              ...(errorAttachmentParsed['text'] !== undefined ? { text: errorAttachmentParsed['text'] } : {}),
+              type: authErrorAttachmentParsed['type'],
+              ...((authErrorAttachmentParsed['json'] !== undefined) ? { json: authErrorAttachmentParsed['json'] } : {}),
+              ...((authErrorAttachmentParsed['text'] !== undefined) ? { text: authErrorAttachmentParsed['text'] } : {}),
             },
           };
-          const errorAttachmentJson: WorkerErrorAttachmentJson = JSON.stringify(errorAttachmentData, null, 2);
-          const errorAttachmentBuffer: WorkerErrorAttachmentBuffer = new TextEncoder().encode(errorAttachmentJson).buffer as ArrayBuffer;
+          const authErrorAttachmentJson: Worker_Handlers_HandleRequest_AuthErrorAttachmentJson = JSON.stringify(authErrorAttachmentData, null, 2);
+          const authErrorAttachmentBuffer: Worker_Handlers_HandleRequest_AuthErrorAttachmentBuffer = new TextEncoder().encode(authErrorAttachmentJson).buffer as ArrayBuffer;
 
           await send({
             messages: [],
@@ -201,7 +253,7 @@ async function handleRequest(request: WorkerHandleRequestRequest, config: Worker
             topic: ctx['error_topic'],
             mode: ctx['mode'],
             visitorIp: received['headers'].get('cf-connecting-ip') ?? undefined,
-            attachment: errorAttachmentBuffer,
+            attachment: authErrorAttachmentBuffer,
             filename: 'error-debug.json',
             attachmentHeaders: { 'X-Title': 'Authentication Error' },
           });
@@ -211,7 +263,8 @@ async function handleRequest(request: WorkerHandleRequestRequest, config: Worker
       }
 
       return new Response(JSON.stringify({
-        status: 'error', message: 'Unauthorized',
+        status: 'error',
+        message: 'Unauthorized',
       }, null, 2), {
         status: 403,
         headers: { 'Content-Type': 'application/json' },
@@ -219,11 +272,12 @@ async function handleRequest(request: WorkerHandleRequestRequest, config: Worker
     }
 
     // 4. Parse.
-    const parsed: WorkerParsed = parse(received['rawBody'], received['headers']);
+    const parsed: Worker_Handlers_HandleRequest_Parsed = parse(received['rawBody'], received['headers']);
 
     if (parsed['type'] === 'unknown') {
       return new Response(JSON.stringify({
-        status: 'error', message: 'Unknown content type',
+        status: 'error',
+        message: 'Unknown content type',
       }, null, 2), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
@@ -231,70 +285,72 @@ async function handleRequest(request: WorkerHandleRequestRequest, config: Worker
     }
 
     // Debug log raw request body.
-    const rawBodyJsonStr: WorkerRawBodyJsonStr = (parsed['json'] !== undefined) ? JSON.stringify(parsed['json']) : '';
-    const rawBodyText: WorkerRawBodyText = parsed['text'] ?? ((rawBodyJsonStr.length > 0) ? rawBodyJsonStr : undefined);
-    const debugRawRequestStr: WorkerDebugRawRequestStr = JSON.stringify({
-      debug: 'raw_request', type: parsed['type'], body: rawBodyText ?? '(binary)',
+    const rawBodyJsonStr: Worker_Handlers_HandleRequest_RawBodyJsonStr = (parsed['json'] !== undefined) ? JSON.stringify(parsed['json']) : '';
+    const rawBodyText: Worker_Handlers_HandleRequest_RawBodyText = parsed['text'] ?? ((rawBodyJsonStr.length > 0) ? rawBodyJsonStr : undefined);
+    const debugRawRequestStr: Worker_Handlers_HandleRequest_DebugRawRequestStr = JSON.stringify({
+      debug: 'raw_request',
+      type: parsed['type'],
+      body: rawBodyText ?? '(binary)',
     });
 
     console.info(debugRawRequestStr);
 
     // 5. Interpret.
-    const input: WorkerInput = parsed['json']
+    const input: Worker_Handlers_HandleRequest_Input = parsed['json']
       ?? parsed['text']
       ?? parsed['binary']
       ?? '';
-    let interpreted: WorkerInterpreted = undefined;
+    let interpreted: Worker_Handlers_HandleRequest_Interpreted = undefined;
 
     try {
       interpreted = await interpret(ctx['interpreter'], input, (kv !== undefined) ? { kv } : {});
     } catch (err) {
-      const errorName: WorkerErrorName = (err instanceof Error) ? err.name : 'Error';
-      const errorMessage: WorkerErrorMessage = (err instanceof Error) ? err.message : 'Unknown interpretation error';
-      const errorStack: WorkerErrorStack = (err instanceof Error) ? err.stack : undefined;
-      let errorIssues: WorkerErrorIssues = undefined;
+      const interpretErrorName: Worker_Handlers_HandleRequest_InterpretErrorName = (err instanceof Error) ? err.name : 'Error';
+      const interpretErrorMessage: Worker_Handlers_HandleRequest_InterpretErrorMessage = (err instanceof Error) ? err.message : 'Unknown interpretation error';
+      const interpretErrorStack: Worker_Handlers_HandleRequest_InterpretErrorStack = (err instanceof Error) ? err.stack : undefined;
+      let interpretErrorIssues: Worker_Handlers_HandleRequest_InterpretErrorIssues = undefined;
 
       if (
         err instanceof Error
         && err.name === 'ZodError'
         && 'issues' in err
       ) {
-        const errorIssuesRaw: WorkerErrorIssuesRaw = Reflect.get(err, 'issues');
+        const interpretErrorIssuesRaw: Worker_Handlers_HandleRequest_InterpretErrorIssuesRaw = Reflect.get(err, 'issues');
 
-        if (Array.isArray(errorIssuesRaw) === true) {
-          errorIssues = errorIssuesRaw;
+        if (Array.isArray(interpretErrorIssuesRaw) === true) {
+          interpretErrorIssues = interpretErrorIssuesRaw;
         }
       }
 
-      if (ctx['error_topic'] !== undefined) {
+      if (ctx['error_topic'] !== undefined && shouldNotifyError(ctx, 'interpretation') === true) {
         try {
           // Mask the authorization header value rather than stripping the field.
-          const errorAttachmentHeaderEntries: WorkerErrorAttachmentHeaderEntries = [...received['headers'].entries()].map((entry) => {
-            const entryName: WorkerErrorAttachmentHeaderEntryName = entry[0];
-            const entryValue: WorkerErrorAttachmentHeaderEntryValue = entry[1];
+          const interpretErrorAttachmentHeaderEntries: Worker_Handlers_HandleRequest_InterpretErrorAttachmentHeaderEntries = [...received['headers'].entries()].map((entry) => {
+            const interpretEntryName: Worker_Handlers_HandleRequest_InterpretEntryName = entry[0];
+            const interpretEntryValue: Worker_Handlers_HandleRequest_InterpretEntryValue = entry[1];
 
-            if (entryName.toLowerCase() === 'authorization') {
+            if (interpretEntryName.toLowerCase() === 'authorization') {
               return [
-                entryName,
+                interpretEntryName,
                 'REDACTED',
               ];
             }
 
             return [
-              entryName,
-              entryValue,
+              interpretEntryName,
+              interpretEntryValue,
             ];
           });
-          const errorAttachmentHeaders: WorkerErrorAttachmentHeaders = Object.fromEntries(errorAttachmentHeaderEntries);
+          const interpretErrorAttachmentHeaders: Worker_Handlers_HandleRequest_InterpretErrorAttachmentHeaders = Object.fromEntries(interpretErrorAttachmentHeaderEntries);
 
-          const errorAttachmentData: WorkerErrorAttachmentData = {
+          const interpretErrorAttachmentData: Worker_Handlers_HandleRequest_InterpretErrorAttachmentData = {
             timestamp: new Date().toISOString(),
             error: {
               type: 'interpretation',
-              name: errorName,
-              message: errorMessage,
-              ...(errorStack !== undefined ? { stack: errorStack } : {}),
-              ...(errorIssues !== undefined ? { issues: errorIssues } : {}),
+              name: interpretErrorName,
+              message: interpretErrorMessage,
+              ...((interpretErrorStack !== undefined) ? { stack: interpretErrorStack } : {}),
+              ...((interpretErrorIssues !== undefined) ? { issues: interpretErrorIssues } : {}),
             },
             context: {
               name: ctx['name'],
@@ -304,20 +360,20 @@ async function handleRequest(request: WorkerHandleRequestRequest, config: Worker
             request: {
               method: received['method'],
               url: received['url'],
-              headers: errorAttachmentHeaders,
-              ...(received['cfProperties'] !== undefined ? { cf: received['cfProperties'] } : {}),
+              headers: interpretErrorAttachmentHeaders,
+              ...((received['cfProperties'] !== undefined) ? { cf: received['cfProperties'] } : {}),
             },
             response: {
               status: 422,
             },
             body: {
               type: parsed['type'],
-              ...(parsed['json'] !== undefined ? { json: parsed['json'] } : {}),
-              ...(parsed['text'] !== undefined ? { text: parsed['text'] } : {}),
+              ...((parsed['json'] !== undefined) ? { json: parsed['json'] } : {}),
+              ...((parsed['text'] !== undefined) ? { text: parsed['text'] } : {}),
             },
           };
-          const errorAttachmentJson: WorkerErrorAttachmentJson = JSON.stringify(errorAttachmentData, null, 2);
-          const errorAttachmentBuffer: WorkerErrorAttachmentBuffer = new TextEncoder().encode(errorAttachmentJson).buffer as ArrayBuffer;
+          const interpretErrorAttachmentJson: Worker_Handlers_HandleRequest_InterpretErrorAttachmentJson = JSON.stringify(interpretErrorAttachmentData, null, 2);
+          const interpretErrorAttachmentBuffer: Worker_Handlers_HandleRequest_InterpretErrorAttachmentBuffer = new TextEncoder().encode(interpretErrorAttachmentJson).buffer as ArrayBuffer;
 
           await send({
             messages: [],
@@ -326,7 +382,7 @@ async function handleRequest(request: WorkerHandleRequestRequest, config: Worker
             topic: ctx['error_topic'],
             mode: ctx['mode'],
             visitorIp: received['headers'].get('cf-connecting-ip') ?? undefined,
-            attachment: errorAttachmentBuffer,
+            attachment: interpretErrorAttachmentBuffer,
             filename: 'error-debug.json',
             attachmentHeaders: { 'X-Title': 'Interpretation Error' },
           });
@@ -336,7 +392,8 @@ async function handleRequest(request: WorkerHandleRequestRequest, config: Worker
       }
 
       return new Response(JSON.stringify({
-        status: 'error', message: errorMessage,
+        status: 'error',
+        message: interpretErrorMessage,
       }, null, 2), {
         status: 422,
         headers: { 'Content-Type': 'application/json' },
@@ -357,18 +414,18 @@ async function handleRequest(request: WorkerHandleRequestRequest, config: Worker
     }
 
     // 6. Format.
-    const visitorIpHeader: WorkerVisitorIpHeader = received['headers'].get('cf-connecting-ip');
-    const formatted: WorkerFormatted = format(interpreted['notification'], {
+    const visitorIpHeader: Worker_Handlers_HandleRequest_VisitorIpHeader = received['headers'].get('cf-connecting-ip');
+    const formatted: Worker_Handlers_HandleRequest_Formatted = format(interpreted['notification'], {
       showVisitorInfo: ctx['show_visitor_info'],
       ...((visitorIpHeader !== null) ? { visitorIp: visitorIpHeader } : {}),
       ...((received['cfProperties'] !== undefined) ? { cfProperties: received['cfProperties'] } : {}),
     });
 
     // 7. Split.
-    const messages: WorkerMessages = split(formatted['body'], formatted['headers']);
+    const messages: Worker_Handlers_HandleRequest_Messages = split(formatted['body'], formatted['headers']);
 
     // 8. Send.
-    const sendResult: WorkerSendResult = await send({
+    const sendResult: Worker_Handlers_HandleRequest_SendResult = await send({
       messages,
       servers: resolvedServers,
       primaryServer,
@@ -380,7 +437,7 @@ async function handleRequest(request: WorkerHandleRequestRequest, config: Worker
     });
 
     // 9. Respond.
-    const response: WorkerResponse = respond(sendResult, {
+    const response: Worker_Handlers_HandleRequest_Response = respond(sendResult, {
       showResponseOutput: config['settings']['show_response_output'],
       contextName: ctx['name'],
       interpreterName: ctx['interpreter'],
@@ -391,18 +448,20 @@ async function handleRequest(request: WorkerHandleRequestRequest, config: Worker
     });
 
     // Debug log for Cloudflare real-time logs.
-    const cloned: WorkerCloned = response.clone();
-    const responseBody: WorkerResponseBody = await cloned.text();
+    const cloned: Worker_Handlers_HandleRequest_Cloned = response.clone();
+    const responseBody: Worker_Handlers_HandleRequest_ResponseBody = await cloned.text();
 
     console.info(responseBody);
 
     return response;
   } catch (err) {
-    const errorMessage: WorkerErrorMessage = (err instanceof Error) ? err.message : 'Internal server error';
-    const body: WorkerBody = (config['settings']['show_response_output'] === true) ? {
-      status: 'error', message: errorMessage,
+    const fatalErrorMessage: Worker_Handlers_HandleRequest_FatalErrorMessage = (err instanceof Error) ? err.message : 'Internal server error';
+    const body: Worker_Handlers_HandleRequest_Body = (config['settings']['show_response_output'] === true) ? {
+      status: 'error',
+      message: fatalErrorMessage,
     } : {
-      status: 'error', message: 'Internal server error',
+      status: 'error',
+      message: 'Internal server error',
     };
 
     return new Response(JSON.stringify(body, null, 2), {
@@ -418,201 +477,225 @@ async function handleRequest(request: WorkerHandleRequestRequest, config: Worker
  * Processes incoming email messages through the pipeline of
  * parse, route, authenticate, interpret, format, and send.
  *
+ * @param {Worker_Handlers_HandleEmail_RawEmail} rawEmail - Raw email.
+ * @param {Worker_Handlers_HandleEmail_From}     from     - From.
+ * @param {Worker_Handlers_HandleEmail_Config}   config   - Config.
+ * @param {Worker_Handlers_HandleEmail_Kv}       kv       - Kv.
+ *
+ * @returns {Worker_Handlers_HandleEmail_Returns}
+ *
  * @since 2.0.0
  */
-async function handleEmail(rawEmail: WorkerHandleEmailRawEmail, from: WorkerHandleEmailFrom, config: WorkerHandleEmailConfig, kv: WorkerHandleEmailKv): WorkerHandleEmailReturn {
-  // 1. Parse email.
-  const parsed: WorkerEmailParsed = await parseEmail(rawEmail);
-
-  // Debug log raw email.
-  const debugRawEmailStr: WorkerDebugRawEmailStr = JSON.stringify({
-    debug: 'raw_email', from, to: parsed['to'], subject: parsed['subject'], rawEmail,
-  });
-
-  console.info(debugRawEmailStr);
-
-  // 2. Route by recipient local part.
-  const recipientLocalPart: WorkerRecipientLocalPart = parsed['to'].split('@')[0] ?? '';
-  const routed: WorkerEmailRouted = route('email', recipientLocalPart, config);
-
-  if (
-    routed['error'] !== undefined
-    || routed['context'] === undefined
-    || routed['resolvedServers'] === undefined
-    || routed['primaryServer'] === undefined
-  ) {
-    return;
-  }
-
-  const ctx: WorkerEmailCtx = routed['context'] as WorkerEmailCtx;
-  const resolvedServers: WorkerEmailResolvedServers = routed['resolvedServers'] as WorkerEmailResolvedServers;
-  const primaryServer: WorkerEmailPrimaryServer = routed['primaryServer'];
-
-  // 3. Authenticate.
-  const authResult: WorkerEmailAuthResult = authenticate(
-    {
-      type: 'email', ...(ctx['allowed_from'] !== undefined ? { allowed_from: ctx['allowed_from'] } : {}),
-    },
-    {
-      authorization: undefined, from,
-    },
-  );
-
-  if (authResult['authenticated'] === false) {
-    if (ctx['error_topic'] !== undefined) {
-      try {
-        const errorAttachmentData: WorkerEmailErrorAttachmentData = {
-          timestamp: new Date().toISOString(),
-          error: {
-            type: 'authentication',
-            message: authResult['reason'],
-          },
-          context: {
-            name: ctx['name'],
-            interpreter: ctx['interpreter'],
-            stage: 'authentication',
-          },
-          email: {
-            from,
-            to: parsed['to'],
-            subject: parsed['subject'],
-            textBody: parsed['textBody'],
-          },
-        };
-        const errorAttachmentJson: WorkerEmailErrorAttachmentJson = JSON.stringify(errorAttachmentData, null, 2);
-        const errorAttachmentBuffer: WorkerEmailErrorAttachmentBuffer = new TextEncoder().encode(errorAttachmentJson).buffer as ArrayBuffer;
-
-        await send({
-          messages: [],
-          servers: resolvedServers,
-          primaryServer,
-          topic: ctx['error_topic'],
-          mode: ctx['mode'],
-          attachment: errorAttachmentBuffer,
-          filename: 'error-debug.json',
-          attachmentHeaders: { 'X-Title': 'Email Authentication Error' },
-        });
-      } catch {
-        // Best-effort error notification; ignore failures.
-      }
-    }
-
-    return;
-  }
-
-  // 4. Interpret.
-  const emailInput: WorkerEmailInput = {
-    subject: parsed['subject'],
-    textBody: parsed['textBody'],
-    from: parsed['from'],
-    to: parsed['to'],
-  };
-
-  let interpreted: WorkerEmailInterpreted = undefined;
-
+async function handleEmail(rawEmail: Worker_Handlers_HandleEmail_RawEmail, from: Worker_Handlers_HandleEmail_From, config: Worker_Handlers_HandleEmail_Config, kv: Worker_Handlers_HandleEmail_Kv): Worker_Handlers_HandleEmail_Returns {
   try {
-    interpreted = await interpret(ctx['interpreter'], emailInput, (kv !== undefined) ? { kv } : {});
-  } catch (err) {
-    const errorName: WorkerEmailErrorName = (err instanceof Error) ? err.name : 'Error';
-    const errorMessage: WorkerEmailErrorMessage = (err instanceof Error) ? err.message : 'Unknown interpretation error';
-    const errorStack: WorkerEmailErrorStack = (err instanceof Error) ? err.stack : undefined;
-    let errorIssues: WorkerEmailErrorIssues = undefined;
+    // 1. Parse email.
+    const parsed: Worker_Handlers_HandleEmail_Parsed = await parseEmail(rawEmail);
+
+    // Debug log raw email.
+    const debugRawEmailStr: Worker_Handlers_HandleEmail_DebugRawEmailStr = JSON.stringify({
+      debug: 'raw_email',
+      from,
+      to: parsed['to'],
+      subject: parsed['subject'],
+      rawEmail,
+    });
+
+    console.info(debugRawEmailStr);
+
+    // 2. Route by recipient local part.
+    const recipientLocalPart: Worker_Handlers_HandleEmail_RecipientLocalPart = parsed['to'].split('@')[0] ?? '';
+    const routed: Worker_Handlers_HandleEmail_Routed = route('email', recipientLocalPart, config);
 
     if (
-      err instanceof Error
-      && err.name === 'ZodError'
-      && 'issues' in err
+      routed['error'] !== undefined
+      || routed['context'] === undefined
+      || routed['resolvedServers'] === undefined
+      || routed['primaryServer'] === undefined
     ) {
-      const errorIssuesRaw: WorkerEmailErrorIssuesRaw = Reflect.get(err, 'issues');
-
-      if (Array.isArray(errorIssuesRaw) === true) {
-        errorIssues = errorIssuesRaw;
-      }
+      return;
     }
 
-    if (ctx['error_topic'] !== undefined) {
-      try {
-        const errorAttachmentData: WorkerEmailErrorAttachmentData = {
-          timestamp: new Date().toISOString(),
-          error: {
-            type: 'interpretation',
-            name: errorName,
-            message: errorMessage,
-            ...(errorStack !== undefined ? { stack: errorStack } : {}),
-            ...(errorIssues !== undefined ? { issues: errorIssues } : {}),
-          },
-          context: {
-            name: ctx['name'],
-            interpreter: ctx['interpreter'],
-            stage: 'interpretation',
-          },
-          email: {
-            from,
-            to: parsed['to'],
-            subject: parsed['subject'],
-            textBody: parsed['textBody'],
-          },
-        };
-        const errorAttachmentJson: WorkerEmailErrorAttachmentJson = JSON.stringify(errorAttachmentData, null, 2);
-        const errorAttachmentBuffer: WorkerEmailErrorAttachmentBuffer = new TextEncoder().encode(errorAttachmentJson).buffer as ArrayBuffer;
+    const ctx: Worker_Handlers_HandleEmail_Ctx = routed['context'] as Worker_Handlers_HandleEmail_Ctx;
+    const resolvedServers: Worker_Handlers_HandleEmail_ResolvedServers = routed['resolvedServers'] as Worker_Handlers_HandleEmail_ResolvedServers;
+    const primaryServer: Worker_Handlers_HandleEmail_PrimaryServer = routed['primaryServer'];
 
-        await send({
-          messages: [],
-          servers: resolvedServers,
-          primaryServer,
-          topic: ctx['error_topic'],
-          mode: ctx['mode'],
-          attachment: errorAttachmentBuffer,
-          filename: 'error-debug.json',
-          attachmentHeaders: { 'X-Title': 'Email Interpretation Error' },
-        });
-      } catch {
-        // Best-effort error notification; ignore failures.
+    // 3. Authenticate.
+    const authResult: Worker_Handlers_HandleEmail_AuthResult = authenticate(
+      {
+        type: 'email',
+        ...((ctx['allowed_from'] !== undefined) ? { allowed_from: ctx['allowed_from'] } : {}),
+      },
+      {
+        authorization: undefined,
+        from,
+      },
+    );
+
+    if (authResult['authenticated'] === false) {
+      if (ctx['error_topic'] !== undefined && shouldNotifyError(ctx, 'authentication') === true) {
+        try {
+          const authErrorAttachmentData: Worker_Handlers_HandleEmail_AuthErrorAttachmentData = {
+            timestamp: new Date().toISOString(),
+            error: {
+              type: 'authentication',
+              message: authResult['reason'],
+            },
+            context: {
+              name: ctx['name'],
+              interpreter: ctx['interpreter'],
+              stage: 'authentication',
+            },
+            email: {
+              from,
+              to: parsed['to'],
+              subject: parsed['subject'],
+              textBody: parsed['textBody'],
+            },
+          };
+          const authErrorAttachmentJson: Worker_Handlers_HandleEmail_AuthErrorAttachmentJson = JSON.stringify(authErrorAttachmentData, null, 2);
+          const authErrorAttachmentBuffer: Worker_Handlers_HandleEmail_AuthErrorAttachmentBuffer = new TextEncoder().encode(authErrorAttachmentJson).buffer as ArrayBuffer;
+
+          await send({
+            messages: [],
+            servers: resolvedServers,
+            primaryServer,
+            topic: ctx['error_topic'],
+            mode: ctx['mode'],
+            attachment: authErrorAttachmentBuffer,
+            filename: 'error-debug.json',
+            attachmentHeaders: { 'X-Title': 'Email Authentication Error' },
+          });
+        } catch {
+          // Best-effort error notification; ignore failures.
+        }
       }
+
+      return;
     }
 
-    return;
+    // 4. Interpret.
+    const emailInput: Worker_Handlers_HandleEmail_EmailInput = {
+      subject: parsed['subject'],
+      textBody: parsed['textBody'],
+      from: parsed['from'],
+      to: parsed['to'],
+    };
+
+    let interpreted: Worker_Handlers_HandleEmail_Interpreted = undefined;
+
+    try {
+      interpreted = await interpret(ctx['interpreter'], emailInput, (kv !== undefined) ? { kv } : {});
+    } catch (err) {
+      const errorName: Worker_Handlers_HandleEmail_ErrorName = (err instanceof Error) ? err.name : 'Error';
+      const errorMessage: Worker_Handlers_HandleEmail_ErrorMessage = (err instanceof Error) ? err.message : 'Unknown interpretation error';
+      const errorStack: Worker_Handlers_HandleEmail_ErrorStack = (err instanceof Error) ? err.stack : undefined;
+      let errorIssues: Worker_Handlers_HandleEmail_ErrorIssues = undefined;
+
+      if (
+        err instanceof Error
+        && err.name === 'ZodError'
+        && 'issues' in err
+      ) {
+        const errorIssuesRaw: Worker_Handlers_HandleEmail_ErrorIssuesRaw = Reflect.get(err, 'issues');
+
+        if (Array.isArray(errorIssuesRaw) === true) {
+          errorIssues = errorIssuesRaw;
+        }
+      }
+
+      if (ctx['error_topic'] !== undefined && shouldNotifyError(ctx, 'interpretation') === true) {
+        try {
+          const interpretErrorAttachmentData: Worker_Handlers_HandleEmail_InterpretErrorAttachmentData = {
+            timestamp: new Date().toISOString(),
+            error: {
+              type: 'interpretation',
+              name: errorName,
+              message: errorMessage,
+              ...((errorStack !== undefined) ? { stack: errorStack } : {}),
+              ...((errorIssues !== undefined) ? { issues: errorIssues } : {}),
+            },
+            context: {
+              name: ctx['name'],
+              interpreter: ctx['interpreter'],
+              stage: 'interpretation',
+            },
+            email: {
+              from,
+              to: parsed['to'],
+              subject: parsed['subject'],
+              textBody: parsed['textBody'],
+            },
+          };
+          const interpretErrorAttachmentJson: Worker_Handlers_HandleEmail_InterpretErrorAttachmentJson = JSON.stringify(interpretErrorAttachmentData, null, 2);
+          const interpretErrorAttachmentBuffer: Worker_Handlers_HandleEmail_InterpretErrorAttachmentBuffer = new TextEncoder().encode(interpretErrorAttachmentJson).buffer as ArrayBuffer;
+
+          await send({
+            messages: [],
+            servers: resolvedServers,
+            primaryServer,
+            topic: ctx['error_topic'],
+            mode: ctx['mode'],
+            attachment: interpretErrorAttachmentBuffer,
+            filename: 'error-debug.json',
+            attachmentHeaders: { 'X-Title': 'Email Interpretation Error' },
+          });
+        } catch {
+          // Best-effort error notification; ignore failures.
+        }
+      }
+
+      return;
+    }
+
+    // Null result means the interpreter intentionally ignored the payload.
+    if (interpreted === null) {
+      return;
+    }
+
+    // Title fallback to context name if interpreter didn't set one.
+    if (interpreted['notification']['title'] === undefined) {
+      Reflect.set(interpreted['notification'], 'title', ctx['name']);
+    }
+
+    // 5. Format.
+    const formatted: Worker_Handlers_HandleEmail_Formatted = format(interpreted['notification'], {
+      showVisitorInfo: ctx['show_visitor_info'],
+    });
+
+    // 6. Split.
+    const messages: Worker_Handlers_HandleEmail_Messages = split(formatted['body'], formatted['headers']);
+
+    // 7. Send.
+    const sendResult: Worker_Handlers_HandleEmail_SendResult = await send({
+      messages,
+      servers: resolvedServers,
+      primaryServer,
+      topic: ctx['topic'],
+      mode: ctx['mode'],
+      attachment: interpreted['attachment'],
+      filename: interpreted['notification']['filename'],
+    });
+
+    // Debug log for Cloudflare real-time logs.
+    const debugLogStr: Worker_Handlers_HandleEmail_DebugLogStr = JSON.stringify({
+      context: ctx['name'],
+      interpreter: ctx['interpreter'],
+      servers: sendResult['results'],
+      bodySize: formatted['body'].length,
+      parts: messages.length,
+    }, null, 2);
+
+    console.info(debugLogStr);
+  } catch (err) {
+    // Log for Cloudflare real-time logs and return void so the email is accepted rather than bounced.
+    const fatalErrorMessage: Worker_Handlers_HandleEmail_FatalErrorMessage = (err instanceof Error) ? err.message : 'Unknown error';
+    const fatalDebugStr: Worker_Handlers_HandleEmail_FatalDebugStr = JSON.stringify({
+      debug: 'fatal_email_error',
+      error: fatalErrorMessage,
+    });
+
+    console.info(fatalDebugStr);
   }
-
-  // Null result means the interpreter intentionally ignored the payload.
-  if (interpreted === null) {
-    return;
-  }
-
-  // Title fallback to context name if interpreter didn't set one.
-  if (interpreted['notification']['title'] === undefined) {
-    Reflect.set(interpreted['notification'], 'title', ctx['name']);
-  }
-
-  // 5. Format.
-  const formatted: WorkerEmailFormatted = format(interpreted['notification'], {
-    showVisitorInfo: ctx['show_visitor_info'],
-  });
-
-  // 6. Split.
-  const messages: WorkerEmailMessages = split(formatted['body'], formatted['headers']);
-
-  // 7. Send.
-  const sendResult: WorkerEmailSendResult = await send({
-    messages,
-    servers: resolvedServers,
-    primaryServer,
-    topic: ctx['topic'],
-    mode: ctx['mode'],
-    attachment: interpreted['attachment'],
-    filename: interpreted['notification']['filename'],
-  });
-
-  // Debug log for Cloudflare real-time logs.
-  const debugLogStr: WorkerEmailDebugLogStr = JSON.stringify({
-    context: ctx['name'],
-    interpreter: ctx['interpreter'],
-    servers: sendResult['results'],
-    bodySize: formatted['body'].length,
-    parts: messages.length,
-  }, null, 2);
-
-  console.info(debugLogStr);
 
   return;
 }
@@ -620,4 +703,5 @@ async function handleEmail(rawEmail: WorkerHandleEmailRawEmail, from: WorkerHand
 export {
   handleEmail,
   handleRequest,
+  shouldNotifyError,
 };

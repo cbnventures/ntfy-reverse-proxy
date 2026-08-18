@@ -1,7 +1,7 @@
 ---
 id: seerr
 title: Seerr
-description: Format Seerr webhook notifications with event-based priority and TMDB links.
+description: Format Seerr webhook notifications with event-based priority mapping, media request details, TMDB action links, and optional Seerr dashboard buttons.
 sidebar_position: 5
 keywords:
   - ntfy reverse proxy
@@ -13,13 +13,15 @@ tags:
   - seerr
 ---
 
+import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
+
 Process webhook notifications from Seerr with contextual priority, media details, and action links.
 
 ## Input Handling
 
-For JSON object inputs, the full parsing pipeline is used. For string inputs, the interpreter attempts JSON parsing — if it fails, a fallback notification is created with title `[Seerr] Notification`, the raw string as the body, priority 3, and tags `seerr` and `movie_camera`.
+For JSON object inputs, the full parsing pipeline is used. For string inputs, the <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> attempts JSON parsing — if it fails, a fallback notification is created with title `[Seerr] Notification`, the raw string as the body, priority 3, and tags `seerr` and `movie_camera`.
 
-Binary inputs are decoded as UTF-8 and parsed as JSON (no fallback on parse failure).
+Binary inputs are decoded as UTF-8 and parsed as JSON. If parsing fails, a fallback notification is created with title `[Seerr] Notification`, the raw decoded text as the body, priority 3, and tags `seerr` and `movie_camera`.
 
 ## Supported Events
 
@@ -42,7 +44,7 @@ Unrecognized event types are handled at priority 3 (default).
 
 ## Payload Fields
 
-The interpreter extracts:
+The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> extracts:
 
 - `notification_type` — Determines priority and notification style.
 - `event`, `subject`, `message` — Used for title and body.

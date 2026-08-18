@@ -3,8 +3,18 @@ import { describe, expect, it } from 'vitest';
 import { pfsenseInterpreter } from '../../../worker/interpreters/pfsense.js';
 
 import type {
-  TestsWorkerInterpretersPfsenseBody,
-  TestsWorkerInterpretersPfsenseResult,
+  Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_AddsGatewayContentTag_Result,
+  Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_AddsPfsenseTag_Result,
+  Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_EnablesMarkdown_Result,
+  Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_ExtractsHostnameFromSubject_Result,
+  Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_HandlesBatchedNotifications_Body,
+  Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_HandlesBatchedNotifications_Result,
+  Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_HandlesStringInputAsFallback_Result,
+  Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_MapsErrorKeywordToPriority4_Result,
+  Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_MapsGatewayAvailableToLowPriority_Result,
+  Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_MapsGatewayDownToHighPriority_Result,
+  Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_MapsPacketLossToPriority3_Result,
+  Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_RendersANotificationWithoutASeparator_Result,
 } from '../../../types/tests/worker/interpreters/pfsense.test.d.ts';
 
 /**
@@ -13,16 +23,12 @@ import type {
  * @since 2.0.0
  */
 describe('pfsenseInterpreter', () => {
-  /**
-   * Tests - Worker - Interpreters - Pfsense.
-   *
-   * @since 2.0.0
-   */
   it('extracts hostname from subject', () => {
-    const result: TestsWorkerInterpretersPfsenseResult = pfsenseInterpreter({
+    const result: Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_ExtractsHostnameFromSubject_Result = pfsenseInterpreter({
       subject: 'firewall.example.com - Notification',
       textBody: '14:32:05 Gateway WAN_DHCP is down',
-      from: 'pfsense@firewall.local', to: 'pfsense@ntfy.example.com',
+      from: 'pfsense@firewall.local',
+      to: 'pfsense@ntfy.example.com',
     });
 
     expect(result['notification']['title']).toContain('firewall.example.com');
@@ -30,15 +36,12 @@ describe('pfsenseInterpreter', () => {
     return;
   });
 
-  /**
-   * Tests - Worker - Interpreters - Pfsense.
-   *
-   * @since 2.0.0
-   */
   it('maps gateway down to high priority', () => {
-    const result: TestsWorkerInterpretersPfsenseResult = pfsenseInterpreter({
-      subject: 'fw.local - Notification', textBody: '14:32:05 Gateway WAN is down',
-      from: 'a@b', to: 'c@d',
+    const result: Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_MapsGatewayDownToHighPriority_Result = pfsenseInterpreter({
+      subject: 'fw.local - Notification',
+      textBody: '14:32:05 Gateway WAN is down',
+      from: 'a@b',
+      to: 'c@d',
     });
 
     expect(result['notification']['priority']).toBe(5);
@@ -46,15 +49,12 @@ describe('pfsenseInterpreter', () => {
     return;
   });
 
-  /**
-   * Tests - Worker - Interpreters - Pfsense.
-   *
-   * @since 2.0.0
-   */
   it('maps gateway available to low priority', () => {
-    const result: TestsWorkerInterpretersPfsenseResult = pfsenseInterpreter({
-      subject: 'fw.local - Notification', textBody: '14:32:05 Gateway WAN is available now',
-      from: 'a@b', to: 'c@d',
+    const result: Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_MapsGatewayAvailableToLowPriority_Result = pfsenseInterpreter({
+      subject: 'fw.local - Notification',
+      textBody: '14:32:05 Gateway WAN is available now',
+      from: 'a@b',
+      to: 'c@d',
     });
 
     expect(result['notification']['priority']).toBe(2);
@@ -62,20 +62,18 @@ describe('pfsenseInterpreter', () => {
     return;
   });
 
-  /**
-   * Tests - Worker - Interpreters - Pfsense.
-   *
-   * @since 2.0.0
-   */
   it('handles batched notifications', () => {
-    const body: TestsWorkerInterpretersPfsenseBody = [
+    const body: Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_HandlesBatchedNotifications_Body = [
       'Notifications in this message: 2',
       '========================================',
       '14:32:05 Gateway down',
       '14:32:10 Gateway up',
     ].join('\n');
-    const result: TestsWorkerInterpretersPfsenseResult = pfsenseInterpreter({
-      subject: 'fw.local - Notification', textBody: body, from: 'a@b', to: 'c@d',
+    const result: Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_HandlesBatchedNotifications_Result = pfsenseInterpreter({
+      subject: 'fw.local - Notification',
+      textBody: body,
+      from: 'a@b',
+      to: 'c@d',
     });
 
     expect(result['notification']['body']).toContain('Gateway down');
@@ -85,14 +83,12 @@ describe('pfsenseInterpreter', () => {
     return;
   });
 
-  /**
-   * Tests - Worker - Interpreters - Pfsense.
-   *
-   * @since 2.0.0
-   */
   it('adds pfsense tag', () => {
-    const result: TestsWorkerInterpretersPfsenseResult = pfsenseInterpreter({
-      subject: 'fw - Notification', textBody: 'test', from: 'a@b', to: 'c@d',
+    const result: Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_AddsPfsenseTag_Result = pfsenseInterpreter({
+      subject: 'fw - Notification',
+      textBody: 'test',
+      from: 'a@b',
+      to: 'c@d',
     });
 
     expect(result['notification']['tags']).toContain('pfsense');
@@ -100,13 +96,8 @@ describe('pfsenseInterpreter', () => {
     return;
   });
 
-  /**
-   * Tests - Worker - Interpreters - Pfsense.
-   *
-   * @since 2.0.0
-   */
   it('handles string input as fallback', () => {
-    const result: TestsWorkerInterpretersPfsenseResult = pfsenseInterpreter('plain text fallback');
+    const result: Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_HandlesStringInputAsFallback_Result = pfsenseInterpreter('plain text fallback');
 
     expect(result['notification']['body']).toContain('plain text fallback');
 
@@ -115,14 +106,12 @@ describe('pfsenseInterpreter', () => {
     return;
   });
 
-  /**
-   * Tests - Worker - Interpreters - Pfsense.
-   *
-   * @since 2.0.0
-   */
   it('enables markdown', () => {
-    const result: TestsWorkerInterpretersPfsenseResult = pfsenseInterpreter({
-      subject: 'fw - Notification', textBody: 'test', from: 'a@b', to: 'c@d',
+    const result: Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_EnablesMarkdown_Result = pfsenseInterpreter({
+      subject: 'fw - Notification',
+      textBody: 'test',
+      from: 'a@b',
+      to: 'c@d',
     });
 
     expect(result['notification']['markdown']).toBe(true);
@@ -130,15 +119,12 @@ describe('pfsenseInterpreter', () => {
     return;
   });
 
-  /**
-   * Tests - Worker - Interpreters - Pfsense.
-   *
-   * @since 2.0.0
-   */
   it('adds gateway content tag', () => {
-    const result: TestsWorkerInterpretersPfsenseResult = pfsenseInterpreter({
-      subject: 'fw - Notification', textBody: 'Gateway WAN_DHCP is down',
-      from: 'a@b', to: 'c@d',
+    const result: Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_AddsGatewayContentTag_Result = pfsenseInterpreter({
+      subject: 'fw - Notification',
+      textBody: 'Gateway WAN_DHCP is down',
+      from: 'a@b',
+      to: 'c@d',
     });
 
     expect(result['notification']['tags']).toContain('gateway');
@@ -146,15 +132,12 @@ describe('pfsenseInterpreter', () => {
     return;
   });
 
-  /**
-   * Tests - Worker - Interpreters - Pfsense.
-   *
-   * @since 2.0.0
-   */
   it('maps error keyword to priority 4', () => {
-    const result: TestsWorkerInterpretersPfsenseResult = pfsenseInterpreter({
-      subject: 'fw - Notification', textBody: 'An error occurred on interface',
-      from: 'a@b', to: 'c@d',
+    const result: Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_MapsErrorKeywordToPriority4_Result = pfsenseInterpreter({
+      subject: 'fw - Notification',
+      textBody: 'An error occurred on interface',
+      from: 'a@b',
+      to: 'c@d',
     });
 
     expect(result['notification']['priority']).toBe(4);
@@ -162,18 +145,28 @@ describe('pfsenseInterpreter', () => {
     return;
   });
 
-  /**
-   * Tests - Worker - Interpreters - Pfsense.
-   *
-   * @since 2.0.0
-   */
   it('maps packet loss to priority 3', () => {
-    const result: TestsWorkerInterpretersPfsenseResult = pfsenseInterpreter({
-      subject: 'fw - Notification', textBody: 'Gateway has packet loss',
-      from: 'a@b', to: 'c@d',
+    const result: Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_MapsPacketLossToPriority3_Result = pfsenseInterpreter({
+      subject: 'fw - Notification',
+      textBody: 'Gateway has packet loss',
+      from: 'a@b',
+      to: 'c@d',
     });
 
     expect(result['notification']['priority']).toBe(3);
+
+    return;
+  });
+
+  it('renders a notification without a separator', () => {
+    const result: Tests_Worker_Interpreters_Pfsense_PfsenseInterpreter_RendersANotificationWithoutASeparator_Result = pfsenseInterpreter({
+      subject: 'fw.local - Notification',
+      textBody: '14:32:05 Gateway WAN_DHCP is down',
+      from: 'a@b',
+      to: 'c@d',
+    });
+
+    expect(result['notification']['body']).toContain('Gateway WAN_DHCP is down');
 
     return;
   });

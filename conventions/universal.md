@@ -25,6 +25,12 @@ If your platform does not provide dedicated task tracking tools, maintain a chec
 
 When a command produces output that may be referenced later, save it to a file in the agent's designated temporary directory. Read from the cached file instead of re-running the command. Do not rely on conversation memory for command output — files survive context compaction.
 
+### File Writes
+
+Use your platform's dedicated file-editing tool to create or modify files. In Claude Code, that is `Write` or `Edit`; in Codex CLI, `apply_patch`; other agents have equivalents. Do not write files through shell redirection (`cat > file`, `echo >>`, `tee`, heredocs), in-place editors (`sed -i`, `awk -i`), inline scripts (`node -e`, `python -c`, PowerShell `Set-Content`), or any other script- or batch-file-driven write. Shell-driven writes routinely produce malformed output — quoting errors, encoding mismatches, missing newlines, partial writes — that then has to be repaired by hand.
+
+Reading files via the shell (`cat`, `head`, `tail`, `grep`, `rg`) is fine. The restriction applies only to writes.
+
 ### Command Transparency
 
 Run commands from explicit, full directory paths so every invocation is unambiguous. Prefix commands with `cd` to the target directory so the working directory is visible in the output.
@@ -39,9 +45,29 @@ cd /path/to/packages/nova && npm run build
 
 ### Web Browser Debugging
 
-Use the `agent-browser` command for visual testing and web page interaction. Do not use `curl`, `wget`, or other HTTP clients for tasks that require rendering, clicking, or inspecting a page.
+For visual testing and web page interaction, prefer the Claude-in-Chrome MCP tools (`mcp__claude-in-chrome__*` — `tabs_*`, `navigate`, `javascript_tool`, `read_page`, `read_console_messages`, etc.) when available. They drive the user's real Chrome session and provide richer page inspection.
 
-Run `agent-browser --help` for available commands.
+If the Claude-in-Chrome MCP is not available, fall back to Vercel's `agent-browser` command for headless rendering and interaction. Run `agent-browser --help` for available commands.
+
+One exception to the MCP-first preference: Claude-in-Chrome screenshots are returned inline in the conversation and cannot be written to disk. When a screenshot must be saved to a file — to attach to a commit, produce an artifact, or include in a report — use `agent-browser` to capture it even when the MCP is available.
+
+Do not use `curl`, `wget`, or other plain HTTP clients for tasks that require rendering, clicking, or inspecting a page.
+
+### Web Research
+
+When stuck on an unfamiliar API, error message, library behavior, or design choice, do web research before guessing. The right direction or answer turns up the majority of the time. Cite URLs so the user can verify.
+
+Before searching, check what you already have. If the answer lives in the repo, the dependency's source, `--help`, a man page, a `README`, or a `CHANGELOG.md`, read those first — web research for local-knowledge questions is wasted motion. When you do search, sanitize the query: no secrets, internal URLs, proprietary code, or unique identifiers — strip to a generic reproduction.
+
+Prefer authoritative sources in this order: official docs → source code → GitHub issues → Stack Overflow → other. Check each result's date and the library version it covers against yours; articles age and APIs deprecate. Treat AI-generated SEO content as untrustworthy by default — verify every claim against an authoritative source before applying it.
+
+If a search returns no useful results, that is ambiguous: it may mean the **query** is wrong (wrong terms, too narrow), or that the **approach** is wrong (unusual framing of the problem). Reformulate the query 2–3 times before concluding the approach itself is off; when it is, step back and restate the problem rather than searching harder. Watch for confirmation bias — once early results push you toward a hypothesis, follow-up searches will keep surfacing "evidence" for it; periodically ask whether you're searching to understand or to justify. Conversely, when the first few authoritative results all agree "this isn't supported" or "isn't possible," that *is* the answer — don't keep searching for a workaround the ecosystem clearly hasn't built.
+
+### Honest Acknowledgment
+
+Don't open responses with performative agreement like "you're right" or "great catch." It hides the reasoning behind your change, obscures what's actually being updated, and lets the same class of mistake recur silently elsewhere. The user can't correct compounding behavior they haven't seen disclosed.
+
+When the user corrects you, state what you're actually updating, why the prior approach was wrong, and whether the same fix needs to apply elsewhere. Push back if the correction is itself mistaken — silent compliance is worse than honest disagreement.
 
 ## Workflow
 
@@ -66,7 +92,7 @@ Run `agent-browser --help` for available commands.
 ### Wrapping Up
 
 - **Keep working until the user says "all done."** Continue executing per-change bumps and builds until explicitly told to stop.
-- **On "all done":** consolidate the changelog, recalculate the build number (if applicable), sync the version across all version files, and commit with a version subject line. Do not add co-author credits.
+- **On "all done":** consolidate the changelog, recalculate the build number (if applicable), sync the version across all version files, and commit with a thematic subject line listing 3-5 themes in imperative form (e.g. `Add reconnect action, bandwidth polish, persistent TOTP lockout, and docs screenshots`). Do not use the version number as the subject (no `1.2.0 (295)` style); the version pointer lives in the tag, not the subject. Do not add co-author credits.
 - **Keep version numbers and CHANGELOG.md synchronized** at all times before commit.
 
 ## General Code Style

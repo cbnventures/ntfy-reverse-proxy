@@ -13,7 +13,7 @@
     ]
   },
   "include": [
-    "./eslint.config.ts",
+    "./eslint.config.mts",
     "./vitest.config.ts",
     "./vitest.setup.ts"
   ]

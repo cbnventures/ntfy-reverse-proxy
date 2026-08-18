@@ -3,8 +3,11 @@ import { describe, expect, it } from 'vitest';
 import { plainTextInterpreter } from '../../../worker/interpreters/plain-text.js';
 
 import type {
-  TestsWorkerInterpretersPlainTextBuffer,
-  TestsWorkerInterpretersPlainTextResult,
+  Tests_Worker_Interpreters_PlainText_PlainTextInterpreter_HandlesBinaryInputByConvertingToStringRepresentation_Buffer,
+  Tests_Worker_Interpreters_PlainText_PlainTextInterpreter_HandlesBinaryInputByConvertingToStringRepresentation_Result,
+  Tests_Worker_Interpreters_PlainText_PlainTextInterpreter_HasNoAttachment_Result,
+  Tests_Worker_Interpreters_PlainText_PlainTextInterpreter_PassesTextThroughAsBody_Result,
+  Tests_Worker_Interpreters_PlainText_PlainTextInterpreter_StringifiesObjectInput_Result,
 } from '../../../types/tests/worker/interpreters/plain-text.test.d.ts';
 
 /**
@@ -13,53 +16,33 @@ import type {
  * @since 2.0.0
  */
 describe('plainTextInterpreter', () => {
-  /**
-   * Tests - Worker - Interpreters - Plain Text.
-   *
-   * @since 2.0.0
-   */
   it('passes text through as body', () => {
-    const result: TestsWorkerInterpretersPlainTextResult = plainTextInterpreter('Hello world');
+    const result: Tests_Worker_Interpreters_PlainText_PlainTextInterpreter_PassesTextThroughAsBody_Result = plainTextInterpreter('Hello world');
 
     expect(result['notification']['body']).toBe('Hello world');
 
     return;
   });
 
-  /**
-   * Tests - Worker - Interpreters - Plain Text.
-   *
-   * @since 2.0.0
-   */
   it('has no attachment', () => {
-    const result: TestsWorkerInterpretersPlainTextResult = plainTextInterpreter('test');
+    const result: Tests_Worker_Interpreters_PlainText_PlainTextInterpreter_HasNoAttachment_Result = plainTextInterpreter('test');
 
     expect(result['attachment']).toBeUndefined();
 
     return;
   });
 
-  /**
-   * Tests - Worker - Interpreters - Plain Text.
-   *
-   * @since 2.0.0
-   */
   it('handles binary input by converting to string representation', () => {
-    const buffer: TestsWorkerInterpretersPlainTextBuffer = new TextEncoder().encode('binary content').buffer as ArrayBuffer;
-    const result: TestsWorkerInterpretersPlainTextResult = plainTextInterpreter(buffer);
+    const buffer: Tests_Worker_Interpreters_PlainText_PlainTextInterpreter_HandlesBinaryInputByConvertingToStringRepresentation_Buffer = new TextEncoder().encode('binary content').buffer as ArrayBuffer;
+    const result: Tests_Worker_Interpreters_PlainText_PlainTextInterpreter_HandlesBinaryInputByConvertingToStringRepresentation_Result = plainTextInterpreter(buffer);
 
     expect(result['notification']['body']).toBe('binary content');
 
     return;
   });
 
-  /**
-   * Tests - Worker - Interpreters - Plain Text.
-   *
-   * @since 2.0.0
-   */
   it('stringifies object input', () => {
-    const result: TestsWorkerInterpretersPlainTextResult = plainTextInterpreter({ key: 'value' });
+    const result: Tests_Worker_Interpreters_PlainText_PlainTextInterpreter_StringifiesObjectInput_Result = plainTextInterpreter({ key: 'value' });
 
     expect(result['notification']['body']).toContain('key');
 

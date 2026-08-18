@@ -2,7 +2,15 @@ import { describe, expect, it } from 'vitest';
 
 import { synologyInterpreter } from '../../../worker/interpreters/synology.js';
 
-import type { TestsWorkerInterpretersSynologyResult } from '../../../types/tests/worker/interpreters/synology.test.d.ts';
+import type {
+  Tests_Worker_Interpreters_Synology_SynologyInterpreter_AddsSynologyTag_Result,
+  Tests_Worker_Interpreters_Synology_SynologyInterpreter_EnablesMarkdown_Result,
+  Tests_Worker_Interpreters_Synology_SynologyInterpreter_HandlesJSONSynologyWebhookWithKnownFields_Result,
+  Tests_Worker_Interpreters_Synology_SynologyInterpreter_HandlesPlainTextSynologyWebhook_Result,
+  Tests_Worker_Interpreters_Synology_SynologyInterpreter_MapsSeverityToNtfyPriority_Error,
+  Tests_Worker_Interpreters_Synology_SynologyInterpreter_MapsSeverityToNtfyPriority_Info,
+  Tests_Worker_Interpreters_Synology_SynologyInterpreter_MapsSeverityToNtfyPriority_Warning,
+} from '../../../types/tests/worker/interpreters/synology.test.d.ts';
 
 /**
  * Tests - Worker - Interpreters - Synology - Interpreter.
@@ -16,7 +24,7 @@ describe('synologyInterpreter', () => {
    * @since 2.0.0
    */
   it('handles plain text Synology webhook', () => {
-    const result: TestsWorkerInterpretersSynologyResult = synologyInterpreter('System: Storage pool 1 has degraded');
+    const result: Tests_Worker_Interpreters_Synology_SynologyInterpreter_HandlesPlainTextSynologyWebhook_Result = synologyInterpreter('System: Storage pool 1 has degraded');
 
     expect(result['notification']['body']).toContain('Storage pool 1 has degraded');
 
@@ -31,7 +39,7 @@ describe('synologyInterpreter', () => {
    * @since 2.0.0
    */
   it('handles JSON Synology webhook with known fields', () => {
-    const result: TestsWorkerInterpretersSynologyResult = synologyInterpreter({
+    const result: Tests_Worker_Interpreters_Synology_SynologyInterpreter_HandlesJSONSynologyWebhookWithKnownFields_Result = synologyInterpreter({
       event: 'SystemEvent',
       severity: 'warning',
       message: 'Disk 1 has bad sectors',
@@ -53,14 +61,17 @@ describe('synologyInterpreter', () => {
    * @since 2.0.0
    */
   it('maps severity to ntfy priority', () => {
-    const warning: TestsWorkerInterpretersSynologyResult = synologyInterpreter({
-      message: 'test', severity: 'warning',
+    const warning: Tests_Worker_Interpreters_Synology_SynologyInterpreter_MapsSeverityToNtfyPriority_Warning = synologyInterpreter({
+      message: 'test',
+      severity: 'warning',
     });
-    const error: TestsWorkerInterpretersSynologyResult = synologyInterpreter({
-      message: 'test', severity: 'error',
+    const error: Tests_Worker_Interpreters_Synology_SynologyInterpreter_MapsSeverityToNtfyPriority_Error = synologyInterpreter({
+      message: 'test',
+      severity: 'error',
     });
-    const info: TestsWorkerInterpretersSynologyResult = synologyInterpreter({
-      message: 'test', severity: 'info',
+    const info: Tests_Worker_Interpreters_Synology_SynologyInterpreter_MapsSeverityToNtfyPriority_Info = synologyInterpreter({
+      message: 'test',
+      severity: 'info',
     });
 
     expect(warning['notification']['priority']).toBe(3);
@@ -78,7 +89,7 @@ describe('synologyInterpreter', () => {
    * @since 2.0.0
    */
   it('adds synology tag', () => {
-    const result: TestsWorkerInterpretersSynologyResult = synologyInterpreter('test message');
+    const result: Tests_Worker_Interpreters_Synology_SynologyInterpreter_AddsSynologyTag_Result = synologyInterpreter('test message');
 
     expect(result['notification']['tags']).toContain('synology');
 
@@ -91,7 +102,7 @@ describe('synologyInterpreter', () => {
    * @since 2.0.0
    */
   it('enables markdown', () => {
-    const result: TestsWorkerInterpretersSynologyResult = synologyInterpreter('test');
+    const result: Tests_Worker_Interpreters_Synology_SynologyInterpreter_EnablesMarkdown_Result = synologyInterpreter('test');
 
     expect(result['notification']['markdown']).toBe(true);
 

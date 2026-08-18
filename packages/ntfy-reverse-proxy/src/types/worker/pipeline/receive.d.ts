@@ -3,62 +3,64 @@
  *
  * @since 2.0.0
  */
-export type WorkerPipelineReceiveResultMethod = string;
+export type Worker_Pipeline_Receive_ResultMethod = string;
 
-export type WorkerPipelineReceiveResultHostname = string;
+export type Worker_Pipeline_Receive_ResultHostname = string;
 
-export type WorkerPipelineReceiveResultUrl = string;
+export type Worker_Pipeline_Receive_ResultUrl = string;
 
-export type WorkerPipelineReceiveResultHeaders = Headers;
+export type Worker_Pipeline_Receive_ResultHeaders = Headers;
 
-export type WorkerPipelineReceiveResultRawBody = ArrayBuffer;
+export type Worker_Pipeline_Receive_ResultRawBody = ArrayBuffer;
 
-export type WorkerPipelineReceiveResultIsGet = boolean;
+export type Worker_Pipeline_Receive_ResultIsGet = boolean;
 
-export type WorkerPipelineReceiveResultRedirect = string;
+export type Worker_Pipeline_Receive_ResultRedirect = string;
 
-export type WorkerPipelineReceiveResultError = string;
+export type Worker_Pipeline_Receive_ResultError = string;
 
-export type WorkerPipelineReceiveResultCfProperties = IncomingRequestCfProperties;
+export type Worker_Pipeline_Receive_ResultCfProperties = IncomingRequestCfProperties;
 
-export type WorkerPipelineReceiveResult = {
-  method: WorkerPipelineReceiveResultMethod;
-  hostname: WorkerPipelineReceiveResultHostname;
-  url: WorkerPipelineReceiveResultUrl;
-  headers: WorkerPipelineReceiveResultHeaders;
-  rawBody: WorkerPipelineReceiveResultRawBody;
-  isGet: WorkerPipelineReceiveResultIsGet;
-  redirect?: WorkerPipelineReceiveResultRedirect;
-  error?: WorkerPipelineReceiveResultError;
-  cfProperties?: WorkerPipelineReceiveResultCfProperties;
+export type Worker_Pipeline_Receive_Result = {
+  method: Worker_Pipeline_Receive_ResultMethod;
+  hostname: Worker_Pipeline_Receive_ResultHostname;
+  url: Worker_Pipeline_Receive_ResultUrl;
+  headers: Worker_Pipeline_Receive_ResultHeaders;
+  rawBody: Worker_Pipeline_Receive_ResultRawBody;
+  isGet: Worker_Pipeline_Receive_ResultIsGet;
+  redirect?: Worker_Pipeline_Receive_ResultRedirect;
+  error?: Worker_Pipeline_Receive_ResultError;
+  cfProperties?: Worker_Pipeline_Receive_ResultCfProperties;
 };
 
-export type WorkerPipelineReceiveRequest = Request;
+export type Worker_Pipeline_Receive_Request = Request;
 
-export type WorkerPipelineReceiveBaseDomain = string;
+export type Worker_Pipeline_Receive_BaseDomain = string;
 
-export type WorkerPipelineReceiveReturns = Promise<WorkerPipelineReceiveResult>;
+export type Worker_Pipeline_Receive_Returns = Promise<Worker_Pipeline_Receive_Result>;
 
-export type WorkerPipelineReceiveMethod = string;
+export type Worker_Pipeline_Receive_Method = string;
 
-export type WorkerPipelineReceiveHostname = string;
+export type Worker_Pipeline_Receive_Hostname = string;
 
-export type WorkerPipelineReceiveProtocol = string;
+export type Worker_Pipeline_Receive_Protocol = string;
 
-export type WorkerPipelineReceiveUrl = string;
+export type Worker_Pipeline_Receive_Url = string;
 
-export type WorkerPipelineReceiveHeaders = Headers;
+export type Worker_Pipeline_Receive_Headers = Headers;
 
-export type WorkerPipelineReceiveIncludesBaseDomain = boolean;
+export type Worker_Pipeline_Receive_IncludesBaseDomain = boolean;
 
-export type WorkerPipelineReceiveRedirect = string;
+export type Worker_Pipeline_Receive_Redirect = string;
 
-export type WorkerPipelineReceiveRawBody = ArrayBuffer;
+export type Worker_Pipeline_Receive_RawBody = ArrayBuffer;
 
-export type WorkerPipelineReceiveIsGet = boolean;
+export type Worker_Pipeline_Receive_IsGet = boolean;
 
-export type WorkerPipelineReceiveCfRequestUnknown = unknown;
+export type Worker_Pipeline_Receive_CfRequestUnknown = unknown;
 
-export type WorkerPipelineReceiveCfRequestRecord = Record<string, unknown>;
+export type Worker_Pipeline_Receive_CfRequestRecord = Record<string, unknown>;
 
-export type WorkerPipelineReceiveCfProperties = IncomingRequestCfProperties | undefined;
+export type Worker_Pipeline_Receive_CfProperties = IncomingRequestCfProperties | undefined;
+
+export type Worker_Pipeline_Receive_Receive_ParsedUrl = URL;

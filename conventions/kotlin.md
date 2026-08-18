@@ -5,7 +5,7 @@ Quotes: Double (only option). Indentation: 4-space. File naming: PascalCase matc
 ## Documentation Style
 
 - Comment syntax: `/** */`
-- Padding tag: `@since 1.0.0` (KDoc)
+- Padding tag: `@since UNRELEASED` (KDoc) — tag new or changed API with `@since UNRELEASED`; the release process stamps the real version automatically, so never hand-write a version number.
 - Param format: `@param name - Name.` (description matches the parameter name, capitalized, with a trailing period)
 - Return format: `@return Type?`
 - Include `@private` tag for private members.
@@ -16,13 +16,13 @@ Quotes: Double (only option). Indentation: 4-space. File naming: PascalCase matc
 /**
  * Entity Repository.
  *
- * @since 1.0.0
+ * @since UNRELEASED
  */
 class EntityRepository(
     /**
      * Entity Repository - Database.
      *
-     * @since 1.0.0
+     * @since UNRELEASED
      */
     private val database: Database,
 ) {
@@ -33,7 +33,7 @@ class EntityRepository(
      *
      * @return Entity?
      *
-     * @since 1.0.0
+     * @since UNRELEASED
      */
     suspend fun findById(id: UUID): Entity? { ... }
 }

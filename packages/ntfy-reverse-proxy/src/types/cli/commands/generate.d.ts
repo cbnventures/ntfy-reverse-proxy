@@ -1,51 +1,67 @@
 import type {
-  LibSchemaConfigSchema,
-  LibSchemaContextConfig,
-  LibSchemaEmailContextConfig,
-  LibSchemaHttpContextConfig,
+  Lib_Schema_ConfigSchemaContexts,
+  Lib_Schema_ConfigSchemaServers,
+  Lib_Schema_ConfigSchemaSettings,
+  Lib_Schema_EmailContextConfig,
+  Lib_Schema_HttpContextConfig,
 } from '../../lib/schema.d.ts';
+
+/**
+ * CLI - Commands - Generate.
+ *
+ * @since 2.0.0
+ */
+export type Cli_Commands_Generate_ProjectRoot = string;
+
+export type Cli_Commands_Generate_DefaultWranglerTomlPath = string;
 
 /**
  * CLI - Commands - Generate - Generate Wrangler Toml.
  *
  * @since 2.0.0
  */
-export type CliCommandsGenerateGenerateWranglerTomlProjectRoot = string;
+export type Cli_Commands_Generate_GenerateWranglerToml_ConfigPath = string;
 
-export type CliCommandsGenerateGenerateWranglerTomlDefaultPath = string;
+export type Cli_Commands_Generate_GenerateWranglerToml_OutputPath = string | undefined;
 
-export type CliCommandsGenerateGenerateWranglerTomlConfigPath = string;
+export type Cli_Commands_Generate_GenerateWranglerToml_AccountId = string;
 
-export type CliCommandsGenerateGenerateWranglerTomlOutputPath = string | undefined;
+export type Cli_Commands_Generate_GenerateWranglerToml_KvNamespaceId = string;
 
-export type CliCommandsGenerateGenerateWranglerTomlAccountId = string;
+export type Cli_Commands_Generate_GenerateWranglerToml_Returns = void;
 
-export type CliCommandsGenerateGenerateWranglerTomlKvNamespaceId = string;
+export type Cli_Commands_Generate_GenerateWranglerToml_Config_Settings = Lib_Schema_ConfigSchemaSettings;
 
-export type CliCommandsGenerateGenerateWranglerTomlReturn = void;
+export type Cli_Commands_Generate_GenerateWranglerToml_Config_Servers = Lib_Schema_ConfigSchemaServers;
 
-export type CliCommandsGenerateGenerateWranglerTomlConfig = LibSchemaConfigSchema;
+export type Cli_Commands_Generate_GenerateWranglerToml_Config_Contexts = Lib_Schema_ConfigSchemaContexts;
 
-export type CliCommandsGenerateGenerateWranglerTomlSettings = LibSchemaConfigSchema['settings'];
+export type Cli_Commands_Generate_GenerateWranglerToml_Config = {
+  settings: Cli_Commands_Generate_GenerateWranglerToml_Config_Settings;
+  servers: Cli_Commands_Generate_GenerateWranglerToml_Config_Servers;
+  contexts: Cli_Commands_Generate_GenerateWranglerToml_Config_Contexts;
+};
 
-export type CliCommandsGenerateGenerateWranglerTomlServers = LibSchemaConfigSchema['servers'];
+export type Cli_Commands_Generate_GenerateWranglerToml_Settings = Cli_Commands_Generate_GenerateWranglerToml_Config['settings'];
 
-export type CliCommandsGenerateGenerateWranglerTomlContexts = LibSchemaContextConfig[];
+export type Cli_Commands_Generate_GenerateWranglerToml_Servers = Cli_Commands_Generate_GenerateWranglerToml_Config['servers'];
 
-export type CliCommandsGenerateGenerateWranglerTomlCompatibilityDate = string;
+export type Cli_Commands_Generate_GenerateWranglerToml_Contexts = Cli_Commands_Generate_GenerateWranglerToml_Config['contexts'];
 
-export type CliCommandsGenerateGenerateWranglerTomlHttpContexts = LibSchemaHttpContextConfig[];
+export type Cli_Commands_Generate_GenerateWranglerToml_CompatibilityDate = string;
 
-export type CliCommandsGenerateGenerateWranglerTomlEmailContexts = LibSchemaEmailContextConfig[];
+export type Cli_Commands_Generate_GenerateWranglerToml_HttpContexts = Array<Lib_Schema_HttpContextConfig>;
 
-export type CliCommandsGenerateGenerateWranglerTomlRouteLines = string[];
+export type Cli_Commands_Generate_GenerateWranglerToml_EmailContexts = Array<Lib_Schema_EmailContextConfig>;
 
-export type CliCommandsGenerateGenerateWranglerTomlLines = string[];
+export type Cli_Commands_Generate_GenerateWranglerToml_RouteLines = string[];
 
-export type CliCommandsGenerateGenerateWranglerTomlSettingsJson = string;
+export type Cli_Commands_Generate_GenerateWranglerToml_Lines = string[];
 
-export type CliCommandsGenerateGenerateWranglerTomlServersJson = string;
+export type Cli_Commands_Generate_GenerateWranglerToml_SettingsJson = string;
 
-export type CliCommandsGenerateGenerateWranglerTomlContextsJson = string;
+export type Cli_Commands_Generate_GenerateWranglerToml_ServersJson = string;
 
-export type CliCommandsGenerateGenerateWranglerTomlOutputDir = string;
+export type Cli_Commands_Generate_GenerateWranglerToml_ContextsJson = string;
+
+export type Cli_Commands_Generate_GenerateWranglerToml_OutputDir = string;

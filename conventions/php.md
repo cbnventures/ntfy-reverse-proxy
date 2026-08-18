@@ -5,7 +5,7 @@ Quotes: Single (non-interpolated). Indentation: 4-space. File naming: PascalCase
 ## Documentation Style
 
 - Comment syntax: `/** */`
-- Padding tag: `@since 1.0.0` (PHPDoc)
+- Padding tag: `@since UNRELEASED` (PHPDoc) — tag new or changed API with `@since UNRELEASED`; the release process stamps the real version automatically, so never hand-write a version number.
 - Param format: `@param type $name - Name.` (description matches the parameter name, capitalized, with a trailing period)
 - Return format: `@return type`
 - Include `@private` tag for private members.
@@ -22,7 +22,7 @@ Quotes: Single (non-interpolated). Indentation: 4-space. File naming: PascalCase
  *
  * @return void
  *
- * @since 1.0.0
+ * @since UNRELEASED
  */
 function backup_config_file(
     string $backup_name,

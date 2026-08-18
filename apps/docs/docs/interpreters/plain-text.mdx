@@ -1,7 +1,7 @@
 ---
 id: plain-text
 title: Plain Text
-description: Forward raw text, JSON, or binary input as a notification body with zero transformation.
+description: Forward raw text, JSON, or binary input as an ntfy notification body with zero transformation, using the context name as the fallback title.
 sidebar_position: 3
 keywords:
   - ntfy reverse proxy
@@ -13,7 +13,9 @@ tags:
   - plain-text
 ---
 
-Pass the input through as the notification body with no transformation — the simplest interpreter available.
+import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
+
+Pass the input through as the notification body with no transformation — the simplest <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> available.
 
 ## Behavior
 
@@ -21,10 +23,10 @@ Pass the input through as the notification body with no transformation — the s
 - **Binary input** — Decoded as UTF-8 text.
 - **Object input** — Serialized as pretty-printed JSON (2-space indent).
 
-No title, priority, tags, or other notification fields are set by this interpreter. The notification title falls back to the context's `name` field.
+No title, priority, tags, or other notification fields are set by this <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>. The notification title falls back to the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s `name` field.
 
 :::info
-ntfy headers like `X-Title` or `X-Priority` on the incoming HTTP request are **not** forwarded to the ntfy server. The proxy builds outgoing headers from the interpreter's notification object, not from the incoming request. If you need control over title, priority, tags, and other ntfy fields, use the [`ntfy-json`](/docs/interpreters/ntfy-json/) interpreter instead.
+<Terminology title="8 outgoing headers the proxy sets from the notification" to="/docs/reference/terminology#ntfy-headers">ntfy headers</Terminology> like `X-Title` or `X-Priority` on the incoming HTTP request are **not** forwarded to the ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>. The proxy builds outgoing headers from the <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>'s <Terminology title="standardized result an interpreter returns" to="/docs/reference/terminology#notification-object">notification object</Terminology>, not from the incoming request. If you need control over title, priority, tags, and other ntfy fields, use the [`ntfy-json`](/docs/interpreters/ntfy-json/) <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> instead.
 :::
 
 ## Use Cases
@@ -40,7 +42,7 @@ curl -X POST https://{context-id}.ntfy.example.com \
   -d "Deployment to production finished successfully."
 ```
 
-To add a title and priority, use the `ntfy-json` interpreter with a JSON payload instead:
+To add a title and priority, use the `ntfy-json` <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> with a JSON payload instead:
 
 ```bash
 curl -X POST https://{context-id}.ntfy.example.com \

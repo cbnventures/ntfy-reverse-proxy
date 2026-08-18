@@ -24,6 +24,7 @@
       "interpreter": "statuspage",
       "topic": "github-status",
       "error_topic": "errors",
+      "error_events": ["interpretation"],
       "mode": "send-once",
       "show_visitor_info": false,
       "primary_server": "primary",

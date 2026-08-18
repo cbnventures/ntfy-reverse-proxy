@@ -9,8 +9,9 @@ import {
 } from './regex.js';
 
 import type {
-  LibUtilityStripHtmlHtml,
-  LibUtilityStripHtmlText,
+  Lib_Utility_StripHtml_Html,
+  Lib_Utility_StripHtml_Returns,
+  Lib_Utility_StripHtml_Text,
 } from '../types/lib/utility.d.ts';
 
 /**
@@ -19,25 +20,25 @@ import type {
  * Removes all HTML tags and decodes common HTML entities so
  * that content can be read as plain text.
  *
- * @param {LibUtilityStripHtmlHtml} html - Html.
+ * @param {Lib_Utility_StripHtml_Html} html - Html.
  *
- * @returns {LibUtilityStripHtmlText}
+ * @returns {Lib_Utility_StripHtml_Returns}
  *
  * @since 2.0.0
  */
-function stripHtml(html: LibUtilityStripHtmlHtml): LibUtilityStripHtmlText {
-  let text: LibUtilityStripHtmlText = html;
+function stripHtml(html: Lib_Utility_StripHtml_Html): Lib_Utility_StripHtml_Returns {
+  let text: Lib_Utility_StripHtml_Text = html;
 
   // Remove HTML tags.
   text = text.replace(new RegExp(REGEX_HTML_TAG, 'g'), '');
 
-  // Decode common HTML entities.
-  text = text.replace(new RegExp(REGEX_HTML_ENTITY_AMP, 'g'), '&');
+  // Decode common HTML entities (&amp; last to prevent double-decoding).
   text = text.replace(new RegExp(REGEX_HTML_ENTITY_LT, 'g'), '<');
   text = text.replace(new RegExp(REGEX_HTML_ENTITY_GT, 'g'), '>');
   text = text.replace(new RegExp(REGEX_HTML_ENTITY_QUOT, 'g'), '"');
   text = text.replace(new RegExp(REGEX_HTML_ENTITY_APOS, 'g'), '\'');
   text = text.replace(new RegExp(REGEX_HTML_ENTITY_NBSP, 'g'), ' ');
+  text = text.replace(new RegExp(REGEX_HTML_ENTITY_AMP, 'g'), '&');
 
   return text.trim();
 }

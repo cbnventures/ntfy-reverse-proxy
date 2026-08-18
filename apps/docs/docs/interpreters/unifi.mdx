@@ -1,7 +1,7 @@
 ---
 id: unifi
 title: UniFi
-description: Parse UniFi Network controller notification emails with device detection and priority inference.
+description: Parse UniFi Network controller notification emails with automatic alert extraction, device-type tagging, priority inference, and device URL action links.
 sidebar_position: 8
 keywords:
   - ntfy reverse proxy
@@ -15,13 +15,15 @@ tags:
   - email
 ---
 
+import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
+
 Process notification emails from UniFi Network controllers with automatic alert extraction, device tagging, and priority inference.
 
 ## Input Handling
 
-The interpreter is designed for email input with `subject` and `textBody` fields. UniFi notification emails use the subject format: `[UniFi SiteName] Alert Message`.
+The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> is designed for email input with `subject` and `textBody` fields. UniFi notification emails use the subject format: `[UniFi SiteName] Alert Message`.
 
-For string or binary inputs (e.g., if used with an HTTP context), the interpreter creates a basic notification with title `UniFi`, the input as the body, and priority inferred from keywords.
+For string or binary inputs (e.g., if used with an HTTP <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>), the <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> creates a basic notification with title `UniFi`, the input as the body, and priority inferred from keywords.
 
 ## Subject Parsing
 
@@ -29,7 +31,7 @@ The `[UniFi SiteName]` prefix is stripped from the subject to extract the event 
 
 ## Structured Body Parsing
 
-The interpreter uses regex patterns to extract structured fields from the email body:
+The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> uses regex patterns to extract structured fields from the email body:
 
 - **Alert** — The alert description.
 - **Device Name** — Name of the affected device.
@@ -49,7 +51,7 @@ Priority is determined by keyword matching on the event type and body:
 
 ## Device Tags
 
-The interpreter adds device-type tags based on keywords:
+The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> adds device-type tags based on keywords:
 
 - `ap` — Matches "ap" or "access point"
 - `switch` — Matches "switch"
@@ -83,5 +85,5 @@ The interpreter adds device-type tags based on keywords:
 This creates the email address `unifi@ntfy.example.com`. Configure your UniFi controller to send notifications to this address.
 
 :::tip
-Use the `allowed_from` wildcard to restrict which senders can trigger this context. The `*@unifi.local` pattern allows any address from the `unifi.local` domain.
+Use the `allowed_from` wildcard to restrict which senders can trigger this <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>. The `*@unifi.local` pattern allows any address from the `unifi.local` domain.
 :::

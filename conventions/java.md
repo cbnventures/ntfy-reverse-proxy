@@ -5,7 +5,7 @@ Quotes: Double (only option). Indentation: 4-space. File naming: PascalCase matc
 ## Documentation Style
 
 - Comment syntax: `/** */`
-- Padding tag: `@since 1.0.0` (Javadoc)
+- Padding tag: `@since UNRELEASED` (Javadoc) — tag new or changed API with `@since UNRELEASED`; the release process stamps the real version automatically, so never hand-write a version number.
 - Param format: `@param name - Name.` (description matches the parameter name, capitalized, with a trailing period)
 - Return format: `@return Type`
 
@@ -15,13 +15,13 @@ Quotes: Double (only option). Indentation: 4-space. File naming: PascalCase matc
 /**
  * Entity Repository.
  *
- * @since 1.0.0
+ * @since UNRELEASED
  */
 public class EntityRepository {
     /**
      * Entity Repository - Database.
      *
-     * @since 1.0.0
+     * @since UNRELEASED
      */
     private final Database database;
 
@@ -30,7 +30,7 @@ public class EntityRepository {
      *
      * @param database - Database.
      *
-     * @since 1.0.0
+     * @since UNRELEASED
      */
     public EntityRepository(Database database) { ... }
 
@@ -41,7 +41,7 @@ public class EntityRepository {
      *
      * @return Entity
      *
-     * @since 1.0.0
+     * @since UNRELEASED
      */
     public Entity findById(UUID id) { ... }
 }

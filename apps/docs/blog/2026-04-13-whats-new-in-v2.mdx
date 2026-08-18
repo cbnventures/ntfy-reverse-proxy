@@ -1,9 +1,15 @@
 ---
 title: "What's New in v2.0.0: Interpreters, Email Routing, and a CLI"
-description: "Version 2.0.0 is a complete rewrite — built-in interpreters for Synology, pfSense, Seerr, Statuspage, and UniFi, email-to-notification support via Cloudflare Email Routing, message splitting, and an interactive CLI."
+description: "Version 2.0.0 adds built-in interpreters for Synology, pfSense, Seerr, Statuspage, and UniFi, email-to-notification routing, and an interactive CLI."
 slug: whats-new-in-v2
 authors:
   - mrjackyliang
+keywords:
+  - ntfy reverse proxy
+  - interpreters
+  - email routing
+  - cloudflare workers
+  - release
 tags:
   - ntfy
   - release
@@ -70,4 +76,4 @@ When an interpreter fails to parse a payload — malformed JSON, unexpected form
 
 ## Upgrading
 
-Version 2.0.0 is a full rewrite with a new configuration format. The project is now structured as a monorepo with the worker, CLI, and documentation site as separate workspaces. See the [migration guide](/docs/getting-started/quick-start) for details on upgrading from v1.x.
+Version 2.0.0 is a full rewrite with a new configuration format. The project is now structured as a monorepo with the worker, CLI, and documentation site as separate workspaces. The v1 configuration format is not compatible — start fresh using the interactive CLI. See the [Quick Start guide](/docs/getting-started/quick-start/) for setup instructions.

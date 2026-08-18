@@ -1,8 +1,8 @@
 import type {
-  LibSchemaConfigSchema,
-  LibSchemaConfigSchemaContexts,
-  LibSchemaConfigSchemaServers,
-  LibSchemaConfigSchemaSettings,
+  Lib_Schema_ConfigSchema,
+  Lib_Schema_ContextConfig,
+  Lib_Schema_ServerConfig,
+  Lib_Schema_SettingsConfig,
 } from '../../lib/schema.d.ts';
 
 /**
@@ -10,35 +10,42 @@ import type {
  *
  * @since 2.0.0
  */
-export type WorkerLandingPageConfig = LibSchemaConfigSchema;
-
-export type WorkerLandingPageResponse = Response;
-
-export type WorkerLandingPageSettings = LibSchemaConfigSchemaSettings;
-
-export type WorkerLandingPageServers = LibSchemaConfigSchemaServers;
-
-export type WorkerLandingPageContexts = LibSchemaConfigSchemaContexts;
-
-export type WorkerLandingPageDebugSection = string;
-
-export type WorkerLandingPageMaskedServers = Record<string, string>[];
-
-export type WorkerLandingPageMaskedContexts = Record<string, unknown>[];
-
-export type WorkerLandingPageBase = Record<string, unknown>;
-
-export type WorkerLandingPageMaskedConfig = Record<string, unknown>;
-
-export type WorkerLandingPageMaskedJson = string;
-
-export type WorkerLandingPageHtml = string;
+export type Worker_Landing_Page_Config = Lib_Schema_ConfigSchema;
 
 /**
  * Worker - Landing - Page - Escape HTML.
  *
  * @since 2.0.0
  */
-export type WorkerLandingPageEscapeHtmlStr = string;
+export type Worker_Landing_Page_EscapeHtml_Str = string;
 
-export type WorkerLandingPageEscapeHtmlReturns = string;
+export type Worker_Landing_Page_EscapeHtml_Returns = string;
+
+/**
+ * Worker - Landing - Page - Landing Page.
+ *
+ * @since 2.0.0
+ */
+export type Worker_Landing_Page_LandingPage_Returns = Response;
+
+export type Worker_Landing_Page_LandingPage_Settings = Lib_Schema_SettingsConfig & {};
+
+export type Worker_Landing_Page_LandingPage_Servers = Array<Lib_Schema_ServerConfig>;
+
+export type Worker_Landing_Page_LandingPage_Contexts = Array<Lib_Schema_ContextConfig>;
+
+export type Worker_Landing_Page_LandingPage_DebugSection = string;
+
+export type Worker_Landing_Page_LandingPage_MaskedServers = Record<string, string>[];
+
+export type Worker_Landing_Page_LandingPage_MaskedContexts = Record<string, unknown>[];
+
+export type Worker_Landing_Page_LandingPage_Base = Record<string, unknown>;
+
+export type Worker_Landing_Page_LandingPage_MaskedConfig = Record<string, unknown>;
+
+export type Worker_Landing_Page_LandingPage_MaskedJsonRaw = string;
+
+export type Worker_Landing_Page_LandingPage_MaskedJson = string;
+
+export type Worker_Landing_Page_LandingPage_Html = string;

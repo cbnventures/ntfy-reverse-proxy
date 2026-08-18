@@ -1,7 +1,7 @@
 ---
 id: pfsense
 title: pfSense
-description: Parse pfSense firewall notification emails with automatic hostname extraction and priority inference.
+description: Parse pfSense firewall notification emails with automatic hostname extraction, keyword-based priority inference, and content-aware gateway and VPN tags.
 sidebar_position: 4
 keywords:
   - ntfy reverse proxy
@@ -14,13 +14,15 @@ tags:
   - email
 ---
 
+import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
+
 Process notification emails from pfSense firewalls with automatic hostname extraction and keyword-based priority inference.
 
 ## Input Handling
 
-The interpreter is designed for email input with `subject` and `textBody` fields. pfSense notification emails typically use the subject format: `hostname - Notification`.
+The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> is designed for email input with `subject` and `textBody` fields. pfSense notification emails typically use the subject format: `hostname - Notification`.
 
-For string or binary inputs (e.g., if used with an HTTP context), the interpreter creates a basic notification with title `pfSense`, the input as the body, and priority inferred from keywords.
+For string or binary inputs (e.g., if used with an HTTP <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>), the <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> creates a basic notification with title `pfSense`, the input as the body, and priority inferred from keywords.
 
 ## Hostname Extraction
 
@@ -40,7 +42,7 @@ Priority is determined by scanning the email body for keywords:
 
 ## Content Tags
 
-The interpreter scans the body for topic-specific keywords and adds matching tags:
+The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> scans the body for topic-specific keywords and adds matching tags:
 
 - `gateway` — Matches "gateway"
 - `certificate` — Matches "certificate"
@@ -75,5 +77,5 @@ The interpreter scans the body for topic-specific keywords and adds matching tag
 This creates the email address `pfsense@ntfy.example.com`. Configure pfSense to send notifications to this address.
 
 :::tip
-Use the `allowed_from` wildcard to restrict which senders can trigger this context. The `*@pfsense.local` pattern allows any address from the `pfsense.local` domain.
+Use the `allowed_from` wildcard to restrict which senders can trigger this <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>. The `*@pfsense.local` pattern allows any address from the `pfsense.local` domain.
 :::

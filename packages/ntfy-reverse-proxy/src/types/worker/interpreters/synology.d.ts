@@ -1,7 +1,7 @@
 import type {
-  WorkerPipelineInterpretInput,
-  WorkerPipelineInterpretNotificationObjectPriority,
-  WorkerPipelineInterpretResult,
+  Worker_Pipeline_Interpret_Input,
+  Worker_Pipeline_Interpret_NotificationObjectPriority,
+  Worker_Pipeline_Interpret_Result,
 } from '../pipeline/interpret.d.ts';
 
 /**
@@ -9,91 +9,93 @@ import type {
  *
  * @since 2.0.0
  */
-export type WorkerInterpretersSynologyInput = WorkerPipelineInterpretInput;
+export type Worker_Interpreters_Synology_Input = Worker_Pipeline_Interpret_Input;
 
-export type WorkerInterpretersSynologyResult = WorkerPipelineInterpretResult;
+export type Worker_Interpreters_Synology_Result = Worker_Pipeline_Interpret_Result;
 
-export type WorkerInterpretersSynologyInterpreter = (input: WorkerInterpretersSynologyInput) => WorkerInterpretersSynologyResult;
-
-/**
- * Worker - Interpreters - Synology - Interpreter.
- *
- * @since 2.0.0
- */
-export type WorkerInterpretersSynologyInterpreterBody = string | undefined;
-
-export type WorkerInterpretersSynologyInterpreterDecoder = TextDecoder;
-
-export type WorkerInterpretersSynologyInterpreterData = Record<string, unknown>;
-
-export type WorkerInterpretersSynologyInterpreterRawMessage = unknown;
-
-export type WorkerInterpretersSynologyInterpreterMessage = string;
-
-export type WorkerInterpretersSynologyInterpreterRawPrefix = unknown;
-
-export type WorkerInterpretersSynologyInterpreterHostname = string | undefined;
-
-export type WorkerInterpretersSynologyInterpreterTimestamp = string | undefined;
-
-export type WorkerInterpretersSynologyInterpreterPrefixParts = string[];
-
-export type WorkerInterpretersSynologyInterpreterRawHostname = unknown;
-
-export type WorkerInterpretersSynologyInterpreterRawDate = unknown;
-
-export type WorkerInterpretersSynologyInterpreterRawTime = unknown;
-
-export type WorkerInterpretersSynologyInterpreterDate = string | undefined;
-
-export type WorkerInterpretersSynologyInterpreterTime = string | undefined;
-
-export type WorkerInterpretersSynologyInterpreterParts = string;
-
-export type WorkerInterpretersSynologyInterpreterRawSeverity = unknown;
-
-export type WorkerInterpretersSynologyInterpreterSeverity = string;
-
-export type WorkerInterpretersSynologyInterpreterRawEvent = unknown;
-
-export type WorkerInterpretersSynologyInterpreterEvent = string | undefined;
-
-export type WorkerInterpretersSynologyInterpreterTitle = string;
-
-export type WorkerInterpretersSynologyInterpreterPriority = WorkerPipelineInterpretNotificationObjectPriority;
-
-export type WorkerInterpretersSynologyInterpreterLowerMessage = string;
-
-export type WorkerInterpretersSynologyInterpreterTags = string[];
-
-export type WorkerInterpretersSynologyInterpreterSanitizedEvent = string;
-
-export type WorkerInterpretersSynologyInterpreterBodyLines = string[];
-
-export type WorkerInterpretersSynologyInterpreterRawProxyConfigDefault = Record<string, unknown>;
-
-export type WorkerInterpretersSynologyInterpreterProxyConfig = Record<string, unknown>;
-
-export type WorkerInterpretersSynologyInterpreterRawUrl = unknown;
-
-export type WorkerInterpretersSynologyInterpreterDsmUrl = string | undefined;
+export type Worker_Interpreters_Synology_SynologyInterpreter = (input: Worker_Interpreters_Synology_Input) => Worker_Interpreters_Synology_Result;
 
 /**
  * Worker - Interpreters - Synology - Map Severity To Priority.
  *
  * @since 2.0.0
  */
-export type WorkerInterpretersSynologyMapSeverityToPrioritySeverity = string;
+export type Worker_Interpreters_Synology_MapSeverityToPriority_Severity = string;
 
-export type WorkerInterpretersSynologyMapSeverityToPriorityReturns = WorkerPipelineInterpretNotificationObjectPriority;
+export type Worker_Interpreters_Synology_MapSeverityToPriority_Returns = Worker_Pipeline_Interpret_NotificationObjectPriority;
+
+/**
+ * Worker - Interpreters - Synology - Synology Interpreter.
+ *
+ * @since 2.0.0
+ */
+export type Worker_Interpreters_Synology_SynologyInterpreter_Body = string | undefined;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_Decoder = TextDecoder;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_Data = Record<string, unknown>;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_RawMessage = unknown;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_Message = string;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_RawPrefix = unknown;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_Hostname = string | undefined;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_Timestamp = string | undefined;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_PrefixParts = string[];
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_RawHostname = unknown;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_RawDate = unknown;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_RawTime = unknown;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_Date = string | undefined;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_Time = string | undefined;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_Parts = string;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_RawSeverity = unknown;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_Severity = string;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_RawEvent = unknown;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_Event = string | undefined;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_Title = string;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_Priority = 1 | 2 | 3 | 4 | 5;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_LowerMessage = string;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_Tags = string[];
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_SanitizedEvent = string;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_BodyLines = string[];
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_RawProxyConfigDefault = Record<string, unknown>;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_ProxyConfig = Record<string, unknown>;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_RawUrl = unknown;
+
+export type Worker_Interpreters_Synology_SynologyInterpreter_DsmUrl = string | undefined;
 
 /**
  * Worker - Interpreters - Synology - Validate URL.
  *
  * @since 2.0.0
  */
-export type WorkerInterpretersSynologyValidateUrlRawUrl = string;
+export type Worker_Interpreters_Synology_ValidateUrl_RawUrl = string;
 
-export type WorkerInterpretersSynologyValidateUrlReturns = string | undefined;
+export type Worker_Interpreters_Synology_ValidateUrl_Returns = string | undefined;
 
-export type WorkerInterpretersSynologyValidateUrlUrl = URL;
+export type Worker_Interpreters_Synology_ValidateUrl_Url = URL;
+
+export type Worker_Interpreters_Synology_ValidateUrl_Protocol = string;

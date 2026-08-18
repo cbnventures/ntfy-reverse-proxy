@@ -9,13 +9,13 @@ import { synologyInterpreter } from '../interpreters/synology.js';
 import { unifiInterpreter } from '../interpreters/unifi.js';
 
 import type {
-  WorkerPipelineInterpretContext,
-  WorkerPipelineInterpretInput,
-  WorkerPipelineInterpretInterpreterMap,
-  WorkerPipelineInterpretInterpreterName,
-  WorkerPipelineInterpretInterpreterResult,
-  WorkerPipelineInterpretReturns,
-  WorkerPipelineInterpretSelectedInterpreter,
+  Worker_Pipeline_Interpret_Context,
+  Worker_Pipeline_Interpret_Input,
+  Worker_Pipeline_Interpret_Interpret_InterpreterName,
+  Worker_Pipeline_Interpret_InterpreterMap,
+  Worker_Pipeline_Interpret_InterpreterResult,
+  Worker_Pipeline_Interpret_Returns,
+  Worker_Pipeline_Interpret_SelectedInterpreter,
 } from '../../types/worker/pipeline/interpret.d.ts';
 
 /**
@@ -26,7 +26,7 @@ import type {
  *
  * @since 2.0.0
  */
-const interpreterMap: WorkerPipelineInterpretInterpreterMap = {
+const interpreterMap: Worker_Pipeline_Interpret_InterpreterMap = {
   'plain-text': plainTextInterpreter,
   'ntfy-json': ntfyJsonInterpreter,
   'seerr': seerrInterpreter,
@@ -44,22 +44,23 @@ const interpreterMap: WorkerPipelineInterpretInterpreterMap = {
  *
  * @since 2.0.0
  */
-async function interpret(interpreterName: WorkerPipelineInterpretInterpreterName, input: WorkerPipelineInterpretInput, context?: WorkerPipelineInterpretContext): WorkerPipelineInterpretReturns {
-  const interpreter: WorkerPipelineInterpretSelectedInterpreter = interpreterMap[interpreterName];
+async function interpret(interpreterName: Worker_Pipeline_Interpret_Interpret_InterpreterName, input: Worker_Pipeline_Interpret_Input, context?: Worker_Pipeline_Interpret_Context): Worker_Pipeline_Interpret_Returns {
+  const selectedInterpreter: Worker_Pipeline_Interpret_SelectedInterpreter = interpreterMap[interpreterName];
 
-  if (interpreter === undefined) {
+  if (selectedInterpreter === undefined) {
     throw new Error(`Unknown interpreter: ${interpreterName}`);
   }
 
-  const result: WorkerPipelineInterpretInterpreterResult = await interpreter(input, context);
+  const interpreterResult: Worker_Pipeline_Interpret_InterpreterResult = await selectedInterpreter(input, context);
 
-  if (result !== null) {
-    Reflect.set(result['notification'], 'body', stripHtml(result['notification']['body']));
+  if (interpreterResult !== null) {
+    Reflect.set(interpreterResult['notification'], 'body', stripHtml(interpreterResult['notification']['body']));
   }
 
-  return result;
+  return interpreterResult;
 }
 
 export {
   interpret,
+  interpreterMap,
 };

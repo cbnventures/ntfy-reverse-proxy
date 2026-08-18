@@ -2,12 +2,12 @@ import { configSchema } from '../../lib/schema.js';
 import { loadConfig, saveConfig } from './config-io.js';
 
 import type {
-  CliCommandsSettingsGetSettingsConfigPath,
-  CliCommandsSettingsGetSettingsReturn,
-  CliCommandsSettingsUpdateSettingsConfig,
-  CliCommandsSettingsUpdateSettingsConfigPath,
-  CliCommandsSettingsUpdateSettingsReturn,
-  CliCommandsSettingsUpdateSettingsUpdates,
+  Cli_Commands_Settings_GetSettings_ConfigPath,
+  Cli_Commands_Settings_GetSettings_Returns,
+  Cli_Commands_Settings_UpdateSettings_Config,
+  Cli_Commands_Settings_UpdateSettings_ConfigPath,
+  Cli_Commands_Settings_UpdateSettings_Returns,
+  Cli_Commands_Settings_UpdateSettings_Updates,
 } from '../../types/cli/commands/settings.d.ts';
 
 /**
@@ -18,7 +18,7 @@ import type {
  *
  * @since 2.0.0
  */
-function getSettings(configPath: CliCommandsSettingsGetSettingsConfigPath): CliCommandsSettingsGetSettingsReturn {
+function getSettings(configPath: Cli_Commands_Settings_GetSettings_ConfigPath): Cli_Commands_Settings_GetSettings_Returns {
   return configSchema.parse(loadConfig(configPath))['settings'];
 }
 
@@ -30,8 +30,8 @@ function getSettings(configPath: CliCommandsSettingsGetSettingsConfigPath): CliC
  *
  * @since 2.0.0
  */
-function updateSettings(configPath: CliCommandsSettingsUpdateSettingsConfigPath, updates: CliCommandsSettingsUpdateSettingsUpdates): CliCommandsSettingsUpdateSettingsReturn {
-  const config: CliCommandsSettingsUpdateSettingsConfig = configSchema.parse(loadConfig(configPath));
+function updateSettings(configPath: Cli_Commands_Settings_UpdateSettings_ConfigPath, updates: Cli_Commands_Settings_UpdateSettings_Updates): Cli_Commands_Settings_UpdateSettings_Returns {
+  const config: Cli_Commands_Settings_UpdateSettings_Config = configSchema.parse(loadConfig(configPath));
 
   Reflect.set(config, 'settings', {
     ...config['settings'],

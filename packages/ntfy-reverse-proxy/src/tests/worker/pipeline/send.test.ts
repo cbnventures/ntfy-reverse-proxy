@@ -5,11 +5,16 @@ import {
 import { send } from '../../../worker/pipeline/send.js';
 
 import type {
-  TestsWorkerPipelineSendAttachment,
-  TestsWorkerPipelineSendEveryResult,
-  TestsWorkerPipelineSendMessages,
-  TestsWorkerPipelineSendResult,
-  TestsWorkerPipelineSendServers,
+  Tests_Worker_Pipeline_Send_Messages,
+  Tests_Worker_Pipeline_Send_Send_FallsBackToNextServerWhenPrimaryFailsInSendOnce_Result,
+  Tests_Worker_Pipeline_Send_Send_HandlesStage2BinaryAttachment_Attachment,
+  Tests_Worker_Pipeline_Send_Send_HandlesStage2BinaryAttachment_Result,
+  Tests_Worker_Pipeline_Send_Send_SendsToAllServersInSendAllMode_EveryResult,
+  Tests_Worker_Pipeline_Send_Send_SendsToAllServersInSendAllMode_Result,
+  Tests_Worker_Pipeline_Send_Send_SendsToPrimaryServerInSendOnceMode_Result,
+  Tests_Worker_Pipeline_Send_Send_SkipsStage2IfStage1FailsOnAServer_Attachment,
+  Tests_Worker_Pipeline_Send_Send_SkipsStage2IfStage1FailsOnAServer_Result,
+  Tests_Worker_Pipeline_Send_Servers,
 } from '../../../types/tests/worker/pipeline/send.test.d.ts';
 
 /**
@@ -26,12 +31,16 @@ vi.stubGlobal('fetch', mockFetch);
  *
  * @since 2.0.0
  */
-const servers: TestsWorkerPipelineSendServers = [
+const servers: Tests_Worker_Pipeline_Send_Servers = [
   {
-    name: 'alpha', server: 'https://ntfy.alpha.example.com', token: 'tk_abc',
+    name: 'alpha',
+    server: 'https://ntfy.alpha.example.com',
+    token: 'tk_abc',
   },
   {
-    name: 'beta', server: 'https://ntfy.beta.example.com', token: 'tk_def',
+    name: 'beta',
+    server: 'https://ntfy.beta.example.com',
+    token: 'tk_def',
   },
 ];
 
@@ -40,8 +49,9 @@ const servers: TestsWorkerPipelineSendServers = [
  *
  * @since 2.0.0
  */
-const messages: TestsWorkerPipelineSendMessages = [{
-  body: 'Test message', headers: { 'X-Title': 'Test' },
+const messages: Tests_Worker_Pipeline_Send_Messages = [{
+  body: 'Test message',
+  headers: { 'X-Title': 'Test' },
 }];
 
 /**
@@ -59,8 +69,13 @@ describe('send', () => {
   it('sends to primary server in send-once mode', async () => {
     mockFetch.mockResolvedValueOnce(new Response('ok', { status: 200 }));
 
-    const result: TestsWorkerPipelineSendResult = await send({
-      messages, servers, primaryServer: servers[0]!, topic: 'test-topic', mode: 'send-once', visitorIp: '1.2.3.4',
+    const result: Tests_Worker_Pipeline_Send_Send_SendsToPrimaryServerInSendOnceMode_Result = await send({
+      messages,
+      servers,
+      primaryServer: servers[0]!,
+      topic: 'test-topic',
+      mode: 'send-once',
+      visitorIp: '1.2.3.4',
     });
 
     expect(result['results']).toHaveLength(1);
@@ -77,8 +92,13 @@ describe('send', () => {
       .mockRejectedValueOnce(new Error('Connection refused'))
       .mockResolvedValueOnce(new Response('ok', { status: 200 }));
 
-    const result: TestsWorkerPipelineSendResult = await send({
-      messages, servers, primaryServer: servers[0]!, topic: 'test-topic', mode: 'send-once', visitorIp: '1.2.3.4',
+    const result: Tests_Worker_Pipeline_Send_Send_FallsBackToNextServerWhenPrimaryFailsInSendOnce_Result = await send({
+      messages,
+      servers,
+      primaryServer: servers[0]!,
+      topic: 'test-topic',
+      mode: 'send-once',
+      visitorIp: '1.2.3.4',
     });
 
     expect(result['results']).toHaveLength(2);
@@ -99,13 +119,18 @@ describe('send', () => {
       .mockResolvedValueOnce(new Response('ok', { status: 200 }))
       .mockResolvedValueOnce(new Response('ok', { status: 200 }));
 
-    const result: TestsWorkerPipelineSendResult = await send({
-      messages, servers, primaryServer: servers[0]!, topic: 'test-topic', mode: 'send-all', visitorIp: '1.2.3.4',
+    const result: Tests_Worker_Pipeline_Send_Send_SendsToAllServersInSendAllMode_Result = await send({
+      messages,
+      servers,
+      primaryServer: servers[0]!,
+      topic: 'test-topic',
+      mode: 'send-all',
+      visitorIp: '1.2.3.4',
     });
 
     expect(result['results']).toHaveLength(2);
 
-    const everyResult: TestsWorkerPipelineSendEveryResult = result['results'].every((r) => r['success'] === true);
+    const everyResult: Tests_Worker_Pipeline_Send_Send_SendsToAllServersInSendAllMode_EveryResult = result['results'].every((r) => r['success'] === true);
 
     expect(everyResult).toBe(true);
 
@@ -117,10 +142,17 @@ describe('send', () => {
       .mockResolvedValueOnce(new Response('ok', { status: 200 }))
       .mockResolvedValueOnce(new Response('ok', { status: 200 }));
 
-    const attachment: TestsWorkerPipelineSendAttachment = new TextEncoder().encode('binary data').buffer as ArrayBuffer;
+    const attachment: Tests_Worker_Pipeline_Send_Send_HandlesStage2BinaryAttachment_Attachment = new TextEncoder().encode('binary data').buffer as ArrayBuffer;
 
-    const result: TestsWorkerPipelineSendResult = await send({
-      messages, servers: [servers[0]!], primaryServer: servers[0]!, topic: 'test-topic', mode: 'send-once', visitorIp: '1.2.3.4', attachment, filename: 'file.bin',
+    const result: Tests_Worker_Pipeline_Send_Send_HandlesStage2BinaryAttachment_Result = await send({
+      messages,
+      servers: [servers[0]!],
+      primaryServer: servers[0]!,
+      topic: 'test-topic',
+      mode: 'send-once',
+      visitorIp: '1.2.3.4',
+      attachment,
+      filename: 'file.bin',
     });
 
     expect(mockFetch).toHaveBeenCalledTimes(2);
@@ -135,10 +167,16 @@ describe('send', () => {
   it('skips Stage 2 if Stage 1 fails on a server', async () => {
     mockFetch.mockRejectedValueOnce(new Error('fail'));
 
-    const attachment: TestsWorkerPipelineSendAttachment = new TextEncoder().encode('binary data').buffer as ArrayBuffer;
+    const attachment: Tests_Worker_Pipeline_Send_Send_SkipsStage2IfStage1FailsOnAServer_Attachment = new TextEncoder().encode('binary data').buffer as ArrayBuffer;
 
-    const result: TestsWorkerPipelineSendResult = await send({
-      messages, servers: [servers[0]!], primaryServer: servers[0]!, topic: 'test-topic', mode: 'send-once', visitorIp: '1.2.3.4', attachment,
+    const result: Tests_Worker_Pipeline_Send_Send_SkipsStage2IfStage1FailsOnAServer_Result = await send({
+      messages,
+      servers: [servers[0]!],
+      primaryServer: servers[0]!,
+      topic: 'test-topic',
+      mode: 'send-once',
+      visitorIp: '1.2.3.4',
+      attachment,
     });
 
     expect(result['results'][0]!['success']).toBe(false);

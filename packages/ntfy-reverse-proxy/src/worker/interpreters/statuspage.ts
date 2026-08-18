@@ -8,98 +8,108 @@ import {
 } from '../pipeline/accumulate.js';
 
 import type {
-  WorkerInterpretersStatuspageBuildIncidentNotificationActions,
-  WorkerInterpretersStatuspageBuildIncidentNotificationBody,
-  WorkerInterpretersStatuspageBuildIncidentNotificationBodyLines,
-  WorkerInterpretersStatuspageBuildIncidentNotificationComponentLines,
-  WorkerInterpretersStatuspageBuildIncidentNotificationComponentLinesJoined,
-  WorkerInterpretersStatuspageBuildIncidentNotificationEmojiTag,
-  WorkerInterpretersStatuspageBuildIncidentNotificationHumanizedImpact,
-  WorkerInterpretersStatuspageBuildIncidentNotificationHumanizedStatus,
-  WorkerInterpretersStatuspageBuildIncidentNotificationImpact,
-  WorkerInterpretersStatuspageBuildIncidentNotificationIncidentName,
-  WorkerInterpretersStatuspageBuildIncidentNotificationIsTerminal,
-  WorkerInterpretersStatuspageBuildIncidentNotificationLatestBody,
-  WorkerInterpretersStatuspageBuildIncidentNotificationLatestBodyJoined,
-  WorkerInterpretersStatuspageBuildIncidentNotificationPriority,
-  WorkerInterpretersStatuspageBuildIncidentNotificationServiceName,
-  WorkerInterpretersStatuspageBuildIncidentNotificationShortlink,
-  WorkerInterpretersStatuspageBuildIncidentNotificationStatus,
-  WorkerInterpretersStatuspageBuildIncidentNotificationTags,
-  WorkerInterpretersStatuspageBuildIncidentNotificationUnsubscribeUrl,
-  WorkerInterpretersStatuspageContext,
-  WorkerInterpretersStatuspageExtractServiceNameHostname,
-  WorkerInterpretersStatuspageExtractServiceNameParsedUrl,
-  WorkerInterpretersStatuspageExtractServiceNameReturns,
-  WorkerInterpretersStatuspageExtractServiceNameServiceName,
-  WorkerInterpretersStatuspageExtractServiceNameUnsubscribeUrl,
-  WorkerInterpretersStatuspageHumanizeSlugCapitalized,
-  WorkerInterpretersStatuspageHumanizeSlugParts,
-  WorkerInterpretersStatuspageHumanizeSlugReturns,
-  WorkerInterpretersStatuspageHumanizeSlugSlug,
-  WorkerInterpretersStatuspageInput,
-  WorkerInterpretersStatuspageInterpreter,
-  WorkerInterpretersStatuspageInterpreterAffectedCode,
-  WorkerInterpretersStatuspageInterpreterAffectedComponents,
-  WorkerInterpretersStatuspageInterpreterAffectedName,
-  WorkerInterpretersStatuspageInterpreterAffectedNewStatus,
-  WorkerInterpretersStatuspageInterpreterCanUpdate,
-  WorkerInterpretersStatuspageInterpreterCanUpdateAffected,
-  WorkerInterpretersStatuspageInterpreterComponent,
-  WorkerInterpretersStatuspageInterpreterComponentId,
-  WorkerInterpretersStatuspageInterpreterComponentLines,
-  WorkerInterpretersStatuspageInterpreterComponentName,
-  WorkerInterpretersStatuspageInterpreterComponents,
-  WorkerInterpretersStatuspageInterpreterComponentStatus,
-  WorkerInterpretersStatuspageInterpreterComponentUpdate,
-  WorkerInterpretersStatuspageInterpreterCurrentComponents,
-  WorkerInterpretersStatuspageInterpreterData,
-  WorkerInterpretersStatuspageInterpreterDecodedBody,
-  WorkerInterpretersStatuspageInterpreterDecoder,
-  WorkerInterpretersStatuspageInterpreterDiff,
-  WorkerInterpretersStatuspageInterpreterExistingState,
-  WorkerInterpretersStatuspageInterpreterHasComponentStatus,
-  WorkerInterpretersStatuspageInterpreterHasKv,
-  WorkerInterpretersStatuspageInterpreterHasUpdateStatus,
-  WorkerInterpretersStatuspageInterpreterImpact,
-  WorkerInterpretersStatuspageInterpreterIncident,
-  WorkerInterpretersStatuspageInterpreterIncidentId,
-  WorkerInterpretersStatuspageInterpreterIncidentName,
-  WorkerInterpretersStatuspageInterpreterIsAffectedArray,
-  WorkerInterpretersStatuspageInterpreterIsDuplicate,
-  WorkerInterpretersStatuspageInterpreterIsUpdatesArray,
-  WorkerInterpretersStatuspageInterpreterKv,
-  WorkerInterpretersStatuspageInterpreterKvAvailable,
-  WorkerInterpretersStatuspageInterpreterKvMissing,
-  WorkerInterpretersStatuspageInterpreterLatestBody,
-  WorkerInterpretersStatuspageInterpreterLatestUpdate,
-  WorkerInterpretersStatuspageInterpreterMeta,
-  WorkerInterpretersStatuspageInterpreterMetaDefault,
-  WorkerInterpretersStatuspageInterpreterMetaRaw,
-  WorkerInterpretersStatuspageInterpreterNewState,
-  WorkerInterpretersStatuspageInterpreterPage,
-  WorkerInterpretersStatuspageInterpreterPageId,
-  WorkerInterpretersStatuspageInterpreterPageIdAvailable,
-  WorkerInterpretersStatuspageInterpreterParsed,
-  WorkerInterpretersStatuspageInterpreterPreviousComponents,
-  WorkerInterpretersStatuspageInterpreterRawUpdates,
-  WorkerInterpretersStatuspageInterpreterReturns,
-  WorkerInterpretersStatuspageInterpreterServiceName,
-  WorkerInterpretersStatuspageInterpreterShortlink,
-  WorkerInterpretersStatuspageInterpreterStatus,
-  WorkerInterpretersStatuspageInterpreterUnsubscribeUrl,
-  WorkerInterpretersStatuspageInterpreterUpdatedState,
-  WorkerInterpretersStatuspageInterpreterUpdateId,
-  WorkerInterpretersStatuspageInterpreterUpdates,
-  WorkerInterpretersStatuspageIsTerminalStatusLowered,
-  WorkerInterpretersStatuspageIsTerminalStatusReturns,
-  WorkerInterpretersStatuspageIsTerminalStatusStatus,
-  WorkerInterpretersStatuspageIsTerminalStatusTerminal,
-  WorkerInterpretersStatuspageMapImpactToPriorityImpact,
-  WorkerInterpretersStatuspageMapImpactToPriorityReturns,
-  WorkerInterpretersStatuspageMapStatusToEmojiTagReturns,
-  WorkerInterpretersStatuspageMapStatusToEmojiTagStatus,
-  WorkerInterpretersStatuspageResult,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_Actions,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_Body,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_BodyLines,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_ComponentLines,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_ComponentLinesJoined,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_EmojiTag,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_HumanizedImpact,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_HumanizedStatus,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_Impact,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_IncidentName,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_IsTerminal,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_LatestBody,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_LatestBodyJoined,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_Priority,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_Returns,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_ServiceName,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_Shortlink,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_Status,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_Tags,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_UnsubscribeUrl,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_ValidatedShortlink,
+  Worker_Interpreters_Statuspage_BuildIncidentNotification_ValidatedUnsubscribeUrl,
+  Worker_Interpreters_Statuspage_Context,
+  Worker_Interpreters_Statuspage_ExtractServiceName_Hostname,
+  Worker_Interpreters_Statuspage_ExtractServiceName_ParsedUrl,
+  Worker_Interpreters_Statuspage_ExtractServiceName_Returns,
+  Worker_Interpreters_Statuspage_ExtractServiceName_ServiceName,
+  Worker_Interpreters_Statuspage_ExtractServiceName_UnsubscribeUrl,
+  Worker_Interpreters_Statuspage_HumanizeSlug_Capitalized,
+  Worker_Interpreters_Statuspage_HumanizeSlug_Parts,
+  Worker_Interpreters_Statuspage_HumanizeSlug_Returns,
+  Worker_Interpreters_Statuspage_HumanizeSlug_Slug,
+  Worker_Interpreters_Statuspage_Input,
+  Worker_Interpreters_Statuspage_IsTerminalStatus_Lowered,
+  Worker_Interpreters_Statuspage_IsTerminalStatus_Returns,
+  Worker_Interpreters_Statuspage_IsTerminalStatus_Status,
+  Worker_Interpreters_Statuspage_IsTerminalStatus_Terminal,
+  Worker_Interpreters_Statuspage_MapImpactToPriority_Impact,
+  Worker_Interpreters_Statuspage_MapImpactToPriority_Returns,
+  Worker_Interpreters_Statuspage_MapStatusToEmojiTag_Returns,
+  Worker_Interpreters_Statuspage_MapStatusToEmojiTag_Status,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_AffectedComponents,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_CanUpdate,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_CanUpdateAffected,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_Code,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_Component,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_ComponentId,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_ComponentLines,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_ComponentName,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_Components,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_ComponentStatus,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_ComponentUpdate,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_CurrentComponents,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_Data,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_DecodedBody,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_Decoder,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_Diff,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_ExistingComponentState,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_ExistingIncidentState,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_FallbackComponentLines,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_HasComponentStatus,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_HasKv,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_HasUpdateStatus,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_Impact,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_Incident,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_IncidentId,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_IncidentName,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_IsAffectedArray,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_IsDuplicate,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_IsUpdatesArray,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_Kv,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_KvAvailable,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_LatestBody,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_LatestUpdate,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_Meta,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_MetaDefault,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_MetaRaw,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_MissingComponentKv,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_MissingIncidentKv,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_Name,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_NewStatus,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_Page,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_PageId,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_PageIdAvailable,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_Parsed,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_PreviousComponents,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_RawUpdates,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_Returns,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_ServiceName,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_Shortlink,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_Status,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_UnsubscribeUrl,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_UnverifiedComponentLines,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdateId,
+  Worker_Interpreters_Statuspage_StatuspageInterpreter_Updates,
+  Worker_Interpreters_Statuspage_ValidateUrl_Protocol,
+  Worker_Interpreters_Statuspage_ValidateUrl_RawUrl,
+  Worker_Interpreters_Statuspage_ValidateUrl_Returns,
+  Worker_Interpreters_Statuspage_ValidateUrl_Url,
 } from '../../types/worker/interpreters/statuspage.d.ts';
 
 /**
@@ -108,13 +118,13 @@ import type {
  * Converts a Statuspage incident impact level string into
  * the corresponding ntfy numeric priority value.
  *
- * @param {WorkerInterpretersStatuspageMapImpactToPriorityImpact} impact - Impact.
+ * @param {Worker_Interpreters_Statuspage_MapImpactToPriority_Impact} impact - Impact.
  *
- * @returns {WorkerInterpretersStatuspageMapImpactToPriorityReturns}
+ * @returns {Worker_Interpreters_Statuspage_MapImpactToPriority_Returns}
  *
  * @since 2.0.0
  */
-const mapImpactToPriority = (impact: WorkerInterpretersStatuspageMapImpactToPriorityImpact): WorkerInterpretersStatuspageMapImpactToPriorityReturns => {
+function mapImpactToPriority(impact: Worker_Interpreters_Statuspage_MapImpactToPriority_Impact): Worker_Interpreters_Statuspage_MapImpactToPriority_Returns {
   switch (impact.toLowerCase()) {
     case 'critical': { return 5; }
 
@@ -125,7 +135,7 @@ const mapImpactToPriority = (impact: WorkerInterpretersStatuspageMapImpactToPrio
     case 'none':
     default: { return 2; }
   }
-};
+}
 
 /**
  * Worker - Interpreters - Statuspage - Map Status To Emoji Tag.
@@ -133,13 +143,13 @@ const mapImpactToPriority = (impact: WorkerInterpretersStatuspageMapImpactToPrio
  * Converts a Statuspage incident status string into the
  * corresponding ntfy emoji shortcode for visual indicators.
  *
- * @param {WorkerInterpretersStatuspageMapStatusToEmojiTagStatus} status - Status.
+ * @param {Worker_Interpreters_Statuspage_MapStatusToEmojiTag_Status} status - Status.
  *
- * @returns {WorkerInterpretersStatuspageMapStatusToEmojiTagReturns}
+ * @returns {Worker_Interpreters_Statuspage_MapStatusToEmojiTag_Returns}
  *
  * @since 2.0.0
  */
-const mapStatusToEmojiTag = (status: WorkerInterpretersStatuspageMapStatusToEmojiTagStatus): WorkerInterpretersStatuspageMapStatusToEmojiTagReturns => {
+function mapStatusToEmojiTag(status: Worker_Interpreters_Statuspage_MapStatusToEmojiTag_Status): Worker_Interpreters_Statuspage_MapStatusToEmojiTag_Returns {
   switch (status.toLowerCase()) {
     case 'investigating': { return 'mag'; }
 
@@ -159,7 +169,7 @@ const mapStatusToEmojiTag = (status: WorkerInterpretersStatuspageMapStatusToEmoj
 
     default: { return 'bell'; }
   }
-};
+}
 
 /**
  * Worker - Interpreters - Statuspage - Is Terminal Status.
@@ -167,21 +177,21 @@ const mapStatusToEmojiTag = (status: WorkerInterpretersStatuspageMapStatusToEmoj
  * Checks whether the given status string represents a terminal
  * incident state such as resolved, completed, or postmortem.
  *
- * @param {WorkerInterpretersStatuspageIsTerminalStatusStatus} status - Status.
+ * @param {Worker_Interpreters_Statuspage_IsTerminalStatus_Status} status - Status.
  *
- * @returns {WorkerInterpretersStatuspageIsTerminalStatusReturns}
+ * @returns {Worker_Interpreters_Statuspage_IsTerminalStatus_Returns}
  *
  * @since 2.0.0
  */
-const isTerminalStatus = (status: WorkerInterpretersStatuspageIsTerminalStatusStatus): WorkerInterpretersStatuspageIsTerminalStatusReturns => {
-  const terminal: WorkerInterpretersStatuspageIsTerminalStatusTerminal = [
+function isTerminalStatus(status: Worker_Interpreters_Statuspage_IsTerminalStatus_Status): Worker_Interpreters_Statuspage_IsTerminalStatus_Returns {
+  const terminal: Worker_Interpreters_Statuspage_IsTerminalStatus_Terminal = [
     'resolved',
     'completed',
     'postmortem',
   ];
-  const lowered: WorkerInterpretersStatuspageIsTerminalStatusLowered = status.toLowerCase();
+  const lowered: Worker_Interpreters_Statuspage_IsTerminalStatus_Lowered = status.toLowerCase();
   return terminal.includes(lowered);
-};
+}
 
 /**
  * Worker - Interpreters - Statuspage - Humanize Slug.
@@ -189,17 +199,17 @@ const isTerminalStatus = (status: WorkerInterpretersStatuspageIsTerminalStatusSt
  * Converts an underscore-separated slug string into a
  * human-readable title-cased label for display purposes.
  *
- * @param {WorkerInterpretersStatuspageHumanizeSlugSlug} slug - Slug.
+ * @param {Worker_Interpreters_Statuspage_HumanizeSlug_Slug} slug - Slug.
  *
- * @returns {WorkerInterpretersStatuspageHumanizeSlugReturns}
+ * @returns {Worker_Interpreters_Statuspage_HumanizeSlug_Returns}
  *
  * @since 2.0.0
  */
-const humanizeSlug = (slug: WorkerInterpretersStatuspageHumanizeSlugSlug): WorkerInterpretersStatuspageHumanizeSlugReturns => {
-  const parts: WorkerInterpretersStatuspageHumanizeSlugParts = slug.split('_');
-  const capitalized: WorkerInterpretersStatuspageHumanizeSlugCapitalized = parts.map((word) => word.charAt(0).toUpperCase() + word.slice(1));
+function humanizeSlug(slug: Worker_Interpreters_Statuspage_HumanizeSlug_Slug): Worker_Interpreters_Statuspage_HumanizeSlug_Returns {
+  const parts: Worker_Interpreters_Statuspage_HumanizeSlug_Parts = slug.split('_');
+  const capitalized: Worker_Interpreters_Statuspage_HumanizeSlug_Capitalized = parts.map((word) => word.charAt(0).toUpperCase() + word.slice(1));
   return capitalized.join(' ');
-};
+}
 
 /**
  * Worker - Interpreters - Statuspage - Extract Service Name.
@@ -207,24 +217,52 @@ const humanizeSlug = (slug: WorkerInterpretersStatuspageHumanizeSlugSlug): Worke
  * Parses the unsubscribe URL hostname to determine which
  * service generated the Statuspage notification.
  *
- * @param {WorkerInterpretersStatuspageExtractServiceNameUnsubscribeUrl} unsubscribeUrl - Unsubscribe url.
+ * @param {Worker_Interpreters_Statuspage_ExtractServiceName_UnsubscribeUrl} unsubscribeUrl - Unsubscribe url.
  *
- * @returns {WorkerInterpretersStatuspageExtractServiceNameReturns}
+ * @returns {Worker_Interpreters_Statuspage_ExtractServiceName_Returns}
  *
  * @since 2.0.0
  */
-const extractServiceName = (unsubscribeUrl: WorkerInterpretersStatuspageExtractServiceNameUnsubscribeUrl): WorkerInterpretersStatuspageExtractServiceNameReturns => {
-  let serviceName: WorkerInterpretersStatuspageExtractServiceNameServiceName = 'Statuspage';
+function extractServiceName(unsubscribeUrl: Worker_Interpreters_Statuspage_ExtractServiceName_UnsubscribeUrl): Worker_Interpreters_Statuspage_ExtractServiceName_Returns {
+  let serviceName: Worker_Interpreters_Statuspage_ExtractServiceName_ServiceName = 'Statuspage';
   if (unsubscribeUrl !== undefined) {
     try {
-      const parsedUrl: WorkerInterpretersStatuspageExtractServiceNameParsedUrl = new URL(unsubscribeUrl);
-      const hostname: WorkerInterpretersStatuspageExtractServiceNameHostname = parsedUrl['hostname'];
+      const parsedUrl: Worker_Interpreters_Statuspage_ExtractServiceName_ParsedUrl = new URL(unsubscribeUrl);
+      const hostname: Worker_Interpreters_Statuspage_ExtractServiceName_Hostname = parsedUrl['hostname'];
       serviceName = hostname.replace(LIB_REGEX_STATUSPAGE_LEADING_WWW, '');
     } catch { /* Fall back to default. */ }
   }
 
   return serviceName;
-};
+}
+
+/**
+ * Worker - Interpreters - Statuspage - Validate URL.
+ *
+ * Validates and normalizes a URL string by parsing it with
+ * the URL constructor, returning the normalized href on
+ * success or undefined if the string is not a valid URL.
+ *
+ * @param {Worker_Interpreters_Statuspage_ValidateUrl_RawUrl} rawUrl - Raw url.
+ *
+ * @returns {Worker_Interpreters_Statuspage_ValidateUrl_Returns}
+ *
+ * @since 2.1.0
+ */
+function validateUrl(rawUrl: Worker_Interpreters_Statuspage_ValidateUrl_RawUrl): Worker_Interpreters_Statuspage_ValidateUrl_Returns {
+  try {
+    const url: Worker_Interpreters_Statuspage_ValidateUrl_Url = new URL(rawUrl);
+    const protocol: Worker_Interpreters_Statuspage_ValidateUrl_Protocol = url['protocol'];
+
+    if (protocol !== 'http:' && protocol !== 'https:') {
+      return undefined;
+    }
+
+    return url.href;
+  } catch {
+    return undefined;
+  }
+}
 
 /**
  * Worker - Interpreters - Statuspage - Build Incident Notification.
@@ -232,37 +270,37 @@ const extractServiceName = (unsubscribeUrl: WorkerInterpretersStatuspageExtractS
  * Assembles a complete ntfy notification object from parsed
  * Statuspage incident data including status, impact, and components.
  *
- * @param {WorkerInterpretersStatuspageBuildIncidentNotificationServiceName}     serviceName    - Service name.
- * @param {WorkerInterpretersStatuspageBuildIncidentNotificationIncidentName}    incidentName   - Incident name.
- * @param {WorkerInterpretersStatuspageBuildIncidentNotificationStatus}          status         - Status.
- * @param {WorkerInterpretersStatuspageBuildIncidentNotificationImpact}          impact         - Impact.
- * @param {WorkerInterpretersStatuspageBuildIncidentNotificationLatestBody}      latestBody     - Latest body.
- * @param {WorkerInterpretersStatuspageBuildIncidentNotificationShortlink}       shortlink      - Shortlink.
- * @param {WorkerInterpretersStatuspageBuildIncidentNotificationUnsubscribeUrl}  unsubscribeUrl - Unsubscribe url.
- * @param {WorkerInterpretersStatuspageBuildIncidentNotificationComponentLines}  componentLines - Component lines.
+ * @param {Worker_Interpreters_Statuspage_BuildIncidentNotification_ServiceName}     serviceName    - Service name.
+ * @param {Worker_Interpreters_Statuspage_BuildIncidentNotification_IncidentName}    incidentName   - Incident name.
+ * @param {Worker_Interpreters_Statuspage_BuildIncidentNotification_Status}          status         - Status.
+ * @param {Worker_Interpreters_Statuspage_BuildIncidentNotification_Impact}          impact         - Impact.
+ * @param {Worker_Interpreters_Statuspage_BuildIncidentNotification_LatestBody}      latestBody     - Latest body.
+ * @param {Worker_Interpreters_Statuspage_BuildIncidentNotification_Shortlink}       shortlink      - Shortlink.
+ * @param {Worker_Interpreters_Statuspage_BuildIncidentNotification_UnsubscribeUrl}  unsubscribeUrl - Unsubscribe url.
+ * @param {Worker_Interpreters_Statuspage_BuildIncidentNotification_ComponentLines}  componentLines - Component lines.
  *
- * @returns {WorkerInterpretersStatuspageResult}
+ * @returns {Worker_Interpreters_Statuspage_BuildIncidentNotification_Returns}
  *
  * @since 2.0.0
  */
-const buildIncidentNotification = (serviceName: WorkerInterpretersStatuspageBuildIncidentNotificationServiceName, incidentName: WorkerInterpretersStatuspageBuildIncidentNotificationIncidentName, status: WorkerInterpretersStatuspageBuildIncidentNotificationStatus, impact: WorkerInterpretersStatuspageBuildIncidentNotificationImpact, latestBody: WorkerInterpretersStatuspageBuildIncidentNotificationLatestBody, shortlink: WorkerInterpretersStatuspageBuildIncidentNotificationShortlink, unsubscribeUrl: WorkerInterpretersStatuspageBuildIncidentNotificationUnsubscribeUrl, componentLines: WorkerInterpretersStatuspageBuildIncidentNotificationComponentLines): WorkerInterpretersStatuspageResult => {
-  const isTerminal: WorkerInterpretersStatuspageBuildIncidentNotificationIsTerminal = isTerminalStatus(status);
-  const priority: WorkerInterpretersStatuspageBuildIncidentNotificationPriority = (isTerminal === true) ? 2 : mapImpactToPriority(impact);
-  const humanizedStatus: WorkerInterpretersStatuspageBuildIncidentNotificationHumanizedStatus = humanizeSlug(status);
-  const humanizedImpact: WorkerInterpretersStatuspageBuildIncidentNotificationHumanizedImpact = humanizeSlug(impact);
-  const emojiTag: WorkerInterpretersStatuspageBuildIncidentNotificationEmojiTag = mapStatusToEmojiTag(status);
-  const tags: WorkerInterpretersStatuspageBuildIncidentNotificationTags = [
+function buildIncidentNotification(serviceName: Worker_Interpreters_Statuspage_BuildIncidentNotification_ServiceName, incidentName: Worker_Interpreters_Statuspage_BuildIncidentNotification_IncidentName, status: Worker_Interpreters_Statuspage_BuildIncidentNotification_Status, impact: Worker_Interpreters_Statuspage_BuildIncidentNotification_Impact, latestBody: Worker_Interpreters_Statuspage_BuildIncidentNotification_LatestBody, shortlink: Worker_Interpreters_Statuspage_BuildIncidentNotification_Shortlink, unsubscribeUrl: Worker_Interpreters_Statuspage_BuildIncidentNotification_UnsubscribeUrl, componentLines: Worker_Interpreters_Statuspage_BuildIncidentNotification_ComponentLines): Worker_Interpreters_Statuspage_BuildIncidentNotification_Returns {
+  const isTerminal: Worker_Interpreters_Statuspage_BuildIncidentNotification_IsTerminal = isTerminalStatus(status);
+  const priority: Worker_Interpreters_Statuspage_BuildIncidentNotification_Priority = (isTerminal === true) ? 2 : mapImpactToPriority(impact);
+  const humanizedStatus: Worker_Interpreters_Statuspage_BuildIncidentNotification_HumanizedStatus = humanizeSlug(status);
+  const humanizedImpact: Worker_Interpreters_Statuspage_BuildIncidentNotification_HumanizedImpact = humanizeSlug(impact);
+  const emojiTag: Worker_Interpreters_Statuspage_BuildIncidentNotification_EmojiTag = mapStatusToEmojiTag(status);
+  const tags: Worker_Interpreters_Statuspage_BuildIncidentNotification_Tags = [
     'statuspage',
     status.toLowerCase(),
     emojiTag,
   ];
-  const bodyLines: WorkerInterpretersStatuspageBuildIncidentNotificationBodyLines = [
+  const bodyLines: Worker_Interpreters_Statuspage_BuildIncidentNotification_BodyLines = [
     `**Status:** ${humanizedStatus}`,
     `**Impact:** ${humanizedImpact}`,
   ];
 
   if (latestBody !== undefined) {
-    const latestBodyJoined: WorkerInterpretersStatuspageBuildIncidentNotificationLatestBodyJoined = [
+    const latestBodyJoined: Worker_Interpreters_Statuspage_BuildIncidentNotification_LatestBodyJoined = [
       '',
       `> ${latestBody}`,
     ].join('\n');
@@ -271,7 +309,7 @@ const buildIncidentNotification = (serviceName: WorkerInterpretersStatuspageBuil
   }
 
   if (componentLines.length > 0) {
-    const componentLinesJoined: WorkerInterpretersStatuspageBuildIncidentNotificationComponentLinesJoined = [
+    const componentLinesJoined: Worker_Interpreters_Statuspage_BuildIncidentNotification_ComponentLinesJoined = [
       '',
       '**Affected:**',
       componentLines.join('\n'),
@@ -280,22 +318,29 @@ const buildIncidentNotification = (serviceName: WorkerInterpretersStatuspageBuil
     bodyLines.push(componentLinesJoined);
   }
 
-  const body: WorkerInterpretersStatuspageBuildIncidentNotificationBody = bodyLines.join('\n');
-  const actions: WorkerInterpretersStatuspageBuildIncidentNotificationActions = [];
-  if (shortlink !== undefined) {
-    actions.push(`view, View Incident, ${shortlink}`);
+  const body: Worker_Interpreters_Statuspage_BuildIncidentNotification_Body = bodyLines.join('\n');
+  const actions: Worker_Interpreters_Statuspage_BuildIncidentNotification_Actions = [];
+  const validatedShortlink: Worker_Interpreters_Statuspage_BuildIncidentNotification_ValidatedShortlink = (shortlink !== undefined) ? validateUrl(shortlink) : undefined;
+  if (validatedShortlink !== undefined) {
+    actions.push(`view, View Incident, ${validatedShortlink}`);
   }
 
-  if (unsubscribeUrl !== undefined) {
-    actions.push(`view, Unsubscribe, ${unsubscribeUrl}`);
+  const validatedUnsubscribeUrl: Worker_Interpreters_Statuspage_BuildIncidentNotification_ValidatedUnsubscribeUrl = (unsubscribeUrl !== undefined) ? validateUrl(unsubscribeUrl) : undefined;
+  if (validatedUnsubscribeUrl !== undefined) {
+    actions.push(`view, Unsubscribe, ${validatedUnsubscribeUrl}`);
   }
 
   return {
     notification: {
-      title: `[${serviceName}] ${incidentName}`, body, priority, tags, markdown: true, ...(actions.length > 0 ? { actions: actions.join('; ') } : {}),
+      title: `[${serviceName}] ${incidentName}`,
+      body,
+      priority,
+      tags,
+      markdown: true,
+      ...((actions.length > 0) ? { actions: actions.join('; ') } : {}),
     },
   };
-};
+}
 
 /**
  * Worker - Interpreters - Statuspage - Interpreter.
@@ -303,15 +348,15 @@ const buildIncidentNotification = (serviceName: WorkerInterpretersStatuspageBuil
  * Parses Statuspage webhook and email payloads and builds
  * structured ntfy notifications with component tracking via KV.
  *
- * @param {WorkerInterpretersStatuspageInput}    input   - Input.
- * @param {WorkerInterpretersStatuspageContext} [context] - Optional context with KV.
+ * @param {Worker_Interpreters_Statuspage_Input}    input   - Input.
+ * @param {Worker_Interpreters_Statuspage_Context} [context] - Optional context with KV.
  *
- * @returns {WorkerInterpretersStatuspageInterpreterReturns}
+ * @returns {Worker_Interpreters_Statuspage_StatuspageInterpreter_Returns}
  *
  * @since 2.0.0
  */
-const statuspageInterpreter: WorkerInterpretersStatuspageInterpreter = async (input: WorkerInterpretersStatuspageInput, context?: WorkerInterpretersStatuspageContext): WorkerInterpretersStatuspageInterpreterReturns => {
-  let parsed: WorkerInterpretersStatuspageInterpreterParsed = undefined;
+const statuspageInterpreter: Worker_Interpreters_Statuspage_StatuspageInterpreter = async (input: Worker_Interpreters_Statuspage_Input, context?: Worker_Interpreters_Statuspage_Context): Worker_Interpreters_Statuspage_StatuspageInterpreter_Returns => {
+  let parsed: Worker_Interpreters_Statuspage_StatuspageInterpreter_Parsed = undefined;
   if (typeof input === 'string') {
     try {
       parsed = JSON.parse(input);
@@ -319,8 +364,8 @@ const statuspageInterpreter: WorkerInterpretersStatuspageInterpreter = async (in
       return null;
     }
   } else if (input instanceof ArrayBuffer) {
-    const decoder: WorkerInterpretersStatuspageInterpreterDecoder = new TextDecoder('utf-8');
-    const decodedBody: WorkerInterpretersStatuspageInterpreterDecodedBody = decoder.decode(input);
+    const decoder: Worker_Interpreters_Statuspage_StatuspageInterpreter_Decoder = new TextDecoder('utf-8');
+    const decodedBody: Worker_Interpreters_Statuspage_StatuspageInterpreter_DecodedBody = decoder.decode(input);
 
     try {
       parsed = JSON.parse(decodedBody);
@@ -331,23 +376,25 @@ const statuspageInterpreter: WorkerInterpretersStatuspageInterpreter = async (in
     parsed = input;
   }
 
-  const data: WorkerInterpretersStatuspageInterpreterData = parsed as WorkerInterpretersStatuspageInterpreterData;
-  const metaDefault: WorkerInterpretersStatuspageInterpreterMetaDefault = {};
-  const metaRaw: WorkerInterpretersStatuspageInterpreterMetaRaw = data['meta'];
-  const meta: WorkerInterpretersStatuspageInterpreterMeta = (metaRaw !== undefined && metaRaw !== null) ? metaRaw as WorkerInterpretersStatuspageInterpreterMeta : metaDefault;
-  const unsubscribeUrl: WorkerInterpretersStatuspageInterpreterUnsubscribeUrl = (typeof meta['unsubscribe'] === 'string') ? meta['unsubscribe'] : undefined;
-  const serviceName: WorkerInterpretersStatuspageInterpreterServiceName = extractServiceName(unsubscribeUrl);
-  const page: WorkerInterpretersStatuspageInterpreterPage = data['page'] as WorkerInterpretersStatuspageInterpreterPage;
-  const pageIdAvailable: WorkerInterpretersStatuspageInterpreterPageIdAvailable = page !== undefined && typeof page['id'] === 'string';
-  const pageId: WorkerInterpretersStatuspageInterpreterPageId = (pageIdAvailable === true && page !== undefined) ? page['id'] as WorkerInterpretersStatuspageInterpreterServiceName : undefined;
-  const kvAvailable: WorkerInterpretersStatuspageInterpreterKvAvailable = context !== undefined && context !== null;
-  const kv: WorkerInterpretersStatuspageInterpreterKv = (kvAvailable === true && context !== undefined) ? context['kv'] : undefined;
-  const hasKv: WorkerInterpretersStatuspageInterpreterHasKv = kv !== undefined && pageId !== undefined;
+  const data: Worker_Interpreters_Statuspage_StatuspageInterpreter_Data = parsed as Worker_Interpreters_Statuspage_StatuspageInterpreter_Data;
+  const metaDefault: Worker_Interpreters_Statuspage_StatuspageInterpreter_MetaDefault = {};
+  const metaRaw: Worker_Interpreters_Statuspage_StatuspageInterpreter_MetaRaw = data['meta'];
+  const meta: Worker_Interpreters_Statuspage_StatuspageInterpreter_Meta = (metaRaw !== undefined && metaRaw !== null) ? metaRaw as Worker_Interpreters_Statuspage_StatuspageInterpreter_Meta : metaDefault;
+  const unsubscribeUrl: Worker_Interpreters_Statuspage_StatuspageInterpreter_UnsubscribeUrl = (typeof meta['unsubscribe'] === 'string') ? meta['unsubscribe'] : undefined;
+  const serviceName: Worker_Interpreters_Statuspage_StatuspageInterpreter_ServiceName = extractServiceName(unsubscribeUrl);
+  const page: Worker_Interpreters_Statuspage_StatuspageInterpreter_Page = data['page'] as Worker_Interpreters_Statuspage_StatuspageInterpreter_Page;
+  const pageIdAvailable: Worker_Interpreters_Statuspage_StatuspageInterpreter_PageIdAvailable = page !== undefined
+    && page !== null
+    && typeof page['id'] === 'string';
+  const pageId: Worker_Interpreters_Statuspage_StatuspageInterpreter_PageId = (pageIdAvailable === true && page !== undefined) ? page['id'] as Worker_Interpreters_Statuspage_StatuspageInterpreter_ServiceName : undefined;
+  const kvAvailable: Worker_Interpreters_Statuspage_StatuspageInterpreter_KvAvailable = context !== undefined && context !== null;
+  const kv: Worker_Interpreters_Statuspage_StatuspageInterpreter_Kv = (kvAvailable === true && context !== undefined) ? context['kv'] : undefined;
+  const hasKv: Worker_Interpreters_Statuspage_StatuspageInterpreter_HasKv = kv !== undefined && pageId !== undefined;
   if ('component_update' in data && !('incident' in data)) {
-    const kvMissing: WorkerInterpretersStatuspageInterpreterKvMissing = hasKv === false
+    const missingComponentKv: Worker_Interpreters_Statuspage_StatuspageInterpreter_MissingComponentKv = hasKv === false
       || kv === undefined
       || pageId === undefined;
-    if (kvMissing === true) {
+    if (missingComponentKv === true) {
       return null;
     }
 
@@ -355,22 +402,34 @@ const statuspageInterpreter: WorkerInterpretersStatuspageInterpreter = async (in
       return null;
     }
 
-    const existingState: WorkerInterpretersStatuspageInterpreterExistingState = await readState(kv, pageId);
-    const components: WorkerInterpretersStatuspageInterpreterComponents = (existingState !== null) ? { ...existingState['components'] } : {};
-    const componentUpdate: WorkerInterpretersStatuspageInterpreterComponentUpdate = data['component_update'] as WorkerInterpretersStatuspageInterpreterComponentUpdate;
-    const component: WorkerInterpretersStatuspageInterpreterComponent = data['component'] as WorkerInterpretersStatuspageInterpreterComponent;
-    const componentId: WorkerInterpretersStatuspageInterpreterComponentId = (component !== undefined && typeof component['id'] === 'string') ? component['id'] : undefined;
-    const componentName: WorkerInterpretersStatuspageInterpreterComponentName = (component !== undefined && typeof component['name'] === 'string') ? component['name'] : undefined;
-    const hasUpdateStatus: WorkerInterpretersStatuspageInterpreterHasUpdateStatus = componentUpdate !== undefined && typeof componentUpdate['new_status'] === 'string';
-    const hasComponentStatus: WorkerInterpretersStatuspageInterpreterHasComponentStatus = component !== undefined && typeof component['status'] === 'string';
-    let componentStatus: WorkerInterpretersStatuspageInterpreterComponentStatus = undefined;
+    const existingComponentState: Worker_Interpreters_Statuspage_StatuspageInterpreter_ExistingComponentState = await readState(kv, pageId);
+    const components: Worker_Interpreters_Statuspage_StatuspageInterpreter_Components = (existingComponentState !== null) ? { ...existingComponentState['components'] } : {};
+    const componentUpdate: Worker_Interpreters_Statuspage_StatuspageInterpreter_ComponentUpdate = data['component_update'] as Worker_Interpreters_Statuspage_StatuspageInterpreter_ComponentUpdate;
+    const component: Worker_Interpreters_Statuspage_StatuspageInterpreter_Component = data['component'] as Worker_Interpreters_Statuspage_StatuspageInterpreter_Component;
+    const componentId: Worker_Interpreters_Statuspage_StatuspageInterpreter_ComponentId = (
+      component !== undefined
+      && component !== null
+      && typeof component['id'] === 'string'
+    ) ? component['id'] : undefined;
+    const componentName: Worker_Interpreters_Statuspage_StatuspageInterpreter_ComponentName = (
+      component !== undefined
+      && component !== null
+      && typeof component['name'] === 'string'
+    ) ? component['name'] : undefined;
+    const hasUpdateStatus: Worker_Interpreters_Statuspage_StatuspageInterpreter_HasUpdateStatus = componentUpdate !== undefined
+      && componentUpdate !== null
+      && typeof componentUpdate['new_status'] === 'string';
+    const hasComponentStatus: Worker_Interpreters_Statuspage_StatuspageInterpreter_HasComponentStatus = component !== undefined
+      && component !== null
+      && typeof component['status'] === 'string';
+    let componentStatus: Worker_Interpreters_Statuspage_StatuspageInterpreter_ComponentStatus = undefined;
     if (hasUpdateStatus === true && componentUpdate !== undefined) {
-      componentStatus = componentUpdate['new_status'] as WorkerInterpretersStatuspageInterpreterIncidentName;
+      componentStatus = componentUpdate['new_status'] as Worker_Interpreters_Statuspage_StatuspageInterpreter_IncidentName;
     } else if (hasComponentStatus === true && component !== undefined) {
-      componentStatus = component['status'] as WorkerInterpretersStatuspageInterpreterIncidentName;
+      componentStatus = component['status'] as Worker_Interpreters_Statuspage_StatuspageInterpreter_IncidentName;
     }
 
-    const canUpdate: WorkerInterpretersStatuspageInterpreterCanUpdate = componentId !== undefined
+    const canUpdate: Worker_Interpreters_Statuspage_StatuspageInterpreter_CanUpdate = componentId !== undefined
       && componentName !== undefined
       && componentStatus !== undefined;
     if (canUpdate === true
@@ -378,14 +437,25 @@ const statuspageInterpreter: WorkerInterpretersStatuspageInterpreter = async (in
       && componentName !== undefined
       && componentStatus !== undefined) {
       Reflect.set(components, componentId, {
-        name: componentName, status: componentStatus,
+        name: componentName,
+        status: componentStatus,
       });
     }
 
-    const updatedState: WorkerInterpretersStatuspageInterpreterUpdatedState = (existingState !== null) ? {
-      ...existingState, components,
+    const updatedState: Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState = (existingComponentState !== null) ? {
+      ...existingComponentState,
+      components,
     } : {
-      incidentId: undefined, incidentName: undefined, status: undefined, impact: undefined, body: undefined, shortlink: undefined, serviceName, unsubscribeUrl, updateId: undefined, components,
+      incidentId: undefined,
+      incidentName: undefined,
+      status: undefined,
+      impact: undefined,
+      body: undefined,
+      shortlink: undefined,
+      serviceName,
+      unsubscribeUrl,
+      updateId: undefined,
+      components,
     };
 
     await writeState(kv, pageId, updatedState);
@@ -394,49 +464,49 @@ const statuspageInterpreter: WorkerInterpretersStatuspageInterpreter = async (in
   }
 
   if ('incident' in data) {
-    const incident: WorkerInterpretersStatuspageInterpreterIncident = data['incident'] as WorkerInterpretersStatuspageInterpreterIncident;
-    const incidentName: WorkerInterpretersStatuspageInterpreterIncidentName = (typeof incident['name'] === 'string') ? incident['name'] : 'Incident';
-    const status: WorkerInterpretersStatuspageInterpreterStatus = (typeof incident['status'] === 'string') ? incident['status'] : 'unknown';
-    const impact: WorkerInterpretersStatuspageInterpreterImpact = (typeof incident['impact'] === 'string') ? incident['impact'] : 'none';
-    const shortlink: WorkerInterpretersStatuspageInterpreterShortlink = (typeof incident['shortlink'] === 'string') ? incident['shortlink'] : undefined;
-    const rawUpdates: WorkerInterpretersStatuspageInterpreterRawUpdates = incident['incident_updates'];
-    const isUpdatesArray: WorkerInterpretersStatuspageInterpreterIsUpdatesArray = Array.isArray(rawUpdates);
-    const updates: WorkerInterpretersStatuspageInterpreterUpdates = (isUpdatesArray === true) ? (rawUpdates as WorkerInterpretersStatuspageInterpreterUpdates) : [];
-    const latestUpdate: WorkerInterpretersStatuspageInterpreterLatestUpdate = updates[0];
-    const latestBody: WorkerInterpretersStatuspageInterpreterLatestBody = (latestUpdate !== undefined && typeof latestUpdate['body'] === 'string') ? latestUpdate['body'] : undefined;
-    const updateId: WorkerInterpretersStatuspageInterpreterUpdateId = (latestUpdate !== undefined && typeof latestUpdate['id'] === 'string') ? latestUpdate['id'] : undefined;
-    const kvMissing: WorkerInterpretersStatuspageInterpreterKvMissing = hasKv === false
+    const incident: Worker_Interpreters_Statuspage_StatuspageInterpreter_Incident = data['incident'] as Worker_Interpreters_Statuspage_StatuspageInterpreter_Incident;
+    const incidentName: Worker_Interpreters_Statuspage_StatuspageInterpreter_IncidentName = (incident !== null && typeof incident['name'] === 'string') ? incident['name'] : 'Incident';
+    const status: Worker_Interpreters_Statuspage_StatuspageInterpreter_Status = (incident !== null && typeof incident['status'] === 'string') ? incident['status'] : 'unknown';
+    const impact: Worker_Interpreters_Statuspage_StatuspageInterpreter_Impact = (incident !== null && typeof incident['impact'] === 'string') ? incident['impact'] : 'none';
+    const shortlink: Worker_Interpreters_Statuspage_StatuspageInterpreter_Shortlink = (incident !== null && typeof incident['shortlink'] === 'string') ? incident['shortlink'] : undefined;
+    const rawUpdates: Worker_Interpreters_Statuspage_StatuspageInterpreter_RawUpdates = (incident !== null) ? incident['incident_updates'] : undefined;
+    const isUpdatesArray: Worker_Interpreters_Statuspage_StatuspageInterpreter_IsUpdatesArray = Array.isArray(rawUpdates);
+    const updates: Worker_Interpreters_Statuspage_StatuspageInterpreter_Updates = (isUpdatesArray === true) ? (rawUpdates as Worker_Interpreters_Statuspage_StatuspageInterpreter_Updates) : [];
+    const latestUpdate: Worker_Interpreters_Statuspage_StatuspageInterpreter_LatestUpdate = updates[0];
+    const latestBody: Worker_Interpreters_Statuspage_StatuspageInterpreter_LatestBody = (latestUpdate !== undefined && typeof latestUpdate['body'] === 'string') ? latestUpdate['body'] : undefined;
+    const updateId: Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdateId = (latestUpdate !== undefined && typeof latestUpdate['id'] === 'string') ? latestUpdate['id'] : undefined;
+    const missingIncidentKv: Worker_Interpreters_Statuspage_StatuspageInterpreter_MissingIncidentKv = hasKv === false
       || kv === undefined
       || pageId === undefined;
-    if (kvMissing === true) {
-      const componentLines: WorkerInterpretersStatuspageInterpreterComponentLines = [];
-      return buildIncidentNotification(serviceName, incidentName, status, impact, latestBody, shortlink, unsubscribeUrl, componentLines);
+    if (missingIncidentKv === true) {
+      const fallbackComponentLines: Worker_Interpreters_Statuspage_StatuspageInterpreter_FallbackComponentLines = [];
+      return buildIncidentNotification(serviceName, incidentName, status, impact, latestBody, shortlink, unsubscribeUrl, fallbackComponentLines);
     }
 
     if (kv === undefined || pageId === undefined) {
-      const componentLines: WorkerInterpretersStatuspageInterpreterComponentLines = [];
-      return buildIncidentNotification(serviceName, incidentName, status, impact, latestBody, shortlink, unsubscribeUrl, componentLines);
+      const unverifiedComponentLines: Worker_Interpreters_Statuspage_StatuspageInterpreter_UnverifiedComponentLines = [];
+      return buildIncidentNotification(serviceName, incidentName, status, impact, latestBody, shortlink, unsubscribeUrl, unverifiedComponentLines);
     }
 
-    const existingState: WorkerInterpretersStatuspageInterpreterExistingState = await readState(kv, pageId);
-    const isDuplicate: WorkerInterpretersStatuspageInterpreterIsDuplicate = existingState !== null
+    const existingIncidentState: Worker_Interpreters_Statuspage_StatuspageInterpreter_ExistingIncidentState = await readState(kv, pageId);
+    const isDuplicate: Worker_Interpreters_Statuspage_StatuspageInterpreter_IsDuplicate = existingIncidentState !== null
       && updateId !== undefined
-      && existingState['updateId'] === updateId;
+      && existingIncidentState['updateId'] === updateId;
     if (isDuplicate === true) {
       return null;
     }
 
-    const previousComponents: WorkerInterpretersStatuspageInterpreterPreviousComponents = (existingState !== null) ? { ...existingState['components'] } : {};
-    const currentComponents: WorkerInterpretersStatuspageInterpreterCurrentComponents = { ...previousComponents };
+    const previousComponents: Worker_Interpreters_Statuspage_StatuspageInterpreter_PreviousComponents = (existingIncidentState !== null) ? { ...existingIncidentState['components'] } : {};
+    const currentComponents: Worker_Interpreters_Statuspage_StatuspageInterpreter_CurrentComponents = { ...previousComponents };
     if (latestUpdate !== undefined) {
-      const affectedComponents: WorkerInterpretersStatuspageInterpreterAffectedComponents = latestUpdate['affected_components'] as WorkerInterpretersStatuspageInterpreterAffectedComponents;
-      const isAffectedArray: WorkerInterpretersStatuspageInterpreterIsAffectedArray = Array.isArray(affectedComponents);
+      const affectedComponents: Worker_Interpreters_Statuspage_StatuspageInterpreter_AffectedComponents = latestUpdate['affected_components'] as Worker_Interpreters_Statuspage_StatuspageInterpreter_AffectedComponents;
+      const isAffectedArray: Worker_Interpreters_Statuspage_StatuspageInterpreter_IsAffectedArray = Array.isArray(affectedComponents);
       if (isAffectedArray === true && affectedComponents !== undefined) {
         for (const affected of affectedComponents) {
-          const code: WorkerInterpretersStatuspageInterpreterAffectedCode = (typeof affected['code'] === 'string') ? affected['code'] : undefined;
-          const name: WorkerInterpretersStatuspageInterpreterAffectedName = (typeof affected['name'] === 'string') ? affected['name'] : undefined;
-          const newStatus: WorkerInterpretersStatuspageInterpreterAffectedNewStatus = (typeof affected['new_status'] === 'string') ? affected['new_status'] : undefined;
-          const canUpdateAffected: WorkerInterpretersStatuspageInterpreterCanUpdateAffected = code !== undefined
+          const code: Worker_Interpreters_Statuspage_StatuspageInterpreter_Code = (typeof affected['code'] === 'string') ? affected['code'] : undefined;
+          const name: Worker_Interpreters_Statuspage_StatuspageInterpreter_Name = (typeof affected['name'] === 'string') ? affected['name'] : undefined;
+          const newStatus: Worker_Interpreters_Statuspage_StatuspageInterpreter_NewStatus = (typeof affected['new_status'] === 'string') ? affected['new_status'] : undefined;
+          const canUpdateAffected: Worker_Interpreters_Statuspage_StatuspageInterpreter_CanUpdateAffected = code !== undefined
             && name !== undefined
             && newStatus !== undefined;
           if (canUpdateAffected === true
@@ -444,18 +514,28 @@ const statuspageInterpreter: WorkerInterpretersStatuspageInterpreter = async (in
             && name !== undefined
             && newStatus !== undefined) {
             Reflect.set(currentComponents, code, {
-              name, status: newStatus,
+              name,
+              status: newStatus,
             });
           }
         }
       }
     }
 
-    const diff: WorkerInterpretersStatuspageInterpreterDiff = diffComponents(previousComponents, currentComponents);
-    const componentLines: WorkerInterpretersStatuspageInterpreterComponentLines = formatComponentLines(diff);
-    const incidentId: WorkerInterpretersStatuspageInterpreterIncidentId = (typeof incident['id'] === 'string') ? incident['id'] : undefined;
-    const newState: WorkerInterpretersStatuspageInterpreterNewState = {
-      incidentId, incidentName, status, impact, body: latestBody, shortlink, serviceName, unsubscribeUrl, updateId, components: currentComponents,
+    const diff: Worker_Interpreters_Statuspage_StatuspageInterpreter_Diff = diffComponents(previousComponents, currentComponents);
+    const componentLines: Worker_Interpreters_Statuspage_StatuspageInterpreter_ComponentLines = formatComponentLines(diff);
+    const incidentId: Worker_Interpreters_Statuspage_StatuspageInterpreter_IncidentId = (typeof incident['id'] === 'string') ? incident['id'] : undefined;
+    const newState: Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState = {
+      incidentId,
+      incidentName,
+      status,
+      impact,
+      body: latestBody,
+      shortlink,
+      serviceName,
+      unsubscribeUrl,
+      updateId,
+      components: currentComponents,
     };
 
     await writeState(kv, pageId, newState);

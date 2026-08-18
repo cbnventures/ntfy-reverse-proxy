@@ -50,65 +50,76 @@
   "emails": {
     "bugs": "bugs@cbnventures.io"
   },
+  "github": {
+    "owner": "cbnventures",
+    "repo": "ntfy-reverse-proxy",
+    "topics": [
+      "ntfy",
+      "reverse-proxy",
+      "cloudflare-workers",
+      "webhooks",
+      "notifications",
+      "push-notifications",
+      "self-hosted",
+      "typescript"
+    ],
+    "features": {
+      "issues": true,
+      "wiki": false,
+      "projects": false,
+      "discussions": false
+    },
+    "policies": {
+      "visibility": "public",
+      "defaultBranch": "main",
+      "mergeMethods": {
+        "merge": true,
+        "squash": true,
+        "rebase": true
+      },
+      "autoDeleteHeadBranch": true
+    }
+  },
   "workflows": [
     {
       "template": "check-sponsor-gated-issues",
-      "suffix": "project",
+      "name": "sponsor-check",
       "triggers": [
         "issue-comment",
         "issues"
-      ],
-      "settings": {
-        "IS_ORGANIZATION": "IS_ORGANIZATION",
-        "ISSUE_LABELS": "ISSUE_LABELS",
-        "ISSUE_LIMIT_COMMENTER": "ISSUE_LIMIT_COMMENTER",
-        "ISSUE_LOCK_ON_CLOSE": "ISSUE_LOCK_ON_CLOSE",
-        "ISSUE_MESSAGE_NOT_SPONSOR": "ISSUE_MESSAGE_NOT_SPONSOR",
-        "ISSUE_MESSAGE_WELCOME": "ISSUE_MESSAGE_WELCOME",
-        "PERSONAL_ACCESS_TOKEN": "PERSONAL_ACCESS_TOKEN",
-        "SPONSOR_ACTIVE_ONLY": "SPONSOR_ACTIVE_ONLY",
-        "SPONSOR_EXEMPT_FILE_LOCATION": "SPONSOR_EXEMPT_FILE_LOCATION",
-        "SPONSOR_MINIMUM": "SPONSOR_MINIMUM"
-      }
+      ]
     },
     {
       "template": "lock-inactive-issues",
-      "suffix": "project",
+      "name": "lock-inactive",
       "triggers": [
         "schedule-weekly"
       ]
     },
     {
       "template": "publish",
-      "suffix": "project",
+      "name": "project",
       "triggers": [
-        "release"
+        "tag-push"
       ],
-      "scopes": [
+      "build": [
         "./packages/ntfy-reverse-proxy",
         "./apps/docs"
       ],
-      "targets": [
+      "deploy": [
         {
-          "type": "npm",
-          "workingDir": "./packages/ntfy-reverse-proxy"
+          "to": "npm",
+          "path": "./packages/ntfy-reverse-proxy"
         },
         {
-          "type": "github-packages",
-          "workingDir": "./packages/ntfy-reverse-proxy"
+          "to": "github-packages",
+          "path": "./packages/ntfy-reverse-proxy"
         },
         {
-          "type": "cloudflare-pages-docusaurus",
-          "workingDir": "./apps/docs"
+          "to": "cloudflare-pages-docusaurus",
+          "path": "./apps/docs"
         }
-      ],
-      "settings": {
-        "CLOUDFLARE_ACCOUNT_ID": "CLOUDFLARE_ACCOUNT_ID",
-        "CLOUDFLARE_API_TOKEN": "CLOUDFLARE_API_TOKEN",
-        "CLOUDFLARE_PROJECT_NAME": "CLOUDFLARE_PROJECT_NAME",
-        "NPM_TOKEN": "NPM_TOKEN",
-        "ROOT_WORKING_DIR": "./"
-      }
+      ]
     }
   ],
   "urls": {
@@ -118,7 +129,6 @@
     "license": "https://github.com/cbnventures/ntfy-reverse-proxy/blob/HEAD/LICENSE",
     "logo": "https://nrp.cbnventures.io/images/logo.svg",
     "documentation": "https://nrp.cbnventures.io/",
-    "github": "https://github.com/cbnventures/ntfy-reverse-proxy",
     "npm": "https://www.npmjs.com/package/ntfy-reverse-proxy",
     "fundSources": [
       "https://github.com/sponsors/cbnventures",
@@ -131,140 +141,190 @@
     "./": {
       "role": "project",
       "policy": "freezable",
-      "name": "ntfy-reverse-proxy-project",
-      "recipes": {
-        "cleanup": [
-          true,
-          {
-            "removeUnknownKeys": true,
-            "reorderKeys": true
-          }
-        ],
-        "normalize-artifacts": [
-          true
-        ],
-        "normalize-bundler": [
-          true
-        ],
-        "normalize-dependencies": [
-          true,
-          {
-            "pinDependencyVersions": true,
-            "pinDevDependencyVersions": true
-          }
-        ],
-        "normalize-modules": [
-          true
-        ],
-        "normalize-tooling": [
-          true
-        ],
-        "sync-environment": [
-          true,
-          {
-            "trackNodeLtsVersions": true
-          }
-        ],
-        "sync-identity": [
-          true
-        ],
-        "sync-ownership": [
-          true
-        ]
-      }
+      "name": "ntfy-reverse-proxy-project"
     },
     "./apps/docs": {
       "role": "docs",
       "policy": "freezable",
-      "name": "ntfy-reverse-proxy-docs",
-      "recipes": {
-        "cleanup": [
-          true,
-          {
-            "removeUnknownKeys": true,
-            "reorderKeys": true
-          }
-        ],
-        "normalize-artifacts": [
-          true
-        ],
-        "normalize-bundler": [
-          true
-        ],
-        "normalize-dependencies": [
-          true,
-          {
-            "pinDependencyVersions": true,
-            "pinDevDependencyVersions": true
-          }
-        ],
-        "normalize-modules": [
-          true
-        ],
-        "normalize-tooling": [
-          true
-        ],
-        "sync-environment": [
-          true,
-          {
-            "trackNodeLtsVersions": true
-          }
-        ],
-        "sync-identity": [
-          true
-        ],
-        "sync-ownership": [
-          true
-        ]
-      }
+      "name": "ntfy-reverse-proxy-docs"
     },
     "./packages/ntfy-reverse-proxy": {
       "role": "package",
       "policy": "distributable",
-      "name": "ntfy-reverse-proxy",
-      "recipes": {
-        "cleanup": [
-          true,
-          {
+      "name": "ntfy-reverse-proxy"
+    }
+  },
+  "gitignore": {
+    "projectExcludes": [
+      "!worker-configuration.d.ts",
+      "wrangler.toml",
+      "config.json",
+      "tail-logs.jsonl",
+      "graphify-out/"
+    ]
+  },
+  "agents": [
+    "claude-code",
+    "codex"
+  ],
+  "recipes": {
+    "github": {
+      "sync-features": {
+        "enabled": true
+      },
+      "sync-identity": {
+        "enabled": true
+      },
+      "sync-policies": {
+        "enabled": true
+      }
+    },
+    "license": {
+      "update-copyright": {
+        "enabled": true
+      }
+    },
+    "read-me": {
+      "update-badges": {
+        "enabled": true
+      },
+      "update-credits": {
+        "enabled": true
+      },
+      "update-documentation": {
+        "enabled": true
+      },
+      "update-header": {
+        "enabled": true
+      },
+      "update-introduction": {
+        "enabled": true
+      }
+    },
+    "package-json": {
+      "./": {
+        "cleanup": {
+          "enabled": true,
+          "settings": {
             "removeUnknownKeys": true,
             "reorderKeys": true
           }
-        ],
-        "normalize-artifacts": [
-          true
-        ],
-        "normalize-bundler": [
-          true
-        ],
-        "normalize-dependencies": [
-          true,
-          {
+        },
+        "normalize-artifacts": {
+          "enabled": true
+        },
+        "normalize-bundler": {
+          "enabled": true
+        },
+        "normalize-dependencies": {
+          "enabled": true,
+          "settings": {
             "pinDependencyVersions": true,
             "pinDevDependencyVersions": true
           }
-        ],
-        "normalize-modules": [
-          true
-        ],
-        "normalize-tooling": [
-          true
-        ],
-        "sync-environment": [
-          true,
-          {
+        },
+        "normalize-modules": {
+          "enabled": true
+        },
+        "normalize-tooling": {
+          "enabled": true
+        },
+        "sync-environment": {
+          "enabled": true,
+          "settings": {
             "trackNodeLtsVersions": true
           }
-        ],
-        "sync-identity": [
-          true,
-          {
+        },
+        "sync-identity": {
+          "enabled": true
+        },
+        "sync-ownership": {
+          "enabled": true
+        }
+      },
+      "./apps/docs": {
+        "cleanup": {
+          "enabled": true,
+          "settings": {
+            "removeUnknownKeys": true,
+            "reorderKeys": true
+          }
+        },
+        "normalize-artifacts": {
+          "enabled": true
+        },
+        "normalize-bundler": {
+          "enabled": true
+        },
+        "normalize-dependencies": {
+          "enabled": true,
+          "settings": {
+            "pinDependencyVersions": true,
+            "pinDevDependencyVersions": true
+          }
+        },
+        "normalize-modules": {
+          "enabled": true
+        },
+        "normalize-tooling": {
+          "enabled": true
+        },
+        "sync-environment": {
+          "enabled": true,
+          "settings": {
+            "trackNodeLtsVersions": true
+          }
+        },
+        "sync-identity": {
+          "enabled": true
+        },
+        "sync-ownership": {
+          "enabled": true
+        }
+      },
+      "./packages/ntfy-reverse-proxy": {
+        "cleanup": {
+          "enabled": true,
+          "settings": {
+            "removeUnknownKeys": true,
+            "reorderKeys": true
+          }
+        },
+        "normalize-artifacts": {
+          "enabled": true
+        },
+        "normalize-bundler": {
+          "enabled": true
+        },
+        "normalize-dependencies": {
+          "enabled": true,
+          "settings": {
+            "pinDependencyVersions": true,
+            "pinDevDependencyVersions": true
+          }
+        },
+        "normalize-modules": {
+          "enabled": true
+        },
+        "normalize-tooling": {
+          "enabled": true
+        },
+        "sync-environment": {
+          "enabled": true,
+          "settings": {
+            "trackNodeLtsVersions": true
+          }
+        },
+        "sync-identity": {
+          "enabled": true,
+          "settings": {
             "description": true,
             "keywords": true
           }
-        ],
-        "sync-ownership": [
-          true,
-          {
+        },
+        "sync-ownership": {
+          "enabled": true,
+          "settings": {
             "homepage": true,
             "bugs": true,
             "author": true,
@@ -272,8 +332,36 @@
             "funding": true,
             "repository": true
           }
-        ]
+        }
       }
     }
+  },
+  "environment": {
+    "project": {
+      "prefix": "PROJECT_"
+    },
+    "workspaces": {
+      "./": {
+        "prefix": "ROOT_",
+        "variables": [
+          {
+            "key": "CLOUDFLARE_API_TOKEN",
+            "reach": "local"
+          }
+        ]
+      },
+      "./apps/docs": {
+        "prefix": "DOCS_"
+      }
+    },
+    "workflows": {
+      "sponsor-check": {
+        "prefix": "SGS_"
+      }
+    }
+  },
+  "settings": {
+    "lockStepVersioning": true,
+    "versionStrategy": "semver"
   }
 }

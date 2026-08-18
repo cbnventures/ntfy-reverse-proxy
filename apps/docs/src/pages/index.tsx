@@ -1,13 +1,16 @@
 import {
   BlogPreview,
+  Canvas,
   Features,
-  Hero,
   InstallStrip,
   Stats,
-} from '@cbnventures/docusaurus-preset-nova/components';
-
+} from '@cbnventures/docusaurus-preset-nova/blocks';
 import Head from '@docusaurus/Head';
+import Link from '@docusaurus/Link';
+import Heading from '@theme/Heading';
 import Layout from '@theme/Layout';
+
+import styles from './index.module.css';
 
 /**
  * Pages - Home.
@@ -25,15 +28,68 @@ function Home() {
       <Head>
         <title>Reverse Proxy for ntfy - Hide Your Server, Keep Your Webhooks</title>
       </Head>
-      <Hero
-        eyebrow="Notification Gateway"
-        heading="Your server IP is in every webhook field."
-        tagline="Every endpoint, every email forward, every service config pointing at your self-hosted server. Reverse Proxy for ntfy sits in front — your ntfy URL, topics, and tokens stay hidden, your notifications arrive clean, and your servers fail over automatically."
-        ctaLabel="Read the Docs"
-        ctaLink="/docs/overview/"
-        secondaryCtaLabel="View on GitHub"
-        secondaryCtaLink="https://github.com/cbnventures/ntfy-reverse-proxy"
-      />
+      <Canvas container="full" className={styles['hero']}>
+        <div className={styles['heroInner']}>
+          <div className={styles['heroContent']}>
+            <p className="nova-hero-eyebrow">Notification Gateway</p>
+            <Heading as="h1" className={`nova-hero-heading ${styles['heroHeading']}`}>
+              Your server IP is in every webhook field.
+            </Heading>
+            <p className="nova-hero-tagline">
+              Every endpoint, every email forward, every service config &mdash; all pointing at your server. Reverse Proxy for ntfy sits in front so your URL, topics, and tokens stay hidden, and your servers fail over automatically.
+            </p>
+            <div className={`nova-hero-actions ${styles['heroActions']}`}>
+              <Link className="nova-cta-primary" to="/docs/overview/">Read the Docs</Link>
+              <Link className="nova-cta-secondary" to="https://github.com/cbnventures/ntfy-reverse-proxy">View on GitHub</Link>
+            </div>
+          </div>
+          <div className={styles['termWrap']} aria-hidden="true">
+            <div className={styles['term']}>
+              <div className={styles['termBar']}>
+                <span className={`${styles['termDot']} ${styles['termDotRed']}`} />
+                <span className={`${styles['termDot']} ${styles['termDotYellow']}`} />
+                <span className={`${styles['termDot']} ${styles['termDotGreen']}`} />
+                <span className={styles['termTitle']}>webhook config</span>
+              </div>
+              <div className={styles['termBody']}>
+                <span className={styles['termLine']}><span className={styles['termDim']}># Before &mdash; your IP is exposed</span></span>
+                <span className={styles['termLine']}>
+                  POST
+                  <span className={styles['termExposed']}>https://192.168.1.50:8443</span>
+                  /publish
+                </span>
+                <span className={styles['termLine']}>
+                  Authorization: Bearer
+                  <span className={styles['termExposed']}>ntfy_sk_xxxx</span>
+                </span>
+                <span className={styles['termLine']}>&nbsp;</span>
+                <span className={styles['termLine']}><span className={styles['termDim']}># After &mdash; proxied through nrp</span></span>
+                <span className={styles['termLine']}>
+                  POST
+                  <span className={styles['termSafe']}>https://notify.example.com</span>
+                  /publish
+                </span>
+                <span className={styles['termLine']}>
+                  Authorization: Bearer
+                  <span className={styles['termNew']}>ctx_public_token</span>
+                </span>
+                <span className={styles['termLine']}>&nbsp;</span>
+                <span className={styles['termLine']}>
+                  <span className={styles['termSafe']}>&#10003;</span>
+                  {' '}
+                  IP shielded &nbsp;
+                  <span className={styles['termSafe']}>&#10003;</span>
+                  {' '}
+                  Token rotated &nbsp;
+                  <span className={styles['termSafe']}>&#10003;</span>
+                  {' '}
+                  Failover ready
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Canvas>
       <main>
         <InstallStrip command="npx ntfy-reverse-proxy" copyTarget="block" />
         <Features

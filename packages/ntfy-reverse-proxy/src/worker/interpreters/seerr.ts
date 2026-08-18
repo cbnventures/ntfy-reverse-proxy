@@ -1,51 +1,52 @@
 import type {
-  WorkerInterpretersSeerrInput,
-  WorkerInterpretersSeerrInterpreter,
-  WorkerInterpretersSeerrInterpreterActions,
-  WorkerInterpretersSeerrInterpreterBody,
-  WorkerInterpretersSeerrInterpreterBodyLines,
-  WorkerInterpretersSeerrInterpreterComment,
-  WorkerInterpretersSeerrInterpreterCommentedByUsername,
-  WorkerInterpretersSeerrInterpreterCommentMessage,
-  WorkerInterpretersSeerrInterpreterData,
-  WorkerInterpretersSeerrInterpreterDecodedBody,
-  WorkerInterpretersSeerrInterpreterDecoder,
-  WorkerInterpretersSeerrInterpreterEmojiTag,
-  WorkerInterpretersSeerrInterpreterEvent,
-  WorkerInterpretersSeerrInterpreterImage,
-  WorkerInterpretersSeerrInterpreterIssue,
-  WorkerInterpretersSeerrInterpreterIssueType,
-  WorkerInterpretersSeerrInterpreterMedia,
-  WorkerInterpretersSeerrInterpreterMediaStatus,
-  WorkerInterpretersSeerrInterpreterMediaType,
-  WorkerInterpretersSeerrInterpreterMessage,
-  WorkerInterpretersSeerrInterpreterNotificationType,
-  WorkerInterpretersSeerrInterpreterParsed,
-  WorkerInterpretersSeerrInterpreterPriority,
-  WorkerInterpretersSeerrInterpreterProxyConfig,
-  WorkerInterpretersSeerrInterpreterRawCommentDefault,
-  WorkerInterpretersSeerrInterpreterRawIssueDefault,
-  WorkerInterpretersSeerrInterpreterRawMediaDefault,
-  WorkerInterpretersSeerrInterpreterRawProxyConfigDefault,
-  WorkerInterpretersSeerrInterpreterRawRequestDefault,
-  WorkerInterpretersSeerrInterpreterRawSeerrUrl,
-  WorkerInterpretersSeerrInterpreterReportedByUsername,
-  WorkerInterpretersSeerrInterpreterRequest,
-  WorkerInterpretersSeerrInterpreterRequestedByUsername,
-  WorkerInterpretersSeerrInterpreterSeerrUrl,
-  WorkerInterpretersSeerrInterpreterSubject,
-  WorkerInterpretersSeerrInterpreterTags,
-  WorkerInterpretersSeerrInterpreterTitle,
-  WorkerInterpretersSeerrInterpreterTmdbId,
-  WorkerInterpretersSeerrInterpreterTmdbUrl,
-  WorkerInterpretersSeerrMapNotificationTypeToPriorityNotificationType,
-  WorkerInterpretersSeerrMapNotificationTypeToPriorityReturns,
-  WorkerInterpretersSeerrMapPriorityToEmojiTagPriority,
-  WorkerInterpretersSeerrMapPriorityToEmojiTagReturns,
-  WorkerInterpretersSeerrResult,
-  WorkerInterpretersSeerrValidateUrlRawUrl,
-  WorkerInterpretersSeerrValidateUrlReturns,
-  WorkerInterpretersSeerrValidateUrlUrl,
+  Worker_Interpreters_Seerr_Input,
+  Worker_Interpreters_Seerr_MapNotificationTypeToPriority_NotificationType,
+  Worker_Interpreters_Seerr_MapNotificationTypeToPriority_Returns,
+  Worker_Interpreters_Seerr_MapPriorityToEmojiTag_Priority,
+  Worker_Interpreters_Seerr_MapPriorityToEmojiTag_Returns,
+  Worker_Interpreters_Seerr_Result,
+  Worker_Interpreters_Seerr_SeerrInterpreter,
+  Worker_Interpreters_Seerr_SeerrInterpreter_Actions,
+  Worker_Interpreters_Seerr_SeerrInterpreter_Body,
+  Worker_Interpreters_Seerr_SeerrInterpreter_BodyLines,
+  Worker_Interpreters_Seerr_SeerrInterpreter_Comment,
+  Worker_Interpreters_Seerr_SeerrInterpreter_CommentedByUsername,
+  Worker_Interpreters_Seerr_SeerrInterpreter_CommentMessage,
+  Worker_Interpreters_Seerr_SeerrInterpreter_Data,
+  Worker_Interpreters_Seerr_SeerrInterpreter_DecodedBody,
+  Worker_Interpreters_Seerr_SeerrInterpreter_Decoder,
+  Worker_Interpreters_Seerr_SeerrInterpreter_EmojiTag,
+  Worker_Interpreters_Seerr_SeerrInterpreter_Event,
+  Worker_Interpreters_Seerr_SeerrInterpreter_Image,
+  Worker_Interpreters_Seerr_SeerrInterpreter_Issue,
+  Worker_Interpreters_Seerr_SeerrInterpreter_IssueType,
+  Worker_Interpreters_Seerr_SeerrInterpreter_Media,
+  Worker_Interpreters_Seerr_SeerrInterpreter_MediaStatus,
+  Worker_Interpreters_Seerr_SeerrInterpreter_MediaType,
+  Worker_Interpreters_Seerr_SeerrInterpreter_Message,
+  Worker_Interpreters_Seerr_SeerrInterpreter_NotificationType,
+  Worker_Interpreters_Seerr_SeerrInterpreter_Parsed,
+  Worker_Interpreters_Seerr_SeerrInterpreter_Priority,
+  Worker_Interpreters_Seerr_SeerrInterpreter_ProxyConfig,
+  Worker_Interpreters_Seerr_SeerrInterpreter_RawCommentDefault,
+  Worker_Interpreters_Seerr_SeerrInterpreter_RawIssueDefault,
+  Worker_Interpreters_Seerr_SeerrInterpreter_RawMediaDefault,
+  Worker_Interpreters_Seerr_SeerrInterpreter_RawProxyConfigDefault,
+  Worker_Interpreters_Seerr_SeerrInterpreter_RawRequestDefault,
+  Worker_Interpreters_Seerr_SeerrInterpreter_RawSeerrUrl,
+  Worker_Interpreters_Seerr_SeerrInterpreter_ReportedByUsername,
+  Worker_Interpreters_Seerr_SeerrInterpreter_Request,
+  Worker_Interpreters_Seerr_SeerrInterpreter_RequestedByUsername,
+  Worker_Interpreters_Seerr_SeerrInterpreter_SeerrUrl,
+  Worker_Interpreters_Seerr_SeerrInterpreter_Subject,
+  Worker_Interpreters_Seerr_SeerrInterpreter_Tags,
+  Worker_Interpreters_Seerr_SeerrInterpreter_Title,
+  Worker_Interpreters_Seerr_SeerrInterpreter_TmdbId,
+  Worker_Interpreters_Seerr_SeerrInterpreter_TmdbUrl,
+  Worker_Interpreters_Seerr_ValidateUrl_Protocol,
+  Worker_Interpreters_Seerr_ValidateUrl_RawUrl,
+  Worker_Interpreters_Seerr_ValidateUrl_Returns,
+  Worker_Interpreters_Seerr_ValidateUrl_Url,
 } from '../../types/worker/interpreters/seerr.d.ts';
 
 /**
@@ -54,13 +55,13 @@ import type {
  * Converts a Seerr notification type string into the corresponding
  * ntfy priority level based on event severity.
  *
- * @param {WorkerInterpretersSeerrMapNotificationTypeToPriorityNotificationType} notificationType - Notification type.
+ * @param {Worker_Interpreters_Seerr_MapNotificationTypeToPriority_NotificationType} notificationType - Notification type.
  *
- * @returns {WorkerInterpretersSeerrMapNotificationTypeToPriorityReturns}
+ * @returns {Worker_Interpreters_Seerr_MapNotificationTypeToPriority_Returns}
  *
  * @since 2.0.0
  */
-const mapNotificationTypeToPriority = (notificationType: WorkerInterpretersSeerrMapNotificationTypeToPriorityNotificationType): WorkerInterpretersSeerrMapNotificationTypeToPriorityReturns => {
+function mapNotificationTypeToPriority(notificationType: Worker_Interpreters_Seerr_MapNotificationTypeToPriority_NotificationType): Worker_Interpreters_Seerr_MapNotificationTypeToPriority_Returns {
   switch (notificationType) {
     case 'MEDIA_FAILED': {
       return 4;
@@ -87,7 +88,7 @@ const mapNotificationTypeToPriority = (notificationType: WorkerInterpretersSeerr
       return 3;
     }
   }
-};
+}
 
 /**
  * Worker - Interpreters - Seerr - Map Priority To Emoji Tag.
@@ -95,13 +96,13 @@ const mapNotificationTypeToPriority = (notificationType: WorkerInterpretersSeerr
  * Converts a numeric ntfy priority level into the corresponding
  * emoji shortcode string used as a visual indicator in tags.
  *
- * @param {WorkerInterpretersSeerrMapPriorityToEmojiTagPriority} priority - Priority.
+ * @param {Worker_Interpreters_Seerr_MapPriorityToEmojiTag_Priority} priority - Priority.
  *
- * @returns {WorkerInterpretersSeerrMapPriorityToEmojiTagReturns}
+ * @returns {Worker_Interpreters_Seerr_MapPriorityToEmojiTag_Returns}
  *
  * @since 2.0.0
  */
-const mapPriorityToEmojiTag = (priority: WorkerInterpretersSeerrMapPriorityToEmojiTagPriority): WorkerInterpretersSeerrMapPriorityToEmojiTagReturns => {
+function mapPriorityToEmojiTag(priority: Worker_Interpreters_Seerr_MapPriorityToEmojiTag_Priority): Worker_Interpreters_Seerr_MapPriorityToEmojiTag_Returns {
   switch (priority) {
     case 5: {
       return 'rotating_light';
@@ -119,7 +120,7 @@ const mapPriorityToEmojiTag = (priority: WorkerInterpretersSeerrMapPriorityToEmo
       return 'movie_camera';
     }
   }
-};
+}
 
 /**
  * Worker - Interpreters - Seerr - Validate URL.
@@ -127,21 +128,26 @@ const mapPriorityToEmojiTag = (priority: WorkerInterpretersSeerrMapPriorityToEmo
  * Attempts to parse the raw string as a URL and returns it
  * on success or undefined if the string is not a valid URL.
  *
- * @param {WorkerInterpretersSeerrValidateUrlRawUrl} rawUrl - Raw url.
+ * @param {Worker_Interpreters_Seerr_ValidateUrl_RawUrl} rawUrl - Raw url.
  *
- * @returns {WorkerInterpretersSeerrValidateUrlReturns}
+ * @returns {Worker_Interpreters_Seerr_ValidateUrl_Returns}
  *
  * @since 2.0.0
  */
-const validateUrl = (rawUrl: WorkerInterpretersSeerrValidateUrlRawUrl): WorkerInterpretersSeerrValidateUrlReturns => {
+function validateUrl(rawUrl: Worker_Interpreters_Seerr_ValidateUrl_RawUrl): Worker_Interpreters_Seerr_ValidateUrl_Returns {
   try {
-    const url: WorkerInterpretersSeerrValidateUrlUrl = new URL(rawUrl);
+    const url: Worker_Interpreters_Seerr_ValidateUrl_Url = new URL(rawUrl);
+    const protocol: Worker_Interpreters_Seerr_ValidateUrl_Protocol = url['protocol'];
+
+    if (protocol !== 'http:' && protocol !== 'https:') {
+      return undefined;
+    }
 
     return url.href;
   } catch {
     return undefined;
   }
-};
+}
 
 /**
  * Worker - Interpreters - Seerr - Interpreter.
@@ -149,14 +155,14 @@ const validateUrl = (rawUrl: WorkerInterpretersSeerrValidateUrlRawUrl): WorkerIn
  * Parses Seerr webhook payloads and builds a structured ntfy
  * notification with media metadata, action links, and tags.
  *
- * @param {WorkerInterpretersSeerrInput} input - Input.
+ * @param {Worker_Interpreters_Seerr_Input} input - Input.
  *
- * @returns {WorkerInterpretersSeerrResult}
+ * @returns {Worker_Interpreters_Seerr_Result}
  *
  * @since 2.0.0
  */
-const seerrInterpreter: WorkerInterpretersSeerrInterpreter = (input: WorkerInterpretersSeerrInput): WorkerInterpretersSeerrResult => {
-  let parsed: WorkerInterpretersSeerrInterpreterParsed = undefined;
+const seerrInterpreter: Worker_Interpreters_Seerr_SeerrInterpreter = (input: Worker_Interpreters_Seerr_Input): Worker_Interpreters_Seerr_Result => {
+  let parsed: Worker_Interpreters_Seerr_SeerrInterpreter_Parsed = undefined;
 
   if (typeof input === 'string') {
     try {
@@ -176,8 +182,8 @@ const seerrInterpreter: WorkerInterpretersSeerrInterpreter = (input: WorkerInter
       };
     }
   } else if (input instanceof ArrayBuffer) {
-    const decoder: WorkerInterpretersSeerrInterpreterDecoder = new TextDecoder('utf-8');
-    const decodedBody: WorkerInterpretersSeerrInterpreterDecodedBody = decoder.decode(input);
+    const decoder: Worker_Interpreters_Seerr_SeerrInterpreter_Decoder = new TextDecoder('utf-8');
+    const decodedBody: Worker_Interpreters_Seerr_SeerrInterpreter_DecodedBody = decoder.decode(input);
 
     try {
       parsed = JSON.parse(decodedBody);
@@ -199,36 +205,36 @@ const seerrInterpreter: WorkerInterpretersSeerrInterpreter = (input: WorkerInter
     parsed = input;
   }
 
-  const data: WorkerInterpretersSeerrInterpreterData = parsed as WorkerInterpretersSeerrInterpreterData;
-  const notificationType: WorkerInterpretersSeerrInterpreterNotificationType = (typeof data['notification_type'] === 'string') ? data['notification_type'] : 'UNKNOWN';
-  const event: WorkerInterpretersSeerrInterpreterEvent = (typeof data['event'] === 'string') ? data['event'] : 'Notification';
-  const subject: WorkerInterpretersSeerrInterpreterSubject = (typeof data['subject'] === 'string') ? data['subject'] : '';
-  const message: WorkerInterpretersSeerrInterpreterMessage = (typeof data['message'] === 'string') ? data['message'] : '';
-  const image: WorkerInterpretersSeerrInterpreterImage = (typeof data['image'] === 'string') ? data['image'] : undefined;
+  const data: Worker_Interpreters_Seerr_SeerrInterpreter_Data = parsed as Worker_Interpreters_Seerr_SeerrInterpreter_Data;
+  const notificationType: Worker_Interpreters_Seerr_SeerrInterpreter_NotificationType = (typeof data['notification_type'] === 'string') ? data['notification_type'] : 'UNKNOWN';
+  const event: Worker_Interpreters_Seerr_SeerrInterpreter_Event = (typeof data['event'] === 'string') ? data['event'] : 'Notification';
+  const subject: Worker_Interpreters_Seerr_SeerrInterpreter_Subject = (typeof data['subject'] === 'string') ? data['subject'] : '';
+  const message: Worker_Interpreters_Seerr_SeerrInterpreter_Message = (typeof data['message'] === 'string') ? data['message'] : '';
+  const image: Worker_Interpreters_Seerr_SeerrInterpreter_Image = (typeof data['image'] === 'string') ? data['image'] : undefined;
 
-  const rawMediaDefault: WorkerInterpretersSeerrInterpreterRawMediaDefault = {};
-  const media: WorkerInterpretersSeerrInterpreterMedia = (data['media'] !== undefined) ? data['media'] as WorkerInterpretersSeerrInterpreterMedia : rawMediaDefault;
-  const mediaType: WorkerInterpretersSeerrInterpreterMediaType = (typeof media['media_type'] === 'string') ? media['media_type'] : '';
-  const tmdbId: WorkerInterpretersSeerrInterpreterTmdbId = (typeof media['tmdbId'] === 'string') ? media['tmdbId'] : '';
-  const mediaStatus: WorkerInterpretersSeerrInterpreterMediaStatus = (typeof media['status'] === 'string') ? media['status'] : '';
+  const rawMediaDefault: Worker_Interpreters_Seerr_SeerrInterpreter_RawMediaDefault = {};
+  const media: Worker_Interpreters_Seerr_SeerrInterpreter_Media = (typeof data['media'] === 'object' && data['media'] !== null) ? data['media'] as Worker_Interpreters_Seerr_SeerrInterpreter_Media : rawMediaDefault;
+  const mediaType: Worker_Interpreters_Seerr_SeerrInterpreter_MediaType = (typeof media['media_type'] === 'string') ? media['media_type'] : '';
+  const tmdbId: Worker_Interpreters_Seerr_SeerrInterpreter_TmdbId = (typeof media['tmdbId'] === 'string') ? media['tmdbId'] : '';
+  const mediaStatus: Worker_Interpreters_Seerr_SeerrInterpreter_MediaStatus = (typeof media['status'] === 'string') ? media['status'] : '';
 
-  const rawRequestDefault: WorkerInterpretersSeerrInterpreterRawRequestDefault = {};
-  const request: WorkerInterpretersSeerrInterpreterRequest = (data['request'] !== undefined) ? data['request'] as WorkerInterpretersSeerrInterpreterRequest : rawRequestDefault;
-  const requestedByUsername: WorkerInterpretersSeerrInterpreterRequestedByUsername = (typeof request['requestedBy_username'] === 'string') ? request['requestedBy_username'] : '';
+  const rawRequestDefault: Worker_Interpreters_Seerr_SeerrInterpreter_RawRequestDefault = {};
+  const request: Worker_Interpreters_Seerr_SeerrInterpreter_Request = (typeof data['request'] === 'object' && data['request'] !== null) ? data['request'] as Worker_Interpreters_Seerr_SeerrInterpreter_Request : rawRequestDefault;
+  const requestedByUsername: Worker_Interpreters_Seerr_SeerrInterpreter_RequestedByUsername = (typeof request['requestedBy_username'] === 'string') ? request['requestedBy_username'] : '';
 
-  const rawIssueDefault: WorkerInterpretersSeerrInterpreterRawIssueDefault = {};
-  const issue: WorkerInterpretersSeerrInterpreterIssue = (data['issue'] !== undefined) ? data['issue'] as WorkerInterpretersSeerrInterpreterIssue : rawIssueDefault;
-  const issueType: WorkerInterpretersSeerrInterpreterIssueType = (typeof issue['issue_type'] === 'string') ? issue['issue_type'] : '';
-  const reportedByUsername: WorkerInterpretersSeerrInterpreterReportedByUsername = (typeof issue['reportedBy_username'] === 'string') ? issue['reportedBy_username'] : '';
+  const rawIssueDefault: Worker_Interpreters_Seerr_SeerrInterpreter_RawIssueDefault = {};
+  const issue: Worker_Interpreters_Seerr_SeerrInterpreter_Issue = (typeof data['issue'] === 'object' && data['issue'] !== null) ? data['issue'] as Worker_Interpreters_Seerr_SeerrInterpreter_Issue : rawIssueDefault;
+  const issueType: Worker_Interpreters_Seerr_SeerrInterpreter_IssueType = (typeof issue['issue_type'] === 'string') ? issue['issue_type'] : '';
+  const reportedByUsername: Worker_Interpreters_Seerr_SeerrInterpreter_ReportedByUsername = (typeof issue['reportedBy_username'] === 'string') ? issue['reportedBy_username'] : '';
 
-  const rawCommentDefault: WorkerInterpretersSeerrInterpreterRawCommentDefault = {};
-  const comment: WorkerInterpretersSeerrInterpreterComment = (data['comment'] !== undefined) ? data['comment'] as WorkerInterpretersSeerrInterpreterComment : rawCommentDefault;
-  const commentMessage: WorkerInterpretersSeerrInterpreterCommentMessage = (typeof comment['comment_message'] === 'string') ? comment['comment_message'] : '';
-  const commentedByUsername: WorkerInterpretersSeerrInterpreterCommentedByUsername = (typeof comment['commentedBy_username'] === 'string') ? comment['commentedBy_username'] : '';
+  const rawCommentDefault: Worker_Interpreters_Seerr_SeerrInterpreter_RawCommentDefault = {};
+  const comment: Worker_Interpreters_Seerr_SeerrInterpreter_Comment = (typeof data['comment'] === 'object' && data['comment'] !== null) ? data['comment'] as Worker_Interpreters_Seerr_SeerrInterpreter_Comment : rawCommentDefault;
+  const commentMessage: Worker_Interpreters_Seerr_SeerrInterpreter_CommentMessage = (typeof comment['comment_message'] === 'string') ? comment['comment_message'] : '';
+  const commentedByUsername: Worker_Interpreters_Seerr_SeerrInterpreter_CommentedByUsername = (typeof comment['commentedBy_username'] === 'string') ? comment['commentedBy_username'] : '';
 
-  const title: WorkerInterpretersSeerrInterpreterTitle = `[Seerr] ${event}`;
+  const title: Worker_Interpreters_Seerr_SeerrInterpreter_Title = `[Seerr] ${event}`;
 
-  const bodyLines: WorkerInterpretersSeerrInterpreterBodyLines = [];
+  const bodyLines: Worker_Interpreters_Seerr_SeerrInterpreter_BodyLines = [];
 
   if (subject !== '') {
     bodyLines.push(`**${subject}**`);
@@ -254,8 +260,8 @@ const seerrInterpreter: WorkerInterpretersSeerrInterpreter = (input: WorkerInter
     bodyLines.push(`**Comment by:** ${commentedByUsername}: ${commentMessage}`);
   }
 
-  const body: WorkerInterpretersSeerrInterpreterBody = bodyLines.join('\n');
-  const priority: WorkerInterpretersSeerrInterpreterPriority = mapNotificationTypeToPriority(notificationType);
+  const body: Worker_Interpreters_Seerr_SeerrInterpreter_Body = bodyLines.join('\n');
+  const priority: Worker_Interpreters_Seerr_SeerrInterpreter_Priority = mapNotificationTypeToPriority(notificationType);
 
   /*
    * Level 1: Interpreter tag (identifies the source service).
@@ -263,25 +269,25 @@ const seerrInterpreter: WorkerInterpretersSeerrInterpreter = (input: WorkerInter
    * Level 3: Webhook tags (not applicable for Seerr).
    * Level 4: Emoji tags (ntfy emoji shortcodes for visual indicators).
    */
-  const emojiTag: WorkerInterpretersSeerrInterpreterEmojiTag = mapPriorityToEmojiTag(priority);
-  const tags: WorkerInterpretersSeerrInterpreterTags = [
+  const emojiTag: Worker_Interpreters_Seerr_SeerrInterpreter_EmojiTag = mapPriorityToEmojiTag(priority);
+  const tags: Worker_Interpreters_Seerr_SeerrInterpreter_Tags = [
     'seerr',
     emojiTag,
   ];
 
-  const tmdbUrl: WorkerInterpretersSeerrInterpreterTmdbUrl = (tmdbId !== '' && mediaType !== '') ? `https://www.themoviedb.org/${mediaType}/${tmdbId}` : undefined;
+  const tmdbUrl: Worker_Interpreters_Seerr_SeerrInterpreter_TmdbUrl = (tmdbId !== '' && mediaType !== '') ? `https://www.themoviedb.org/${mediaType}/${tmdbId}` : undefined;
 
   /* Extract optional Seerr dashboard URL from payload. */
-  const rawProxyConfigDefault: WorkerInterpretersSeerrInterpreterRawProxyConfigDefault = {};
-  const proxyConfig: WorkerInterpretersSeerrInterpreterProxyConfig = (typeof data['ntfy-reverse-proxy'] === 'object' && data['ntfy-reverse-proxy'] !== null) ? data['ntfy-reverse-proxy'] as WorkerInterpretersSeerrInterpreterProxyConfig : rawProxyConfigDefault;
-  const rawSeerrUrl: WorkerInterpretersSeerrInterpreterRawSeerrUrl = proxyConfig['url'];
-  let seerrUrl: WorkerInterpretersSeerrInterpreterSeerrUrl = undefined;
+  const rawProxyConfigDefault: Worker_Interpreters_Seerr_SeerrInterpreter_RawProxyConfigDefault = {};
+  const proxyConfig: Worker_Interpreters_Seerr_SeerrInterpreter_ProxyConfig = (typeof data['ntfy-reverse-proxy'] === 'object' && data['ntfy-reverse-proxy'] !== null) ? data['ntfy-reverse-proxy'] as Worker_Interpreters_Seerr_SeerrInterpreter_ProxyConfig : rawProxyConfigDefault;
+  const rawSeerrUrl: Worker_Interpreters_Seerr_SeerrInterpreter_RawSeerrUrl = proxyConfig['url'];
+  let seerrUrl: Worker_Interpreters_Seerr_SeerrInterpreter_SeerrUrl = undefined;
 
   if (typeof rawSeerrUrl === 'string') {
     seerrUrl = validateUrl(rawSeerrUrl);
   }
 
-  const actions: WorkerInterpretersSeerrInterpreterActions = [];
+  const actions: Worker_Interpreters_Seerr_SeerrInterpreter_Actions = [];
 
   if (tmdbUrl !== undefined) {
     actions.push(`view, View on TMDB, ${tmdbUrl}`);
@@ -298,8 +304,8 @@ const seerrInterpreter: WorkerInterpretersSeerrInterpreter = (input: WorkerInter
       priority,
       tags,
       markdown: true,
-      ...(image !== undefined ? { icon: image } : {}),
-      ...(actions.length > 0 ? { actions: actions.join('; ') } : {}),
+      ...((image !== undefined) ? { icon: image } : {}),
+      ...((actions.length > 0) ? { actions: actions.join('; ') } : {}),
     },
   };
 };

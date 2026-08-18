@@ -1,37 +1,31 @@
 import { REGEX_PARENTHETICAL_CONTENT } from '../../lib/regex.js';
 
 import type {
-  WorkerPipelineAccumulateDeleteStateKv,
-  WorkerPipelineAccumulateDeleteStatePageId,
-  WorkerPipelineAccumulateDeleteStateReturns,
-  WorkerPipelineAccumulateDiffComponentsCurrent,
-  WorkerPipelineAccumulateDiffComponentsCurrentEntry,
-  WorkerPipelineAccumulateDiffComponentsPrevious,
-  WorkerPipelineAccumulateDiffComponentsPreviousEntry,
-  WorkerPipelineAccumulateDiffComponentsReturns,
-  WorkerPipelineAccumulateFormatComponentLinesCleanName,
-  WorkerPipelineAccumulateFormatComponentLinesDiff,
-  WorkerPipelineAccumulateFormatComponentLinesHumanized,
-  WorkerPipelineAccumulateFormatComponentLinesReturns,
-  WorkerPipelineAccumulateReadStateKv,
-  WorkerPipelineAccumulateReadStatePageId,
-  WorkerPipelineAccumulateReadStateRaw,
-  WorkerPipelineAccumulateReadStateReturns,
-  WorkerPipelineAccumulateWriteStateKv,
-  WorkerPipelineAccumulateWriteStatePageId,
-  WorkerPipelineAccumulateWriteStateReturns,
-  WorkerPipelineAccumulateWriteStateSerializedState,
-  WorkerPipelineAccumulateWriteStateState,
+  Worker_Pipeline_Accumulate_DiffComponents_Changed,
+  Worker_Pipeline_Accumulate_DiffComponents_Current,
+  Worker_Pipeline_Accumulate_DiffComponents_CurrentEntry,
+  Worker_Pipeline_Accumulate_DiffComponents_Diff,
+  Worker_Pipeline_Accumulate_DiffComponents_Entry,
+  Worker_Pipeline_Accumulate_DiffComponents_Name,
+  Worker_Pipeline_Accumulate_DiffComponents_NewStatus,
+  Worker_Pipeline_Accumulate_DiffComponents_OldStatus,
+  Worker_Pipeline_Accumulate_DiffComponents_Previous,
+  Worker_Pipeline_Accumulate_DiffComponents_PreviousEntry,
+  Worker_Pipeline_Accumulate_DiffComponents_Returns,
+  Worker_Pipeline_Accumulate_FormatComponentLines_CleanName,
+  Worker_Pipeline_Accumulate_FormatComponentLines_Diff,
+  Worker_Pipeline_Accumulate_FormatComponentLines_Humanized,
+  Worker_Pipeline_Accumulate_FormatComponentLines_Returns,
+  Worker_Pipeline_Accumulate_ReadState_Kv,
+  Worker_Pipeline_Accumulate_ReadState_PageId,
+  Worker_Pipeline_Accumulate_ReadState_Raw,
+  Worker_Pipeline_Accumulate_ReadState_Returns,
+  Worker_Pipeline_Accumulate_WriteState_Kv,
+  Worker_Pipeline_Accumulate_WriteState_PageId,
+  Worker_Pipeline_Accumulate_WriteState_Returns,
+  Worker_Pipeline_Accumulate_WriteState_SerializedState,
+  Worker_Pipeline_Accumulate_WriteState_State,
 } from '../../types/worker/pipeline/accumulate.d.ts';
-import type {
-  WorkerPipelineSharedComponentDiff,
-  WorkerPipelineSharedComponentDiffEntry,
-  WorkerPipelineSharedComponentDiffEntryChanged,
-  WorkerPipelineSharedComponentDiffEntryName,
-  WorkerPipelineSharedComponentDiffEntryNewStatus,
-  WorkerPipelineSharedComponentDiffEntryOldStatus,
-  WorkerPipelineSharedComponentsMap,
-} from '../../types/worker/pipeline/shared.d.ts';
 
 /**
  * Worker - Pipeline - Accumulate - Read State.
@@ -39,15 +33,15 @@ import type {
  * Retrieves a previously stored Statuspage incident state from
  * KV storage using the page identifier as the lookup key.
  *
- * @param {WorkerPipelineAccumulateReadStateKv}     kv     - Kv.
- * @param {WorkerPipelineAccumulateReadStatePageId} pageId - Page id.
+ * @param {Worker_Pipeline_Accumulate_ReadState_Kv}     kv     - Kv.
+ * @param {Worker_Pipeline_Accumulate_ReadState_PageId} pageId - Page id.
  *
- * @returns {WorkerPipelineAccumulateReadStateReturns}
+ * @returns {Worker_Pipeline_Accumulate_ReadState_Returns}
  *
  * @since 2.0.0
  */
-export async function readState(kv: WorkerPipelineAccumulateReadStateKv, pageId: WorkerPipelineAccumulateReadStatePageId): WorkerPipelineAccumulateReadStateReturns {
-  const raw: WorkerPipelineAccumulateReadStateRaw = await kv.get(`statuspage:${pageId}`);
+export async function readState(kv: Worker_Pipeline_Accumulate_ReadState_Kv, pageId: Worker_Pipeline_Accumulate_ReadState_PageId): Worker_Pipeline_Accumulate_ReadState_Returns {
+  const raw: Worker_Pipeline_Accumulate_ReadState_Raw = await kv.get(`statuspage:${pageId}`);
 
   if (raw === null) {
     return null;
@@ -62,37 +56,18 @@ export async function readState(kv: WorkerPipelineAccumulateReadStateKv, pageId:
  * Persists the current Statuspage incident state into KV storage
  * with a 24-hour TTL so stale entries expire automatically.
  *
- * @param {WorkerPipelineAccumulateWriteStateKv}     kv     - Kv.
- * @param {WorkerPipelineAccumulateWriteStatePageId} pageId - Page id.
- * @param {WorkerPipelineAccumulateWriteStateState}  state  - State.
+ * @param {Worker_Pipeline_Accumulate_WriteState_Kv}     kv     - Kv.
+ * @param {Worker_Pipeline_Accumulate_WriteState_PageId} pageId - Page id.
+ * @param {Worker_Pipeline_Accumulate_WriteState_State}  state  - State.
  *
- * @returns {WorkerPipelineAccumulateWriteStateReturns}
+ * @returns {Worker_Pipeline_Accumulate_WriteState_Returns}
  *
  * @since 2.0.0
  */
-export async function writeState(kv: WorkerPipelineAccumulateWriteStateKv, pageId: WorkerPipelineAccumulateWriteStatePageId, state: WorkerPipelineAccumulateWriteStateState): WorkerPipelineAccumulateWriteStateReturns {
-  const serializedState: WorkerPipelineAccumulateWriteStateSerializedState = JSON.stringify(state);
+export async function writeState(kv: Worker_Pipeline_Accumulate_WriteState_Kv, pageId: Worker_Pipeline_Accumulate_WriteState_PageId, state: Worker_Pipeline_Accumulate_WriteState_State): Worker_Pipeline_Accumulate_WriteState_Returns {
+  const serializedState: Worker_Pipeline_Accumulate_WriteState_SerializedState = JSON.stringify(state);
 
   await kv.put(`statuspage:${pageId}`, serializedState, { expirationTtl: 86400 });
-
-  return;
-}
-
-/**
- * Worker - Pipeline - Accumulate - Delete State.
- *
- * Removes the stored Statuspage incident state from KV storage
- * when the incident is resolved and no longer needs tracking.
- *
- * @param {WorkerPipelineAccumulateDeleteStateKv}     kv     - Kv.
- * @param {WorkerPipelineAccumulateDeleteStatePageId} pageId - Page id.
- *
- * @returns {WorkerPipelineAccumulateDeleteStateReturns}
- *
- * @since 2.0.0
- */
-export async function deleteState(kv: WorkerPipelineAccumulateDeleteStateKv, pageId: WorkerPipelineAccumulateDeleteStatePageId): WorkerPipelineAccumulateDeleteStateReturns {
-  await kv.delete(`statuspage:${pageId}`);
 
   return;
 }
@@ -103,32 +78,30 @@ export async function deleteState(kv: WorkerPipelineAccumulateDeleteStateKv, pag
  * Compares previous and current component maps to produce a diff
  * array indicating which components changed status.
  *
- * @param {WorkerPipelineAccumulateDiffComponentsPrevious} previous - Previous.
- * @param {WorkerPipelineAccumulateDiffComponentsCurrent}  current  - Current.
+ * @param {Worker_Pipeline_Accumulate_DiffComponents_Previous} previous - Previous.
+ * @param {Worker_Pipeline_Accumulate_DiffComponents_Current}  current  - Current.
  *
- * @returns {WorkerPipelineAccumulateDiffComponentsReturns}
+ * @returns {Worker_Pipeline_Accumulate_DiffComponents_Returns}
  *
  * @since 2.0.0
  */
-export function diffComponents(previous: WorkerPipelineAccumulateDiffComponentsPrevious, current: WorkerPipelineAccumulateDiffComponentsCurrent): WorkerPipelineAccumulateDiffComponentsReturns {
-  const diff: WorkerPipelineSharedComponentDiff = [];
-  const previousMap: WorkerPipelineSharedComponentsMap = previous;
-  const currentMap: WorkerPipelineSharedComponentsMap = current;
+export function diffComponents(previous: Worker_Pipeline_Accumulate_DiffComponents_Previous, current: Worker_Pipeline_Accumulate_DiffComponents_Current): Worker_Pipeline_Accumulate_DiffComponents_Returns {
+  const diff: Worker_Pipeline_Accumulate_DiffComponents_Diff = [];
 
-  for (const id of Object.keys(currentMap)) {
-    const currentEntry: WorkerPipelineAccumulateDiffComponentsCurrentEntry = currentMap[id];
+  for (const id of Object.keys(current)) {
+    const currentEntry: Worker_Pipeline_Accumulate_DiffComponents_CurrentEntry = current[id];
 
     if (currentEntry === undefined) {
       continue;
     }
 
-    const name: WorkerPipelineSharedComponentDiffEntryName = currentEntry['name'];
-    const newStatus: WorkerPipelineSharedComponentDiffEntryNewStatus = currentEntry['status'];
-    const previousEntry: WorkerPipelineAccumulateDiffComponentsPreviousEntry = previousMap[id];
-    const oldStatus: WorkerPipelineSharedComponentDiffEntryOldStatus = (previousEntry !== undefined) ? previousEntry['status'] : undefined;
-    const changed: WorkerPipelineSharedComponentDiffEntryChanged = oldStatus !== newStatus;
+    const name: Worker_Pipeline_Accumulate_DiffComponents_Name = currentEntry['name'];
+    const newStatus: Worker_Pipeline_Accumulate_DiffComponents_NewStatus = currentEntry['status'];
+    const previousEntry: Worker_Pipeline_Accumulate_DiffComponents_PreviousEntry = previous[id];
+    const oldStatus: Worker_Pipeline_Accumulate_DiffComponents_OldStatus = (previousEntry !== undefined) ? previousEntry['status'] : undefined;
+    const changed: Worker_Pipeline_Accumulate_DiffComponents_Changed = oldStatus !== newStatus;
 
-    const entry: WorkerPipelineSharedComponentDiffEntry = {
+    const entry: Worker_Pipeline_Accumulate_DiffComponents_Entry = {
       name,
       oldStatus,
       newStatus,
@@ -147,18 +120,16 @@ export function diffComponents(previous: WorkerPipelineAccumulateDiffComponentsP
  * Converts a component diff array into human-readable lines
  * for inclusion in the notification body text.
  *
- * @param {WorkerPipelineAccumulateFormatComponentLinesDiff} diff - Diff.
+ * @param {Worker_Pipeline_Accumulate_FormatComponentLines_Diff} diff - Diff.
  *
- * @returns {WorkerPipelineAccumulateFormatComponentLinesReturns}
+ * @returns {Worker_Pipeline_Accumulate_FormatComponentLines_Returns}
  *
  * @since 2.0.0
  */
-export function formatComponentLines(diff: WorkerPipelineAccumulateFormatComponentLinesDiff): WorkerPipelineAccumulateFormatComponentLinesReturns {
-  const inputDiff: WorkerPipelineSharedComponentDiff = diff;
-
-  return inputDiff.map((entry) => {
-    const cleanName: WorkerPipelineAccumulateFormatComponentLinesCleanName = entry['name'].replace(new RegExp(REGEX_PARENTHETICAL_CONTENT, 'g'), '').trim();
-    const humanized: WorkerPipelineAccumulateFormatComponentLinesHumanized = entry['newStatus']
+export function formatComponentLines(diff: Worker_Pipeline_Accumulate_FormatComponentLines_Diff): Worker_Pipeline_Accumulate_FormatComponentLines_Returns {
+  return diff.map((entry) => {
+    const cleanName: Worker_Pipeline_Accumulate_FormatComponentLines_CleanName = entry['name'].replace(new RegExp(REGEX_PARENTHETICAL_CONTENT, 'g'), '').trim();
+    const humanized: Worker_Pipeline_Accumulate_FormatComponentLines_Humanized = entry['newStatus']
       .split('_')
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');

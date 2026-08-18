@@ -1,9 +1,9 @@
 import type {
-  WorkerInterpretersPlainTextInput,
-  WorkerInterpretersPlainTextInterpreter,
-  WorkerInterpretersPlainTextPlainTextInterpreterBody,
-  WorkerInterpretersPlainTextPlainTextInterpreterDecoder,
-  WorkerInterpretersPlainTextResult,
+  Worker_Interpreters_PlainText_Input,
+  Worker_Interpreters_PlainText_PlainTextInterpreter,
+  Worker_Interpreters_PlainText_PlainTextInterpreter_Body,
+  Worker_Interpreters_PlainText_PlainTextInterpreter_Decoder,
+  Worker_Interpreters_PlainText_Result,
 } from '../../types/worker/interpreters/plain-text.d.ts';
 
 /**
@@ -14,13 +14,13 @@ import type {
  *
  * @since 2.0.0
  */
-const plainTextInterpreter: WorkerInterpretersPlainTextInterpreter = (input: WorkerInterpretersPlainTextInput): WorkerInterpretersPlainTextResult => {
-  let body: WorkerInterpretersPlainTextPlainTextInterpreterBody = undefined;
+const plainTextInterpreter: Worker_Interpreters_PlainText_PlainTextInterpreter = (input: Worker_Interpreters_PlainText_Input): Worker_Interpreters_PlainText_Result => {
+  let body: Worker_Interpreters_PlainText_PlainTextInterpreter_Body = undefined;
 
   if (typeof input === 'string') {
     body = input;
   } else if (input instanceof ArrayBuffer) {
-    const decoder: WorkerInterpretersPlainTextPlainTextInterpreterDecoder = new TextDecoder('utf-8');
+    const decoder: Worker_Interpreters_PlainText_PlainTextInterpreter_Decoder = new TextDecoder('utf-8');
 
     body = decoder.decode(input);
   } else {

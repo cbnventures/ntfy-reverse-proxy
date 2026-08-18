@@ -1,239 +1,324 @@
 import type {
-  WorkerPipelineInterpretContext,
-  WorkerPipelineInterpretInput,
-  WorkerPipelineInterpretNotificationObjectPriority,
-  WorkerPipelineInterpretResult,
-} from '../pipeline/interpret.d.ts';
+  Shared_StatusPage_ComponentDiff,
+  Shared_StatusPage_ComponentState,
+  Shared_StatusPage_StoredState,
+} from '../../shared.d.ts';
 import type {
-  WorkerPipelineSharedComponentDiff,
-  WorkerPipelineSharedComponentsMap,
-  WorkerPipelineSharedStoredState,
-} from '../pipeline/shared.d.ts';
+  Worker_Pipeline_Interpret_Context,
+  Worker_Pipeline_Interpret_Input,
+  Worker_Pipeline_Interpret_NotificationObjectPriority,
+  Worker_Pipeline_Interpret_Result,
+} from '../pipeline/interpret.d.ts';
 
 /**
  * Worker - Interpreters - Statuspage.
  *
  * @since 2.0.0
  */
-export type WorkerInterpretersStatuspageResult = WorkerPipelineInterpretResult;
+export type Worker_Interpreters_Statuspage_Result = Worker_Pipeline_Interpret_Result;
 
-export type WorkerInterpretersStatuspageInput = WorkerPipelineInterpretInput;
+export type Worker_Interpreters_Statuspage_Input = Worker_Pipeline_Interpret_Input;
 
-export type WorkerInterpretersStatuspageContext = WorkerPipelineInterpretContext;
+export type Worker_Interpreters_Statuspage_Context = Worker_Pipeline_Interpret_Context;
 
-export type WorkerInterpretersStatuspageInterpreter = (input: WorkerInterpretersStatuspageInput, context?: WorkerInterpretersStatuspageContext) => Promise<WorkerInterpretersStatuspageResult | null>;
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter = (input: Worker_Interpreters_Statuspage_Input, context?: Worker_Interpreters_Statuspage_Context) => Promise<Worker_Interpreters_Statuspage_Result | null>;
 
 /**
  * Worker - Interpreters - Statuspage - Build Incident Notification.
  *
  * @since 2.0.0
  */
-export type WorkerInterpretersStatuspageBuildIncidentNotificationServiceName = string;
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_ServiceName = string;
 
-export type WorkerInterpretersStatuspageBuildIncidentNotificationIncidentName = string;
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_IncidentName = string;
 
-export type WorkerInterpretersStatuspageBuildIncidentNotificationStatus = string;
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_Status = string;
 
-export type WorkerInterpretersStatuspageBuildIncidentNotificationImpact = string;
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_Impact = string;
 
-export type WorkerInterpretersStatuspageBuildIncidentNotificationLatestBody = string | undefined;
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_LatestBody = string | undefined;
 
-export type WorkerInterpretersStatuspageBuildIncidentNotificationShortlink = string | undefined;
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_Shortlink = string | undefined;
 
-export type WorkerInterpretersStatuspageBuildIncidentNotificationUnsubscribeUrl = string | undefined;
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_UnsubscribeUrl = string | undefined;
 
-export type WorkerInterpretersStatuspageBuildIncidentNotificationComponentLines = string[];
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_ComponentLines = string[];
 
-export type WorkerInterpretersStatuspageBuildIncidentNotificationIsTerminal = boolean;
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_Returns = Worker_Pipeline_Interpret_Result;
 
-export type WorkerInterpretersStatuspageBuildIncidentNotificationPriority = WorkerPipelineInterpretNotificationObjectPriority;
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_IsTerminal = boolean;
 
-export type WorkerInterpretersStatuspageBuildIncidentNotificationHumanizedStatus = string;
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_Priority = 1 | 2 | 3 | 4 | 5;
 
-export type WorkerInterpretersStatuspageBuildIncidentNotificationHumanizedImpact = string;
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_HumanizedStatus = string;
 
-export type WorkerInterpretersStatuspageBuildIncidentNotificationEmojiTag = string;
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_HumanizedImpact = string;
 
-export type WorkerInterpretersStatuspageBuildIncidentNotificationTags = string[];
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_EmojiTag = string;
 
-export type WorkerInterpretersStatuspageBuildIncidentNotificationBodyLines = string[];
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_Tags = string[];
 
-export type WorkerInterpretersStatuspageBuildIncidentNotificationLatestBodyJoined = string;
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_BodyLines = string[];
 
-export type WorkerInterpretersStatuspageBuildIncidentNotificationComponentLinesJoined = string;
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_LatestBodyJoined = string;
 
-export type WorkerInterpretersStatuspageBuildIncidentNotificationBody = string;
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_ComponentLinesJoined = string;
 
-export type WorkerInterpretersStatuspageBuildIncidentNotificationActions = string[];
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_Body = string;
+
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_Actions = string[];
+
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_ValidatedShortlink = string | undefined;
+
+export type Worker_Interpreters_Statuspage_BuildIncidentNotification_ValidatedUnsubscribeUrl = string | undefined;
 
 /**
  * Worker - Interpreters - Statuspage - Extract Service Name.
  *
  * @since 2.0.0
  */
-export type WorkerInterpretersStatuspageExtractServiceNameUnsubscribeUrl = string | undefined;
+export type Worker_Interpreters_Statuspage_ExtractServiceName_UnsubscribeUrl = string | undefined;
 
-export type WorkerInterpretersStatuspageExtractServiceNameReturns = string;
+export type Worker_Interpreters_Statuspage_ExtractServiceName_Returns = string;
 
-export type WorkerInterpretersStatuspageExtractServiceNameServiceName = string;
+export type Worker_Interpreters_Statuspage_ExtractServiceName_ServiceName = string;
 
-export type WorkerInterpretersStatuspageExtractServiceNameParsedUrl = URL;
+export type Worker_Interpreters_Statuspage_ExtractServiceName_ParsedUrl = URL;
 
-export type WorkerInterpretersStatuspageExtractServiceNameHostname = string;
+export type Worker_Interpreters_Statuspage_ExtractServiceName_Hostname = string;
 
 /**
  * Worker - Interpreters - Statuspage - Humanize Slug.
  *
  * @since 2.0.0
  */
-export type WorkerInterpretersStatuspageHumanizeSlugSlug = string;
+export type Worker_Interpreters_Statuspage_HumanizeSlug_Slug = string;
 
-export type WorkerInterpretersStatuspageHumanizeSlugReturns = string;
+export type Worker_Interpreters_Statuspage_HumanizeSlug_Returns = string;
 
-export type WorkerInterpretersStatuspageHumanizeSlugParts = string[];
+export type Worker_Interpreters_Statuspage_HumanizeSlug_Parts = string[];
 
-export type WorkerInterpretersStatuspageHumanizeSlugCapitalized = string[];
-
-/**
- * Worker - Interpreters - Statuspage - Interpreter.
- *
- * @since 2.0.0
- */
-export type WorkerInterpretersStatuspageInterpreterReturns = Promise<WorkerPipelineInterpretResult | null>;
-
-export type WorkerInterpretersStatuspageInterpreterParsed = unknown;
-
-export type WorkerInterpretersStatuspageInterpreterDecoder = TextDecoder;
-
-export type WorkerInterpretersStatuspageInterpreterDecodedBody = string;
-
-export type WorkerInterpretersStatuspageInterpreterData = Record<string, unknown>;
-
-export type WorkerInterpretersStatuspageInterpreterMetaDefault = Record<string, unknown>;
-
-export type WorkerInterpretersStatuspageInterpreterMetaRaw = unknown;
-
-export type WorkerInterpretersStatuspageInterpreterMeta = Record<string, unknown>;
-
-export type WorkerInterpretersStatuspageInterpreterUnsubscribeUrl = string | undefined;
-
-export type WorkerInterpretersStatuspageInterpreterServiceName = string;
-
-export type WorkerInterpretersStatuspageInterpreterPage = Record<string, unknown> | undefined;
-
-export type WorkerInterpretersStatuspageInterpreterPageIdAvailable = boolean;
-
-export type WorkerInterpretersStatuspageInterpreterPageId = string | undefined;
-
-export type WorkerInterpretersStatuspageInterpreterKvAvailable = boolean;
-
-export type WorkerInterpretersStatuspageInterpreterKv = KVNamespace | undefined;
-
-export type WorkerInterpretersStatuspageInterpreterHasKv = boolean;
-
-export type WorkerInterpretersStatuspageInterpreterKvMissing = boolean;
-
-export type WorkerInterpretersStatuspageInterpreterExistingState = WorkerPipelineSharedStoredState | null;
-
-export type WorkerInterpretersStatuspageInterpreterComponents = WorkerPipelineSharedComponentsMap;
-
-export type WorkerInterpretersStatuspageInterpreterComponentUpdate = Record<string, unknown> | undefined;
-
-export type WorkerInterpretersStatuspageInterpreterComponent = Record<string, unknown> | undefined;
-
-export type WorkerInterpretersStatuspageInterpreterComponentId = string | undefined;
-
-export type WorkerInterpretersStatuspageInterpreterComponentName = string | undefined;
-
-export type WorkerInterpretersStatuspageInterpreterHasUpdateStatus = boolean;
-
-export type WorkerInterpretersStatuspageInterpreterHasComponentStatus = boolean;
-
-export type WorkerInterpretersStatuspageInterpreterComponentStatus = string | undefined;
-
-export type WorkerInterpretersStatuspageInterpreterIncidentName = string;
-
-export type WorkerInterpretersStatuspageInterpreterCanUpdate = boolean;
-
-export type WorkerInterpretersStatuspageInterpreterUpdatedState = WorkerPipelineSharedStoredState;
-
-export type WorkerInterpretersStatuspageInterpreterUpdateStatusValue = string | undefined;
-
-export type WorkerInterpretersStatuspageInterpreterComponentStatusValue = string | undefined;
-
-export type WorkerInterpretersStatuspageInterpreterIncident = Record<string, unknown>;
-
-export type WorkerInterpretersStatuspageInterpreterStatus = string;
-
-export type WorkerInterpretersStatuspageInterpreterImpact = string;
-
-export type WorkerInterpretersStatuspageInterpreterShortlink = string | undefined;
-
-export type WorkerInterpretersStatuspageInterpreterRawUpdates = unknown;
-
-export type WorkerInterpretersStatuspageInterpreterIsUpdatesArray = boolean;
-
-export type WorkerInterpretersStatuspageInterpreterUpdates = Array<Record<string, unknown>>;
-
-export type WorkerInterpretersStatuspageInterpreterLatestUpdate = Record<string, unknown> | undefined;
-
-export type WorkerInterpretersStatuspageInterpreterLatestBody = string | undefined;
-
-export type WorkerInterpretersStatuspageInterpreterUpdateId = string | undefined;
-
-export type WorkerInterpretersStatuspageInterpreterComponentLines = string[];
-
-export type WorkerInterpretersStatuspageInterpreterIsDuplicate = boolean;
-
-export type WorkerInterpretersStatuspageInterpreterPreviousComponents = WorkerPipelineSharedComponentsMap;
-
-export type WorkerInterpretersStatuspageInterpreterCurrentComponents = WorkerPipelineSharedComponentsMap;
-
-export type WorkerInterpretersStatuspageInterpreterAffectedComponents = Array<Record<string, unknown>> | undefined;
-
-export type WorkerInterpretersStatuspageInterpreterIsAffectedArray = boolean;
-
-export type WorkerInterpretersStatuspageInterpreterAffectedCode = string | undefined;
-
-export type WorkerInterpretersStatuspageInterpreterAffectedName = string | undefined;
-
-export type WorkerInterpretersStatuspageInterpreterAffectedNewStatus = string | undefined;
-
-export type WorkerInterpretersStatuspageInterpreterCanUpdateAffected = boolean;
-
-export type WorkerInterpretersStatuspageInterpreterDiff = WorkerPipelineSharedComponentDiff;
-
-export type WorkerInterpretersStatuspageInterpreterIncidentId = string | undefined;
-
-export type WorkerInterpretersStatuspageInterpreterNewState = WorkerPipelineSharedStoredState;
+export type Worker_Interpreters_Statuspage_HumanizeSlug_Capitalized = string[];
 
 /**
  * Worker - Interpreters - Statuspage - Is Terminal Status.
  *
  * @since 2.0.0
  */
-export type WorkerInterpretersStatuspageIsTerminalStatusStatus = string;
+export type Worker_Interpreters_Statuspage_IsTerminalStatus_Status = string;
 
-export type WorkerInterpretersStatuspageIsTerminalStatusReturns = boolean;
+export type Worker_Interpreters_Statuspage_IsTerminalStatus_Returns = boolean;
 
-export type WorkerInterpretersStatuspageIsTerminalStatusTerminal = string[];
+export type Worker_Interpreters_Statuspage_IsTerminalStatus_Terminal = string[];
 
-export type WorkerInterpretersStatuspageIsTerminalStatusLowered = string;
+export type Worker_Interpreters_Statuspage_IsTerminalStatus_Lowered = string;
 
 /**
  * Worker - Interpreters - Statuspage - Map Impact To Priority.
  *
  * @since 2.0.0
  */
-export type WorkerInterpretersStatuspageMapImpactToPriorityImpact = string;
+export type Worker_Interpreters_Statuspage_MapImpactToPriority_Impact = string;
 
-export type WorkerInterpretersStatuspageMapImpactToPriorityReturns = WorkerPipelineInterpretNotificationObjectPriority;
+export type Worker_Interpreters_Statuspage_MapImpactToPriority_Returns = Worker_Pipeline_Interpret_NotificationObjectPriority;
 
 /**
  * Worker - Interpreters - Statuspage - Map Status To Emoji Tag.
  *
  * @since 2.0.0
  */
-export type WorkerInterpretersStatuspageMapStatusToEmojiTagStatus = string;
+export type Worker_Interpreters_Statuspage_MapStatusToEmojiTag_Status = string;
 
-export type WorkerInterpretersStatuspageMapStatusToEmojiTagReturns = string;
+export type Worker_Interpreters_Statuspage_MapStatusToEmojiTag_Returns = string;
+
+/**
+ * Worker - Interpreters - Statuspage - Statuspage Interpreter.
+ *
+ * @since 2.0.0
+ */
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_Returns = Promise<Worker_Pipeline_Interpret_Result | null>;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_Parsed = unknown;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_Decoder = TextDecoder;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_DecodedBody = string;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_Data = Record<string, unknown>;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_MetaDefault = Record<string, unknown>;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_MetaRaw = unknown;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_Meta = Record<string, unknown>;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_UnsubscribeUrl = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_ServiceName = string;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_Page = Record<string, unknown> | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_PageIdAvailable = boolean;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_PageId = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_KvAvailable = boolean;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_Kv = KVNamespace | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_HasKv = boolean;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_MissingComponentKv = boolean;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_ExistingComponentState = Shared_StatusPage_StoredState | null;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_Components = Record<string, Shared_StatusPage_ComponentState>;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_ComponentUpdate = Record<string, unknown> | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_Component = Record<string, unknown> | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_ComponentId = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_ComponentName = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_HasUpdateStatus = boolean;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_HasComponentStatus = boolean;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_ComponentStatus = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_IncidentName = string;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_CanUpdate = boolean;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState_IncidentId = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState_IncidentName = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState_Status = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState_Impact = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState_Body = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState_Shortlink = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState_ServiceName = string;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState_UnsubscribeUrl = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState_UpdateId = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState_Components = Record<string, Shared_StatusPage_ComponentState>;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState = {
+  incidentId: Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState_IncidentId;
+  incidentName: Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState_IncidentName;
+  status: Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState_Status;
+  impact: Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState_Impact;
+  body: Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState_Body;
+  shortlink: Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState_Shortlink;
+  serviceName: Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState_ServiceName;
+  unsubscribeUrl: Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState_UnsubscribeUrl;
+  updateId: Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState_UpdateId;
+  components: Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdatedState_Components;
+};
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_Incident = Record<string, unknown>;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_Status = string;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_Impact = string;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_Shortlink = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_RawUpdates = unknown;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_IsUpdatesArray = boolean;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_Updates = Array<Record<string, unknown>>;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_LatestUpdate = Record<string, unknown> | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_LatestBody = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_UpdateId = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_MissingIncidentKv = boolean;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_FallbackComponentLines = string[];
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_UnverifiedComponentLines = string[];
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_ExistingIncidentState = Shared_StatusPage_StoredState | null;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_IsDuplicate = boolean;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_PreviousComponents = Record<string, Shared_StatusPage_ComponentState>;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_CurrentComponents = Record<string, Shared_StatusPage_ComponentState>;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_AffectedComponents = Array<Record<string, unknown>> | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_IsAffectedArray = boolean;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_Code = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_Name = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_NewStatus = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_CanUpdateAffected = boolean;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_Diff = Array<Shared_StatusPage_ComponentDiff[number]>;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_ComponentLines = string[];
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_IncidentId = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState_IncidentId = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState_IncidentName = string;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState_Status = string;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState_Impact = string;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState_Body = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState_Shortlink = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState_ServiceName = string;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState_UnsubscribeUrl = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState_UpdateId = string | undefined;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState_Components = Record<string, Shared_StatusPage_ComponentState>;
+
+export type Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState = {
+  incidentId: Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState_IncidentId;
+  incidentName: Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState_IncidentName;
+  status: Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState_Status;
+  impact: Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState_Impact;
+  body: Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState_Body;
+  shortlink: Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState_Shortlink;
+  serviceName: Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState_ServiceName;
+  unsubscribeUrl: Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState_UnsubscribeUrl;
+  updateId: Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState_UpdateId;
+  components: Worker_Interpreters_Statuspage_StatuspageInterpreter_NewState_Components;
+};
+
+/**
+ * Worker - Interpreters - Statuspage - Validate Url.
+ *
+ * @since 2.1.0
+ */
+export type Worker_Interpreters_Statuspage_ValidateUrl_RawUrl = string;
+
+export type Worker_Interpreters_Statuspage_ValidateUrl_Returns = string | undefined;
+
+export type Worker_Interpreters_Statuspage_ValidateUrl_Url = URL;
+
+export type Worker_Interpreters_Statuspage_ValidateUrl_Protocol = string;

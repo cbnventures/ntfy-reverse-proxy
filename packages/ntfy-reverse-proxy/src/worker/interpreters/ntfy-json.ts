@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
 import type {
-  WorkerInterpretersNtfyJsonInput,
-  WorkerInterpretersNtfyJsonInterpreter,
-  WorkerInterpretersNtfyJsonNtfyJsonInterpreterDecodedBody,
-  WorkerInterpretersNtfyJsonNtfyJsonInterpreterDecoder,
-  WorkerInterpretersNtfyJsonNtfyJsonInterpreterNotification,
-  WorkerInterpretersNtfyJsonNtfyJsonInterpreterParsed,
-  WorkerInterpretersNtfyJsonResult,
+  Worker_Interpreters_NtfyJson_Input,
+  Worker_Interpreters_NtfyJson_NtfyJsonInterpreter,
+  Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_DecodedBody,
+  Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_Decoder,
+  Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_Notification,
+  Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_Parsed,
+  Worker_Interpreters_NtfyJson_Result,
 } from '../../types/worker/interpreters/ntfy-json.d.ts';
 
 /**
@@ -54,8 +54,8 @@ const ntfyJsonSchema = z.object({
  *
  * @since 2.0.0
  */
-const ntfyJsonInterpreter: WorkerInterpretersNtfyJsonInterpreter = (input: WorkerInterpretersNtfyJsonInput): WorkerInterpretersNtfyJsonResult => {
-  let parsed: WorkerInterpretersNtfyJsonNtfyJsonInterpreterParsed = undefined;
+const ntfyJsonInterpreter: Worker_Interpreters_NtfyJson_NtfyJsonInterpreter = (input: Worker_Interpreters_NtfyJson_Input): Worker_Interpreters_NtfyJson_Result => {
+  let parsed: Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_Parsed = undefined;
 
   if (typeof input === 'string') {
     try {
@@ -64,8 +64,8 @@ const ntfyJsonInterpreter: WorkerInterpretersNtfyJsonInterpreter = (input: Worke
       return null;
     }
   } else if (input instanceof ArrayBuffer) {
-    const decoder: WorkerInterpretersNtfyJsonNtfyJsonInterpreterDecoder = new TextDecoder('utf-8');
-    const decodedBody: WorkerInterpretersNtfyJsonNtfyJsonInterpreterDecodedBody = decoder.decode(input);
+    const decoder: Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_Decoder = new TextDecoder('utf-8');
+    const decodedBody: Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_DecodedBody = decoder.decode(input);
 
     try {
       parsed = JSON.parse(decodedBody);
@@ -76,7 +76,7 @@ const ntfyJsonInterpreter: WorkerInterpretersNtfyJsonInterpreter = (input: Worke
     parsed = input;
   }
 
-  const notification: WorkerInterpretersNtfyJsonNtfyJsonInterpreterNotification = ntfyJsonSchema.parse(parsed);
+  const notification: Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_Notification = ntfyJsonSchema.parse(parsed);
 
   return {
     notification,

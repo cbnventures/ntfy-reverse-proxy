@@ -3,37 +3,43 @@
  *
  * @since 2.0.0
  */
-export type WorkerPipelineParseResultType = 'text' | 'json' | 'binary' | 'unknown';
+export type Worker_Pipeline_Parse_ResultType = 'text' | 'json' | 'binary' | 'unknown';
 
-export type WorkerPipelineParseResultText = string;
+export type Worker_Pipeline_Parse_ResultText = string;
 
-export type WorkerPipelineParseResultJson = Record<string, unknown>;
+export type Worker_Pipeline_Parse_ResultJson = Record<string, unknown>;
 
-export type WorkerPipelineParseResultBinary = ArrayBuffer;
+export type Worker_Pipeline_Parse_ResultBinary = ArrayBuffer;
 
-export type WorkerPipelineParseResult = {
-  type: WorkerPipelineParseResultType;
-  text?: WorkerPipelineParseResultText;
-  json?: WorkerPipelineParseResultJson;
-  binary?: WorkerPipelineParseResultBinary;
+export type Worker_Pipeline_Parse_Result = {
+  type: Worker_Pipeline_Parse_ResultType;
+  text?: Worker_Pipeline_Parse_ResultText;
+  json?: Worker_Pipeline_Parse_ResultJson;
+  binary?: Worker_Pipeline_Parse_ResultBinary;
 };
 
-export type WorkerPipelineParseContentType = string;
+export type Worker_Pipeline_Parse_Returns = Worker_Pipeline_Parse_Result;
 
-export type WorkerPipelineParseContentTypePart = string | undefined;
+export type Worker_Pipeline_Parse_ContentType = string;
 
-export type WorkerPipelineParseBaseContentType = string;
+export type Worker_Pipeline_Parse_ContentTypePart = string | undefined;
 
-export type WorkerPipelineParseIsBinaryContentType = boolean;
+export type Worker_Pipeline_Parse_BaseContentType = string;
 
-export type WorkerPipelineParseBytes = Uint8Array;
+export type Worker_Pipeline_Parse_IsBinaryContentType = boolean;
 
-export type WorkerPipelineParseText = string | undefined;
+export type Worker_Pipeline_Parse_Bytes = Uint8Array;
 
-export type WorkerPipelineParseDecoder = TextDecoder;
+export type Worker_Pipeline_Parse_Text = string | undefined;
 
-export type WorkerPipelineParseIsJsonContentType = boolean;
+export type Worker_Pipeline_Parse_Decoder = TextDecoder;
 
-export type WorkerPipelineParseLooksLikeJson = boolean;
+export type Worker_Pipeline_Parse_IsJsonContentType = boolean;
 
-export type WorkerPipelineParseJson = Record<string, unknown>;
+export type Worker_Pipeline_Parse_LooksLikeJson = boolean;
+
+export type Worker_Pipeline_Parse_Json = Record<string, unknown>;
+
+export type Worker_Pipeline_Parse_Parse_RawBody = ArrayBuffer;
+
+export type Worker_Pipeline_Parse_Parse_Headers = Headers;

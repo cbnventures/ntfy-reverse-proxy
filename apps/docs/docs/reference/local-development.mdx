@@ -1,7 +1,7 @@
 ---
 id: local-development
 title: Local Development
-description: Run and test Reverse Proxy for ntfy locally with wrangler dev and config auto-resolution.
+description: Run and test Reverse Proxy for ntfy locally with wrangler dev, automatic config file resolution, and Host header-based subdomain routing simulation.
 sidebar_position: 4
 keywords:
   - ntfy reverse proxy
@@ -17,6 +17,8 @@ tags:
   - cli
 ---
 
+import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
+
 Run the proxy locally for testing and development using `npm run dev`.
 
 ## Starting the Dev Server
@@ -25,7 +27,7 @@ Run the proxy locally for testing and development using `npm run dev`.
 npm run dev
 ```
 
-This spawns `wrangler dev` with `--local-upstream localhost`. The worker is available at `http://localhost:8787` (the port may vary if 8787 is in use).
+This spawns `wrangler dev` with `--local-upstream localhost`. The <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> is available at `http://localhost:8787` (the port may vary if 8787 is in use).
 
 ## Config File Resolution
 
@@ -57,7 +59,7 @@ curl -X POST http://localhost:8787 \
   -d "Test notification from local dev"
 ```
 
-The `Host` header determines which context handles the request — the first label of the hostname is matched against context IDs.
+The `Host` header determines which <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> handles the request — the first label of the hostname is matched against <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> IDs.
 
 ## Environment Variables
 

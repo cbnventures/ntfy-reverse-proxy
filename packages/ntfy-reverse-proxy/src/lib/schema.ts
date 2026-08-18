@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { LIB_REGEX_BASE_DOMAIN, LIB_REGEX_WORKER_NAME } from './regex.js';
+
 /**
  * Lib - Schema - Server Schema.
  *
@@ -37,6 +39,10 @@ const httpContextSchema = z.object({
   ]),
   topic: z.string().min(1),
   error_topic: z.string().min(1).optional(),
+  error_events: z.array(z.enum([
+    'authentication',
+    'interpretation',
+  ])).optional(),
   mode: z.enum([
     'send-once',
     'send-all',
@@ -70,6 +76,10 @@ const emailContextSchema = z.object({
   ]),
   topic: z.string().min(1),
   error_topic: z.string().min(1).optional(),
+  error_events: z.array(z.enum([
+    'authentication',
+    'interpretation',
+  ])).optional(),
   mode: z.enum([
     'send-once',
     'send-all',
@@ -102,8 +112,8 @@ const contextSchema = z.discriminatedUnion('type', [
  * @since 2.0.0
  */
 const settingsSchema = z.object({
-  worker_name: z.string().min(1),
-  base_domain: z.string().min(1),
+  worker_name: z.string().min(1).regex(LIB_REGEX_WORKER_NAME, { message: 'Worker name must contain only lowercase alphanumeric characters and hyphens, and cannot start or end with a hyphen' }),
+  base_domain: z.string().min(1).regex(LIB_REGEX_BASE_DOMAIN, { message: 'Base domain must be a valid domain name (lowercase alphanumeric characters, hyphens, and dots)' }),
   show_response_output: z.boolean(),
 });
 

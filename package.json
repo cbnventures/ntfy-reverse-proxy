@@ -7,7 +7,7 @@
     "dev": "turbo run dev",
     "prod": "turbo run prod",
     "build": "turbo run build --concurrency=2",
-    "check": "turbo run check --concurrency=2",
+    "check": "turbo run check --concurrency=2 && eslint . --max-warnings=0 && nova utility type-check --project tsconfig.config.json && nova utility type-check --project tsconfig.scripts.json",
     "deploy": "turbo run deploy --concurrency=2",
     "clean": "turbo run clean",
     "manage": "npm run manage --workspace packages/ntfy-reverse-proxy",
@@ -20,15 +20,16 @@
     "./apps/*",
     "./packages/*"
   ],
-  "packageManager": "npm@11.11.0",
+  "packageManager": "npm@11.18.0",
   "engines": {
     "node": "^22 || ^24"
   },
   "devDependencies": {
-    "@cbnventures/nova": "0.17.0",
+    "@cbnventures/nova": "0.24.0",
     "jiti": "2.6.1",
     "prompts": "2.4.2",
-    "turbo": "2.9.8"
+    "turbo": "2.10.6",
+    "typescript": "5.9.3"
   },
   "overrides": {
     "webpack": ">=5.95.0 <5.106.0"

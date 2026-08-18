@@ -6,12 +6,12 @@
 
 name: "Publish (project)"
 
-run-name: "Publishing ${{ github.event.release.tag_name || 'manually' }} (project)${{ github.event_name == 'workflow_dispatch' && inputs.dry-run && ' (dry run)' || '' }}"
+run-name: "Publishing ${{ (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && github.ref_name) || 'manually' }} (project)${{ github.event_name == 'workflow_dispatch' && inputs.dry-run && ' (dry run)' || '' }}"
 
 on:
-  release:
-    types:
-      - "published"
+  push:
+    tags:
+      - "v*"
   workflow_dispatch:
     inputs:
       dry-run:
@@ -28,7 +28,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  PUBLISH: "${{ github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && !inputs.dry-run) }}"
+  PUBLISH: "${{ (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')) || (github.event_name == 'workflow_dispatch' && !inputs.dry-run) }}"
   ROOT_DIR: "./"
 
 jobs:
@@ -39,7 +39,9 @@ jobs:
       contents: "read"
     steps:
       - name: "Checkout repository"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
+        with:
+          fetch-depth: 0
 
       - name: "Setup Node.js"
         uses: "actions/setup-node@v6"
@@ -55,7 +57,7 @@ jobs:
 
       - name: "Check project"
         run: |
-          npx turbo run check --filter=ntfy-reverse-proxy --filter=ntfy-reverse-proxy-docs --concurrency=2
+          npx turbo run check --filter=// --filter=ntfy-reverse-proxy --filter=ntfy-reverse-proxy-docs --concurrency=2
         working-directory: "${{ env.ROOT_DIR }}"
 
       - name: "Build project"
@@ -64,7 +66,7 @@ jobs:
         working-directory: "${{ env.ROOT_DIR }}"
 
       - name: "Upload build artifacts (npm/packages-ntfy-reverse-proxy)"
-        uses: "actions/upload-artifact@v4"
+        uses: "actions/upload-artifact@v7"
         with:
           name: "build-npm-packages-ntfy-reverse-proxy"
           retention-days: 1
@@ -72,7 +74,7 @@ jobs:
             packages/ntfy-reverse-proxy/build
 
       - name: "Upload build artifacts (github-packages/packages-ntfy-reverse-proxy)"
-        uses: "actions/upload-artifact@v4"
+        uses: "actions/upload-artifact@v7"
         with:
           name: "build-github-packages-packages-ntfy-reverse-proxy"
           retention-days: 1
@@ -80,7 +82,7 @@ jobs:
             packages/ntfy-reverse-proxy/build
 
       - name: "Upload build artifacts (cloudflare-pages-docusaurus/apps-docs)"
-        uses: "actions/upload-artifact@v4"
+        uses: "actions/upload-artifact@v7"
         with:
           name: "build-cloudflare-pages-docusaurus-apps-docs"
           retention-days: 1
@@ -96,7 +98,7 @@ jobs:
       id-token: "write"
     steps:
       - name: "Checkout repository"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
 
       - name: "Setup Node.js"
         uses: "actions/setup-node@v6"
@@ -114,14 +116,14 @@ jobs:
           fi
 
       - name: "Download build artifacts"
-        uses: "actions/download-artifact@v4"
+        uses: "actions/download-artifact@v8"
         with:
           name: "build-npm-packages-ntfy-reverse-proxy"
           path: "./packages/ntfy-reverse-proxy/build"
 
       - name: "Configure authentication"
         env:
-          NPM_TOKEN: "${{ secrets.NPM_TOKEN }}"
+          NPM_TOKEN: "${{ secrets.PROJECT_NPM_TOKEN }}"
         run: |
           if [ -n "${NPM_TOKEN}" ]; then
             echo "[Auth] Using NPM_TOKEN (token-based)."
@@ -158,7 +160,7 @@ jobs:
       id-token: "write"
     steps:
       - name: "Checkout repository"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
 
       - name: "Setup Node.js"
         uses: "actions/setup-node@v6"
@@ -183,7 +185,7 @@ jobs:
           fi
 
       - name: "Download build artifacts"
-        uses: "actions/download-artifact@v4"
+        uses: "actions/download-artifact@v8"
         with:
           name: "build-github-packages-packages-ntfy-reverse-proxy"
           path: "./packages/ntfy-reverse-proxy/build"
@@ -241,20 +243,17 @@ jobs:
       contents: "read"
     steps:
       - name: "Checkout repository"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
 
       - name: "Download build artifacts"
-        uses: "actions/download-artifact@v4"
+        uses: "actions/download-artifact@v8"
         with:
           name: "build-cloudflare-pages-docusaurus-apps-docs"
           path: "./apps/docs/build"
 
       - name: "Deploy to Cloudflare Pages"
         if: "${{ env.PUBLISH == 'true' }}"
-        uses: "cloudflare/wrangler-action@v3"
         env:
-          CLOUDFLARE_API_TOKEN: "${{ secrets.CLOUDFLARE_API_TOKEN }}"
-        with:
-          apiToken: "${{ env.CLOUDFLARE_API_TOKEN }}"
-          accountId: "${{ vars.CLOUDFLARE_ACCOUNT_ID }}"
-          command: "pages deploy ./apps/docs/build --project-name=${{ vars.CLOUDFLARE_PROJECT_NAME }} --branch=${{ github.event.repository.default_branch }}"
+          CLOUDFLARE_API_TOKEN: "${{ secrets.PROJECT_CLOUDFLARE_API_TOKEN }}"
+          CLOUDFLARE_ACCOUNT_ID: "${{ vars.PROJECT_CLOUDFLARE_ACCOUNT_ID }}"
+        run: "npx -y wrangler@3 pages deploy ./apps/docs/build --project-name=${{ vars.DOCS_CLOUDFLARE_PROJECT_NAME }} --branch=${{ github.event.repository.default_branch }}"

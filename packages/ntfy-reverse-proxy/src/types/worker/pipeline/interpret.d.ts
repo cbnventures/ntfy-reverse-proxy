@@ -3,61 +3,61 @@
  *
  * @since 2.0.0
  */
-export type WorkerPipelineInterpretNotificationObjectTitle = string;
+export type Worker_Pipeline_Interpret_NotificationObjectTitle = string;
 
-export type WorkerPipelineInterpretNotificationObjectBody = string;
+export type Worker_Pipeline_Interpret_NotificationObjectBody = string;
 
-export type WorkerPipelineInterpretNotificationObjectPriority = 1 | 2 | 3 | 4 | 5;
+export type Worker_Pipeline_Interpret_NotificationObjectPriority = 1 | 2 | 3 | 4 | 5;
 
-export type WorkerPipelineInterpretNotificationObjectTags = string[];
+export type Worker_Pipeline_Interpret_NotificationObjectTags = string[];
 
-export type WorkerPipelineInterpretNotificationObjectIcon = string;
+export type Worker_Pipeline_Interpret_NotificationObjectIcon = string;
 
-export type WorkerPipelineInterpretNotificationObjectActions = string;
+export type Worker_Pipeline_Interpret_NotificationObjectActions = string;
 
-export type WorkerPipelineInterpretNotificationObjectAttach = string;
+export type Worker_Pipeline_Interpret_NotificationObjectAttach = string;
 
-export type WorkerPipelineInterpretNotificationObjectFilename = string;
+export type Worker_Pipeline_Interpret_NotificationObjectFilename = string;
 
-export type WorkerPipelineInterpretNotificationObjectMarkdown = boolean;
+export type Worker_Pipeline_Interpret_NotificationObjectMarkdown = boolean;
 
-export type WorkerPipelineInterpretNotificationObject = {
-  title?: WorkerPipelineInterpretNotificationObjectTitle | undefined;
-  body: WorkerPipelineInterpretNotificationObjectBody;
-  priority?: WorkerPipelineInterpretNotificationObjectPriority | undefined;
-  tags?: WorkerPipelineInterpretNotificationObjectTags | undefined;
-  icon?: WorkerPipelineInterpretNotificationObjectIcon | undefined;
-  actions?: WorkerPipelineInterpretNotificationObjectActions | undefined;
-  attach?: WorkerPipelineInterpretNotificationObjectAttach | undefined;
-  filename?: WorkerPipelineInterpretNotificationObjectFilename | undefined;
-  markdown?: WorkerPipelineInterpretNotificationObjectMarkdown | undefined;
+export type Worker_Pipeline_Interpret_NotificationObject = {
+  title?: Worker_Pipeline_Interpret_NotificationObjectTitle | undefined;
+  body: Worker_Pipeline_Interpret_NotificationObjectBody;
+  priority?: Worker_Pipeline_Interpret_NotificationObjectPriority | undefined;
+  tags?: Worker_Pipeline_Interpret_NotificationObjectTags | undefined;
+  icon?: Worker_Pipeline_Interpret_NotificationObjectIcon | undefined;
+  actions?: Worker_Pipeline_Interpret_NotificationObjectActions | undefined;
+  attach?: Worker_Pipeline_Interpret_NotificationObjectAttach | undefined;
+  filename?: Worker_Pipeline_Interpret_NotificationObjectFilename | undefined;
+  markdown?: Worker_Pipeline_Interpret_NotificationObjectMarkdown | undefined;
 };
 
-export type WorkerPipelineInterpretResultNotification = WorkerPipelineInterpretNotificationObject;
+export type Worker_Pipeline_Interpret_ResultNotification = Worker_Pipeline_Interpret_NotificationObject;
 
-export type WorkerPipelineInterpretResultAttachment = ArrayBuffer;
+export type Worker_Pipeline_Interpret_ResultAttachment = ArrayBuffer;
 
-export type WorkerPipelineInterpretResult = {
-  notification: WorkerPipelineInterpretResultNotification;
-  attachment?: WorkerPipelineInterpretResultAttachment;
+export type Worker_Pipeline_Interpret_Result = {
+  notification: Worker_Pipeline_Interpret_ResultNotification;
+  attachment?: Worker_Pipeline_Interpret_ResultAttachment;
 };
 
-export type WorkerPipelineInterpretInterpreter = (input: WorkerPipelineInterpretInput, context?: WorkerPipelineInterpretContext) => WorkerPipelineInterpretResult | null | Promise<WorkerPipelineInterpretResult | null>;
+export type Worker_Pipeline_Interpret_Interpreter = (input: Worker_Pipeline_Interpret_Input, context?: Worker_Pipeline_Interpret_Context) => Worker_Pipeline_Interpret_Result | null | Promise<Worker_Pipeline_Interpret_Result | null>;
 
-export type WorkerPipelineInterpretInterpreterMap = Record<string, WorkerPipelineInterpretInterpreter>;
+export type Worker_Pipeline_Interpret_InterpreterMap = Record<string, Worker_Pipeline_Interpret_Interpreter>;
 
-export type WorkerPipelineInterpretInput = string | object | ArrayBuffer;
+export type Worker_Pipeline_Interpret_Input = string | object | ArrayBuffer;
 
-export type WorkerPipelineInterpretContextKv = KVNamespace;
+export type Worker_Pipeline_Interpret_ContextKv = KVNamespace;
 
-export type WorkerPipelineInterpretContext = {
-  kv?: WorkerPipelineInterpretContextKv;
+export type Worker_Pipeline_Interpret_Context = {
+  kv?: Worker_Pipeline_Interpret_ContextKv;
 };
 
-export type WorkerPipelineInterpretInterpreterName = string;
+export type Worker_Pipeline_Interpret_Interpret_InterpreterName = string;
 
-export type WorkerPipelineInterpretReturns = Promise<WorkerPipelineInterpretResult | null>;
+export type Worker_Pipeline_Interpret_Returns = Promise<Worker_Pipeline_Interpret_Result | null>;
 
-export type WorkerPipelineInterpretSelectedInterpreter = WorkerPipelineInterpretInterpreter | undefined;
+export type Worker_Pipeline_Interpret_SelectedInterpreter = Worker_Pipeline_Interpret_Interpreter | undefined;
 
-export type WorkerPipelineInterpretInterpreterResult = WorkerPipelineInterpretResult | null;
+export type Worker_Pipeline_Interpret_InterpreterResult = Worker_Pipeline_Interpret_Result | null;

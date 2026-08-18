@@ -1,9 +1,9 @@
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import {
   existsSync, readFileSync, unlinkSync, writeFileSync,
-} from 'fs';
-import { tmpdir } from 'os';
-import { join } from 'path';
+} from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 import {
   afterEach, beforeEach, describe, expect, it,
@@ -14,26 +14,39 @@ import {
 } from '../../../cli/commands/context.js';
 
 import type {
-  TestsCliCommandsContextBaseConfig,
-  TestsCliCommandsContextConfigJson,
-  TestsCliCommandsContextContextList,
-  TestsCliCommandsContextGeneratedId,
-  TestsCliCommandsContextParsedConfig,
-  TestsCliCommandsContextTestConfigPath,
+  Tests_Cli_Commands_Context_BaseConfig,
+  Tests_Cli_Commands_Context_ContextCommands_AddsAContext_Config,
+  Tests_Cli_Commands_Context_ContextCommands_AddsAContext_ConfigJson,
+  Tests_Cli_Commands_Context_ContextCommands_AutoRegeneratesDuplicateIds_Config,
+  Tests_Cli_Commands_Context_ContextCommands_AutoRegeneratesDuplicateIds_ConfigJson,
+  Tests_Cli_Commands_Context_ContextCommands_ConfigJson,
+  Tests_Cli_Commands_Context_ContextCommands_GeneratesRandomIdStrings_Id1,
+  Tests_Cli_Commands_Context_ContextCommands_GeneratesRandomIdStrings_Id2,
+  Tests_Cli_Commands_Context_ContextCommands_ListsContexts_Contexts,
+  Tests_Cli_Commands_Context_ContextCommands_RejectsContextReferencingNonExistentServer_Config,
+  Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateContextNames_Config,
+  Tests_Cli_Commands_Context_ContextCommands_RemovesAContext_Contexts,
+  Tests_Cli_Commands_Context_TestConfigPath,
+  Tests_Cli_Commands_Context_TestConfigPathFragment,
+  Tests_Cli_Commands_Context_TestConfigTmpDir,
 } from '../../../types/tests/cli/commands/context.test.d.ts';
 
-const testConfigPathFragment: TestsCliCommandsContextTestConfigPath = `ntfy-test-ctx-${randomUUID()}.json`;
+const testConfigPathFragment: Tests_Cli_Commands_Context_TestConfigPathFragment = `ntfy-test-ctx-${randomUUID()}.json`;
 
-const testConfigTmpDir: TestsCliCommandsContextTestConfigPath = tmpdir();
+const testConfigTmpDir: Tests_Cli_Commands_Context_TestConfigTmpDir = tmpdir();
 
-const testConfigPath: TestsCliCommandsContextTestConfigPath = join(testConfigTmpDir, testConfigPathFragment);
+const testConfigPath: Tests_Cli_Commands_Context_TestConfigPath = join(testConfigTmpDir, testConfigPathFragment);
 
-const baseConfig: TestsCliCommandsContextBaseConfig = {
+const baseConfig: Tests_Cli_Commands_Context_BaseConfig = {
   settings: {
-    worker_name: 'test-worker', base_domain: 'ntfy.example.com', show_response_output: false,
+    worker_name: 'test-worker',
+    base_domain: 'ntfy.example.com',
+    show_response_output: false,
   },
   servers: [{
-    name: 'alpha', server: 'https://ntfy.example.com', token: 'tk_abc',
+    name: 'alpha',
+    server: 'https://ntfy.example.com',
+    token: 'tk_abc',
   }],
   contexts: [],
 };
@@ -45,7 +58,7 @@ const baseConfig: TestsCliCommandsContextBaseConfig = {
  */
 describe('context commands', () => {
   beforeEach(() => {
-    const configJson: TestsCliCommandsContextConfigJson = JSON.stringify(baseConfig, null, 2);
+    const configJson: Tests_Cli_Commands_Context_ContextCommands_ConfigJson = JSON.stringify(baseConfig, null, 2);
 
     writeFileSync(testConfigPath, configJson);
 
@@ -62,13 +75,21 @@ describe('context commands', () => {
 
   it('adds a context', () => {
     addContext(testConfigPath, {
-      id: 'abc123', name: 'test', type: 'http', interpreter: 'plain-text', topic: 'test',
-      mode: 'send-once', show_visitor_info: false, primary_server: 'alpha', servers: ['alpha'], token: undefined,
+      id: 'abc123',
+      name: 'test',
+      type: 'http',
+      interpreter: 'plain-text',
+      topic: 'test',
+      mode: 'send-once',
+      show_visitor_info: false,
+      primary_server: 'alpha',
+      servers: ['alpha'],
+      token: undefined,
     });
 
-    const configJson: TestsCliCommandsContextConfigJson = readFileSync(testConfigPath, 'utf-8');
+    const configJson: Tests_Cli_Commands_Context_ContextCommands_AddsAContext_ConfigJson = readFileSync(testConfigPath, 'utf-8');
 
-    const config: TestsCliCommandsContextParsedConfig = JSON.parse(configJson);
+    const config: Tests_Cli_Commands_Context_ContextCommands_AddsAContext_Config = JSON.parse(configJson);
 
     expect(config['contexts']).toHaveLength(1);
 
@@ -77,32 +98,68 @@ describe('context commands', () => {
 
   it('rejects duplicate context names', () => {
     addContext(testConfigPath, {
-      id: 'abc', name: 'test', type: 'http', interpreter: 'plain-text', topic: 'test',
-      mode: 'send-once', show_visitor_info: false, primary_server: 'alpha', servers: ['alpha'], token: undefined,
+      id: 'abc',
+      name: 'test',
+      type: 'http',
+      interpreter: 'plain-text',
+      topic: 'test',
+      mode: 'send-once',
+      show_visitor_info: false,
+      primary_server: 'alpha',
+      servers: ['alpha'],
+      token: undefined,
     });
 
     expect(() => addContext(testConfigPath, {
-      id: 'def', name: 'test', type: 'http', interpreter: 'plain-text', topic: 'test2',
-      mode: 'send-once', show_visitor_info: false, primary_server: 'alpha', servers: ['alpha'], token: undefined,
+      id: 'def',
+      name: 'test',
+      type: 'http',
+      interpreter: 'plain-text',
+      topic: 'test2',
+      mode: 'send-once',
+      show_visitor_info: false,
+      primary_server: 'alpha',
+      servers: ['alpha'],
+      token: undefined,
     })).toThrow();
+
+    const config: Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateContextNames_Config = JSON.parse(readFileSync(testConfigPath, 'utf-8'));
+
+    expect(config['contexts']).toHaveLength(1);
 
     return;
   });
 
   it('auto-regenerates duplicate ids', () => {
     addContext(testConfigPath, {
-      id: 'abc', name: 'test1', type: 'http', interpreter: 'plain-text', topic: 'test',
-      mode: 'send-once', show_visitor_info: false, primary_server: 'alpha', servers: ['alpha'], token: undefined,
+      id: 'abc',
+      name: 'test1',
+      type: 'http',
+      interpreter: 'plain-text',
+      topic: 'test',
+      mode: 'send-once',
+      show_visitor_info: false,
+      primary_server: 'alpha',
+      servers: ['alpha'],
+      token: undefined,
     });
 
     addContext(testConfigPath, {
-      id: 'abc', name: 'test2', type: 'http', interpreter: 'plain-text', topic: 'test2',
-      mode: 'send-once', show_visitor_info: false, primary_server: 'alpha', servers: ['alpha'], token: undefined,
+      id: 'abc',
+      name: 'test2',
+      type: 'http',
+      interpreter: 'plain-text',
+      topic: 'test2',
+      mode: 'send-once',
+      show_visitor_info: false,
+      primary_server: 'alpha',
+      servers: ['alpha'],
+      token: undefined,
     });
 
-    const configJson: TestsCliCommandsContextConfigJson = readFileSync(testConfigPath, 'utf-8');
+    const configJson: Tests_Cli_Commands_Context_ContextCommands_AutoRegeneratesDuplicateIds_ConfigJson = readFileSync(testConfigPath, 'utf-8');
 
-    const config: TestsCliCommandsContextParsedConfig = JSON.parse(configJson);
+    const config: Tests_Cli_Commands_Context_ContextCommands_AutoRegeneratesDuplicateIds_Config = JSON.parse(configJson);
 
     expect(config['contexts']).toHaveLength(2);
 
@@ -113,20 +170,40 @@ describe('context commands', () => {
 
   it('rejects context referencing non-existent server', () => {
     expect(() => addContext(testConfigPath, {
-      id: 'abc', name: 'test', type: 'http', interpreter: 'plain-text', topic: 'test',
-      mode: 'send-once', show_visitor_info: false, primary_server: 'nonexistent', servers: ['nonexistent'], token: undefined,
+      id: 'abc',
+      name: 'test',
+      type: 'http',
+      interpreter: 'plain-text',
+      topic: 'test',
+      mode: 'send-once',
+      show_visitor_info: false,
+      primary_server: 'nonexistent',
+      servers: ['nonexistent'],
+      token: undefined,
     })).toThrow();
+
+    const config: Tests_Cli_Commands_Context_ContextCommands_RejectsContextReferencingNonExistentServer_Config = JSON.parse(readFileSync(testConfigPath, 'utf-8'));
+
+    expect(config['contexts']).toHaveLength(0);
 
     return;
   });
 
   it('lists contexts', () => {
     addContext(testConfigPath, {
-      id: 'abc', name: 'test', type: 'http', interpreter: 'plain-text', topic: 'test',
-      mode: 'send-once', show_visitor_info: false, primary_server: 'alpha', servers: ['alpha'], token: undefined,
+      id: 'abc',
+      name: 'test',
+      type: 'http',
+      interpreter: 'plain-text',
+      topic: 'test',
+      mode: 'send-once',
+      show_visitor_info: false,
+      primary_server: 'alpha',
+      servers: ['alpha'],
+      token: undefined,
     });
 
-    const contexts: TestsCliCommandsContextContextList = listContexts(testConfigPath);
+    const contexts: Tests_Cli_Commands_Context_ContextCommands_ListsContexts_Contexts = listContexts(testConfigPath);
 
     expect(contexts).toHaveLength(1);
 
@@ -135,13 +212,21 @@ describe('context commands', () => {
 
   it('removes a context', () => {
     addContext(testConfigPath, {
-      id: 'abc', name: 'test', type: 'http', interpreter: 'plain-text', topic: 'test',
-      mode: 'send-once', show_visitor_info: false, primary_server: 'alpha', servers: ['alpha'], token: undefined,
+      id: 'abc',
+      name: 'test',
+      type: 'http',
+      interpreter: 'plain-text',
+      topic: 'test',
+      mode: 'send-once',
+      show_visitor_info: false,
+      primary_server: 'alpha',
+      servers: ['alpha'],
+      token: undefined,
     });
 
     removeContext(testConfigPath, 'test');
 
-    const contexts: TestsCliCommandsContextContextList = listContexts(testConfigPath);
+    const contexts: Tests_Cli_Commands_Context_ContextCommands_RemovesAContext_Contexts = listContexts(testConfigPath);
 
     expect(contexts).toHaveLength(0);
 
@@ -149,9 +234,9 @@ describe('context commands', () => {
   });
 
   it('generates random id strings', () => {
-    const id1: TestsCliCommandsContextGeneratedId = generateId();
+    const id1: Tests_Cli_Commands_Context_ContextCommands_GeneratesRandomIdStrings_Id1 = generateId();
 
-    const id2: TestsCliCommandsContextGeneratedId = generateId();
+    const id2: Tests_Cli_Commands_Context_ContextCommands_GeneratesRandomIdStrings_Id2 = generateId();
 
     expect(id1['length']).toBe(20);
 

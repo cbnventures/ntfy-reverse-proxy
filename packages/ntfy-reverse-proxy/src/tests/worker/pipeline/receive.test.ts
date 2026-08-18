@@ -3,11 +3,23 @@ import { describe, expect, it } from 'vitest';
 import { receive } from '../../../worker/pipeline/receive.js';
 
 import type {
-  TestsWorkerPipelineReceiveBaseDomain,
-  TestsWorkerPipelineReceiveBody,
-  TestsWorkerPipelineReceiveHeaderValue,
-  TestsWorkerPipelineReceiveRequest,
-  TestsWorkerPipelineReceiveResult,
+  Tests_Worker_Pipeline_Receive_Receive_BaseDomain,
+  Tests_Worker_Pipeline_Receive_Receive_DoesNotRedirectHTTPOnLocalhost_Request,
+  Tests_Worker_Pipeline_Receive_Receive_DoesNotRedirectHTTPOnLocalhost_Result,
+  Tests_Worker_Pipeline_Receive_Receive_ExtractsHeadersFromTheRequest_HeaderValue,
+  Tests_Worker_Pipeline_Receive_Receive_ExtractsHeadersFromTheRequest_Request,
+  Tests_Worker_Pipeline_Receive_Receive_ExtractsHeadersFromTheRequest_Result,
+  Tests_Worker_Pipeline_Receive_Receive_ExtractsMetadataFromAValidPOSTRequest_Request,
+  Tests_Worker_Pipeline_Receive_Receive_ExtractsMetadataFromAValidPOSTRequest_Result,
+  Tests_Worker_Pipeline_Receive_Receive_ExtractsRawBodyAsArrayBuffer_Body,
+  Tests_Worker_Pipeline_Receive_Receive_ExtractsRawBodyAsArrayBuffer_Request,
+  Tests_Worker_Pipeline_Receive_Receive_ExtractsRawBodyAsArrayBuffer_Result,
+  Tests_Worker_Pipeline_Receive_Receive_IdentifiesGETRequests_Request,
+  Tests_Worker_Pipeline_Receive_Receive_IdentifiesGETRequests_Result,
+  Tests_Worker_Pipeline_Receive_Receive_RejectsUnsupportedHTTPMethods_Request,
+  Tests_Worker_Pipeline_Receive_Receive_RejectsUnsupportedHTTPMethods_Result,
+  Tests_Worker_Pipeline_Receive_Receive_ReturnsRedirectForHTTPInProduction_Request,
+  Tests_Worker_Pipeline_Receive_Receive_ReturnsRedirectForHTTPInProduction_Result,
 } from '../../../types/tests/worker/pipeline/receive.test.d.ts';
 
 /**
@@ -16,15 +28,15 @@ import type {
  * @since 2.0.0
  */
 describe('receive', () => {
-  const baseDomain: TestsWorkerPipelineReceiveBaseDomain = 'ntfy.example.com';
+  const baseDomain: Tests_Worker_Pipeline_Receive_Receive_BaseDomain = 'ntfy.example.com';
 
   it('extracts metadata from a valid POST request', async () => {
-    const request: TestsWorkerPipelineReceiveRequest = new Request('https://abc.ntfy.example.com/test', {
+    const request: Tests_Worker_Pipeline_Receive_Receive_ExtractsMetadataFromAValidPOSTRequest_Request = new Request('https://abc.ntfy.example.com/test', {
       method: 'POST',
       body: 'hello',
     });
 
-    const result: TestsWorkerPipelineReceiveResult = await receive(request, baseDomain);
+    const result: Tests_Worker_Pipeline_Receive_Receive_ExtractsMetadataFromAValidPOSTRequest_Result = await receive(request, baseDomain);
 
     expect(result['method']).toBe('POST');
 
@@ -36,11 +48,11 @@ describe('receive', () => {
   });
 
   it('identifies GET requests', async () => {
-    const request: TestsWorkerPipelineReceiveRequest = new Request('https://abc.ntfy.example.com/', {
+    const request: Tests_Worker_Pipeline_Receive_Receive_IdentifiesGETRequests_Request = new Request('https://abc.ntfy.example.com/', {
       method: 'GET',
     });
 
-    const result: TestsWorkerPipelineReceiveResult = await receive(request, baseDomain);
+    const result: Tests_Worker_Pipeline_Receive_Receive_IdentifiesGETRequests_Result = await receive(request, baseDomain);
 
     expect(result['isGet']).toBe(true);
 
@@ -48,12 +60,12 @@ describe('receive', () => {
   });
 
   it('returns redirect for HTTP in production', async () => {
-    const request: TestsWorkerPipelineReceiveRequest = new Request('http://abc.ntfy.example.com/test', {
+    const request: Tests_Worker_Pipeline_Receive_Receive_ReturnsRedirectForHTTPInProduction_Request = new Request('http://abc.ntfy.example.com/test', {
       method: 'POST',
       body: 'hello',
     });
 
-    const result: TestsWorkerPipelineReceiveResult = await receive(request, baseDomain);
+    const result: Tests_Worker_Pipeline_Receive_Receive_ReturnsRedirectForHTTPInProduction_Result = await receive(request, baseDomain);
 
     expect(result['redirect']).toBeDefined();
 
@@ -63,12 +75,12 @@ describe('receive', () => {
   });
 
   it('does not redirect HTTP on localhost', async () => {
-    const request: TestsWorkerPipelineReceiveRequest = new Request('http://localhost:8787/test', {
+    const request: Tests_Worker_Pipeline_Receive_Receive_DoesNotRedirectHTTPOnLocalhost_Request = new Request('http://localhost:8787/test', {
       method: 'POST',
       body: 'hello',
     });
 
-    const result: TestsWorkerPipelineReceiveResult = await receive(request, 'localhost');
+    const result: Tests_Worker_Pipeline_Receive_Receive_DoesNotRedirectHTTPOnLocalhost_Result = await receive(request, 'localhost');
 
     expect(result['redirect']).toBeUndefined();
 
@@ -76,11 +88,11 @@ describe('receive', () => {
   });
 
   it('rejects unsupported HTTP methods', async () => {
-    const request: TestsWorkerPipelineReceiveRequest = new Request('https://abc.ntfy.example.com/test', {
+    const request: Tests_Worker_Pipeline_Receive_Receive_RejectsUnsupportedHTTPMethods_Request = new Request('https://abc.ntfy.example.com/test', {
       method: 'DELETE',
     });
 
-    const result: TestsWorkerPipelineReceiveResult = await receive(request, baseDomain);
+    const result: Tests_Worker_Pipeline_Receive_Receive_RejectsUnsupportedHTTPMethods_Result = await receive(request, baseDomain);
 
     expect(result['error']).toBeDefined();
 
@@ -90,14 +102,14 @@ describe('receive', () => {
   });
 
   it('extracts raw body as ArrayBuffer', async () => {
-    const body: TestsWorkerPipelineReceiveBody = 'test message';
+    const body: Tests_Worker_Pipeline_Receive_Receive_ExtractsRawBodyAsArrayBuffer_Body = 'test message';
 
-    const request: TestsWorkerPipelineReceiveRequest = new Request('https://abc.ntfy.example.com/test', {
+    const request: Tests_Worker_Pipeline_Receive_Receive_ExtractsRawBodyAsArrayBuffer_Request = new Request('https://abc.ntfy.example.com/test', {
       method: 'POST',
       body,
     });
 
-    const result: TestsWorkerPipelineReceiveResult = await receive(request, baseDomain);
+    const result: Tests_Worker_Pipeline_Receive_Receive_ExtractsRawBodyAsArrayBuffer_Result = await receive(request, baseDomain);
 
     expect(result['rawBody']).toBeInstanceOf(ArrayBuffer);
 
@@ -105,15 +117,15 @@ describe('receive', () => {
   });
 
   it('extracts headers from the request', async () => {
-    const request: TestsWorkerPipelineReceiveRequest = new Request('https://abc.ntfy.example.com/test', {
+    const request: Tests_Worker_Pipeline_Receive_Receive_ExtractsHeadersFromTheRequest_Request = new Request('https://abc.ntfy.example.com/test', {
       method: 'POST',
       body: 'hello',
       headers: { 'X-Title': 'Test Title' },
     });
 
-    const result: TestsWorkerPipelineReceiveResult = await receive(request, baseDomain);
+    const result: Tests_Worker_Pipeline_Receive_Receive_ExtractsHeadersFromTheRequest_Result = await receive(request, baseDomain);
 
-    const headerValue: TestsWorkerPipelineReceiveHeaderValue = result['headers'].get('x-title');
+    const headerValue: Tests_Worker_Pipeline_Receive_Receive_ExtractsHeadersFromTheRequest_HeaderValue = result['headers'].get('x-title');
 
     expect(headerValue).toBe('Test Title');
 

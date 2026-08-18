@@ -1,551 +1,595 @@
-import type { SpawnSyncReturns } from 'child_process';
+import type { SpawnSyncReturns } from 'node:child_process';
 
 import type {
-  LibSchemaContextConfig,
-  LibSchemaServerConfig,
-  LibSchemaSettingsConfig,
+  Lib_Schema_ContextConfig,
+  Lib_Schema_ServerConfig,
+  Lib_Schema_SettingsConfigBaseDomain,
+  Lib_Schema_SettingsConfigShowResponseOutput,
+  Lib_Schema_SettingsConfigWorkerName,
 } from '../../lib/schema.d.ts';
-import type { CliCommandsValidateValidateConfigResult } from './validate.d.ts';
 
 /**
  * CLI - Commands - Deploy - Create Email Routing Rule.
  *
  * @since 2.0.0
  */
-export type CliCommandsDeployCreateEmailRoutingRuleToken = string;
+export type Cli_Commands_Deploy_CreateEmailRoutingRule_Token = string;
 
-export type CliCommandsDeployCreateEmailRoutingRuleZoneId = string;
+export type Cli_Commands_Deploy_CreateEmailRoutingRule_ZoneId = string;
 
-export type CliCommandsDeployCreateEmailRoutingRuleEmail = string;
+export type Cli_Commands_Deploy_CreateEmailRoutingRule_Email = string;
 
-export type CliCommandsDeployCreateEmailRoutingRuleContextId = string;
+export type Cli_Commands_Deploy_CreateEmailRoutingRule_ContextId = string;
 
-export type CliCommandsDeployCreateEmailRoutingRuleWorkerName = string;
+export type Cli_Commands_Deploy_CreateEmailRoutingRule_WorkerName = string;
 
-export type CliCommandsDeployCreateEmailRoutingRuleReturn = Promise<void>;
+export type Cli_Commands_Deploy_CreateEmailRoutingRule_Returns = Promise<void>;
 
-export type CliCommandsDeployCreateEmailRoutingRuleResponse = Response;
+export type Cli_Commands_Deploy_CreateEmailRoutingRule_Response = Response;
 
-export type CliCommandsDeployCreateEmailRoutingRuleCreateDataSuccess = boolean;
+export type Cli_Commands_Deploy_CreateEmailRoutingRule_CreateDataSuccess = boolean;
 
-export type CliCommandsDeployCreateEmailRoutingRuleCreateDataErrorCode = number;
+export type Cli_Commands_Deploy_CreateEmailRoutingRule_CreateDataErrorCode = number;
 
-export type CliCommandsDeployCreateEmailRoutingRuleCreateDataErrorMessage = string;
+export type Cli_Commands_Deploy_CreateEmailRoutingRule_CreateDataErrorMessage = string;
 
-export type CliCommandsDeployCreateEmailRoutingRuleCreateDataError = {
-  code: CliCommandsDeployCreateEmailRoutingRuleCreateDataErrorCode;
-  message: CliCommandsDeployCreateEmailRoutingRuleCreateDataErrorMessage;
+export type Cli_Commands_Deploy_CreateEmailRoutingRule_CreateDataError = {
+  code: Cli_Commands_Deploy_CreateEmailRoutingRule_CreateDataErrorCode;
+  message: Cli_Commands_Deploy_CreateEmailRoutingRule_CreateDataErrorMessage;
 };
 
-export type CliCommandsDeployCreateEmailRoutingRuleCreateDataErrorsList = CliCommandsDeployCreateEmailRoutingRuleCreateDataError[] | undefined;
+export type Cli_Commands_Deploy_CreateEmailRoutingRule_CreateDataErrorsList = Cli_Commands_Deploy_CreateEmailRoutingRule_CreateDataError[] | undefined;
 
-export type CliCommandsDeployCreateEmailRoutingRuleCreateData = {
-  success: CliCommandsDeployCreateEmailRoutingRuleCreateDataSuccess;
-  errors: CliCommandsDeployCreateEmailRoutingRuleCreateDataErrorsList;
+export type Cli_Commands_Deploy_CreateEmailRoutingRule_CreateData = {
+  success: Cli_Commands_Deploy_CreateEmailRoutingRule_CreateDataSuccess;
+  errors: Cli_Commands_Deploy_CreateEmailRoutingRule_CreateDataErrorsList;
 };
 
-export type CliCommandsDeployCreateEmailRoutingRuleCreateDataErrors = CliCommandsDeployCreateEmailRoutingRuleCreateDataErrorsList;
+export type Cli_Commands_Deploy_CreateEmailRoutingRule_CreateErrors = Cli_Commands_Deploy_CreateEmailRoutingRule_CreateDataErrorsList;
 
-export type CliCommandsDeployCreateEmailRoutingRuleErrorDetails = string;
+export type Cli_Commands_Deploy_CreateEmailRoutingRule_ErrorDetails = string;
 
 /**
  * CLI - Commands - Deploy - Delete Email Routing Rule.
  *
  * @since 2.0.0
  */
-export type CliCommandsDeployDeleteEmailRoutingRuleToken = string;
+export type Cli_Commands_Deploy_DeleteEmailRoutingRule_Token = string;
 
-export type CliCommandsDeployDeleteEmailRoutingRuleZoneId = string;
+export type Cli_Commands_Deploy_DeleteEmailRoutingRule_ZoneId = string;
 
-export type CliCommandsDeployDeleteEmailRoutingRuleRuleId = string;
+export type Cli_Commands_Deploy_DeleteEmailRoutingRule_RuleId = string;
 
-export type CliCommandsDeployDeleteEmailRoutingRuleReturn = Promise<void>;
+export type Cli_Commands_Deploy_DeleteEmailRoutingRule_Returns = Promise<void>;
 
-export type CliCommandsDeployDeleteEmailRoutingRuleResponse = Response;
+export type Cli_Commands_Deploy_DeleteEmailRoutingRule_Response = Response;
 
-export type CliCommandsDeployDeleteEmailRoutingRuleDeleteDataSuccess = boolean;
+export type Cli_Commands_Deploy_DeleteEmailRoutingRule_DeleteDataSuccess = boolean;
 
-export type CliCommandsDeployDeleteEmailRoutingRuleDeleteDataErrorCode = number;
+export type Cli_Commands_Deploy_DeleteEmailRoutingRule_DeleteDataErrorCode = number;
 
-export type CliCommandsDeployDeleteEmailRoutingRuleDeleteDataErrorMessage = string;
+export type Cli_Commands_Deploy_DeleteEmailRoutingRule_DeleteDataErrorMessage = string;
 
-export type CliCommandsDeployDeleteEmailRoutingRuleDeleteDataError = {
-  code: CliCommandsDeployDeleteEmailRoutingRuleDeleteDataErrorCode;
-  message: CliCommandsDeployDeleteEmailRoutingRuleDeleteDataErrorMessage;
+export type Cli_Commands_Deploy_DeleteEmailRoutingRule_DeleteDataError = {
+  code: Cli_Commands_Deploy_DeleteEmailRoutingRule_DeleteDataErrorCode;
+  message: Cli_Commands_Deploy_DeleteEmailRoutingRule_DeleteDataErrorMessage;
 };
 
-export type CliCommandsDeployDeleteEmailRoutingRuleDeleteDataErrorsList = CliCommandsDeployDeleteEmailRoutingRuleDeleteDataError[] | undefined;
+export type Cli_Commands_Deploy_DeleteEmailRoutingRule_DeleteDataErrorsList = Cli_Commands_Deploy_DeleteEmailRoutingRule_DeleteDataError[] | undefined;
 
-export type CliCommandsDeployDeleteEmailRoutingRuleDeleteData = {
-  success: CliCommandsDeployDeleteEmailRoutingRuleDeleteDataSuccess;
-  errors: CliCommandsDeployDeleteEmailRoutingRuleDeleteDataErrorsList;
+export type Cli_Commands_Deploy_DeleteEmailRoutingRule_DeleteData = {
+  success: Cli_Commands_Deploy_DeleteEmailRoutingRule_DeleteDataSuccess;
+  errors: Cli_Commands_Deploy_DeleteEmailRoutingRule_DeleteDataErrorsList;
 };
 
-export type CliCommandsDeployDeleteEmailRoutingRuleDeleteDataErrors = CliCommandsDeployDeleteEmailRoutingRuleDeleteDataErrorsList;
+export type Cli_Commands_Deploy_DeleteEmailRoutingRule_DeleteErrors = Cli_Commands_Deploy_DeleteEmailRoutingRule_DeleteDataErrorsList;
 
-export type CliCommandsDeployDeleteEmailRoutingRuleErrorDetails = string;
+export type Cli_Commands_Deploy_DeleteEmailRoutingRule_ErrorDetails = string;
 
 /**
  * CLI - Commands - Deploy - Deploy.
  *
  * @since 2.0.0
  */
-export type CliCommandsDeployDeployConfigPath = string;
+export type Cli_Commands_Deploy_Deploy_ConfigPath = string;
 
-export type CliCommandsDeployDeployInteractive = boolean;
+export type Cli_Commands_Deploy_Deploy_Interactive = boolean;
 
-export type CliCommandsDeployDeployReturn = Promise<void>;
+export type Cli_Commands_Deploy_Deploy_Returns = Promise<void>;
 
-export type CliCommandsDeployDeployToken = string;
+export type Cli_Commands_Deploy_Deploy_Token = string;
 
-export type CliCommandsDeployDeployResult = CliCommandsValidateValidateConfigResult;
+export type Cli_Commands_Deploy_Deploy_ResultValid = boolean;
 
-export type CliCommandsDeployDeployServers = LibSchemaServerConfig[];
+export type Cli_Commands_Deploy_Deploy_ResultErrors = string[];
 
-export type CliCommandsDeployDeploySettings = LibSchemaSettingsConfig;
+export type Cli_Commands_Deploy_Deploy_Result = {
+  valid: Cli_Commands_Deploy_Deploy_ResultValid;
+  errors: Cli_Commands_Deploy_Deploy_ResultErrors;
+};
 
-export type CliCommandsDeployDeployWorkerName = string;
+export type Cli_Commands_Deploy_Deploy_Servers = Array<Lib_Schema_ServerConfig>;
 
-export type CliCommandsDeployDeployContexts = LibSchemaContextConfig[];
+export type Cli_Commands_Deploy_Deploy_Settings_WorkerName = Lib_Schema_SettingsConfigWorkerName;
 
-export type CliCommandsDeployDeployHasEmailContexts = boolean;
+export type Cli_Commands_Deploy_Deploy_Settings_BaseDomain = Lib_Schema_SettingsConfigBaseDomain;
 
-export type CliCommandsDeployDeployAccountId = string;
+export type Cli_Commands_Deploy_Deploy_Settings_ShowResponseOutput = Lib_Schema_SettingsConfigShowResponseOutput;
 
-export type CliCommandsDeployDeployKvNamespaceId = string;
+export type Cli_Commands_Deploy_Deploy_Settings = {
+  worker_name: Cli_Commands_Deploy_Deploy_Settings_WorkerName;
+  base_domain: Cli_Commands_Deploy_Deploy_Settings_BaseDomain;
+  show_response_output: Cli_Commands_Deploy_Deploy_Settings_ShowResponseOutput;
+};
 
-export type CliCommandsDeployDeployProjectRoot = string;
+export type Cli_Commands_Deploy_Deploy_WorkerName = string;
 
-export type CliCommandsDeployDeployWranglerTomlPath = string;
+export type Cli_Commands_Deploy_Deploy_Contexts = Array<Lib_Schema_ContextConfig>;
+
+export type Cli_Commands_Deploy_Deploy_HasEmailContexts = boolean;
+
+export type Cli_Commands_Deploy_Deploy_AccountId = string;
+
+export type Cli_Commands_Deploy_Deploy_KvNamespaceId = string;
+
+export type Cli_Commands_Deploy_Deploy_ProjectRoot = string;
+
+export type Cli_Commands_Deploy_Deploy_WranglerTomlPath = string;
 
 /**
  * CLI - Commands - Deploy - Deploy Worker.
  *
  * @since 2.0.0
  */
-export type CliCommandsDeployDeployWorkerReturn = void;
+export type Cli_Commands_Deploy_DeployWorker_Returns = void;
 
-export type CliCommandsDeployDeployWorkerProjectRoot = string;
+export type Cli_Commands_Deploy_DeployWorker_ProjectRoot = string;
 
-export type CliCommandsDeployDeployWorkerWranglerTomlPath = string;
+export type Cli_Commands_Deploy_DeployWorker_WranglerTomlPath = string;
 
-export type CliCommandsDeployDeployWorkerDeployResult = SpawnSyncReturns<string>;
+export type Cli_Commands_Deploy_DeployWorker_DeployResult = SpawnSyncReturns<string>;
 
 /**
  * CLI - Commands - Deploy - Ensure Kv Namespace.
  *
  * @since 2.0.0
  */
-export type CliCommandsDeployEnsureKvNamespaceToken = string;
+export type Cli_Commands_Deploy_EnsureKvNamespace_Returns = Promise<string>;
 
-export type CliCommandsDeployEnsureKvNamespaceAccountId = string;
+export type Cli_Commands_Deploy_EnsureKvNamespace_Token = string;
 
-export type CliCommandsDeployEnsureKvNamespaceWorkerName = string;
+export type Cli_Commands_Deploy_EnsureKvNamespace_AccountId = string;
 
-export type CliCommandsDeployEnsureKvNamespaceReturn = Promise<string>;
+export type Cli_Commands_Deploy_EnsureKvNamespace_WorkerName = string;
 
-export type CliCommandsDeployEnsureKvNamespaceListResponse = Response;
+export type Cli_Commands_Deploy_EnsureKvNamespace_AllNamespacesId = string;
 
-export type CliCommandsDeployEnsureKvNamespaceListDataSuccess = boolean;
+export type Cli_Commands_Deploy_EnsureKvNamespace_AllNamespacesTitle = string;
 
-export type CliCommandsDeployEnsureKvNamespaceListDataResultId = string;
+export type Cli_Commands_Deploy_EnsureKvNamespace_AllNamespaces = {
+  id: Cli_Commands_Deploy_EnsureKvNamespace_AllNamespacesId;
+  title: Cli_Commands_Deploy_EnsureKvNamespace_AllNamespacesTitle;
+}[];
 
-export type CliCommandsDeployEnsureKvNamespaceListDataResultTitle = string;
+export type Cli_Commands_Deploy_EnsureKvNamespace_Page = number;
 
-export type CliCommandsDeployEnsureKvNamespaceListDataResult = {
-  id: CliCommandsDeployEnsureKvNamespaceListDataResultId;
-  title: CliCommandsDeployEnsureKvNamespaceListDataResultTitle;
+export type Cli_Commands_Deploy_EnsureKvNamespace_Cursor = string | undefined;
+
+export type Cli_Commands_Deploy_EnsureKvNamespace_HasMore = boolean;
+
+export type Cli_Commands_Deploy_EnsureKvNamespace_PaginationUrl = string;
+
+export type Cli_Commands_Deploy_EnsureKvNamespace_ListResponse = Response;
+
+export type Cli_Commands_Deploy_EnsureKvNamespace_ListDataSuccess = boolean;
+
+export type Cli_Commands_Deploy_EnsureKvNamespace_ListDataResultId = string;
+
+export type Cli_Commands_Deploy_EnsureKvNamespace_ListDataResultTitle = string;
+
+export type Cli_Commands_Deploy_EnsureKvNamespace_ListDataResult = {
+  id: Cli_Commands_Deploy_EnsureKvNamespace_ListDataResultId;
+  title: Cli_Commands_Deploy_EnsureKvNamespace_ListDataResultTitle;
 };
 
-export type CliCommandsDeployEnsureKvNamespaceListDataErrorCode = number;
+export type Cli_Commands_Deploy_EnsureKvNamespace_ListDataErrorCode = number;
 
-export type CliCommandsDeployEnsureKvNamespaceListDataErrorMessage = string;
+export type Cli_Commands_Deploy_EnsureKvNamespace_ListDataErrorMessage = string;
 
-export type CliCommandsDeployEnsureKvNamespaceListDataError = {
-  code: CliCommandsDeployEnsureKvNamespaceListDataErrorCode;
-  message: CliCommandsDeployEnsureKvNamespaceListDataErrorMessage;
+export type Cli_Commands_Deploy_EnsureKvNamespace_ListDataError = {
+  code: Cli_Commands_Deploy_EnsureKvNamespace_ListDataErrorCode;
+  message: Cli_Commands_Deploy_EnsureKvNamespace_ListDataErrorMessage;
 };
 
-export type CliCommandsDeployEnsureKvNamespaceListDataResults = CliCommandsDeployEnsureKvNamespaceListDataResult[];
+export type Cli_Commands_Deploy_EnsureKvNamespace_ListDataResults = Cli_Commands_Deploy_EnsureKvNamespace_ListDataResult[];
 
-export type CliCommandsDeployEnsureKvNamespaceListDataErrorsList = CliCommandsDeployEnsureKvNamespaceListDataError[] | undefined;
+export type Cli_Commands_Deploy_EnsureKvNamespace_ListDataErrorsList = Cli_Commands_Deploy_EnsureKvNamespace_ListDataError[] | undefined;
 
-export type CliCommandsDeployEnsureKvNamespaceListData = {
-  success: CliCommandsDeployEnsureKvNamespaceListDataSuccess;
-  result: CliCommandsDeployEnsureKvNamespaceListDataResults;
-  errors: CliCommandsDeployEnsureKvNamespaceListDataErrorsList;
+export type Cli_Commands_Deploy_EnsureKvNamespace_ListDataResultInfoCursor = string | undefined;
+
+export type Cli_Commands_Deploy_EnsureKvNamespace_ListDataResultInfo = {
+  cursor: Cli_Commands_Deploy_EnsureKvNamespace_ListDataResultInfoCursor;
+} | undefined;
+
+export type Cli_Commands_Deploy_EnsureKvNamespace_ListData = {
+  success: Cli_Commands_Deploy_EnsureKvNamespace_ListDataSuccess;
+  result: Cli_Commands_Deploy_EnsureKvNamespace_ListDataResults;
+  errors: Cli_Commands_Deploy_EnsureKvNamespace_ListDataErrorsList;
+  result_info: Cli_Commands_Deploy_EnsureKvNamespace_ListDataResultInfo;
 };
 
-export type CliCommandsDeployEnsureKvNamespaceListDataErrors = CliCommandsDeployEnsureKvNamespaceListDataErrorsList;
+export type Cli_Commands_Deploy_EnsureKvNamespace_ListErrors = Cli_Commands_Deploy_EnsureKvNamespace_ListDataErrorsList;
 
-export type CliCommandsDeployEnsureKvNamespaceListErrorDetails = string;
+export type Cli_Commands_Deploy_EnsureKvNamespace_ListErrorDetails = string;
 
-export type CliCommandsDeployEnsureKvNamespaceKvTitle = string;
+export type Cli_Commands_Deploy_EnsureKvNamespace_ResultInfoCursor = string | undefined;
 
-export type CliCommandsDeployEnsureKvNamespaceExisting = CliCommandsDeployEnsureKvNamespaceListDataResult | undefined;
+export type Cli_Commands_Deploy_EnsureKvNamespace_KvTitle = string;
 
-export type CliCommandsDeployEnsureKvNamespaceCreateResponse = Response;
+export type Cli_Commands_Deploy_EnsureKvNamespace_Existing = Cli_Commands_Deploy_EnsureKvNamespace_ListDataResult | undefined;
 
-export type CliCommandsDeployEnsureKvNamespaceCreateDataSuccess = boolean;
+export type Cli_Commands_Deploy_EnsureKvNamespace_CreateResponse = Response;
 
-export type CliCommandsDeployEnsureKvNamespaceCreateDataResultId = string;
+export type Cli_Commands_Deploy_EnsureKvNamespace_CreateDataSuccess = boolean;
 
-export type CliCommandsDeployEnsureKvNamespaceCreateDataResult = {
-  id: CliCommandsDeployEnsureKvNamespaceCreateDataResultId;
+export type Cli_Commands_Deploy_EnsureKvNamespace_CreateDataResultId = string;
+
+export type Cli_Commands_Deploy_EnsureKvNamespace_CreateDataResult = {
+  id: Cli_Commands_Deploy_EnsureKvNamespace_CreateDataResultId;
 };
 
-export type CliCommandsDeployEnsureKvNamespaceCreateDataErrorsList = CliCommandsDeployEnsureKvNamespaceListDataError[] | undefined;
+export type Cli_Commands_Deploy_EnsureKvNamespace_CreateDataErrorsList = Cli_Commands_Deploy_EnsureKvNamespace_ListDataError[] | undefined;
 
-export type CliCommandsDeployEnsureKvNamespaceCreateData = {
-  success: CliCommandsDeployEnsureKvNamespaceCreateDataSuccess;
-  result: CliCommandsDeployEnsureKvNamespaceCreateDataResult;
-  errors: CliCommandsDeployEnsureKvNamespaceCreateDataErrorsList;
+export type Cli_Commands_Deploy_EnsureKvNamespace_CreateData = {
+  success: Cli_Commands_Deploy_EnsureKvNamespace_CreateDataSuccess;
+  result: Cli_Commands_Deploy_EnsureKvNamespace_CreateDataResult;
+  errors: Cli_Commands_Deploy_EnsureKvNamespace_CreateDataErrorsList;
 };
 
-export type CliCommandsDeployEnsureKvNamespaceCreateDataErrors = CliCommandsDeployEnsureKvNamespaceCreateDataErrorsList;
+export type Cli_Commands_Deploy_EnsureKvNamespace_CreateErrors = Cli_Commands_Deploy_EnsureKvNamespace_CreateDataErrorsList;
 
-export type CliCommandsDeployEnsureKvNamespaceCreateErrorDetails = string;
+export type Cli_Commands_Deploy_EnsureKvNamespace_CreateErrorDetails = string;
 
 /**
  * CLI - Commands - Deploy - Get Zone Info.
  *
  * @since 2.0.0
  */
-export type CliCommandsDeployGetZoneInfoToken = string;
+export type Cli_Commands_Deploy_GetZoneInfo_Token = string;
 
-export type CliCommandsDeployGetZoneInfoBaseDomain = string;
+export type Cli_Commands_Deploy_GetZoneInfo_BaseDomain = string;
 
-export type CliCommandsDeployGetZoneInfoResultZoneId = string;
+export type Cli_Commands_Deploy_GetZoneInfo_ResultZoneId = string;
 
-export type CliCommandsDeployGetZoneInfoResultAccountId = string;
+export type Cli_Commands_Deploy_GetZoneInfo_ResultAccountId = string;
 
-export type CliCommandsDeployGetZoneInfoResultZoneName = string;
+export type Cli_Commands_Deploy_GetZoneInfo_ResultZoneName = string;
 
-export type CliCommandsDeployGetZoneInfoResult = {
-  zoneId: CliCommandsDeployGetZoneInfoResultZoneId;
-  accountId: CliCommandsDeployGetZoneInfoResultAccountId;
-  zoneName: CliCommandsDeployGetZoneInfoResultZoneName;
+export type Cli_Commands_Deploy_GetZoneInfo_Result = {
+  zoneId: Cli_Commands_Deploy_GetZoneInfo_ResultZoneId;
+  accountId: Cli_Commands_Deploy_GetZoneInfo_ResultAccountId;
+  zoneName: Cli_Commands_Deploy_GetZoneInfo_ResultZoneName;
 };
 
-export type CliCommandsDeployGetZoneInfoReturn = Promise<CliCommandsDeployGetZoneInfoResult>;
+export type Cli_Commands_Deploy_GetZoneInfo_Returns = Promise<Cli_Commands_Deploy_GetZoneInfo_Result>;
 
-export type CliCommandsDeployGetZoneInfoParts = string[];
+export type Cli_Commands_Deploy_GetZoneInfo_Parts = string[];
 
-export type CliCommandsDeployGetZoneInfoCandidate = string;
+export type Cli_Commands_Deploy_GetZoneInfo_Candidate = string;
 
-export type CliCommandsDeployGetZoneInfoCandidates = CliCommandsDeployGetZoneInfoCandidate[];
+export type Cli_Commands_Deploy_GetZoneInfo_Candidates = Cli_Commands_Deploy_GetZoneInfo_Candidate[];
 
-export type CliCommandsDeployGetZoneInfoResponse = Response;
+export type Cli_Commands_Deploy_GetZoneInfo_Response = Response;
 
-export type CliCommandsDeployGetZoneInfoDataSuccess = boolean;
+export type Cli_Commands_Deploy_GetZoneInfo_DataSuccess = boolean;
 
-export type CliCommandsDeployGetZoneInfoDataResultId = string;
+export type Cli_Commands_Deploy_GetZoneInfo_DataResultId = string;
 
-export type CliCommandsDeployGetZoneInfoDataResultName = string;
+export type Cli_Commands_Deploy_GetZoneInfo_DataResultName = string;
 
-export type CliCommandsDeployGetZoneInfoDataResultAccountId = string;
+export type Cli_Commands_Deploy_GetZoneInfo_DataResultAccountId = string;
 
-export type CliCommandsDeployGetZoneInfoDataResultAccount = {
-  id: CliCommandsDeployGetZoneInfoDataResultAccountId;
+export type Cli_Commands_Deploy_GetZoneInfo_DataResultAccount = {
+  id: Cli_Commands_Deploy_GetZoneInfo_DataResultAccountId;
 };
 
-export type CliCommandsDeployGetZoneInfoDataResult = {
-  id: CliCommandsDeployGetZoneInfoDataResultId;
-  name: CliCommandsDeployGetZoneInfoDataResultName;
-  account: CliCommandsDeployGetZoneInfoDataResultAccount;
+export type Cli_Commands_Deploy_GetZoneInfo_DataResult = {
+  id: Cli_Commands_Deploy_GetZoneInfo_DataResultId;
+  name: Cli_Commands_Deploy_GetZoneInfo_DataResultName;
+  account: Cli_Commands_Deploy_GetZoneInfo_DataResultAccount;
 };
 
-export type CliCommandsDeployGetZoneInfoDataResults = CliCommandsDeployGetZoneInfoDataResult[];
+export type Cli_Commands_Deploy_GetZoneInfo_DataResults = Cli_Commands_Deploy_GetZoneInfo_DataResult[];
 
-export type CliCommandsDeployGetZoneInfoData = {
-  success: CliCommandsDeployGetZoneInfoDataSuccess;
-  result: CliCommandsDeployGetZoneInfoDataResults;
+export type Cli_Commands_Deploy_GetZoneInfo_Data = {
+  success: Cli_Commands_Deploy_GetZoneInfo_DataSuccess;
+  result: Cli_Commands_Deploy_GetZoneInfo_DataResults;
 };
 
-export type CliCommandsDeployGetZoneInfoHasResults = boolean;
+export type Cli_Commands_Deploy_GetZoneInfo_HasResults = boolean;
 
-export type CliCommandsDeployGetZoneInfoFirstResult = CliCommandsDeployGetZoneInfoDataResult | undefined;
+export type Cli_Commands_Deploy_GetZoneInfo_FirstResult = Cli_Commands_Deploy_GetZoneInfo_DataResult | undefined;
 
 /**
  * CLI - Commands - Deploy - List Email Routing Rules.
  *
  * @since 2.0.0
  */
-export type CliCommandsDeployListEmailRoutingRulesToken = string;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_Token = string;
 
-export type CliCommandsDeployListEmailRoutingRulesZoneId = string;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_ZoneId = string;
 
-export type CliCommandsDeployListEmailRoutingRulesReturn = Promise<CliCommandsDeployListEmailRoutingRulesRule[]>;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_Returns = Promise<Cli_Commands_Deploy_ListEmailRoutingRules_Rule[]>;
 
-export type CliCommandsDeployListEmailRoutingRulesRuleMatcherType = string;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleMatcherType = string;
 
-export type CliCommandsDeployListEmailRoutingRulesRuleMatcherField = string;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleMatcherField = string;
 
-export type CliCommandsDeployListEmailRoutingRulesRuleMatcherValue = string;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleMatcherValue = string;
 
-export type CliCommandsDeployListEmailRoutingRulesRuleMatcher = {
-  type: CliCommandsDeployListEmailRoutingRulesRuleMatcherType;
-  field: CliCommandsDeployListEmailRoutingRulesRuleMatcherField;
-  value: CliCommandsDeployListEmailRoutingRulesRuleMatcherValue;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleMatcher = {
+  type: Cli_Commands_Deploy_ListEmailRoutingRules_RuleMatcherType;
+  field: Cli_Commands_Deploy_ListEmailRoutingRules_RuleMatcherField;
+  value: Cli_Commands_Deploy_ListEmailRoutingRules_RuleMatcherValue;
 };
 
-export type CliCommandsDeployListEmailRoutingRulesRuleMatchers = CliCommandsDeployListEmailRoutingRulesRuleMatcher[];
+export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleMatchers = Cli_Commands_Deploy_ListEmailRoutingRules_RuleMatcher[];
 
-export type CliCommandsDeployListEmailRoutingRulesRuleActionType = string;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleActionType = string;
 
-export type CliCommandsDeployListEmailRoutingRulesRuleActionValue = string[];
+export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleActionValue = string[];
 
-export type CliCommandsDeployListEmailRoutingRulesRuleAction = {
-  type: CliCommandsDeployListEmailRoutingRulesRuleActionType;
-  value: CliCommandsDeployListEmailRoutingRulesRuleActionValue;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleAction = {
+  type: Cli_Commands_Deploy_ListEmailRoutingRules_RuleActionType;
+  value: Cli_Commands_Deploy_ListEmailRoutingRules_RuleActionValue;
 };
 
-export type CliCommandsDeployListEmailRoutingRulesRuleActions = CliCommandsDeployListEmailRoutingRulesRuleAction[];
+export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleActions = Cli_Commands_Deploy_ListEmailRoutingRules_RuleAction[];
 
-export type CliCommandsDeployListEmailRoutingRulesRuleTag = string;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleTag = string;
 
-export type CliCommandsDeployListEmailRoutingRulesRuleName = string;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleName = string;
 
-export type CliCommandsDeployListEmailRoutingRulesRuleEnabled = boolean;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleEnabled = boolean;
 
-export type CliCommandsDeployListEmailRoutingRulesRule = {
-  tag: CliCommandsDeployListEmailRoutingRulesRuleTag;
-  name: CliCommandsDeployListEmailRoutingRulesRuleName;
-  enabled: CliCommandsDeployListEmailRoutingRulesRuleEnabled;
-  matchers: CliCommandsDeployListEmailRoutingRulesRuleMatchers;
-  actions: CliCommandsDeployListEmailRoutingRulesRuleActions;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_Rule = {
+  tag: Cli_Commands_Deploy_ListEmailRoutingRules_RuleTag;
+  name: Cli_Commands_Deploy_ListEmailRoutingRules_RuleName;
+  enabled: Cli_Commands_Deploy_ListEmailRoutingRules_RuleEnabled;
+  matchers: Cli_Commands_Deploy_ListEmailRoutingRules_RuleMatchers;
+  actions: Cli_Commands_Deploy_ListEmailRoutingRules_RuleActions;
 };
 
-export type CliCommandsDeployListEmailRoutingRulesResponse = Response;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_Response = Response;
 
-export type CliCommandsDeployListEmailRoutingRulesDataSuccess = boolean;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_DataSuccess = boolean;
 
-export type CliCommandsDeployListEmailRoutingRulesDataErrorCode = number;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_DataErrorCode = number;
 
-export type CliCommandsDeployListEmailRoutingRulesDataErrorMessage = string;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_DataErrorMessage = string;
 
-export type CliCommandsDeployListEmailRoutingRulesDataError = {
-  code: CliCommandsDeployListEmailRoutingRulesDataErrorCode;
-  message: CliCommandsDeployListEmailRoutingRulesDataErrorMessage;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_DataError = {
+  code: Cli_Commands_Deploy_ListEmailRoutingRules_DataErrorCode;
+  message: Cli_Commands_Deploy_ListEmailRoutingRules_DataErrorMessage;
 };
 
-export type CliCommandsDeployListEmailRoutingRulesDataResult = CliCommandsDeployListEmailRoutingRulesRule[];
+export type Cli_Commands_Deploy_ListEmailRoutingRules_DataResult = Cli_Commands_Deploy_ListEmailRoutingRules_Rule[];
 
-export type CliCommandsDeployListEmailRoutingRulesDataErrorsList = CliCommandsDeployListEmailRoutingRulesDataError[] | undefined;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_DataErrorsList = Cli_Commands_Deploy_ListEmailRoutingRules_DataError[] | undefined;
 
-export type CliCommandsDeployListEmailRoutingRulesData = {
-  success: CliCommandsDeployListEmailRoutingRulesDataSuccess;
-  result: CliCommandsDeployListEmailRoutingRulesDataResult;
-  errors: CliCommandsDeployListEmailRoutingRulesDataErrorsList;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_Data = {
+  success: Cli_Commands_Deploy_ListEmailRoutingRules_DataSuccess;
+  result: Cli_Commands_Deploy_ListEmailRoutingRules_DataResult;
+  errors: Cli_Commands_Deploy_ListEmailRoutingRules_DataErrorsList;
 };
 
-export type CliCommandsDeployListEmailRoutingRulesDataErrors = CliCommandsDeployListEmailRoutingRulesDataErrorsList;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_DataErrors = Cli_Commands_Deploy_ListEmailRoutingRules_DataErrorsList;
 
-export type CliCommandsDeployListEmailRoutingRulesErrorDetails = string;
+export type Cli_Commands_Deploy_ListEmailRoutingRules_ErrorDetails = string;
 
 /**
  * CLI - Commands - Deploy - Load Env Token.
  *
  * @since 2.0.0
  */
-export type CliCommandsDeployLoadEnvTokenReturn = string | undefined;
+export type Cli_Commands_Deploy_LoadEnvToken_Returns = string | undefined;
 
-export type CliCommandsDeployLoadEnvTokenEnvValue = string | undefined;
+export type Cli_Commands_Deploy_LoadEnvToken_EnvValue = string | undefined;
 
-export type CliCommandsDeployLoadEnvTokenContent = string;
+export type Cli_Commands_Deploy_LoadEnvToken_Content = string;
 
-export type CliCommandsDeployLoadEnvTokenMatch = RegExpMatchArray | null;
+export type Cli_Commands_Deploy_LoadEnvToken_Match = RegExpMatchArray | null;
 
-export type CliCommandsDeployLoadEnvTokenValue = string;
+export type Cli_Commands_Deploy_LoadEnvToken_Value = string;
 
 /**
  * CLI - Commands - Deploy - Print Context Summary.
  *
  * @since 2.0.0
  */
-export type CliCommandsDeployPrintContextSummaryConfigPath = string;
+export type Cli_Commands_Deploy_PrintContextSummary_ConfigPath = string;
 
-export type CliCommandsDeployPrintContextSummaryReturn = void;
+export type Cli_Commands_Deploy_PrintContextSummary_Returns = void;
 
-export type CliCommandsDeployPrintContextSummaryContexts = LibSchemaContextConfig[];
+export type Cli_Commands_Deploy_PrintContextSummary_Contexts = Array<Lib_Schema_ContextConfig>;
 
-export type CliCommandsDeployPrintContextSummarySettings = LibSchemaSettingsConfig;
+export type Cli_Commands_Deploy_PrintContextSummary_Settings_WorkerName = Lib_Schema_SettingsConfigWorkerName;
 
-/**
- * CLI - Commands - Deploy - Print Email Routing Manual Instructions.
- *
- * @since 2.0.0
- */
-export type CliCommandsDeployPrintEmailRoutingManualInstructionsEmailContextsId = string;
+export type Cli_Commands_Deploy_PrintContextSummary_Settings_BaseDomain = Lib_Schema_SettingsConfigBaseDomain;
 
-export type CliCommandsDeployPrintEmailRoutingManualInstructionsEmailContextsName = string;
+export type Cli_Commands_Deploy_PrintContextSummary_Settings_ShowResponseOutput = Lib_Schema_SettingsConfigShowResponseOutput;
 
-export type CliCommandsDeployPrintEmailRoutingManualInstructionsEmailContexts = Array<{
-  id: CliCommandsDeployPrintEmailRoutingManualInstructionsEmailContextsId;
-  name: CliCommandsDeployPrintEmailRoutingManualInstructionsEmailContextsName;
-}>;
-
-export type CliCommandsDeployPrintEmailRoutingManualInstructionsBaseDomain = string;
-
-export type CliCommandsDeployPrintEmailRoutingManualInstructionsAccountId = string | undefined;
-
-export type CliCommandsDeployPrintEmailRoutingManualInstructionsReturn = void;
+export type Cli_Commands_Deploy_PrintContextSummary_Settings = {
+  worker_name: Cli_Commands_Deploy_PrintContextSummary_Settings_WorkerName;
+  base_domain: Cli_Commands_Deploy_PrintContextSummary_Settings_BaseDomain;
+  show_response_output: Cli_Commands_Deploy_PrintContextSummary_Settings_ShowResponseOutput;
+};
 
 /**
  * CLI - Commands - Deploy - Prompt For Api Token.
  *
  * @since 2.0.0
  */
-export type CliCommandsDeployPromptForApiTokenReturn = Promise<string>;
+export type Cli_Commands_Deploy_PromptForApiToken_Returns = Promise<string>;
 
-export type CliCommandsDeployPromptForApiTokenPromptResultApiToken = string | undefined;
+export type Cli_Commands_Deploy_PromptForApiToken_PromptResultApiToken = string | undefined;
 
-export type CliCommandsDeployPromptForApiTokenPromptResult = {
-  apiToken: CliCommandsDeployPromptForApiTokenPromptResultApiToken;
+export type Cli_Commands_Deploy_PromptForApiToken_PromptResult = {
+  apiToken: Cli_Commands_Deploy_PromptForApiToken_PromptResultApiToken;
 };
 
-export type CliCommandsDeployPromptForApiTokenValidateValue = string;
-
-export type CliCommandsDeployPromptForApiTokenToken = string;
+export type Cli_Commands_Deploy_PromptForApiToken_Token = string;
 
 /**
  * CLI - Commands - Deploy - Resolve Api Token.
  *
  * @since 2.0.0
  */
-export type CliCommandsDeployResolveApiTokenInteractive = boolean;
+export type Cli_Commands_Deploy_ResolveApiToken_Interactive = boolean;
 
-export type CliCommandsDeployResolveApiTokenReturn = Promise<string>;
+export type Cli_Commands_Deploy_ResolveApiToken_Returns = Promise<string>;
 
-export type CliCommandsDeployResolveApiTokenEnvToken = string | undefined;
+export type Cli_Commands_Deploy_ResolveApiToken_EnvToken = string | undefined;
 
 /**
  * CLI - Commands - Deploy - Run Lint.
  *
  * @since 2.0.0
  */
-export type CliCommandsDeployRunLintReturn = void;
+export type Cli_Commands_Deploy_RunLint_Returns = void;
 
-export type CliCommandsDeployRunLintLintResult = SpawnSyncReturns<string>;
+export type Cli_Commands_Deploy_RunLint_PackageRoot = string;
+
+export type Cli_Commands_Deploy_RunLint_LintResult = SpawnSyncReturns<string>;
 
 /**
  * CLI - Commands - Deploy - Save Env Token.
  *
  * @since 2.0.0
  */
-export type CliCommandsDeploySaveEnvTokenToken = string;
+export type Cli_Commands_Deploy_SaveEnvToken_Token = string;
 
-export type CliCommandsDeploySaveEnvTokenReturn = void;
+export type Cli_Commands_Deploy_SaveEnvToken_Returns = void;
 
-export type CliCommandsDeploySaveEnvTokenContent = string;
+export type Cli_Commands_Deploy_SaveEnvToken_Content = string;
 
-export type CliCommandsDeploySaveEnvTokenRegex = RegExp;
+export type Cli_Commands_Deploy_SaveEnvToken_Regex = RegExp;
 
 /**
  * CLI - Commands - Deploy - Setup Email Routing.
  *
  * @since 2.0.0
  */
-export type CliCommandsDeploySetupEmailRoutingConfigPath = string;
+export type Cli_Commands_Deploy_SetupEmailRouting_ConfigPath = string;
 
-export type CliCommandsDeploySetupEmailRoutingToken = string;
+export type Cli_Commands_Deploy_SetupEmailRouting_Token = string;
 
-export type CliCommandsDeploySetupEmailRoutingReturn = Promise<void>;
+export type Cli_Commands_Deploy_SetupEmailRouting_Returns = Promise<void>;
 
-export type CliCommandsDeploySetupEmailRoutingContexts = LibSchemaContextConfig[];
+export type Cli_Commands_Deploy_SetupEmailRouting_Contexts = Array<Lib_Schema_ContextConfig>;
 
-export type CliCommandsDeploySetupEmailRoutingEmailContexts = LibSchemaContextConfig[];
+export type Cli_Commands_Deploy_SetupEmailRouting_EmailContexts = Array<Lib_Schema_ContextConfig>;
 
-export type CliCommandsDeploySetupEmailRoutingSettings = LibSchemaSettingsConfig;
+export type Cli_Commands_Deploy_SetupEmailRouting_Settings_WorkerName = Lib_Schema_SettingsConfigWorkerName;
 
-export type CliCommandsDeploySetupEmailRoutingWorkerName = string;
+export type Cli_Commands_Deploy_SetupEmailRouting_Settings_BaseDomain = Lib_Schema_SettingsConfigBaseDomain;
 
-export type CliCommandsDeploySetupEmailRoutingZoneInfoZoneId = string;
+export type Cli_Commands_Deploy_SetupEmailRouting_Settings_ShowResponseOutput = Lib_Schema_SettingsConfigShowResponseOutput;
 
-export type CliCommandsDeploySetupEmailRoutingZoneInfoAccountId = string;
-
-export type CliCommandsDeploySetupEmailRoutingZoneInfoZoneName = string;
-
-export type CliCommandsDeploySetupEmailRoutingZoneInfo = {
-  zoneId: CliCommandsDeploySetupEmailRoutingZoneInfoZoneId;
-  accountId: CliCommandsDeploySetupEmailRoutingZoneInfoAccountId;
-  zoneName: CliCommandsDeploySetupEmailRoutingZoneInfoZoneName;
+export type Cli_Commands_Deploy_SetupEmailRouting_Settings = {
+  worker_name: Cli_Commands_Deploy_SetupEmailRouting_Settings_WorkerName;
+  base_domain: Cli_Commands_Deploy_SetupEmailRouting_Settings_BaseDomain;
+  show_response_output: Cli_Commands_Deploy_SetupEmailRouting_Settings_ShowResponseOutput;
 };
 
-export type CliCommandsDeploySetupEmailRoutingZoneId = string;
+export type Cli_Commands_Deploy_SetupEmailRouting_WorkerName = string;
 
-export type CliCommandsDeploySetupEmailRoutingRuleMatcherType = string;
+export type Cli_Commands_Deploy_SetupEmailRouting_ZoneInfoZoneId = string;
 
-export type CliCommandsDeploySetupEmailRoutingRuleMatcherField = string;
+export type Cli_Commands_Deploy_SetupEmailRouting_ZoneInfoAccountId = string;
 
-export type CliCommandsDeploySetupEmailRoutingRuleMatcherValue = string;
+export type Cli_Commands_Deploy_SetupEmailRouting_ZoneInfoZoneName = string;
 
-export type CliCommandsDeploySetupEmailRoutingRuleMatcher = {
-  type: CliCommandsDeploySetupEmailRoutingRuleMatcherType;
-  field: CliCommandsDeploySetupEmailRoutingRuleMatcherField;
-  value: CliCommandsDeploySetupEmailRoutingRuleMatcherValue;
+export type Cli_Commands_Deploy_SetupEmailRouting_ZoneInfo = {
+  zoneId: Cli_Commands_Deploy_SetupEmailRouting_ZoneInfoZoneId;
+  accountId: Cli_Commands_Deploy_SetupEmailRouting_ZoneInfoAccountId;
+  zoneName: Cli_Commands_Deploy_SetupEmailRouting_ZoneInfoZoneName;
 };
 
-export type CliCommandsDeploySetupEmailRoutingRuleMatchers = CliCommandsDeploySetupEmailRoutingRuleMatcher[];
+export type Cli_Commands_Deploy_SetupEmailRouting_ZoneId = string;
 
-export type CliCommandsDeploySetupEmailRoutingRuleActionType = string;
+export type Cli_Commands_Deploy_SetupEmailRouting_RuleMatcherType = string;
 
-export type CliCommandsDeploySetupEmailRoutingRuleActionValue = string[];
+export type Cli_Commands_Deploy_SetupEmailRouting_RuleMatcherField = string;
 
-export type CliCommandsDeploySetupEmailRoutingRuleAction = {
-  type: CliCommandsDeploySetupEmailRoutingRuleActionType;
-  value: CliCommandsDeploySetupEmailRoutingRuleActionValue;
+export type Cli_Commands_Deploy_SetupEmailRouting_RuleMatcherValue = string;
+
+export type Cli_Commands_Deploy_SetupEmailRouting_RuleMatcher = {
+  type: Cli_Commands_Deploy_SetupEmailRouting_RuleMatcherType;
+  field: Cli_Commands_Deploy_SetupEmailRouting_RuleMatcherField;
+  value: Cli_Commands_Deploy_SetupEmailRouting_RuleMatcherValue;
 };
 
-export type CliCommandsDeploySetupEmailRoutingRuleActions = CliCommandsDeploySetupEmailRoutingRuleAction[];
+export type Cli_Commands_Deploy_SetupEmailRouting_RuleMatchers = Cli_Commands_Deploy_SetupEmailRouting_RuleMatcher[];
 
-export type CliCommandsDeploySetupEmailRoutingRuleTag = string;
+export type Cli_Commands_Deploy_SetupEmailRouting_RuleActionType = string;
 
-export type CliCommandsDeploySetupEmailRoutingRuleName = string;
+export type Cli_Commands_Deploy_SetupEmailRouting_RuleActionValue = string[];
 
-export type CliCommandsDeploySetupEmailRoutingRuleEnabled = boolean;
-
-export type CliCommandsDeploySetupEmailRoutingRule = {
-  tag: CliCommandsDeploySetupEmailRoutingRuleTag;
-  name: CliCommandsDeploySetupEmailRoutingRuleName;
-  enabled: CliCommandsDeploySetupEmailRoutingRuleEnabled;
-  matchers: CliCommandsDeploySetupEmailRoutingRuleMatchers;
-  actions: CliCommandsDeploySetupEmailRoutingRuleActions;
+export type Cli_Commands_Deploy_SetupEmailRouting_RuleAction = {
+  type: Cli_Commands_Deploy_SetupEmailRouting_RuleActionType;
+  value: Cli_Commands_Deploy_SetupEmailRouting_RuleActionValue;
 };
 
-export type CliCommandsDeploySetupEmailRoutingExistingRules = CliCommandsDeploySetupEmailRoutingRule[];
+export type Cli_Commands_Deploy_SetupEmailRouting_RuleActions = Cli_Commands_Deploy_SetupEmailRouting_RuleAction[];
 
-export type CliCommandsDeploySetupEmailRoutingWorkerRules = CliCommandsDeploySetupEmailRoutingRule[];
+export type Cli_Commands_Deploy_SetupEmailRouting_RuleTag = string;
 
-export type CliCommandsDeploySetupEmailRoutingDesiredEmails = Set<string>;
+export type Cli_Commands_Deploy_SetupEmailRouting_RuleName = string;
 
-export type CliCommandsDeploySetupEmailRoutingCreated = number;
+export type Cli_Commands_Deploy_SetupEmailRouting_RuleEnabled = boolean;
 
-export type CliCommandsDeploySetupEmailRoutingKept = number;
+export type Cli_Commands_Deploy_SetupEmailRouting_Rule = {
+  tag: Cli_Commands_Deploy_SetupEmailRouting_RuleTag;
+  name: Cli_Commands_Deploy_SetupEmailRouting_RuleName;
+  enabled: Cli_Commands_Deploy_SetupEmailRouting_RuleEnabled;
+  matchers: Cli_Commands_Deploy_SetupEmailRouting_RuleMatchers;
+  actions: Cli_Commands_Deploy_SetupEmailRouting_RuleActions;
+};
 
-export type CliCommandsDeploySetupEmailRoutingRemoved = number;
+export type Cli_Commands_Deploy_SetupEmailRouting_ExistingRules = Cli_Commands_Deploy_SetupEmailRouting_Rule[];
 
-export type CliCommandsDeploySetupEmailRoutingEmail = string;
+export type Cli_Commands_Deploy_SetupEmailRouting_WorkerRules = Cli_Commands_Deploy_SetupEmailRouting_Rule[];
 
-export type CliCommandsDeploySetupEmailRoutingRuleExists = boolean;
+export type Cli_Commands_Deploy_SetupEmailRouting_DesiredEmails = Set<string>;
 
-export type CliCommandsDeploySetupEmailRoutingRuleEmail = CliCommandsDeploySetupEmailRoutingRuleMatcher | undefined;
+export type Cli_Commands_Deploy_SetupEmailRouting_Created = number;
+
+export type Cli_Commands_Deploy_SetupEmailRouting_Kept = number;
+
+export type Cli_Commands_Deploy_SetupEmailRouting_Removed = number;
+
+export type Cli_Commands_Deploy_SetupEmailRouting_Email = string;
+
+export type Cli_Commands_Deploy_SetupEmailRouting_RuleExists = boolean;
+
+export type Cli_Commands_Deploy_SetupEmailRouting_RuleEmail = Cli_Commands_Deploy_SetupEmailRouting_RuleMatcher | undefined;
 
 /**
  * CLI - Commands - Deploy - Verify Api Token.
  *
  * @since 2.0.0
  */
-export type CliCommandsDeployVerifyApiTokenToken = string;
+export type Cli_Commands_Deploy_VerifyApiToken_Token = string;
 
-export type CliCommandsDeployVerifyApiTokenReturn = Promise<boolean>;
+export type Cli_Commands_Deploy_VerifyApiToken_Returns = Promise<boolean>;
 
-export type CliCommandsDeployVerifyApiTokenResponse = Response;
+export type Cli_Commands_Deploy_VerifyApiToken_Response = Response;
 
-export type CliCommandsDeployVerifyApiTokenDataSuccess = boolean;
+export type Cli_Commands_Deploy_VerifyApiToken_DataSuccess = boolean;
 
-export type CliCommandsDeployVerifyApiTokenData = {
-  success: CliCommandsDeployVerifyApiTokenDataSuccess;
+export type Cli_Commands_Deploy_VerifyApiToken_Data = {
+  success: Cli_Commands_Deploy_VerifyApiToken_DataSuccess;
 };
 
 /**
@@ -553,70 +597,70 @@ export type CliCommandsDeployVerifyApiTokenData = {
  *
  * @since 2.0.0
  */
-export type CliCommandsDeployVerifyPermissionsToken = string;
+export type Cli_Commands_Deploy_VerifyPermissions_Token = string;
 
-export type CliCommandsDeployVerifyPermissionsBaseDomain = string;
+export type Cli_Commands_Deploy_VerifyPermissions_BaseDomain = string;
 
-export type CliCommandsDeployVerifyPermissionsHasEmailContexts = boolean;
+export type Cli_Commands_Deploy_VerifyPermissions_HasEmailContexts = boolean;
 
-export type CliCommandsDeployVerifyPermissionsInteractive = boolean;
+export type Cli_Commands_Deploy_VerifyPermissions_Interactive = boolean;
 
-export type CliCommandsDeployVerifyPermissionsReturn = Promise<string>;
+export type Cli_Commands_Deploy_VerifyPermissions_Returns = Promise<string>;
 
-export type CliCommandsDeployVerifyPermissionsZoneInfoZoneId = string;
+export type Cli_Commands_Deploy_VerifyPermissions_ZoneInfoZoneId = string;
 
-export type CliCommandsDeployVerifyPermissionsZoneInfoAccountId = string;
+export type Cli_Commands_Deploy_VerifyPermissions_ZoneInfoAccountId = string;
 
-export type CliCommandsDeployVerifyPermissionsZoneInfoZoneName = string;
+export type Cli_Commands_Deploy_VerifyPermissions_ZoneInfoZoneName = string;
 
-export type CliCommandsDeployVerifyPermissionsZoneInfo = {
-  zoneId: CliCommandsDeployVerifyPermissionsZoneInfoZoneId;
-  accountId: CliCommandsDeployVerifyPermissionsZoneInfoAccountId;
-  zoneName: CliCommandsDeployVerifyPermissionsZoneInfoZoneName;
+export type Cli_Commands_Deploy_VerifyPermissions_ZoneInfo = {
+  zoneId: Cli_Commands_Deploy_VerifyPermissions_ZoneInfoZoneId;
+  accountId: Cli_Commands_Deploy_VerifyPermissions_ZoneInfoAccountId;
+  zoneName: Cli_Commands_Deploy_VerifyPermissions_ZoneInfoZoneName;
 };
 
-export type CliCommandsDeployVerifyPermissionsZoneId = string;
+export type Cli_Commands_Deploy_VerifyPermissions_ZoneId = string;
 
-export type CliCommandsDeployVerifyPermissionsAccountId = string;
+export type Cli_Commands_Deploy_VerifyPermissions_AccountId = string;
 
-export type CliCommandsDeployVerifyPermissionsHasWorkersScripts = boolean;
+export type Cli_Commands_Deploy_VerifyPermissions_HasWorkersScripts = boolean;
 
-export type CliCommandsDeployVerifyPermissionsWorkersScriptsResponse = Response;
+export type Cli_Commands_Deploy_VerifyPermissions_WorkersScriptsResponse = Response;
 
-export type CliCommandsDeployVerifyPermissionsWorkersScriptsDataSuccess = boolean;
+export type Cli_Commands_Deploy_VerifyPermissions_WorkersScriptsDataSuccess = boolean;
 
-export type CliCommandsDeployVerifyPermissionsWorkersScriptsData = {
-  success: CliCommandsDeployVerifyPermissionsWorkersScriptsDataSuccess;
+export type Cli_Commands_Deploy_VerifyPermissions_WorkersScriptsData = {
+  success: Cli_Commands_Deploy_VerifyPermissions_WorkersScriptsDataSuccess;
 };
 
-export type CliCommandsDeployVerifyPermissionsHasWorkersRoutes = boolean;
+export type Cli_Commands_Deploy_VerifyPermissions_HasWorkersRoutes = boolean;
 
-export type CliCommandsDeployVerifyPermissionsWorkersRoutesResponse = Response;
+export type Cli_Commands_Deploy_VerifyPermissions_WorkersRoutesResponse = Response;
 
-export type CliCommandsDeployVerifyPermissionsWorkersRoutesDataSuccess = boolean;
+export type Cli_Commands_Deploy_VerifyPermissions_WorkersRoutesDataSuccess = boolean;
 
-export type CliCommandsDeployVerifyPermissionsWorkersRoutesData = {
-  success: CliCommandsDeployVerifyPermissionsWorkersRoutesDataSuccess;
+export type Cli_Commands_Deploy_VerifyPermissions_WorkersRoutesData = {
+  success: Cli_Commands_Deploy_VerifyPermissions_WorkersRoutesDataSuccess;
 };
 
-export type CliCommandsDeployVerifyPermissionsHasKvStorage = boolean;
+export type Cli_Commands_Deploy_VerifyPermissions_HasKvStorage = boolean;
 
-export type CliCommandsDeployVerifyPermissionsKvStorageResponse = Response;
+export type Cli_Commands_Deploy_VerifyPermissions_KvStorageResponse = Response;
 
-export type CliCommandsDeployVerifyPermissionsKvStorageDataSuccess = boolean;
+export type Cli_Commands_Deploy_VerifyPermissions_KvStorageDataSuccess = boolean;
 
-export type CliCommandsDeployVerifyPermissionsKvStorageData = {
-  success: CliCommandsDeployVerifyPermissionsKvStorageDataSuccess;
+export type Cli_Commands_Deploy_VerifyPermissions_KvStorageData = {
+  success: Cli_Commands_Deploy_VerifyPermissions_KvStorageDataSuccess;
 };
 
-export type CliCommandsDeployVerifyPermissionsHasEmailRouting = boolean;
+export type Cli_Commands_Deploy_VerifyPermissions_HasEmailRouting = boolean;
 
-export type CliCommandsDeployVerifyPermissionsMissing = string[];
+export type Cli_Commands_Deploy_VerifyPermissions_Missing = string[];
 
-export type CliCommandsDeployVerifyPermissionsMissingMessage = string;
+export type Cli_Commands_Deploy_VerifyPermissions_MissingMessage = string;
 
-export type CliCommandsDeployVerifyPermissionsPromptResultReady = boolean | undefined;
+export type Cli_Commands_Deploy_VerifyPermissions_PromptResultReady = boolean | undefined;
 
-export type CliCommandsDeployVerifyPermissionsPromptResult = {
-  ready: CliCommandsDeployVerifyPermissionsPromptResultReady;
+export type Cli_Commands_Deploy_VerifyPermissions_PromptResult = {
+  ready: Cli_Commands_Deploy_VerifyPermissions_PromptResultReady;
 };

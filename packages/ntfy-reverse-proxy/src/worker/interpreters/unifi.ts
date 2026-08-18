@@ -7,44 +7,54 @@ import {
 } from '../../lib/regex.js';
 
 import type {
-  WorkerInterpretersUnifiExtractDeviceTagsLower,
-  WorkerInterpretersUnifiExtractDeviceTagsReturns,
-  WorkerInterpretersUnifiExtractDeviceTagsTags,
-  WorkerInterpretersUnifiExtractDeviceTagsText,
-  WorkerInterpretersUnifiInput,
-  WorkerInterpretersUnifiInterpreter,
-  WorkerInterpretersUnifiInterpreterAlert,
-  WorkerInterpretersUnifiInterpreterAlertMatch,
-  WorkerInterpretersUnifiInterpreterBody,
-  WorkerInterpretersUnifiInterpreterBodyLines,
-  WorkerInterpretersUnifiInterpreterCombinedText,
-  WorkerInterpretersUnifiInterpreterData,
-  WorkerInterpretersUnifiInterpreterDecoder,
-  WorkerInterpretersUnifiInterpreterDetails,
-  WorkerInterpretersUnifiInterpreterDeviceName,
-  WorkerInterpretersUnifiInterpreterDeviceNameMatch,
-  WorkerInterpretersUnifiInterpreterDeviceTags,
-  WorkerInterpretersUnifiInterpreterDeviceUrl,
-  WorkerInterpretersUnifiInterpreterDeviceUrlMatch,
-  WorkerInterpretersUnifiInterpreterEmojiTag,
-  WorkerInterpretersUnifiInterpreterEventType,
-  WorkerInterpretersUnifiInterpreterPriority,
-  WorkerInterpretersUnifiInterpreterRawSubject,
-  WorkerInterpretersUnifiInterpreterRawTextBody,
-  WorkerInterpretersUnifiInterpreterSubject,
-  WorkerInterpretersUnifiInterpreterTags,
-  WorkerInterpretersUnifiInterpreterTextBody,
-  WorkerInterpretersUnifiInterpreterTime,
-  WorkerInterpretersUnifiInterpreterTimeMatch,
-  WorkerInterpretersUnifiMapEventToPriorityLower,
-  WorkerInterpretersUnifiMapEventToPriorityReturns,
-  WorkerInterpretersUnifiMapEventToPriorityText,
-  WorkerInterpretersUnifiMapPriorityToEmojiTagPriority,
-  WorkerInterpretersUnifiMapPriorityToEmojiTagReturns,
-  WorkerInterpretersUnifiResult,
-  WorkerInterpretersUnifiStripSubjectPrefixReturns,
-  WorkerInterpretersUnifiStripSubjectPrefixStripped,
-  WorkerInterpretersUnifiStripSubjectPrefixSubject,
+  Worker_Interpreters_Unifi_ExtractDeviceTags_Lower,
+  Worker_Interpreters_Unifi_ExtractDeviceTags_Returns,
+  Worker_Interpreters_Unifi_ExtractDeviceTags_Tags,
+  Worker_Interpreters_Unifi_ExtractDeviceTags_Text,
+  Worker_Interpreters_Unifi_Input,
+  Worker_Interpreters_Unifi_MapEventToPriority_Lower,
+  Worker_Interpreters_Unifi_MapEventToPriority_Returns,
+  Worker_Interpreters_Unifi_MapEventToPriority_Text,
+  Worker_Interpreters_Unifi_MapPriorityToEmojiTag_Priority,
+  Worker_Interpreters_Unifi_MapPriorityToEmojiTag_Returns,
+  Worker_Interpreters_Unifi_Result,
+  Worker_Interpreters_Unifi_StripSubjectPrefix_Returns,
+  Worker_Interpreters_Unifi_StripSubjectPrefix_Stripped,
+  Worker_Interpreters_Unifi_StripSubjectPrefix_Subject,
+  Worker_Interpreters_Unifi_UnifiInterpreter,
+  Worker_Interpreters_Unifi_UnifiInterpreter_Alert,
+  Worker_Interpreters_Unifi_UnifiInterpreter_AlertMatch,
+  Worker_Interpreters_Unifi_UnifiInterpreter_BinaryBody,
+  Worker_Interpreters_Unifi_UnifiInterpreter_BinaryEmojiTag,
+  Worker_Interpreters_Unifi_UnifiInterpreter_BinaryPriority,
+  Worker_Interpreters_Unifi_UnifiInterpreter_Body,
+  Worker_Interpreters_Unifi_UnifiInterpreter_BodyLines,
+  Worker_Interpreters_Unifi_UnifiInterpreter_CombinedText,
+  Worker_Interpreters_Unifi_UnifiInterpreter_Data,
+  Worker_Interpreters_Unifi_UnifiInterpreter_Decoder,
+  Worker_Interpreters_Unifi_UnifiInterpreter_Details,
+  Worker_Interpreters_Unifi_UnifiInterpreter_DeviceName,
+  Worker_Interpreters_Unifi_UnifiInterpreter_DeviceNameMatch,
+  Worker_Interpreters_Unifi_UnifiInterpreter_DeviceTags,
+  Worker_Interpreters_Unifi_UnifiInterpreter_DeviceUrl,
+  Worker_Interpreters_Unifi_UnifiInterpreter_DeviceUrlMatch,
+  Worker_Interpreters_Unifi_UnifiInterpreter_EmojiTag,
+  Worker_Interpreters_Unifi_UnifiInterpreter_EventType,
+  Worker_Interpreters_Unifi_UnifiInterpreter_Priority,
+  Worker_Interpreters_Unifi_UnifiInterpreter_RawSubject,
+  Worker_Interpreters_Unifi_UnifiInterpreter_RawTextBody,
+  Worker_Interpreters_Unifi_UnifiInterpreter_StringEmojiTag,
+  Worker_Interpreters_Unifi_UnifiInterpreter_StringPriority,
+  Worker_Interpreters_Unifi_UnifiInterpreter_Subject,
+  Worker_Interpreters_Unifi_UnifiInterpreter_Tags,
+  Worker_Interpreters_Unifi_UnifiInterpreter_TextBody,
+  Worker_Interpreters_Unifi_UnifiInterpreter_Time,
+  Worker_Interpreters_Unifi_UnifiInterpreter_TimeMatch,
+  Worker_Interpreters_Unifi_UnifiInterpreter_ValidatedDeviceUrl,
+  Worker_Interpreters_Unifi_ValidateUrl_Protocol,
+  Worker_Interpreters_Unifi_ValidateUrl_RawUrl,
+  Worker_Interpreters_Unifi_ValidateUrl_Returns,
+  Worker_Interpreters_Unifi_ValidateUrl_Url,
 } from '../../types/worker/interpreters/unifi.d.ts';
 
 /**
@@ -53,17 +63,17 @@ import type {
  * Removes the bracketed UniFi site-name prefix from email
  * subject lines to produce a clean event type string.
  *
- * @param {WorkerInterpretersUnifiStripSubjectPrefixSubject} subject - Subject.
+ * @param {Worker_Interpreters_Unifi_StripSubjectPrefix_Subject} subject - Subject.
  *
- * @returns {WorkerInterpretersUnifiStripSubjectPrefixReturns}
+ * @returns {Worker_Interpreters_Unifi_StripSubjectPrefix_Returns}
  *
  * @since 2.0.0
  */
-const stripSubjectPrefix = (subject: WorkerInterpretersUnifiStripSubjectPrefixSubject): WorkerInterpretersUnifiStripSubjectPrefixReturns => {
-  const stripped: WorkerInterpretersUnifiStripSubjectPrefixStripped = subject.replace(new RegExp(LIB_REGEX_UNIFI_SUBJECT_PREFIX), '');
+function stripSubjectPrefix(subject: Worker_Interpreters_Unifi_StripSubjectPrefix_Subject): Worker_Interpreters_Unifi_StripSubjectPrefix_Returns {
+  const stripped: Worker_Interpreters_Unifi_StripSubjectPrefix_Stripped = subject.replace(new RegExp(LIB_REGEX_UNIFI_SUBJECT_PREFIX), '');
 
   return (stripped.trim() !== '') ? stripped.trim() : subject;
-};
+}
 
 /**
  * Worker - Interpreters - Unifi - Map Event To Priority.
@@ -71,14 +81,14 @@ const stripSubjectPrefix = (subject: WorkerInterpretersUnifiStripSubjectPrefixSu
  * Scans the lowercased text for network event keywords and
  * returns the corresponding ntfy priority level.
  *
- * @param {WorkerInterpretersUnifiMapEventToPriorityText} text - Text.
+ * @param {Worker_Interpreters_Unifi_MapEventToPriority_Text} text - Text.
  *
- * @returns {WorkerInterpretersUnifiMapEventToPriorityReturns}
+ * @returns {Worker_Interpreters_Unifi_MapEventToPriority_Returns}
  *
  * @since 2.0.0
  */
-const mapEventToPriority = (text: WorkerInterpretersUnifiMapEventToPriorityText): WorkerInterpretersUnifiMapEventToPriorityReturns => {
-  const lower: WorkerInterpretersUnifiMapEventToPriorityLower = text.toLowerCase();
+function mapEventToPriority(text: Worker_Interpreters_Unifi_MapEventToPriority_Text): Worker_Interpreters_Unifi_MapEventToPriority_Returns {
+  const lower: Worker_Interpreters_Unifi_MapEventToPriority_Lower = text.toLowerCase();
 
   if (
     lower.includes('ids') === true
@@ -108,7 +118,7 @@ const mapEventToPriority = (text: WorkerInterpretersUnifiMapEventToPriorityText)
   }
 
   return 3;
-};
+}
 
 /**
  * Worker - Interpreters - Unifi - Map Priority To Emoji Tag.
@@ -116,13 +126,13 @@ const mapEventToPriority = (text: WorkerInterpretersUnifiMapEventToPriorityText)
  * Converts a numeric ntfy priority level into the corresponding
  * emoji shortcode string used as a visual indicator in tags.
  *
- * @param {WorkerInterpretersUnifiMapPriorityToEmojiTagPriority} priority - Priority.
+ * @param {Worker_Interpreters_Unifi_MapPriorityToEmojiTag_Priority} priority - Priority.
  *
- * @returns {WorkerInterpretersUnifiMapPriorityToEmojiTagReturns}
+ * @returns {Worker_Interpreters_Unifi_MapPriorityToEmojiTag_Returns}
  *
  * @since 2.0.0
  */
-const mapPriorityToEmojiTag = (priority: WorkerInterpretersUnifiMapPriorityToEmojiTagPriority): WorkerInterpretersUnifiMapPriorityToEmojiTagReturns => {
+function mapPriorityToEmojiTag(priority: Worker_Interpreters_Unifi_MapPriorityToEmojiTag_Priority): Worker_Interpreters_Unifi_MapPriorityToEmojiTag_Returns {
   switch (priority) {
     case 5: {
       return 'rotating_light';
@@ -140,7 +150,7 @@ const mapPriorityToEmojiTag = (priority: WorkerInterpretersUnifiMapPriorityToEmo
       return 'bell';
     }
   }
-};
+}
 
 /**
  * Worker - Interpreters - Unifi - Extract Device Tags.
@@ -148,15 +158,15 @@ const mapPriorityToEmojiTag = (priority: WorkerInterpretersUnifiMapPriorityToEmo
  * Scans the lowercased text for UniFi device type keywords
  * and builds an array of matching tag strings.
  *
- * @param {WorkerInterpretersUnifiExtractDeviceTagsText} text - Text.
+ * @param {Worker_Interpreters_Unifi_ExtractDeviceTags_Text} text - Text.
  *
- * @returns {WorkerInterpretersUnifiExtractDeviceTagsReturns}
+ * @returns {Worker_Interpreters_Unifi_ExtractDeviceTags_Returns}
  *
  * @since 2.0.0
  */
-const extractDeviceTags = (text: WorkerInterpretersUnifiExtractDeviceTagsText): WorkerInterpretersUnifiExtractDeviceTagsReturns => {
-  const lower: WorkerInterpretersUnifiExtractDeviceTagsLower = text.toLowerCase();
-  const tags: WorkerInterpretersUnifiExtractDeviceTagsTags = [];
+function extractDeviceTags(text: Worker_Interpreters_Unifi_ExtractDeviceTags_Text): Worker_Interpreters_Unifi_ExtractDeviceTags_Returns {
+  const lower: Worker_Interpreters_Unifi_ExtractDeviceTags_Lower = text.toLowerCase();
+  const tags: Worker_Interpreters_Unifi_ExtractDeviceTags_Tags = [];
 
   if (
     lower.includes('ap') === true
@@ -179,7 +189,34 @@ const extractDeviceTags = (text: WorkerInterpretersUnifiExtractDeviceTagsText): 
   }
 
   return tags;
-};
+}
+
+/**
+ * Worker - Interpreters - Unifi - Validate URL.
+ *
+ * Attempts to parse the raw string as a URL and returns it
+ * on success or undefined if the string is not a valid URL.
+ *
+ * @param {Worker_Interpreters_Unifi_ValidateUrl_RawUrl} rawUrl - Raw url.
+ *
+ * @returns {Worker_Interpreters_Unifi_ValidateUrl_Returns}
+ *
+ * @since 2.1.0
+ */
+function validateUrl(rawUrl: Worker_Interpreters_Unifi_ValidateUrl_RawUrl): Worker_Interpreters_Unifi_ValidateUrl_Returns {
+  try {
+    const url: Worker_Interpreters_Unifi_ValidateUrl_Url = new URL(rawUrl);
+    const protocol: Worker_Interpreters_Unifi_ValidateUrl_Protocol = url['protocol'];
+
+    if (protocol !== 'http:' && protocol !== 'https:') {
+      return undefined;
+    }
+
+    return url.href;
+  } catch {
+    return undefined;
+  }
+}
 
 /**
  * Worker - Interpreters - Unifi - Interpreter.
@@ -187,26 +224,26 @@ const extractDeviceTags = (text: WorkerInterpretersUnifiExtractDeviceTagsText): 
  * Parses UniFi notification payloads from string, binary, or
  * email object formats into structured ntfy notification results.
  *
- * @param {WorkerInterpretersUnifiInput} input - Input.
+ * @param {Worker_Interpreters_Unifi_Input} input - Input.
  *
- * @returns {WorkerInterpretersUnifiResult}
+ * @returns {Worker_Interpreters_Unifi_Result}
  *
  * @since 2.0.0
  */
-const unifiInterpreter: WorkerInterpretersUnifiInterpreter = (input: WorkerInterpretersUnifiInput): WorkerInterpretersUnifiResult => {
+const unifiInterpreter: Worker_Interpreters_Unifi_UnifiInterpreter = (input: Worker_Interpreters_Unifi_Input): Worker_Interpreters_Unifi_Result => {
   if (typeof input === 'string') {
-    const priority: WorkerInterpretersUnifiInterpreterPriority = mapEventToPriority(input);
-    const emojiTag: WorkerInterpretersUnifiInterpreterEmojiTag = mapPriorityToEmojiTag(priority);
+    const stringPriority: Worker_Interpreters_Unifi_UnifiInterpreter_StringPriority = mapEventToPriority(input);
+    const stringEmojiTag: Worker_Interpreters_Unifi_UnifiInterpreter_StringEmojiTag = mapPriorityToEmojiTag(stringPriority);
 
     return {
       notification: {
         title: 'UniFi',
         body: input,
-        priority,
+        priority: stringPriority,
         tags: [
           'unifi',
           ...extractDeviceTags(input),
-          emojiTag,
+          stringEmojiTag,
         ],
         markdown: true,
       },
@@ -214,38 +251,38 @@ const unifiInterpreter: WorkerInterpretersUnifiInterpreter = (input: WorkerInter
   }
 
   if (input instanceof ArrayBuffer) {
-    const decoder: WorkerInterpretersUnifiInterpreterDecoder = new TextDecoder('utf-8');
-    const body: WorkerInterpretersUnifiInterpreterBody = decoder.decode(input);
-    const priority: WorkerInterpretersUnifiInterpreterPriority = mapEventToPriority(body);
-    const emojiTag: WorkerInterpretersUnifiInterpreterEmojiTag = mapPriorityToEmojiTag(priority);
+    const decoder: Worker_Interpreters_Unifi_UnifiInterpreter_Decoder = new TextDecoder('utf-8');
+    const binaryBody: Worker_Interpreters_Unifi_UnifiInterpreter_BinaryBody = decoder.decode(input);
+    const binaryPriority: Worker_Interpreters_Unifi_UnifiInterpreter_BinaryPriority = mapEventToPriority(binaryBody);
+    const binaryEmojiTag: Worker_Interpreters_Unifi_UnifiInterpreter_BinaryEmojiTag = mapPriorityToEmojiTag(binaryPriority);
 
     return {
       notification: {
         title: 'UniFi',
-        body,
-        priority,
+        body: binaryBody,
+        priority: binaryPriority,
         tags: [
           'unifi',
-          ...extractDeviceTags(body),
-          emojiTag,
+          ...extractDeviceTags(binaryBody),
+          binaryEmojiTag,
         ],
         markdown: true,
       },
     };
   }
 
-  const data: WorkerInterpretersUnifiInterpreterData = input as WorkerInterpretersUnifiInterpreterData;
+  const data: Worker_Interpreters_Unifi_UnifiInterpreter_Data = input as Worker_Interpreters_Unifi_UnifiInterpreter_Data;
 
-  const rawSubject: WorkerInterpretersUnifiInterpreterRawSubject = data['subject'];
-  const subject: WorkerInterpretersUnifiInterpreterSubject = (typeof rawSubject === 'string') ? rawSubject : '';
+  const rawSubject: Worker_Interpreters_Unifi_UnifiInterpreter_RawSubject = data['subject'];
+  const subject: Worker_Interpreters_Unifi_UnifiInterpreter_Subject = (typeof rawSubject === 'string') ? rawSubject : '';
 
-  const rawTextBody: WorkerInterpretersUnifiInterpreterRawTextBody = data['textBody'];
-  const textBody: WorkerInterpretersUnifiInterpreterTextBody = (typeof rawTextBody === 'string') ? rawTextBody : JSON.stringify(data);
+  const rawTextBody: Worker_Interpreters_Unifi_UnifiInterpreter_RawTextBody = data['textBody'];
+  const textBody: Worker_Interpreters_Unifi_UnifiInterpreter_TextBody = (typeof rawTextBody === 'string') ? rawTextBody : JSON.stringify(data);
 
-  const eventType: WorkerInterpretersUnifiInterpreterEventType = (subject !== '') ? stripSubjectPrefix(subject) : 'UniFi';
-  const combinedText: WorkerInterpretersUnifiInterpreterCombinedText = `${subject} ${textBody}`;
-  const priority: WorkerInterpretersUnifiInterpreterPriority = mapEventToPriority(combinedText);
-  const deviceTags: WorkerInterpretersUnifiInterpreterDeviceTags = extractDeviceTags(combinedText);
+  const eventType: Worker_Interpreters_Unifi_UnifiInterpreter_EventType = (subject !== '') ? stripSubjectPrefix(subject) : 'UniFi';
+  const combinedText: Worker_Interpreters_Unifi_UnifiInterpreter_CombinedText = `${subject} ${textBody}`;
+  const priority: Worker_Interpreters_Unifi_UnifiInterpreter_Priority = mapEventToPriority(combinedText);
+  const deviceTags: Worker_Interpreters_Unifi_UnifiInterpreter_DeviceTags = extractDeviceTags(combinedText);
 
   /*
    * Level 1: Interpreter tag (identifies the source service).
@@ -253,32 +290,33 @@ const unifiInterpreter: WorkerInterpretersUnifiInterpreter = (input: WorkerInter
    * Level 3: Webhook tags (not applicable for UniFi email).
    * Level 4: Emoji tags (ntfy emoji shortcodes for visual indicators).
    */
-  const emojiTag: WorkerInterpretersUnifiInterpreterEmojiTag = mapPriorityToEmojiTag(priority);
-  const tags: WorkerInterpretersUnifiInterpreterTags = [
+  const emojiTag: Worker_Interpreters_Unifi_UnifiInterpreter_EmojiTag = mapPriorityToEmojiTag(priority);
+  const tags: Worker_Interpreters_Unifi_UnifiInterpreter_Tags = [
     'unifi',
     ...deviceTags,
     emojiTag,
   ];
 
   /* Parse structured fields from text body. */
-  const alertMatch: WorkerInterpretersUnifiInterpreterAlertMatch = textBody.match(new RegExp(LIB_REGEX_UNIFI_ALERT_LINE, 'i'));
-  const deviceNameMatch: WorkerInterpretersUnifiInterpreterDeviceNameMatch = textBody.match(new RegExp(LIB_REGEX_UNIFI_DEVICE_NAME_LINE, 'i'));
-  const timeMatch: WorkerInterpretersUnifiInterpreterTimeMatch = textBody.match(new RegExp(LIB_REGEX_UNIFI_TIME_LINE, 'i'));
-  const deviceUrlMatch: WorkerInterpretersUnifiInterpreterDeviceUrlMatch = textBody.match(new RegExp(LIB_REGEX_UNIFI_DEVICE_URL_LINE, 'i'));
+  const alertMatch: Worker_Interpreters_Unifi_UnifiInterpreter_AlertMatch = textBody.match(new RegExp(LIB_REGEX_UNIFI_ALERT_LINE, 'i'));
+  const deviceNameMatch: Worker_Interpreters_Unifi_UnifiInterpreter_DeviceNameMatch = textBody.match(new RegExp(LIB_REGEX_UNIFI_DEVICE_NAME_LINE, 'i'));
+  const timeMatch: Worker_Interpreters_Unifi_UnifiInterpreter_TimeMatch = textBody.match(new RegExp(LIB_REGEX_UNIFI_TIME_LINE, 'i'));
+  const deviceUrlMatch: Worker_Interpreters_Unifi_UnifiInterpreter_DeviceUrlMatch = textBody.match(new RegExp(LIB_REGEX_UNIFI_DEVICE_URL_LINE, 'i'));
 
-  const alert: WorkerInterpretersUnifiInterpreterAlert = (alertMatch !== null && alertMatch[1] !== undefined) ? alertMatch[1].trim() : undefined;
-  const deviceName: WorkerInterpretersUnifiInterpreterDeviceName = (deviceNameMatch !== null && deviceNameMatch[1] !== undefined) ? deviceNameMatch[1].trim() : undefined;
-  const time: WorkerInterpretersUnifiInterpreterTime = (timeMatch !== null && timeMatch[1] !== undefined) ? timeMatch[1].trim() : undefined;
-  const deviceUrl: WorkerInterpretersUnifiInterpreterDeviceUrl = (deviceUrlMatch !== null && deviceUrlMatch[1] !== undefined) ? deviceUrlMatch[1] : undefined;
+  const alert: Worker_Interpreters_Unifi_UnifiInterpreter_Alert = (alertMatch !== null && alertMatch[1] !== undefined) ? alertMatch[1].trim() : undefined;
+  const deviceName: Worker_Interpreters_Unifi_UnifiInterpreter_DeviceName = (deviceNameMatch !== null && deviceNameMatch[1] !== undefined) ? deviceNameMatch[1].trim() : undefined;
+  const time: Worker_Interpreters_Unifi_UnifiInterpreter_Time = (timeMatch !== null && timeMatch[1] !== undefined) ? timeMatch[1].trim() : undefined;
+  const deviceUrl: Worker_Interpreters_Unifi_UnifiInterpreter_DeviceUrl = (deviceUrlMatch !== null && deviceUrlMatch[1] !== undefined) ? deviceUrlMatch[1] : undefined;
+  const validatedDeviceUrl: Worker_Interpreters_Unifi_UnifiInterpreter_ValidatedDeviceUrl = (deviceUrl !== undefined) ? validateUrl(deviceUrl) : undefined;
 
   /* Build formatted body. */
-  const bodyLines: WorkerInterpretersUnifiInterpreterBodyLines = [];
+  const bodyLines: Worker_Interpreters_Unifi_UnifiInterpreter_BodyLines = [];
 
   if (alert !== undefined) {
     bodyLines.push(alert);
   }
 
-  const details: WorkerInterpretersUnifiInterpreterDetails = [];
+  const details: Worker_Interpreters_Unifi_UnifiInterpreter_Details = [];
 
   if (deviceName !== undefined) {
     details.push(`**Device:** ${deviceName}`);
@@ -297,7 +335,7 @@ const unifiInterpreter: WorkerInterpretersUnifiInterpreter = (input: WorkerInter
   }
 
   /* Fallback to raw text if no structured fields found. */
-  const body: WorkerInterpretersUnifiInterpreterBody = (bodyLines.length > 0) ? bodyLines.join('\n') : textBody;
+  const body: Worker_Interpreters_Unifi_UnifiInterpreter_Body = (bodyLines.length > 0) ? bodyLines.join('\n') : textBody;
 
   return {
     notification: {
@@ -306,7 +344,7 @@ const unifiInterpreter: WorkerInterpretersUnifiInterpreter = (input: WorkerInter
       priority,
       tags,
       markdown: true,
-      ...(deviceUrl !== undefined ? { actions: `view, Open UniFi, ${deviceUrl}, clear=true` } : {}),
+      ...((validatedDeviceUrl !== undefined) ? { actions: `view, Open UniFi, ${validatedDeviceUrl}, clear=true` } : {}),
     },
   };
 };

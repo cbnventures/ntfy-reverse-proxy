@@ -1,6 +1,6 @@
 {
   "name": "ntfy-reverse-proxy",
-  "version": "2.0.4",
+  "version": "2.1.0",
   "description": "Notification gateway on Cloudflare Workers that routes webhooks and emails to ntfy with automatic server failover",
   "keywords": [
     "ntfy",
@@ -64,6 +64,7 @@
     "check:lint": "eslint ./ --max-warnings=0",
     "check:types-cli": "nova utility type-check --project tsconfig.cli.json",
     "check:types-worker": "nova utility type-check --project tsconfig.worker.json",
+    "check:types-config": "nova utility type-check --project tsconfig.config.json",
     "check:types-tests": "nova utility type-check --project tsconfig.tests.json",
     "check:test": "vitest run",
     "deploy": "nova utility run-scripts --sequential 'deploy:*'",
@@ -76,16 +77,16 @@
     "node": "^22 || ^24"
   },
   "dependencies": {
-    "@cbnventures/nova": "0.17.0",
+    "@cbnventures/nova": "0.24.0",
     "chalk": "5.6.2",
     "commander": "14.0.3",
     "prompts": "2.4.2",
-    "wrangler": "4.87.0",
+    "wrangler": "4.123.0",
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "0.15.2",
-    "@cloudflare/workers-types": "4.20260504.1",
+    "@cloudflare/vitest-pool-workers": "0.21.3",
+    "@cloudflare/workers-types": "4.20260702.1",
     "@types/node": "25.6.0",
     "@types/prompts": "2.4.9",
     "eslint": "9.39.3",
@@ -93,6 +94,6 @@
     "shx": "0.4.0",
     "tsx": "4.21.0",
     "typescript": "5.9.3",
-    "vitest": "4.1.5"
+    "vitest": "4.1.3"
   }
 }

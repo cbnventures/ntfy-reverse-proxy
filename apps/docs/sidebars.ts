@@ -1,4 +1,4 @@
-import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
+import type { SidebarsConfig } from '@cbnventures/docusaurus-preset-nova/types/sidebars';
 
 /**
  * Sidebars Configuration.

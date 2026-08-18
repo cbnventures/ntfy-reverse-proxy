@@ -3,33 +3,38 @@
  *
  * @since 2.0.0
  */
-export type WorkerPipelineSplitMessagePartBody = string;
+export type Worker_Pipeline_Split_MessagePartBody = string;
 
-export type WorkerPipelineSplitMessagePartHeaders = Record<string, string>;
+export type Worker_Pipeline_Split_MessagePartHeaders = Record<string, string>;
 
-export type WorkerPipelineSplitMessagePart = {
-  body: WorkerPipelineSplitMessagePartBody;
-  headers: WorkerPipelineSplitMessagePartHeaders;
+export type Worker_Pipeline_Split_MessagePart = {
+  body: Worker_Pipeline_Split_MessagePartBody;
+  headers: Worker_Pipeline_Split_MessagePartHeaders;
 };
 
-export type WorkerPipelineSplitBody = string;
+export type Worker_Pipeline_Split_Returns = Worker_Pipeline_Split_MessagePart[];
 
-export type WorkerPipelineSplitHeaders = WorkerPipelineSplitMessagePartHeaders;
+/**
+ * Worker - Pipeline - Split - Split.
+ *
+ * @since 2.0.0
+ */
+export type Worker_Pipeline_Split_Split_Body = string;
 
-export type WorkerPipelineSplitReturns = WorkerPipelineSplitMessagePart[];
+export type Worker_Pipeline_Split_Split_Headers = Record<string, string>;
 
-export type WorkerPipelineSplitEncoder = TextEncoder;
+export type Worker_Pipeline_Split_Split_Encoder = TextEncoder;
 
-export type WorkerPipelineSplitChunks = string[];
+export type Worker_Pipeline_Split_Split_Chunks = string[];
 
-export type WorkerPipelineSplitCurrentChunk = string;
+export type Worker_Pipeline_Split_Split_CurrentChunk = string;
 
-export type WorkerPipelineSplitCurrentBytes = number;
+export type Worker_Pipeline_Split_Split_CurrentBytes = number;
 
-export type WorkerPipelineSplitCharBytes = number;
+export type Worker_Pipeline_Split_Split_CharBytes = number;
 
-export type WorkerPipelineSplitTotal = number;
+export type Worker_Pipeline_Split_Split_Total = number;
 
-export type WorkerPipelineSplitBaseTitle = string;
+export type Worker_Pipeline_Split_Split_BaseTitle = string;
 
-export type WorkerPipelineSplitPartHeaders = WorkerPipelineSplitMessagePartHeaders;
+export type Worker_Pipeline_Split_Split_PartHeaders = Record<string, string>;

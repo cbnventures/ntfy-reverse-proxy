@@ -1,7 +1,7 @@
 ---
 id: log-streaming
 title: Log Streaming
-description: Stream real-time Cloudflare Worker logs with automatic session management and formatted output.
+description: Stream real-time Cloudflare Worker logs with automatic session renewal, color-coded terminal output, and raw JSON line export for later analysis.
 sidebar_position: 5
 keywords:
   - ntfy reverse proxy
@@ -17,7 +17,9 @@ tags:
   - cli
 ---
 
-Stream real-time logs from your deployed worker for debugging and monitoring using `npm run tail`.
+import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
+
+Stream real-time logs from your deployed <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> for debugging and monitoring using `npm run tail`.
 
 ## Starting the Log Stream
 
@@ -40,9 +42,9 @@ Log streaming sessions have a limited lifespan set by Cloudflare. The script han
 
 Log entries are color-coded by event type and status:
 
-- **HTTP events** — Method, status code, URL, user agent, geolocation (country, ASN, IP), and per-server delivery results.
-- **Email events** — From/to/subject and interpreter results.
+- **HTTP events** — Method, status code, URL, user agent, geolocation (country, ASN, IP), and per-<Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> delivery results.
+- **Email events** — From/to/subject and <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> results.
 
 ## Config Resolution
 
-The script discovers `config.json` from the current directory, project root, or XDG config directory. It uses the `worker_name` from your config to identify the correct Worker on Cloudflare.
+The script discovers `config.json` from the current directory, project root, or XDG config directory. It uses the `worker_name` from your config to identify the correct <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">Worker</Terminology> on Cloudflare.
