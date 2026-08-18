@@ -355,7 +355,7 @@ async function serverMenu(configPath: Cli_Menu_Interactive_ServerMenu_ConfigPath
           value: 'remove',
         },
         {
-          title: 'Back',
+          title: chalk.dim('Go back'),
           value: 'back',
         },
       ],
@@ -441,15 +441,21 @@ async function serverMenu(configPath: Cli_Menu_Interactive_ServerMenu_ConfigPath
             type: 'select',
             name: 'name',
             message: 'Select server to edit:',
-            choices: servers.map((server) => ({
-              title: server['name'],
-              value: server['name'],
-            })),
+            choices: [
+              ...servers.map((server) => ({
+                title: server['name'],
+                value: server['name'],
+              })),
+              {
+                title: chalk.dim('Go back'),
+                value: 'back',
+              },
+            ],
           });
 
           const name: Cli_Menu_Interactive_ServerMenu_Name = selectResponse['name'];
 
-          if (name !== undefined) {
+          if (name !== undefined && name !== 'back') {
             const current: Cli_Menu_Interactive_ServerMenu_Current = servers.find((server) => server['name'] === name);
 
             const currentServer: Cli_Menu_Interactive_ServerMenu_CurrentServer = (current !== undefined) ? current['server'] : undefined;
@@ -494,7 +500,7 @@ async function serverMenu(configPath: Cli_Menu_Interactive_ServerMenu_ConfigPath
             ]);
 
             if (updates['server'] === undefined || updates['token'] === undefined) {
-              break;
+              continue;
             }
 
             const editImport: Cli_Menu_Interactive_ServerMenu_EditImport = await import('../commands/server.js');
@@ -540,15 +546,21 @@ async function serverMenu(configPath: Cli_Menu_Interactive_ServerMenu_ConfigPath
             type: 'select',
             name: 'name',
             message: 'Select server to remove:',
-            choices: removeServers.map((server) => ({
-              title: server['name'],
-              value: server['name'],
-            })),
+            choices: [
+              ...removeServers.map((server) => ({
+                title: server['name'],
+                value: server['name'],
+              })),
+              {
+                title: chalk.dim('Go back'),
+                value: 'back',
+              },
+            ],
           });
 
           const removeName: Cli_Menu_Interactive_ServerMenu_RemoveName = removeSelectResponse['name'];
 
-          if (removeName !== undefined) {
+          if (removeName !== undefined && removeName !== 'back') {
             const confirmResponse: Cli_Menu_Interactive_ServerMenu_ConfirmResponse = await prompts({
               type: 'confirm',
               name: 'confirmed',
@@ -606,7 +618,7 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
           value: 'remove',
         },
         {
-          title: 'Back',
+          title: chalk.dim('Go back'),
           value: 'back',
         },
       ],
@@ -647,15 +659,21 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
             type: 'select',
             name: 'name',
             message: 'Select context to edit:',
-            choices: contexts.map((context) => ({
-              title: context['name'],
-              value: context['name'],
-            })),
+            choices: [
+              ...contexts.map((context) => ({
+                title: context['name'],
+                value: context['name'],
+              })),
+              {
+                title: chalk.dim('Go back'),
+                value: 'back',
+              },
+            ],
           });
 
           const name: Cli_Menu_Interactive_ContextMenu_Name = selectResponse['name'];
 
-          if (name !== undefined) {
+          if (name !== undefined && name !== 'back') {
             const current: Cli_Menu_Interactive_ContextMenu_Current = contexts.find((context) => context['name'] === name);
 
             if (current !== undefined) {
@@ -673,6 +691,10 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
               });
 
               const keepId: Cli_Menu_Interactive_ContextMenu_KeepId = keepIdResponse['keepId'];
+
+              if (keepId === undefined) {
+                continue;
+              }
 
               let id: Cli_Menu_Interactive_ContextMenu_Id = undefined;
 
@@ -754,6 +776,10 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
 
               const interpreter: Cli_Menu_Interactive_ContextMenu_Interpreter = interpreterResponse['interpreter'];
 
+              if (interpreter === undefined) {
+                continue;
+              }
+
               const topicResponse: Cli_Menu_Interactive_ContextMenu_TopicResponse = await prompts({
                 type: 'text',
                 name: 'topic',
@@ -763,6 +789,10 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
               });
 
               const topic: Cli_Menu_Interactive_ContextMenu_Topic = topicResponse['topic'];
+
+              if (topic === undefined) {
+                continue;
+              }
 
               const currentErrorTopic: Cli_Menu_Interactive_ContextMenu_CurrentErrorTopic = (current['error_topic'] !== undefined) ? current['error_topic'] : '';
 
@@ -774,6 +804,10 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
               });
 
               const errorTopic: Cli_Menu_Interactive_ContextMenu_ErrorTopic = errorTopicResponse['error_topic'];
+
+              if (errorTopic === undefined) {
+                continue;
+              }
 
               const currentErrorEvents: Cli_Menu_Interactive_ContextMenu_CurrentErrorEvents = current['error_events'];
 
@@ -797,6 +831,10 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
 
               const errorEvents: Cli_Menu_Interactive_ContextMenu_ErrorEvents = errorEventsResponse['error_events'];
 
+              if (errorEvents === undefined) {
+                continue;
+              }
+
               const modeInitial: Cli_Menu_Interactive_ContextMenu_ModeInitial = (current['mode'] === 'send-all') ? 1 : 0;
 
               const modeResponse: Cli_Menu_Interactive_ContextMenu_ModeResponse = await prompts({
@@ -818,6 +856,10 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
 
               const mode: Cli_Menu_Interactive_ContextMenu_Mode = modeResponse['mode'];
 
+              if (mode === undefined) {
+                continue;
+              }
+
               const showVisitorInfoResponse: Cli_Menu_Interactive_ContextMenu_ShowVisitorInfoResponse = await prompts({
                 type: 'confirm',
                 name: 'show_visitor_info',
@@ -826,6 +868,10 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
               });
 
               const showVisitorInfo: Cli_Menu_Interactive_ContextMenu_ShowVisitorInfo = showVisitorInfoResponse['show_visitor_info'];
+
+              if (showVisitorInfo === undefined) {
+                continue;
+              }
 
               const primaryServerIdx: Cli_Menu_Interactive_ContextMenu_PrimaryServerIdx = serverChoices.findIndex((s) => s['value'] === current['primary_server']);
 
@@ -848,6 +894,10 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
 
               const primaryServer: Cli_Menu_Interactive_ContextMenu_PrimaryServer = primaryServerResponse['primary_server'];
 
+              if (primaryServer === undefined) {
+                continue;
+              }
+
               const selectedServersResponse: Cli_Menu_Interactive_ContextMenu_SelectedServersResponse = await prompts({
                 type: 'multiselect',
                 name: 'selectedServers',
@@ -859,6 +909,10 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
               });
 
               const selectedServers: Cli_Menu_Interactive_ContextMenu_SelectedServers = selectedServersResponse['selectedServers'];
+
+              if (selectedServers === undefined) {
+                continue;
+              }
 
               const updates: Cli_Menu_Interactive_ContextMenu_Updates = {};
 
@@ -894,7 +948,9 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
               const errorTopicTrimmed: Cli_Menu_Interactive_ContextMenu_ErrorTopicTrimmed = (errorTopicValue !== undefined) ? errorTopicValue.trim() : '';
               const resolvedErrorTopic: Cli_Menu_Interactive_ContextMenu_ResolvedErrorTopic = (errorTopicTrimmed !== '') ? errorTopicTrimmed : undefined;
 
-              Reflect.set(updates, 'error_topic', resolvedErrorTopic);
+              if (errorTopic !== undefined) {
+                Reflect.set(updates, 'error_topic', resolvedErrorTopic);
+              }
 
               if (errorEvents !== undefined) {
                 Reflect.set(updates, 'error_events', errorEvents);
@@ -909,6 +965,10 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
                 });
 
                 const keepToken: Cli_Menu_Interactive_ContextMenu_KeepToken = keepTokenResponse['keepToken'];
+
+                if (keepToken === undefined) {
+                  continue;
+                }
 
                 if (keepToken === false) {
                   const newToken: Cli_Menu_Interactive_ContextMenu_NewToken = generateToken();
@@ -926,6 +986,10 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
                 });
 
                 const addToken: Cli_Menu_Interactive_ContextMenu_AddToken = addTokenResponse['addToken'];
+
+                if (addToken === undefined) {
+                  continue;
+                }
 
                 if (addToken === true) {
                   const addNewToken: Cli_Menu_Interactive_ContextMenu_AddNewToken = generateToken();
@@ -945,10 +1009,17 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
                 });
 
                 const allowedFrom: Cli_Menu_Interactive_ContextMenu_AllowedFrom = allowedFromResponse['allowed_from'];
+
+                if (allowedFrom === undefined) {
+                  continue;
+                }
+
                 const allowedFromTrimmed: Cli_Menu_Interactive_ContextMenu_AllowedFromTrimmed = (allowedFrom !== undefined) ? allowedFrom.trim() : '';
                 const resolvedAllowedFrom: Cli_Menu_Interactive_ContextMenu_ResolvedAllowedFrom = (allowedFromTrimmed !== '') ? allowedFromTrimmed : undefined;
 
-                Reflect.set(updates, 'allowed_from', resolvedAllowedFrom);
+                if (allowedFrom !== undefined) {
+                  Reflect.set(updates, 'allowed_from', resolvedAllowedFrom);
+                }
               }
 
               const editImport: Cli_Menu_Interactive_ContextMenu_EditImport = await import('../commands/context.js');
@@ -977,15 +1048,21 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
             type: 'select',
             name: 'name',
             message: 'Select context to remove:',
-            choices: removeContexts.map((context) => ({
-              title: context['name'],
-              value: context['name'],
-            })),
+            choices: [
+              ...removeContexts.map((context) => ({
+                title: context['name'],
+                value: context['name'],
+              })),
+              {
+                title: chalk.dim('Go back'),
+                value: 'back',
+              },
+            ],
           });
 
           const removeName: Cli_Menu_Interactive_ContextMenu_RemoveName = removeSelectResponse['name'];
 
-          if (removeName !== undefined) {
+          if (removeName !== undefined && removeName !== 'back') {
             const confirmResponse: Cli_Menu_Interactive_ContextMenu_ConfirmResponse = await prompts({
               type: 'confirm',
               name: 'confirmed',
@@ -1162,6 +1239,10 @@ async function addContextFlow(configPath: Cli_Menu_Interactive_AddContextFlow_Co
 
   const errorTopic: Cli_Menu_Interactive_AddContextFlow_ErrorTopic = errorTopicResponse['error_topic'];
 
+  if (errorTopic === undefined) {
+    return;
+  }
+
   const errorEventsResponse: Cli_Menu_Interactive_AddContextFlow_ErrorEventsResponse = await prompts({
     type: 'multiselect',
     name: 'error_events',
@@ -1181,6 +1262,10 @@ async function addContextFlow(configPath: Cli_Menu_Interactive_AddContextFlow_Co
   });
 
   const errorEvents: Cli_Menu_Interactive_AddContextFlow_ErrorEvents = errorEventsResponse['error_events'];
+
+  if (errorEvents === undefined) {
+    return;
+  }
 
   const modeResponse: Cli_Menu_Interactive_AddContextFlow_ModeResponse = await prompts({
     type: 'select',
@@ -1273,6 +1358,11 @@ async function addContextFlow(configPath: Cli_Menu_Interactive_AddContextFlow_Co
     });
 
     const rawToken: Cli_Menu_Interactive_AddContextFlow_RawToken = tokenResponse['token'];
+
+    if (rawToken === undefined) {
+      return;
+    }
+
     const tokenTrimmed: Cli_Menu_Interactive_AddContextFlow_TokenTrimmed = (rawToken !== undefined) ? rawToken.trim() : '';
     const resolvedToken: Cli_Menu_Interactive_AddContextFlow_ResolvedToken = (tokenTrimmed !== '') ? tokenTrimmed : undefined;
 
@@ -1298,6 +1388,11 @@ async function addContextFlow(configPath: Cli_Menu_Interactive_AddContextFlow_Co
     });
 
     const rawAllowedFrom: Cli_Menu_Interactive_AddContextFlow_RawAllowedFrom = allowedFromResponse['allowed_from'];
+
+    if (rawAllowedFrom === undefined) {
+      return;
+    }
+
     const allowedFromTrimmed: Cli_Menu_Interactive_AddContextFlow_AllowedFromTrimmed = (rawAllowedFrom !== undefined) ? rawAllowedFrom.trim() : '';
     const resolvedAllowedFrom: Cli_Menu_Interactive_AddContextFlow_ResolvedAllowedFrom = (allowedFromTrimmed !== '') ? allowedFromTrimmed : undefined;
 

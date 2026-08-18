@@ -1,6 +1,6 @@
 {
   "name": "ntfy-reverse-proxy",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Notification gateway on Cloudflare Workers that routes webhooks and emails to ntfy with automatic server failover",
   "keywords": [
     "ntfy",
@@ -78,21 +78,22 @@
   },
   "dependencies": {
     "@cbnventures/nova": "0.24.0",
-    "chalk": "5.6.2",
-    "commander": "14.0.3",
+    "chalk": "6.0.0",
+    "commander": "15.0.0",
     "prompts": "2.4.2",
-    "wrangler": "4.123.0",
+    "wrangler": "4.124.0",
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "0.21.3",
+    "@cloudflare/vitest-pool-workers": "0.22.0",
     "@cloudflare/workers-types": "4.20260702.1",
     "@types/node": "25.6.0",
     "@types/prompts": "2.4.9",
     "eslint": "9.39.3",
     "glob": "13.0.6",
+    "node-pty": "1.1.0",
     "shx": "0.4.0",
-    "tsx": "4.21.0",
+    "tsx": "4.23.12",
     "typescript": "5.9.3",
     "vitest": "4.1.3"
   }

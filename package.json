@@ -26,9 +26,9 @@
   },
   "devDependencies": {
     "@cbnventures/nova": "0.24.0",
-    "jiti": "2.6.1",
+    "jiti": "2.7.0",
     "prompts": "2.4.2",
-    "turbo": "2.10.6",
+    "turbo": "2.10.11",
     "typescript": "5.9.3"
   },
   "overrides": {
