@@ -1,11 +1,13 @@
 # ntfy-reverse-proxy
 
-## 2.1.1 - 2026-08-18
+## 2.1.1 - 2026-08-19
 
 ### UPDATED
+- Updated @cbnventures/nova to 0.25.0 and @cbnventures/docusaurus-preset-nova to 0.25.0.
 - Upgrade Wrangler from 4.123.0 to 4.124.0, @cloudflare/vitest-pool-workers from 0.21.3 to 0.22.0, tsx from 4.21.0 to 4.23.12, Chalk from 5.6.2 to 6.0.0, Commander from 14.0.3 to 15.0.0, and turbo from 2.10.6 to 2.10.11.
 
 ### FIXED
+- CI publish workflow failed because node-pty install scripts were blocked by npm. Added allowScripts to permit node-pty compilation on Linux.
 - The context edit flow now aborts cleanly if the first prompt is cancelled instead of running all remaining prompts and saving an empty update.
 - The error_topic and allowed_from fields in the context edit flow now preserve their current values when the prompt is cancelled instead of being cleared.
 - Cancelling a server edit prompt now returns to the server menu instead of the main menu.
