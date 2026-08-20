@@ -1,5 +1,10 @@
 # ntfy-reverse-proxy
 
+## 2.1.2 - 2026-08-20
+
+### UPDATED
+- Bumped @cbnventures/nova and @cbnventures/docusaurus-preset-nova from 0.25.0 to 0.25.1
+
 ## 2.1.1 - 2026-08-19
 
 ### UPDATED

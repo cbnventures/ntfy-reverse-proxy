@@ -29,8 +29,8 @@
     "node": "^22 || ^24"
   },
   "dependencies": {
-    "@cbnventures/docusaurus-preset-nova": "0.25.0",
-    "@cbnventures/nova": "0.25.0",
+    "@cbnventures/docusaurus-preset-nova": "0.25.1",
+    "@cbnventures/nova": "0.25.1",
     "@docusaurus/core": "3.10.0",
     "react": "19.2.5",
     "react-dom": "19.2.5"
