@@ -39,6 +39,17 @@ export type Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_Head
 export type Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_Result = readonly Worker_Pipeline_Split_MessagePart[];
 
 /**
+ * Tests - Worker - Pipeline - Split - Split - Preserves The Exact Body Across Split Parts.
+ *
+ * @since 2.1.4
+ */
+export type Tests_Worker_Pipeline_Split_Split_PreservesTheExactBodyAcrossSplitParts_Body = string;
+
+export type Tests_Worker_Pipeline_Split_Split_PreservesTheExactBodyAcrossSplitParts_Result = readonly Worker_Pipeline_Split_MessagePart[];
+
+export type Tests_Worker_Pipeline_Split_Split_PreservesTheExactBodyAcrossSplitParts_ReconstructedBody = string;
+
+/**
  * Tests - Worker - Pipeline - Split - Split - Returns Single Message When Under Limit.
  *
  * @since 2.0.0

@@ -295,19 +295,7 @@ export type Cli_Menu_Interactive_InteractiveMenu_ConfigDirs = string[];
 
 export type Cli_Menu_Interactive_InteractiveMenu_Returns = Promise<void>;
 
-export type Cli_Menu_Interactive_InteractiveMenu_CurrentFilePath = string;
-
-export type Cli_Menu_Interactive_InteractiveMenu_Dir = string;
-
 export type Cli_Menu_Interactive_InteractiveMenu_Version = string;
-
-export type Cli_Menu_Interactive_InteractiveMenu_PackageJsonPath = string;
-
-export type Cli_Menu_Interactive_InteractiveMenu_PackageJsonRaw = string;
-
-export type Cli_Menu_Interactive_InteractiveMenu_PackageJsonParsed = Record<string, unknown>;
-
-export type Cli_Menu_Interactive_InteractiveMenu_Parent = string;
 
 export type Cli_Menu_Interactive_InteractiveMenu_Header = string;
 

@@ -33,8 +33,7 @@ The deploy command runs these steps in sequence:
 flowchart TD
     Start[Deploy Command] --> ResolveToken[Resolve API Token]
     ResolveToken --> Validate[Validate Config]
-    Validate --> Lint[Lint Source]
-    Lint --> Verify[Verify Permissions]
+    Validate --> Verify[Verify Permissions]
     Verify --> KV[Ensure KV Namespace]
     KV --> Generate[Generate wrangler.toml]
     Generate --> DeployWorker[Deploy Worker]
@@ -46,13 +45,12 @@ flowchart TD
 
 1. **Resolve API token** — Reads `CLOUDFLARE_API_TOKEN` from `.env`. If missing or invalid, prompts interactively.
 2. **Validate** — Checks config integrity (schema, <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> references, duplicate IDs).
-3. **Lint** — Runs ESLint across the project source.
-4. **Verify permissions** — Confirms the API token has access to Workers Scripts, Workers Routes, Workers KV Storage, and (if email <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology> exist) Email Routing Rules.
-5. **Ensure <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology>** — Creates or locates a Cloudflare Workers <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology> for Statuspage deduplication. The namespace ID is automatically passed to the <Terminology title="Cloudflare Workers config file generated from config.json" to="/docs/reference/terminology#wranglertoml">wrangler.toml</Terminology> generator.
-6. **Generate** — Produces `wrangler.toml` from `config.json` with all routes, vars, and KV bindings.
-7. **Deploy <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology>** — Invokes `wrangler deploy` to push the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> to Cloudflare.
-8. **Setup email routing** — If email <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology> exist, automatically configures <Terminology title="Cloudflare feature that forwards email to the Worker" to="/docs/reference/terminology#cloudflare-email-routing">Cloudflare Email Routing</Terminology> rules to forward emails to the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology>.
-9. **Print summary** — Displays deployed <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> URLs and email addresses.
+3. **Verify permissions** — Confirms the API token has access to Workers Scripts, Workers Routes, Workers KV Storage, and (if email <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology> exist) Email Routing Rules.
+4. **Ensure <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology>** — Creates or locates a Cloudflare Workers <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology> for Statuspage deduplication. The namespace ID is automatically passed to the <Terminology title="Cloudflare Workers config file generated from config.json" to="/docs/reference/terminology#wranglertoml">wrangler.toml</Terminology> generator.
+5. **Generate** — Produces `wrangler.toml` from `config.json` with all routes, vars, and KV bindings.
+6. **Deploy <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology>** — Invokes `wrangler deploy` to push the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> to Cloudflare.
+7. **Setup email routing** — If email <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology> exist, automatically configures <Terminology title="Cloudflare feature that forwards email to the Worker" to="/docs/reference/terminology#cloudflare-email-routing">Cloudflare Email Routing</Terminology> rules to forward emails to the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology>.
+8. **Print summary** — Displays deployed <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> URLs and email addresses.
 
 ## Generated wrangler.toml
 

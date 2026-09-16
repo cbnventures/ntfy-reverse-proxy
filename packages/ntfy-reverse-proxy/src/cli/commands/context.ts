@@ -1,3 +1,4 @@
+import { Buffer } from 'node:buffer';
 import { randomBytes } from 'node:crypto';
 
 import { LIB_REGEX_NON_ALPHANUMERIC } from '../../lib/regex.js';
@@ -224,7 +225,7 @@ function generateRandomString(length: Cli_Commands_Context_GenerateRandomString_
   let result: Cli_Commands_Context_GenerateRandomString_Result = '';
 
   while (result['length'] < length) {
-    const chunk: Cli_Commands_Context_GenerateRandomString_Chunk = randomBytes(48).toString('base64').replace(new RegExp(LIB_REGEX_NON_ALPHANUMERIC, 'g'), '');
+    const chunk: Cli_Commands_Context_GenerateRandomString_Chunk = Buffer.from(randomBytes(48)).toString('base64').replace(new RegExp(LIB_REGEX_NON_ALPHANUMERIC, 'g'), '');
 
     result += (lowercase === true) ? chunk.toLowerCase() : chunk;
   }

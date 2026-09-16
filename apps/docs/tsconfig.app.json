@@ -5,7 +5,6 @@
     "@cbnventures/nova/presets/tsconfig/fw-docusaurus.json"
   ],
   "compilerOptions": {
-    "baseUrl": "./",
     "noEmit": false,
     "noEmitOnError": false,
     "outDir": "./build",

@@ -18,7 +18,7 @@
   ],
   "contexts": [
     {
-      "id": "replace_with_random_string",
+      "id": "statuspage-example",
       "name": "GitHub Status",
       "type": "http",
       "interpreter": "statuspage",
@@ -31,7 +31,7 @@
       "servers": ["primary", "fallback"]
     },
     {
-      "id": "replace_with_random_string",
+      "id": "seerr-example",
       "name": "Seerr Requests",
       "type": "http",
       "interpreter": "seerr",
@@ -43,7 +43,7 @@
       "token": "replace_with_auth_token"
     },
     {
-      "id": "replace_with_random_string",
+      "id": "synology-example",
       "name": "Synology NAS",
       "type": "http",
       "interpreter": "synology",
@@ -55,7 +55,7 @@
       "token": "replace_with_auth_token"
     },
     {
-      "id": "replace_with_random_string",
+      "id": "webhook-example",
       "name": "Generic Webhook",
       "type": "http",
       "interpreter": "plain-text",

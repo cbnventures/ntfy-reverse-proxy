@@ -307,7 +307,7 @@ export default [
         'error',
         {
           ignoreFiles: [],
-          regexFile: './src/lib/regex.ts',
+          regexFile: '',
         },
       ],
 
@@ -334,7 +334,7 @@ export default [
         'error',
         {
           ignoreFiles: [],
-          sharedFiles: ['shared.d.ts'],
+          sharedFiles: [],
         },
       ],
 
@@ -411,7 +411,7 @@ export default [
             './docusaurus.config.ts',
             './eslint.config.mts',
             './sidebars.ts',
-            './vitest.config.ts',
+            './vitest.config.mts',
           ],
           maxLines: 3,
           maxWidth: 90,
@@ -436,7 +436,7 @@ export default [
             './docusaurus.config.ts',
             './eslint.config.mts',
             './sidebars.ts',
-            './vitest.config.ts',
+            './vitest.config.mts',
             './vitest.setup.ts',
           ],
           knownNames: {},
@@ -468,7 +468,7 @@ export default [
             './docusaurus.config.ts',
             './eslint.config.mts',
             './sidebars.ts',
-            './vitest.config.ts',
+            './vitest.config.mts',
           ],
           skipDirectories: [
             'tests',
@@ -517,7 +517,7 @@ export default [
           ignoreFiles: [
             './docusaurus.config.ts',
             './eslint.config.mts',
-            './vitest.config.ts',
+            './vitest.config.mts',
             './vitest.setup.ts',
           ],
         },

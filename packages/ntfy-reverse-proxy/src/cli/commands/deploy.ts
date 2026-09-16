@@ -1,7 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 
 import { Bootstrap, Logger } from '@cbnventures/nova/toolkit';
 import chalk from 'chalk';
@@ -103,9 +102,6 @@ import type {
   Cli_Commands_Deploy_ResolveApiToken_EnvToken,
   Cli_Commands_Deploy_ResolveApiToken_Interactive,
   Cli_Commands_Deploy_ResolveApiToken_Returns,
-  Cli_Commands_Deploy_RunLint_LintResult,
-  Cli_Commands_Deploy_RunLint_PackageRoot,
-  Cli_Commands_Deploy_RunLint_Returns,
   Cli_Commands_Deploy_SaveEnvToken_Content,
   Cli_Commands_Deploy_SaveEnvToken_Regex,
   Cli_Commands_Deploy_SaveEnvToken_Returns,
@@ -237,14 +233,7 @@ async function deploy(configPath: Cli_Commands_Deploy_Deploy_ConfigPath, interac
     Logger.warn('No ntfy servers are configured. Notifications will not be sent until at least one server is added.');
   }
 
-  // Step 3: Lint (fail fast before any Cloudflare API calls or writes).
-  Logger.info('Running lint...');
-
-  runLint();
-
-  Logger.info('Lint passed.');
-
-  // Step 4: Verify permissions.
+  // Step 3: Verify permissions.
   const settings: Cli_Commands_Deploy_Deploy_Settings = getSettings(configPath);
 
   const workerName: Cli_Commands_Deploy_Deploy_WorkerName = settings['worker_name'];
@@ -259,7 +248,7 @@ async function deploy(configPath: Cli_Commands_Deploy_Deploy_ConfigPath, interac
 
   Logger.info('Permissions verified.');
 
-  // Step 4.5: Ensure KV namespace exists.
+  // Step 4: Ensure KV namespace exists.
   Logger.info('Ensuring KV namespace...');
 
   const kvNamespaceId: Cli_Commands_Deploy_Deploy_KvNamespaceId = await ensureKvNamespace(token, accountId, workerName);
@@ -541,41 +530,6 @@ async function promptForApiToken(): Cli_Commands_Deploy_PromptForApiToken_Return
   Logger.info('API token saved to .env file.');
 
   return token;
-}
-
-/**
- * CLI - Commands - Deploy - Run Lint.
- *
- * Spawns the ESLint process against the source directory
- * and aborts the deployment if any lint errors are found.
- *
- * @since 2.0.0
- */
-function runLint(): Cli_Commands_Deploy_RunLint_Returns {
-  let packageRoot: Cli_Commands_Deploy_RunLint_PackageRoot = dirname(fileURLToPath(import.meta.url));
-
-  while (packageRoot !== dirname(packageRoot)) {
-    if (existsSync(resolve(packageRoot, 'package.json')) === true) {
-      break;
-    }
-
-    packageRoot = dirname(packageRoot);
-  }
-
-  const lintResult: Cli_Commands_Deploy_RunLint_LintResult = spawnSync('npx', [
-    'eslint',
-    './src',
-  ], {
-    encoding: 'utf-8',
-    stdio: 'inherit',
-    cwd: packageRoot,
-  });
-
-  if (lintResult['status'] !== 0) {
-    throw new Error('Lint failed.');
-  }
-
-  return;
 }
 
 /**

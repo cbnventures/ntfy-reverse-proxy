@@ -56,3 +56,16 @@ export type Tests_Cli_Commands_Generate_GenerateCommand_GeneratesValidWranglerTo
 export type Tests_Cli_Commands_Generate_GenerateCommand_OmitsEmailRoutingSectionWhenNoEmailContextsExist_ConfigJson = string;
 
 export type Tests_Cli_Commands_Generate_GenerateCommand_OmitsEmailRoutingSectionWhenNoEmailContextsExist_Toml = string;
+
+/**
+ * Tests - CLI - Commands - Generate - Generate Command - References An Existing Worker Entry.
+ *
+ * @since 2.1.4
+ */
+export type Tests_Cli_Commands_Generate_GenerateCommand_ReferencesAnExistingWorkerEntry_Toml = string;
+
+export type Tests_Cli_Commands_Generate_GenerateCommand_ReferencesAnExistingWorkerEntry_OutputDir = string;
+
+export type Tests_Cli_Commands_Generate_GenerateCommand_ReferencesAnExistingWorkerEntry_WorkerEntryPath = string;
+
+export type Tests_Cli_Commands_Generate_GenerateCommand_ReferencesAnExistingWorkerEntry_WorkerEntryRelativePath = string;

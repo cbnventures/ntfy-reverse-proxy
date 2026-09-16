@@ -3,13 +3,16 @@ import {
   existsSync, readFileSync, unlinkSync, writeFileSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import {
+  dirname, join, relative, sep,
+} from 'node:path';
 
 import {
   afterEach, beforeEach, describe, expect, it,
 } from 'vitest';
 
 import { generateWranglerToml } from '../../../cli/commands/generate.js';
+import { getWorkerEntryPath } from '../../../lib/package-runtime.js';
 
 import type {
   Tests_Cli_Commands_Generate_GenerateCommand_ConfigJson,
@@ -19,6 +22,10 @@ import type {
   Tests_Cli_Commands_Generate_GenerateCommand_GeneratesValidWranglerToml_Toml,
   Tests_Cli_Commands_Generate_GenerateCommand_OmitsEmailRoutingSectionWhenNoEmailContextsExist_ConfigJson,
   Tests_Cli_Commands_Generate_GenerateCommand_OmitsEmailRoutingSectionWhenNoEmailContextsExist_Toml,
+  Tests_Cli_Commands_Generate_GenerateCommand_ReferencesAnExistingWorkerEntry_OutputDir,
+  Tests_Cli_Commands_Generate_GenerateCommand_ReferencesAnExistingWorkerEntry_Toml,
+  Tests_Cli_Commands_Generate_GenerateCommand_ReferencesAnExistingWorkerEntry_WorkerEntryPath,
+  Tests_Cli_Commands_Generate_GenerateCommand_ReferencesAnExistingWorkerEntry_WorkerEntryRelativePath,
   Tests_Cli_Commands_Generate_TestConfigPath,
   Tests_Cli_Commands_Generate_TestConfigPathFragment,
   Tests_Cli_Commands_Generate_TestConfigTmpDir,
@@ -104,9 +111,22 @@ describe('generate command', () => {
 
     expect(toml).toContain('name = "test-worker"');
 
-    expect(toml).toContain('main = "packages/ntfy-reverse-proxy/build/src/worker/index.js"');
-
     expect(toml).toContain('compatibility_date');
+
+    return;
+  });
+
+  it('references an existing Worker entry', () => {
+    generateWranglerToml(testConfigPath, testOutputPath);
+
+    const toml: Tests_Cli_Commands_Generate_GenerateCommand_ReferencesAnExistingWorkerEntry_Toml = readFileSync(testOutputPath, 'utf-8');
+    const outputDir: Tests_Cli_Commands_Generate_GenerateCommand_ReferencesAnExistingWorkerEntry_OutputDir = dirname(testOutputPath);
+    const workerEntryPath: Tests_Cli_Commands_Generate_GenerateCommand_ReferencesAnExistingWorkerEntry_WorkerEntryPath = getWorkerEntryPath();
+    const workerEntryRelativePath: Tests_Cli_Commands_Generate_GenerateCommand_ReferencesAnExistingWorkerEntry_WorkerEntryRelativePath = relative(outputDir, workerEntryPath).split(sep).join('/');
+
+    expect(toml).toContain(`main = ${JSON.stringify(workerEntryRelativePath)}`);
+
+    expect(existsSync(workerEntryPath)).toBe(true);
 
     return;
   });

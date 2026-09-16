@@ -1,5 +1,19 @@
 # ntfy-reverse-proxy
 
+## 2.1.4 - 2026-09-16
+
+### UPDATED
+- Scoped the Cloudflare Workers ESLint runtime preset to worker implementation files so the hybrid package keeps its Workers and Node.js lint boundaries explicit.
+- Approved fsevents for macOS file watching and exact-version node-pty for its native build while explicitly denying the other reviewed install scripts.
+- Updated node-pty to the official 1.2.0-beta.14 pre-release so clean macOS installs use executable upstream prebuilds.
+- Updated developer tooling to Nova 0.27.0, Wrangler 4.131.1, and Workers Types 5.20260911.1 while preserving CLI token generation compatibility and normalizing generated type output for repository checks.
+- Upgraded Docusaurus to 3.10.2, React to 19.2.8, TypeScript to 6.0.3, ESLint to 9.39.5, and Vitest to 4.1.11, while aligning Node types to 24.9.1.
+- Disabled Turbo caching for build and check tasks so repository commands no longer accumulate persistent Turbo cache artifacts.
+
+### FIXED
+- Fixed installed CLI setup and deployment by packaging a valid starter config, resolving the bundled Worker entry at runtime, reading the installed version, and keeping repository-only linting out of deploys.
+- Fixed interactive CLI integration tests to run in restricted environments and report child-process failures immediately.
+
 ## 2.1.3 - 2026-08-20
 
 ### UPDATED

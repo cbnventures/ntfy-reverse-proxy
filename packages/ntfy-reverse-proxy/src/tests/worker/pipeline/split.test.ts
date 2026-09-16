@@ -12,6 +12,9 @@ import type {
   Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_Headers,
   Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_LongBody,
   Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_Result,
+  Tests_Worker_Pipeline_Split_Split_PreservesTheExactBodyAcrossSplitParts_Body,
+  Tests_Worker_Pipeline_Split_Split_PreservesTheExactBodyAcrossSplitParts_ReconstructedBody,
+  Tests_Worker_Pipeline_Split_Split_PreservesTheExactBodyAcrossSplitParts_Result,
   Tests_Worker_Pipeline_Split_Split_ReturnsSingleMessageWhenUnderLimit_Result,
   Tests_Worker_Pipeline_Split_Split_SplitsMessageExceeding4000Bytes_LongBody,
   Tests_Worker_Pipeline_Split_Split_SplitsMessageExceeding4000Bytes_Result,
@@ -67,6 +70,25 @@ describe('split', () => {
 
       expect(part['headers']['X-Priority']).toBe('4');
     }
+
+    return;
+  });
+
+  it('preserves the exact body across split parts', () => {
+    const body: Tests_Worker_Pipeline_Split_Split_PreservesTheExactBodyAcrossSplitParts_Body = [
+      'A'.repeat(3990),
+      '[link](https://example.com/a_(b)) ',
+      'C:\\Program Files\\Browser ',
+      '![pixel](https://example.com/pixel.png) ',
+      '🚨',
+      'B'.repeat(1000),
+    ].join('');
+    const result: Tests_Worker_Pipeline_Split_Split_PreservesTheExactBodyAcrossSplitParts_Result = split(body, { 'X-Title': 'Exact body' });
+    const reconstructedBody: Tests_Worker_Pipeline_Split_Split_PreservesTheExactBodyAcrossSplitParts_ReconstructedBody = result.map((part) => part['body']).join('');
+
+    expect(result.length).toBeGreaterThan(1);
+
+    expect(reconstructedBody).toBe(body);
 
     return;
   });

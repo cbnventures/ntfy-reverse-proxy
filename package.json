@@ -4,12 +4,23 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "turbo run dev",
-    "prod": "turbo run prod",
-    "build": "turbo run build --concurrency=2",
-    "check": "turbo run check --concurrency=2 && eslint . --max-warnings=0 && nova utility type-check --project tsconfig.config.json && nova utility type-check --project tsconfig.scripts.json",
-    "deploy": "turbo run deploy --concurrency=2",
-    "clean": "turbo run clean",
+    "dev": "nova utility run-scripts --parallel 'dev:*'",
+    "dev:workspaces": "turbo run dev",
+    "prod": "nova utility run-scripts --sequential 'prod:*'",
+    "prod:workspaces": "turbo run prod",
+    "check": "nova utility run-scripts --sequential 'check:*'",
+    "check:workspaces": "turbo run check --concurrency=2",
+    "check:lint": "eslint . --max-warnings=0",
+    "check:types-config": "nova utility type-check --project tsconfig.config.json",
+    "check:types-scripts": "nova utility type-check --project tsconfig.scripts.json",
+    "check:types-tests": "nova utility type-check --project tsconfig.tests.json",
+    "check:test": "vitest run",
+    "build": "nova utility run-scripts --sequential 'build:*'",
+    "build:workspaces": "turbo run build --concurrency=2",
+    "deploy": "nova utility run-scripts --sequential 'deploy:*'",
+    "deploy:workspaces": "turbo run deploy --concurrency=2",
+    "clean": "nova utility run-scripts --parallel 'clean:*'",
+    "clean:workspaces": "turbo run clean",
     "manage": "npm run manage --workspace packages/ntfy-reverse-proxy",
     "tail": "node ./scripts/tail-logs.mjs",
     "changelog": "nova utility changelog",
@@ -17,7 +28,13 @@
     "postinstall": "node ./scripts/link-nova.mjs"
   },
   "allowScripts": {
-    "node-pty@1.1.0": true
+    "core-js": false,
+    "es5-ext": false,
+    "esbuild": false,
+    "fsevents": true,
+    "node-pty@1.2.0-beta.14": true,
+    "unrs-resolver": false,
+    "workerd": false
   },
   "workspaces": [
     "./apps/*",
@@ -28,11 +45,12 @@
     "node": "^22 || ^24"
   },
   "devDependencies": {
-    "@cbnventures/nova": "0.25.2",
+    "@cbnventures/nova": "0.27.0",
     "jiti": "2.7.0",
     "prompts": "2.4.2",
     "turbo": "2.10.11",
-    "typescript": "5.9.3"
+    "typescript": "6.0.3",
+    "vitest": "4.1.11"
   },
   "overrides": {
     "webpack": ">=5.95.0 <5.106.0"

@@ -452,17 +452,6 @@ export type Cli_Commands_Deploy_ResolveApiToken_Returns = Promise<string>;
 export type Cli_Commands_Deploy_ResolveApiToken_EnvToken = string | undefined;
 
 /**
- * CLI - Commands - Deploy - Run Lint.
- *
- * @since 2.0.0
- */
-export type Cli_Commands_Deploy_RunLint_Returns = void;
-
-export type Cli_Commands_Deploy_RunLint_PackageRoot = string;
-
-export type Cli_Commands_Deploy_RunLint_LintResult = SpawnSyncReturns<string>;
-
-/**
  * CLI - Commands - Deploy - Save Env Token.
  *
  * @since 2.0.0

@@ -47,9 +47,11 @@ npx ntfy-reverse-proxy
 
 Both `ntfy-reverse-proxy` and `nrp` are registered as CLI aliases — they do the same thing.
 
+The first command that needs configuration copies the starter template included with the npm package to your platform config directory. Global and `npx` installs don't require a repository clone or a separately downloaded `config.sample.json`.
+
 ## First-Time Setup
 
-The interactive config menu guides you through everything you need for a working deployment.
+The interactive config menu starts from the packaged template and guides you through everything you need for a working deployment.
 
 1. Run `nrp` to launch the interactive config menu.
 2. **Add at least one ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>.** Each <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> needs a name, a URL starting with `https://`, and a token starting with `tk_`.

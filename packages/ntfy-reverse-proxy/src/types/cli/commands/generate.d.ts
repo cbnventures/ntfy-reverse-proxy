@@ -50,6 +50,16 @@ export type Cli_Commands_Generate_GenerateWranglerToml_Contexts = Cli_Commands_G
 
 export type Cli_Commands_Generate_GenerateWranglerToml_CompatibilityDate = string;
 
+export type Cli_Commands_Generate_GenerateWranglerToml_OutputDir = string;
+
+export type Cli_Commands_Generate_GenerateWranglerToml_WorkerEntryPath = string;
+
+export type Cli_Commands_Generate_GenerateWranglerToml_WorkerEntryRelativePath = string;
+
+export type Cli_Commands_Generate_GenerateWranglerToml_WorkerEntryConfigPath = string;
+
+export type Cli_Commands_Generate_GenerateWranglerToml_WorkerEntryToml = string;
+
 export type Cli_Commands_Generate_GenerateWranglerToml_HttpContexts = Array<Lib_Schema_HttpContextConfig>;
 
 export type Cli_Commands_Generate_GenerateWranglerToml_EmailContexts = Array<Lib_Schema_EmailContextConfig>;
@@ -63,5 +73,3 @@ export type Cli_Commands_Generate_GenerateWranglerToml_SettingsJson = string;
 export type Cli_Commands_Generate_GenerateWranglerToml_ServersJson = string;
 
 export type Cli_Commands_Generate_GenerateWranglerToml_ContextsJson = string;
-
-export type Cli_Commands_Generate_GenerateWranglerToml_OutputDir = string;

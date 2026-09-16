@@ -156,8 +156,7 @@ graph TD
 
     subgraph Deploy [Deploy Chain]
         direction TB
-        DValidate[Validate] --> DLint[Lint]
-        DLint --> DVerify[Verify Permissions]
+        DValidate[Validate] --> DVerify[Verify Permissions]
         DVerify --> DKV[Ensure KV]
         DKV --> DGenerate[Generate wrangler.toml]
         DGenerate --> DDeploy[Deploy to Cloudflare]
@@ -169,7 +168,7 @@ graph TD
 The CLI reads and writes `config.json` through a config I/O layer. All config mutations go through schema validation.
 
 - The generate command produces a `wrangler.toml` file from the config.
-- The deploy command chains validation, linting, permission verification, KV provisioning, <Terminology title="Cloudflare Workers config file generated from config.json" to="/docs/reference/terminology#wranglertoml">wrangler.toml</Terminology> generation, and deployment into a single step.
+- The deploy command chains validation, permission verification, KV provisioning, <Terminology title="Cloudflare Workers config file generated from config.json" to="/docs/reference/terminology#wranglertoml">wrangler.toml</Terminology> generation, and deployment into a single step.
 
 ## Error Strategy
 

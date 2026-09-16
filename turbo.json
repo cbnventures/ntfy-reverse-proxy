@@ -23,8 +23,21 @@
       "outputs": [],
       "persistent": true
     },
+    "check": {
+      "cache": false,
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "!./.*/**/*",
+        "!./build/**",
+        "./**/*"
+      ],
+      "outputs": [],
+      "persistent": false
+    },
     "build": {
-      "cache": true,
+      "cache": false,
       "dependsOn": [
         "^build"
       ],
@@ -36,19 +49,6 @@
       "outputs": [
         "./build/**"
       ],
-      "persistent": false
-    },
-    "check": {
-      "cache": true,
-      "dependsOn": [
-        "^build"
-      ],
-      "inputs": [
-        "!./.*/**/*",
-        "!./build/**",
-        "./**/*"
-      ],
-      "outputs": [],
       "persistent": false
     },
     "deploy": {

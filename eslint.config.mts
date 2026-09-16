@@ -82,6 +82,7 @@ export default [
         project: [
           './tsconfig.config.json',
           './tsconfig.scripts.json',
+          './tsconfig.tests.json',
         ],
       },
     },
@@ -337,7 +338,7 @@ export default [
         'error',
         {
           ignoreFiles: [],
-          sharedFiles: ['shared.d.ts'],
+          sharedFiles: [],
         },
       ],
 
@@ -498,7 +499,11 @@ export default [
         'error',
         {
           extraExtensions: [],
-          ignoreFiles: ['./eslint.config.mts'],
+          ignoreFiles: [
+            './eslint.config.mts',
+            './vitest.config.mts',
+            './vitest.setup.ts',
+          ],
         },
       ],
 

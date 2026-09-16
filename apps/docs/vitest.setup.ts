@@ -1,3 +1,4 @@
+import { VitestSetup } from '@cbnventures/nova/toolkit';
 import { afterEach, beforeEach, vi } from 'vitest';
 
 /**
@@ -9,18 +10,8 @@ import { afterEach, beforeEach, vi } from 'vitest';
  *
  * @since 0.15.0
  */
-beforeEach(() => {
-  vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
-
-  vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
-
-  process.exitCode = undefined;
-
-  return;
-});
-
-afterEach(() => {
-  vi.restoreAllMocks();
-
-  return;
+VitestSetup.register({
+  afterEach,
+  beforeEach,
+  vi,
 });

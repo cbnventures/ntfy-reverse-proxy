@@ -1,8 +1,11 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import {
+  dirname, relative, resolve, sep,
+} from 'node:path';
 
 import { Bootstrap } from '@cbnventures/nova/toolkit';
 
+import { getWorkerEntryPath } from '../../lib/package-runtime.js';
 import { configSchema } from '../../lib/schema.js';
 import { loadConfig } from './config-io.js';
 
@@ -26,6 +29,10 @@ import type {
   Cli_Commands_Generate_GenerateWranglerToml_ServersJson,
   Cli_Commands_Generate_GenerateWranglerToml_Settings,
   Cli_Commands_Generate_GenerateWranglerToml_SettingsJson,
+  Cli_Commands_Generate_GenerateWranglerToml_WorkerEntryConfigPath,
+  Cli_Commands_Generate_GenerateWranglerToml_WorkerEntryPath,
+  Cli_Commands_Generate_GenerateWranglerToml_WorkerEntryRelativePath,
+  Cli_Commands_Generate_GenerateWranglerToml_WorkerEntryToml,
   Cli_Commands_Generate_ProjectRoot,
 } from '../../types/cli/commands/generate.d.ts';
 
@@ -63,6 +70,11 @@ function generateWranglerToml(configPath: Cli_Commands_Generate_GenerateWrangler
   const servers: Cli_Commands_Generate_GenerateWranglerToml_Servers = config['servers'];
   const contexts: Cli_Commands_Generate_GenerateWranglerToml_Contexts = config['contexts'];
   const compatibilityDate: Cli_Commands_Generate_GenerateWranglerToml_CompatibilityDate = new Date().toISOString().slice(0, 10);
+  const outputDir: Cli_Commands_Generate_GenerateWranglerToml_OutputDir = dirname(outputPath);
+  const workerEntryPath: Cli_Commands_Generate_GenerateWranglerToml_WorkerEntryPath = getWorkerEntryPath();
+  const workerEntryRelativePath: Cli_Commands_Generate_GenerateWranglerToml_WorkerEntryRelativePath = relative(outputDir, workerEntryPath);
+  const workerEntryConfigPath: Cli_Commands_Generate_GenerateWranglerToml_WorkerEntryConfigPath = workerEntryRelativePath.split(sep).join('/');
+  const workerEntryToml: Cli_Commands_Generate_GenerateWranglerToml_WorkerEntryToml = JSON.stringify(workerEntryConfigPath);
 
   const httpContexts: Cli_Commands_Generate_GenerateWranglerToml_HttpContexts = contexts.filter((context) => context['type'] === 'http');
   const emailContexts: Cli_Commands_Generate_GenerateWranglerToml_EmailContexts = contexts.filter((context) => context['type'] === 'email');
@@ -73,7 +85,7 @@ function generateWranglerToml(configPath: Cli_Commands_Generate_GenerateWrangler
 
   const lines: Cli_Commands_Generate_GenerateWranglerToml_Lines = [
     `name = "${settings['worker_name']}"`,
-    'main = "packages/ntfy-reverse-proxy/build/src/worker/index.js"',
+    `main = ${workerEntryToml}`,
     `compatibility_date = "${compatibilityDate}"`,
     ...((accountId !== undefined) ? [`account_id = "${accountId}"`] : []),
     '',
@@ -124,8 +136,6 @@ function generateWranglerToml(configPath: Cli_Commands_Generate_GenerateWrangler
     lines.push('binding = "KV"');
     lines.push(`id = "${kvNamespaceId}"`);
   }
-
-  const outputDir: Cli_Commands_Generate_GenerateWranglerToml_OutputDir = dirname(outputPath);
 
   mkdirSync(outputDir, { recursive: true });
 

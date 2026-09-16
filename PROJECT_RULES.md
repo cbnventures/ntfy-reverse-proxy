@@ -156,14 +156,14 @@ src/
 
 ### Commands
 
-| Command               | What it does                                                |
-|-----------------------|-------------------------------------------------------------|
-| `npm install`         | Install all dependencies                                    |
-| `npm start`           | Start local development server (wrangler dev)               |
-| `npm run manage`      | Launch interactive config management TUI                    |
-| `npm run deploy`      | Validate config, generate wrangler.toml, lint, deploy       |
-| `npm run deploy:lint` | Run ESLint across the project                               |
-| `npm test`            | Run the test suite (Vitest with Miniflare for worker tests) |
+| Command          | What it does                                                |
+|------------------|-------------------------------------------------------------|
+| `npm install`    | Install all dependencies                                    |
+| `npm start`      | Start local development server (wrangler dev)               |
+| `npm run manage` | Launch interactive config management TUI                    |
+| `npm run check`  | Run lint, type checks, and tests                            |
+| `npm run deploy` | Validate config, generate wrangler.toml, and deploy         |
+| `npm test`       | Run the test suite (Vitest with Miniflare for worker tests) |
 
 ### Environment Variables
 
@@ -263,9 +263,10 @@ No documentation site commands. Documentation lives as markdown in the `docs/` d
 ### Release Process
 
 1. All changes committed, `git status --short` is clean.
-2. Run `npm run manage validate` to verify config integrity.
-3. Run `npm run deploy` (validates, generates wrangler.toml, lints, deploys).
-4. Tag the commit if publishing a release.
+2. Run `npm run check` and `npm run build` to verify the repository and package.
+3. Run `npm run manage validate` to verify config integrity.
+4. Run `npm run deploy` (validates, generates `wrangler.toml`, and deploys).
+5. Tag the commit if publishing a release.
 
 ### CI/CD Workflows
 

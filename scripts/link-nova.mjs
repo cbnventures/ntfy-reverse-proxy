@@ -24,8 +24,7 @@ function linkNova() {
     return;
   }
 
-  const globalPrefix = execSync('npm prefix -g', { encoding: 'utf-8' }).trim();
-  const globalModules = join(globalPrefix, 'lib', 'node_modules');
+  const globalModules = execSync('npm root --global', { encoding: 'utf-8' }).trim();
   const missingLinks = [];
 
   for (const packageName of packages) {

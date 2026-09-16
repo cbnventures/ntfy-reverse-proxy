@@ -1,11 +1,11 @@
 import type { IDisposable, IPty } from 'node-pty';
 
 /**
- * Tests - CLI - Menu - Interactive Integration - tsxBin.
+ * Tests - CLI - Menu - Interactive Integration - tsxLoader.
  *
- * @since 2.1.1
+ * @since 2.1.4
  */
-export type Tests_Cli_Menu_InteractiveIntegration_TsxBin = string;
+export type Tests_Cli_Menu_InteractiveIntegration_TsxLoader = string;
 
 /**
  * Tests - CLI - Menu - Interactive Integration - interactiveMenu (integration).
@@ -27,6 +27,8 @@ export type Tests_Cli_Menu_InteractiveIntegration_InteractiveMenuIntegration_Sho
 
 export type Tests_Cli_Menu_InteractiveIntegration_InteractiveMenuIntegration_ShouldExitCleanlyOnCtrlCAtConfigDirSelection_Term = IPty;
 
+export type Tests_Cli_Menu_InteractiveIntegration_InteractiveMenuIntegration_ShouldExitCleanlyOnCtrlCAtConfigDirSelection_ExitPromise = Promise<number>;
+
 export type Tests_Cli_Menu_InteractiveIntegration_InteractiveMenuIntegration_ShouldExitCleanlyOnCtrlCAtConfigDirSelection_ExitCode = number;
 
 /**
@@ -37,6 +39,8 @@ export type Tests_Cli_Menu_InteractiveIntegration_InteractiveMenuIntegration_Sho
 export type Tests_Cli_Menu_InteractiveIntegration_InteractiveMenuIntegration_ShouldExitCleanlyOnCtrlCAtMainMenu_CliPath = string;
 
 export type Tests_Cli_Menu_InteractiveIntegration_InteractiveMenuIntegration_ShouldExitCleanlyOnCtrlCAtMainMenu_Term = IPty;
+
+export type Tests_Cli_Menu_InteractiveIntegration_InteractiveMenuIntegration_ShouldExitCleanlyOnCtrlCAtMainMenu_ExitPromise = Promise<number>;
 
 export type Tests_Cli_Menu_InteractiveIntegration_InteractiveMenuIntegration_ShouldExitCleanlyOnCtrlCAtMainMenu_ExitCode = number;
 
@@ -49,20 +53,9 @@ export type Tests_Cli_Menu_InteractiveIntegration_InteractiveMenuIntegration_Sho
 
 export type Tests_Cli_Menu_InteractiveIntegration_InteractiveMenuIntegration_ShouldExitCleanlyWhenSelectingExit_Term = IPty;
 
+export type Tests_Cli_Menu_InteractiveIntegration_InteractiveMenuIntegration_ShouldExitCleanlyWhenSelectingExit_ExitPromise = Promise<number>;
+
 export type Tests_Cli_Menu_InteractiveIntegration_InteractiveMenuIntegration_ShouldExitCleanlyWhenSelectingExit_ExitCode = number;
-
-/**
- * Tests - CLI - Menu - Interactive Integration - resolveTsxCli.
- *
- * @since 2.1.1
- */
-export type Tests_Cli_Menu_InteractiveIntegration_ResolveTsxCli_Returns = string;
-
-export type Tests_Cli_Menu_InteractiveIntegration_ResolveTsxCli_CurrentDir = string;
-
-export type Tests_Cli_Menu_InteractiveIntegration_ResolveTsxCli_Dir = string;
-
-export type Tests_Cli_Menu_InteractiveIntegration_ResolveTsxCli_TsxCli = string;
 
 /**
  * Tests - CLI - Menu - Interactive Integration - waitFor.
@@ -81,7 +74,9 @@ export type Tests_Cli_Menu_InteractiveIntegration_WaitFor_Buffer = string;
 
 export type Tests_Cli_Menu_InteractiveIntegration_WaitFor_Timer = ReturnType<typeof setTimeout> | undefined;
 
-export type Tests_Cli_Menu_InteractiveIntegration_WaitFor_Disposable = IDisposable;
+export type Tests_Cli_Menu_InteractiveIntegration_WaitFor_ExitDisposable = IDisposable | undefined;
+
+export type Tests_Cli_Menu_InteractiveIntegration_WaitFor_DataDisposable = IDisposable;
 
 /**
  * Tests - CLI - Menu - Interactive Integration - waitForExit.
