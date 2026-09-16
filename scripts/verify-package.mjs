@@ -5,6 +5,8 @@ import {
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 
+import { getNpmPackFilePaths } from './lib/npm-pack-report.mjs';
+
 /**
  * Verify Package - Run.
  *
@@ -78,17 +80,12 @@ function run() {
     }
 
     const packReports = JSON.parse(packResult['stdout']);
-    const packReport = packReports[0];
-    const packedFilePaths = [];
+    const packedFilePaths = getNpmPackFilePaths(packReports, packageName);
     const expectedFilePaths = [
       commandLineRelativePath,
       workerRelativePath,
       configSampleRelativePath,
     ];
-
-    for (const packedFile of packReport['files']) {
-      packedFilePaths.push(packedFile['path']);
-    }
 
     for (const expectedFilePath of expectedFilePaths) {
       if (packedFilePaths.includes(expectedFilePath) === false) {
