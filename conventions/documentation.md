@@ -209,14 +209,14 @@ Heading changes by page type:
 | Preset          | Why Use This Preset?      |
 | Quickstart      | (no "Why" section needed) |
 
-Content is a bulleted list. Each item follows the pattern: [Feature/capability] so [benefit]. Use bullets (not numbered lists) because the reasons are independent and unordered — rearranging them does not change meaning.
+Content is a numbered list. Each item follows the pattern: [Feature/capability] so [benefit]. Numbers make every page scan the same way; their order does not imply an execution sequence.
 
 ```mdx
 ## Why Use This Command?
 
-- Supports 13 open-source licenses so you can pick the right one from the config.
-- Auto-fills legal boilerplate so the license stays accurate when the year rolls over or ownership changes.
-- Pulls the license type, author name, and starting year directly from `nova.config.json`, eliminating manual edits.
+1. Supports 13 open-source licenses so you can pick the right one from the config.
+2. Auto-fills legal boilerplate so the license stays accurate when the year rolls over or ownership changes.
+3. Pulls the license type, author name, and starting year directly from `nova.config.json`, eliminating manual edits.
 ```
 
 ### Requirements

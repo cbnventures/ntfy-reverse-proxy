@@ -9,7 +9,7 @@
  *
  * @returns {string[]}
  *
- * @since UNRELEASED
+ * @since 0.0.0
  */
 export function getNpmPackFilePaths(packReports, packageName) {
   if (typeof packReports !== 'object' || packReports === null) {

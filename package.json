@@ -44,8 +44,10 @@
   "engines": {
     "node": "^22 || ^24"
   },
+  "dependencies": {
+    "@cbnventures/nova": "0.27.2"
+  },
   "devDependencies": {
-    "@cbnventures/nova": "0.27.0",
     "jiti": "2.7.0",
     "prompts": "2.4.2",
     "turbo": "2.10.11",

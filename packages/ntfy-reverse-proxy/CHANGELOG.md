@@ -1,5 +1,10 @@
 # ntfy-reverse-proxy
 
+## 2.1.5 - 2026-09-18
+
+### UPDATED
+- Updated Nova and the Docusaurus preset to 0.27.2 across the project, CLI package, and docs.
+
 ## 2.1.4 - 2026-09-16
 
 ### UPDATED

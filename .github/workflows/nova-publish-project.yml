@@ -51,7 +51,7 @@ jobs:
 
       - name: "Install packages"
         run: |
-          npm install -g npm@latest
+          corepack enable npm
           npm install
         working-directory: "${{ env.ROOT_DIR }}"
 
@@ -244,6 +244,15 @@ jobs:
     steps:
       - name: "Checkout repository"
         uses: "actions/checkout@v7"
+
+      - name: "Setup Node.js"
+        uses: "actions/setup-node@v6"
+        with:
+          node-version-file: "${{ env.ROOT_DIR }}/package.json"
+          package-manager-cache: false
+
+      - name: "Enable Corepack"
+        run: "corepack enable npm"
 
       - name: "Download build artifacts"
         uses: "actions/download-artifact@v8"

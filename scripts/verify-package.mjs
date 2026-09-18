@@ -15,7 +15,7 @@ import { getNpmPackFilePaths } from './lib/npm-pack-report.mjs';
  *
  * @returns {void}
  *
- * @since UNRELEASED
+ * @since 0.0.0
  */
 function run() {
   const packageDirectory = process.cwd();

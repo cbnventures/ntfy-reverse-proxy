@@ -8,7 +8,7 @@ import { getNpmPackFilePaths } from './npm-pack-report.mjs';
  * The build verifies the npm package on both local and GitHub runners,
  * which may use different npm major versions and JSON output shapes.
  *
- * @since UNRELEASED
+ * @since 0.0.0
  */
 describe('npm pack report', () => {
   it('reads the npm 11 array format', () => {

@@ -88,8 +88,8 @@ DerivedData/
 #########################
 #### Language - .NET ####
 #########################
-bin/
-obj/
+/bin/
+/obj/
 *.user
 .vs/
 
