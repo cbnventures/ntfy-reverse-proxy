@@ -1,5 +1,11 @@
 # ntfy-reverse-proxy
 
+## 2.1.7 - 2026-10-03
+
+### UPDATED
+- Updated Nova and the Docusaurus preset to 0.28.0 across the project, CLI package, and docs, including the runtime-only Vitest resolution fix.
+- Assigned explicit child environments to development, production, build, and deployment script groups.
+
 ## 2.1.6 - 2026-09-23
 
 ### UPDATED

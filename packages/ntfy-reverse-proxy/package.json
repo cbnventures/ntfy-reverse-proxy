@@ -1,6 +1,6 @@
 {
   "name": "ntfy-reverse-proxy",
-  "version": "2.1.6",
+  "version": "2.1.7",
   "description": "Notification gateway on Cloudflare Workers that routes webhooks and emails to ntfy with automatic server failover",
   "keywords": [
     "ntfy",
@@ -51,7 +51,7 @@
   },
   "private": false,
   "scripts": {
-    "dev": "nova utility run-scripts --parallel 'dev:*'",
+    "dev": "nova utility run-scripts --parallel --node-env development 'dev:*'",
     "dev:worker": "node ../../scripts/dev-worker.mjs",
     "check": "nova utility run-scripts --sequential 'check:*'",
     "check:generate-types": "node ../../scripts/generate-wrangler-types.mjs",
@@ -61,7 +61,7 @@
     "check:types-config": "nova utility type-check --project tsconfig.config.json",
     "check:types-tests": "nova utility type-check --project tsconfig.tests.json",
     "check:test": "vitest run",
-    "build": "nova utility run-scripts --sequential 'build:*'",
+    "build": "nova utility run-scripts --sequential --node-env production 'build:*'",
     "build:generate-types": "node ../../scripts/generate-wrangler-types.mjs",
     "build:transpile-cli": "nova utility transpile --project tsconfig.cli.json",
     "build:transpile-worker": "nova utility transpile --project tsconfig.worker.json",
@@ -69,7 +69,7 @@
     "build:copy-config": "shx cp ../../config.sample.json ./build/config.sample.json",
     "build:fix-perms": "shx chmod +x ./build/src/cli/index.js",
     "build:verify-package": "node ../../scripts/verify-package.mjs",
-    "deploy": "nova utility run-scripts --sequential 'deploy:*'",
+    "deploy": "nova utility run-scripts --sequential --node-env production 'deploy:*'",
     "deploy:worker": "node build/src/cli/index.js deploy",
     "clean": "nova utility run-scripts --parallel 'clean:*'",
     "clean:build": "shx rm -rf ./build",
@@ -79,7 +79,7 @@
     "node": "^22 || ^24"
   },
   "dependencies": {
-    "@cbnventures/nova": "0.27.3",
+    "@cbnventures/nova": "0.28.0",
     "chalk": "6.0.0",
     "commander": "15.0.0",
     "prompts": "2.4.2",
