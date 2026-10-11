@@ -151,7 +151,12 @@
         "color": "ffffff",
         "description": "This will not be worked on"
       }
-    ]
+    ],
+    "issueTemplate": {
+      "bugReportFields": [
+        "nodejs"
+      ]
+    }
   },
   "workflows": [
     {
@@ -209,6 +214,16 @@
     ],
     "privacyPolicy": "https://www.cbnventures.io/privacy/",
     "termsOfUse": "https://www.cbnventures.io/terms/"
+  },
+  "readme": {
+    "badges": [
+      "npm-version",
+      "npm-downloads",
+      "github-release",
+      "github-top-language",
+      "github-license",
+      "funding"
+    ]
   },
   "workspaces": {
     "./": {

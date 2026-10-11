@@ -1,5 +1,14 @@
 # ntfy-reverse-proxy
 
+## 2.1.8 - 2026-10-11
+
+### UPDATED
+- Updated Nova and the Docusaurus preset to 0.29.0 across the project, CLI package, and docs.
+- Completed JavaScript, TypeScript, browser, Node.js, Cloudflare Workers, and Docusaurus preset coverage, and consolidated custom Nova lint rules into the shared rule bundle while preserving workspace-specific overrides.
+- Declared the root workspace as ESM and expanded Vitest configuration and setup type-check coverage.
+- Updated Wrangler, Cloudflare Workers types, and TSX to their latest compatible releases and regenerated the Worker runtime declarations.
+- Recorded README badge and Node.js bug-report settings explicitly in Nova configuration.
+
 ## 2.1.7 - 2026-10-03
 
 ### UPDATED
