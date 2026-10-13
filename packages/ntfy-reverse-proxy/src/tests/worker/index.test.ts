@@ -3,6 +3,7 @@ import {
 } from 'vitest';
 
 import { handleEmail, handleRequest } from '../../worker/handlers.js';
+import { send } from '../../worker/pipeline/send.js';
 
 import type {
   Tests_Worker_Index_HandleEmail_AcceptsEmailFromAuthorizedSender_MockFetch,
@@ -50,6 +51,8 @@ import type {
   Tests_Worker_Index_MockEmailConfig,
   Tests_Worker_Index_MockEmailConfigWithAllowedFrom,
   Tests_Worker_Index_MockEmailConfigWithErrorTopicAndErrorEvents,
+  Tests_Worker_Index_Outbox,
+  Tests_Worker_Index_SendResult,
 } from '../../types/tests/worker/index.test.d.ts';
 
 /**
@@ -279,6 +282,48 @@ const mockConfigWithErrorTopicAndErrorEvents: Tests_Worker_Index_MockConfigWithE
 };
 
 /**
+ * Tests - Worker - Outbox.
+ *
+ * Lightweight adapter used by pipeline-focused handler tests. Durable
+ * persistence and FIFO behavior are covered by the Workers runtime tests.
+ *
+ * @since UNRELEASED
+ */
+const outbox: Tests_Worker_Index_Outbox = {
+  getByName: () => ({
+    enqueue: async (options) => {
+      const sendResult: Tests_Worker_Index_SendResult = await send({
+        messages: options['messages'],
+        servers: [{
+          name: 'alpha',
+          server: 'https://ntfy.alpha.example.com',
+          token: 'tk_abc',
+        }],
+        primaryServer: {
+          name: 'alpha',
+          server: 'https://ntfy.alpha.example.com',
+          token: 'tk_abc',
+        },
+        topic: options['topic'],
+        mode: options['mode'],
+        visitorIp: options['visitorIp'],
+        attachment: options['attachment'],
+        filename: options['filename'],
+        attachmentHeaders: options['attachmentHeaders'],
+        deliveryId: 'test-delivery',
+      });
+
+      return {
+        deliveryId: 'test-delivery',
+        state: 'delivered',
+        pending: 0,
+        sendResult,
+      };
+    },
+  }),
+};
+
+/**
  * Tests - Worker - Handle Request.
  *
  * @since 2.0.0
@@ -294,7 +339,7 @@ describe('handleRequest', () => {
       method: 'POST',
       body: 'Hello world',
     });
-    const response: Tests_Worker_Index_HandleRequest_ProcessesAValidPOSTRequestThroughThePipeline_Response = await handleRequest(request, mockConfig, undefined);
+    const response: Tests_Worker_Index_HandleRequest_ProcessesAValidPOSTRequestThroughThePipeline_Response = await handleRequest(request, mockConfig, undefined, outbox);
 
     expect(response['status']).toBe(200);
 
@@ -314,7 +359,7 @@ describe('handleRequest', () => {
     const request: Tests_Worker_Index_HandleRequest_ServesLandingPageForGETRequests_Request = new Request('https://abc123.ntfy.example.com/', {
       method: 'GET',
     });
-    const response: Tests_Worker_Index_HandleRequest_ServesLandingPageForGETRequests_Response = await handleRequest(request, mockConfig, undefined);
+    const response: Tests_Worker_Index_HandleRequest_ServesLandingPageForGETRequests_Response = await handleRequest(request, mockConfig, undefined, outbox);
     const contentType: Tests_Worker_Index_HandleRequest_ServesLandingPageForGETRequests_ContentType = response.headers.get('content-type');
 
     expect(contentType).toContain('text/html');
@@ -331,7 +376,7 @@ describe('handleRequest', () => {
     const request: Tests_Worker_Index_HandleRequest_Returns405ForUnsupportedMethods_Request = new Request('https://abc123.ntfy.example.com/', {
       method: 'DELETE',
     });
-    const response: Tests_Worker_Index_HandleRequest_Returns405ForUnsupportedMethods_Response = await handleRequest(request, mockConfig, undefined);
+    const response: Tests_Worker_Index_HandleRequest_Returns405ForUnsupportedMethods_Response = await handleRequest(request, mockConfig, undefined, outbox);
 
     expect(response['status']).toBe(405);
 
@@ -348,7 +393,7 @@ describe('handleRequest', () => {
       method: 'POST',
       body: 'test',
     });
-    const response: Tests_Worker_Index_HandleRequest_Returns404ForUnmatchedSubdomain_Response = await handleRequest(request, mockConfig, undefined);
+    const response: Tests_Worker_Index_HandleRequest_Returns404ForUnmatchedSubdomain_Response = await handleRequest(request, mockConfig, undefined, outbox);
 
     expect(response['status']).toBe(404);
 
@@ -366,7 +411,7 @@ describe('handleRequest', () => {
       body: 'Authenticated request',
       headers: { Authorization: 'Bearer my-secret-token' },
     });
-    const response: Tests_Worker_Index_HandleRequest_SucceedsWithCorrectTokenInAuthorizationHeader_Response = await handleRequest(request, mockConfigWithToken, undefined);
+    const response: Tests_Worker_Index_HandleRequest_SucceedsWithCorrectTokenInAuthorizationHeader_Response = await handleRequest(request, mockConfigWithToken, undefined, outbox);
 
     expect(response['status']).toBe(200);
 
@@ -388,7 +433,7 @@ describe('handleRequest', () => {
       body: 'Authenticated request',
       headers: { Authorization: 'Bearer wrong-token' },
     });
-    const response: Tests_Worker_Index_HandleRequest_Returns403WithWrongToken_Response = await handleRequest(request, mockConfigWithToken, undefined);
+    const response: Tests_Worker_Index_HandleRequest_Returns403WithWrongToken_Response = await handleRequest(request, mockConfigWithToken, undefined, outbox);
 
     expect(response['status']).toBe(403);
 
@@ -409,7 +454,7 @@ describe('handleRequest', () => {
       method: 'POST',
       body: 'No auth header',
     });
-    const response: Tests_Worker_Index_HandleRequest_Returns403WithNoAuthorizationHeaderWhenTokenRequired_Response = await handleRequest(request, mockConfigWithToken, undefined);
+    const response: Tests_Worker_Index_HandleRequest_Returns403WithNoAuthorizationHeaderWhenTokenRequired_Response = await handleRequest(request, mockConfigWithToken, undefined, outbox);
 
     expect(response['status']).toBe(403);
 
@@ -426,7 +471,7 @@ describe('handleRequest', () => {
       method: 'POST',
       body: 'No auth needed',
     });
-    const response: Tests_Worker_Index_HandleRequest_PassesThroughWhenNoTokenConfigured_Response = await handleRequest(request, mockConfig, undefined);
+    const response: Tests_Worker_Index_HandleRequest_PassesThroughWhenNoTokenConfigured_Response = await handleRequest(request, mockConfig, undefined, outbox);
 
     expect(response['status']).toBe(200);
 
@@ -448,7 +493,7 @@ describe('handleRequest', () => {
       body: 'Bad auth',
       headers: { Authorization: 'Bearer wrong' },
     });
-    const response: Tests_Worker_Index_HandleRequest_SendsErrorNotificationWhenAuthFailsAndErrorTopicConfigured_Response = await handleRequest(request, mockConfigWithErrorTopic, undefined);
+    const response: Tests_Worker_Index_HandleRequest_SendsErrorNotificationWhenAuthFailsAndErrorTopicConfigured_Response = await handleRequest(request, mockConfigWithErrorTopic, undefined, outbox);
 
     expect(response['status']).toBe(403);
 
@@ -472,7 +517,7 @@ describe('handleRequest', () => {
       body: 'Bad auth',
       headers: { Authorization: 'Bearer wrong' },
     });
-    const response: Tests_Worker_Index_HandleRequest_SuppressesAuthErrorNotificationWhenErrorEventsExcludesAuthentication_Response = await handleRequest(request, mockConfigWithErrorTopicAndErrorEvents, undefined);
+    const response: Tests_Worker_Index_HandleRequest_SuppressesAuthErrorNotificationWhenErrorEventsExcludesAuthentication_Response = await handleRequest(request, mockConfigWithErrorTopicAndErrorEvents, undefined, outbox);
 
     expect(response['status']).toBe(403);
 
@@ -509,7 +554,7 @@ describe('handleEmail', () => {
       'This is a test email body.',
     ].join('\r\n');
 
-    await handleEmail(rawEmail, 'sender@example.com', mockEmailConfig, undefined);
+    await handleEmail(rawEmail, 'sender@example.com', mockEmailConfig, undefined, outbox);
 
     expect(mockFetch).toHaveBeenCalled();
 
@@ -535,7 +580,7 @@ describe('handleEmail', () => {
       'Body.',
     ].join('\r\n');
 
-    await handleEmail(rawEmail, 'sender@example.com', mockEmailConfig, undefined);
+    await handleEmail(rawEmail, 'sender@example.com', mockEmailConfig, undefined, outbox);
 
     expect(mockFetch).not.toHaveBeenCalled();
 
@@ -561,7 +606,7 @@ describe('handleEmail', () => {
       'Email from anyone.',
     ].join('\r\n');
 
-    await handleEmail(rawEmail, 'anyone@anywhere.com', mockEmailConfig, undefined);
+    await handleEmail(rawEmail, 'anyone@anywhere.com', mockEmailConfig, undefined, outbox);
 
     expect(mockFetch).toHaveBeenCalled();
 
@@ -587,7 +632,7 @@ describe('handleEmail', () => {
       'Should be rejected.',
     ].join('\r\n');
 
-    await handleEmail(rawEmail, 'untrusted@example.com', mockEmailConfigWithAllowedFrom, undefined);
+    await handleEmail(rawEmail, 'untrusted@example.com', mockEmailConfigWithAllowedFrom, undefined, outbox);
 
     expect(mockFetch).not.toHaveBeenCalled();
 
@@ -613,7 +658,7 @@ describe('handleEmail', () => {
       'Should be accepted.',
     ].join('\r\n');
 
-    await handleEmail(rawEmail, 'trusted@example.com', mockEmailConfigWithAllowedFrom, undefined);
+    await handleEmail(rawEmail, 'trusted@example.com', mockEmailConfigWithAllowedFrom, undefined, outbox);
 
     expect(mockFetch).toHaveBeenCalled();
 
@@ -639,7 +684,7 @@ describe('handleEmail', () => {
       'This is a test email body.',
     ].join('\r\n');
 
-    await handleEmail(rawEmail, 'sender@example.com', mockEmailConfigWithErrorTopicAndErrorEvents, undefined);
+    await handleEmail(rawEmail, 'sender@example.com', mockEmailConfigWithErrorTopicAndErrorEvents, undefined, outbox);
 
     expect(mockFetch).not.toHaveBeenCalled();
 

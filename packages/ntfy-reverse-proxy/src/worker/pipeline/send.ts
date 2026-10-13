@@ -3,6 +3,8 @@ import { REGEX_TITLE_PART_SUFFIX } from '../../lib/regex.js';
 import type {
   Worker_Pipeline_Send_Attachment,
   Worker_Pipeline_Send_AttachmentHeaders,
+  Worker_Pipeline_Send_CompletedStages,
+  Worker_Pipeline_Send_DeliveryId,
   Worker_Pipeline_Send_FallbackDeliveryNote,
   Worker_Pipeline_Send_FallbackResults,
   Worker_Pipeline_Send_Filename,
@@ -10,6 +12,7 @@ import type {
   Worker_Pipeline_Send_Messages,
   Worker_Pipeline_Send_MessagesToSend,
   Worker_Pipeline_Send_Mode,
+  Worker_Pipeline_Send_OnStageSuccess,
   Worker_Pipeline_Send_Options,
   Worker_Pipeline_Send_OrderedServers,
   Worker_Pipeline_Send_PrimaryServer,
@@ -31,15 +34,22 @@ import type {
   Worker_Pipeline_Send_SendToServer_AttachmentHeaders,
   Worker_Pipeline_Send_SendToServer_AttachmentRequestHeaders,
   Worker_Pipeline_Send_SendToServer_AttachmentResponse,
+  Worker_Pipeline_Send_SendToServer_AttachmentStageCompleted,
+  Worker_Pipeline_Send_SendToServer_AttachmentStageKey,
+  Worker_Pipeline_Send_SendToServer_CompletedStages,
+  Worker_Pipeline_Send_SendToServer_DeliveryId,
   Worker_Pipeline_Send_SendToServer_ErrorMessage,
   Worker_Pipeline_Send_SendToServer_Filename,
   Worker_Pipeline_Send_SendToServer_Headers,
   Worker_Pipeline_Send_SendToServer_LastStatus,
   Worker_Pipeline_Send_SendToServer_Messages,
+  Worker_Pipeline_Send_SendToServer_OnStageSuccess,
   Worker_Pipeline_Send_SendToServer_PartIndex,
   Worker_Pipeline_Send_SendToServer_PartLabel,
   Worker_Pipeline_Send_SendToServer_Response,
   Worker_Pipeline_Send_SendToServer_Server,
+  Worker_Pipeline_Send_SendToServer_StageCompleted,
+  Worker_Pipeline_Send_SendToServer_StageKey,
   Worker_Pipeline_Send_SendToServer_Stages,
   Worker_Pipeline_Send_SendToServer_Topic,
   Worker_Pipeline_Send_SendToServer_TotalParts,
@@ -78,6 +88,9 @@ async function sendToServer(
   attachment?: Worker_Pipeline_Send_SendToServer_Attachment,
   filename?: Worker_Pipeline_Send_SendToServer_Filename,
   attachmentHeaders?: Worker_Pipeline_Send_SendToServer_AttachmentHeaders,
+  deliveryId?: Worker_Pipeline_Send_SendToServer_DeliveryId,
+  completedStages?: Worker_Pipeline_Send_SendToServer_CompletedStages,
+  onStageSuccess?: Worker_Pipeline_Send_SendToServer_OnStageSuccess,
 ): Worker_Pipeline_Send_ToServerReturns {
   const stages: Worker_Pipeline_Send_SendToServer_Stages = [];
   const url: Worker_Pipeline_Send_SendToServer_Url = `${server['server']}/${topic}`;
@@ -89,10 +102,25 @@ async function sendToServer(
 
   for (const message of messages) {
     const partLabel: Worker_Pipeline_Send_SendToServer_PartLabel = (totalParts > 1) ? `stage-1 (${String(partIndex + 1)}/${String(totalParts)})` : 'stage-1';
+    const stageKey: Worker_Pipeline_Send_SendToServer_StageKey = `message:${String(partIndex)}`;
+    const stageCompleted: Worker_Pipeline_Send_SendToServer_StageCompleted = completedStages !== undefined && (completedStages[server['name']] ?? []).includes(stageKey);
+
+    if (stageCompleted === true) {
+      stages.push(`${partLabel}: already delivered`);
+      lastStatus = 200;
+      partIndex += 1;
+
+      continue;
+    }
+
     const headers: Worker_Pipeline_Send_SendToServer_Headers = {
       ...message['headers'],
       Authorization: `Bearer ${server['token']}`,
     };
+
+    if (deliveryId !== undefined) {
+      Reflect.set(headers, 'X-Sequence-ID', `${deliveryId}-message-${String(partIndex + 1)}`);
+    }
 
     if (visitorIp !== undefined) {
       Reflect.set(headers, 'X-Forwarded-For', visitorIp);
@@ -119,6 +147,10 @@ async function sendToServer(
         };
       }
 
+      if (onStageSuccess !== undefined) {
+        await onStageSuccess(server['name'], stageKey);
+      }
+
       stages.push(`${partLabel}: ok`);
     } catch (err) {
       const errorMessage: Worker_Pipeline_Send_SendToServer_ErrorMessage = (err instanceof Error) ? err.message : 'Unknown error';
@@ -138,10 +170,28 @@ async function sendToServer(
   }
 
   if (attachment !== undefined) {
+    const attachmentStageKey: Worker_Pipeline_Send_SendToServer_AttachmentStageKey = 'attachment';
+    const attachmentStageCompleted: Worker_Pipeline_Send_SendToServer_AttachmentStageCompleted = completedStages !== undefined && (completedStages[server['name']] ?? []).includes(attachmentStageKey);
+
+    if (attachmentStageCompleted === true) {
+      stages.push('stage-2: already delivered');
+
+      return {
+        name: server['name'],
+        success: true,
+        status: (lastStatus === 0) ? 200 : lastStatus,
+        stages,
+      };
+    }
+
     const attachmentRequestHeaders: Worker_Pipeline_Send_SendToServer_AttachmentRequestHeaders = {
       Authorization: `Bearer ${server['token']}`,
       ...attachmentHeaders,
     };
+
+    if (deliveryId !== undefined) {
+      Reflect.set(attachmentRequestHeaders, 'X-Sequence-ID', `${deliveryId}-attachment`);
+    }
 
     if (visitorIp !== undefined) {
       Reflect.set(attachmentRequestHeaders, 'X-Forwarded-For', visitorIp);
@@ -172,6 +222,10 @@ async function sendToServer(
         };
       }
 
+      if (onStageSuccess !== undefined) {
+        await onStageSuccess(server['name'], attachmentStageKey);
+      }
+
       stages.push('stage-2: ok');
     } catch (err) {
       const attachmentErrorMessage: Worker_Pipeline_Send_SendToServer_AttachmentErrorMessage = (err instanceof Error) ? err.message : 'Unknown error';
@@ -197,7 +251,7 @@ async function sendToServer(
 }
 
 /**
- * Worker - Pipeline - Send.
+ * Worker - Pipeline - Send - Send.
  *
  * Orchestrates delivery across all configured servers using
  * either send-all or send-once-with-fallback strategy.
@@ -214,9 +268,12 @@ async function send(options: Worker_Pipeline_Send_Options): Worker_Pipeline_Send
   const attachment: Worker_Pipeline_Send_Attachment = options['attachment'];
   const filename: Worker_Pipeline_Send_Filename = options['filename'];
   const attachmentHeaders: Worker_Pipeline_Send_AttachmentHeaders = options['attachmentHeaders'];
+  const deliveryId: Worker_Pipeline_Send_DeliveryId = options['deliveryId'];
+  const completedStages: Worker_Pipeline_Send_CompletedStages = options['completedStages'];
+  const onStageSuccess: Worker_Pipeline_Send_OnStageSuccess = options['onStageSuccess'];
 
   if (mode === 'send-all') {
-    const results: Worker_Pipeline_Send_Results = await Promise.all(servers.map((server) => sendToServer(server, messages, topic, visitorIp, attachment, filename, attachmentHeaders)));
+    const results: Worker_Pipeline_Send_Results = await Promise.all(servers.map((server) => sendToServer(server, messages, topic, visitorIp, attachment, filename, attachmentHeaders, deliveryId, completedStages, onStageSuccess)));
 
     return {
       results,
@@ -296,7 +353,7 @@ async function send(options: Worker_Pipeline_Send_Options): Worker_Pipeline_Send
       }
     }
 
-    const serverResult: Worker_Pipeline_Send_ServerResult = await sendToServer(server, messagesToSend, topic, visitorIp, attachment, filename, attachmentHeaders);
+    const serverResult: Worker_Pipeline_Send_ServerResult = await sendToServer(server, messagesToSend, topic, visitorIp, attachment, filename, attachmentHeaders, deliveryId, completedStages, onStageSuccess);
 
     fallbackResults.push(serverResult);
 

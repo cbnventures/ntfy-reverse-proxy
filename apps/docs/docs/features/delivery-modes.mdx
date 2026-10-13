@@ -19,6 +19,8 @@ import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
 
 Choose between `send-once` failover and `send-all` broadcast to control how notifications reach your ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology>.
 
+Both modes use [durable delivery](/docs/features/durable-delivery/): the proxy saves the formatted notification before sending and keeps failed work in a FIFO lane dedicated to that context.
+
 ```mermaid
 flowchart TD
     Notification[Notification Ready] --> Mode{Delivery Mode?}
@@ -69,6 +71,8 @@ Best for:
 ## send-all
 
 Sends the notification to every <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> in the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s `servers` list simultaneously. All <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology> receive the same notification in parallel.
+
+The durable notification remains saved until every configured server succeeds. Successful servers and message stages are checkpointed, so a retry contacts only the unfinished work.
 
 Best for:
 
@@ -184,6 +188,7 @@ Possible status values:
 
 - `"success"` — All <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology> returned 2xx. HTTP status is 200.
 - `"partial"` — Some <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology> succeeded, some failed. HTTP status is 200.
-- `"failed"` — All <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology> failed. HTTP status is 502.
+- `"queued"` — The notification is safely stored but has not completed its delivery mode. HTTP status is 202, and the next notification for the same context triggers another attempt.
+- `"failed"` — Delivery produced no successful server result and was not retained by the durable flow. HTTP status is 502.
 - `"error"` — A <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology> error occurred (authentication, routing, interpretation, etc.). HTTP status varies: 400, 403, 404, 405, 422, or 500.
 - `"ignored"` — The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> intentionally suppressed the notification (returned `null`). HTTP status is 200.

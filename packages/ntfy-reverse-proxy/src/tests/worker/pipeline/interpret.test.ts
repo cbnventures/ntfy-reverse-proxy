@@ -17,7 +17,7 @@ import type {
 } from '../../../types/tests/worker/pipeline/interpret.test.d.ts';
 
 /**
- * Tests - Worker - Pipeline - Interpret.
+ * Tests - Worker - Pipeline - Interpret - Interpret.
  *
  * @since 2.0.0
  */

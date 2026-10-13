@@ -10,7 +10,7 @@ import type {
 } from '../../types/worker/pipeline/route.d.ts';
 
 /**
- * Worker - Pipeline - Route.
+ * Worker - Pipeline - Route - Route.
  *
  * Matches the incoming request to a configured context by type
  * and identifier, then resolves the associated server list.

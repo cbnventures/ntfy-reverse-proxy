@@ -21,7 +21,7 @@ import type {
 } from '../../../types/tests/worker/pipeline/split.test.d.ts';
 
 /**
- * Tests - Worker - Pipeline - Split.
+ * Tests - Worker - Pipeline - Split - Split.
  *
  * @since 2.0.0
  */

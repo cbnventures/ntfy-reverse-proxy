@@ -1,5 +1,20 @@
 # ntfy-reverse-proxy
 
+## 2.2.0 - 2026-10-13
+
+### UPDATED
+- Regenerated the bug-report template with sentence-aware pronoun capitalization.
+- Updated Nova and Docusaurus Preset Nova to 0.30.1.
+- Adopted role-based TypeScript preset layers.
+- Standardized root-owned tests under the shared project layout.
+- Aligned JSDoc hierarchies with the function-level contract.
+
+### FIXED
+- Passed generated Cloudflare Pages project and branch values through the workflow environment so deployment commands remain shell-safe.
+
+### ADDED
+- Added a SQLite-backed Durable Object delivery outbox with isolated FIFO lanes per context, automatic retries on the next notification, per-stage delivery checkpoints, and stable ntfy sequence IDs without Cloudflare Queues.
+
 ## 2.1.8 - 2026-10-11
 
 ### UPDATED

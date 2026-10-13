@@ -18,7 +18,7 @@ import type {
 } from '../../types/worker/pipeline/receive.d.ts';
 
 /**
- * Worker - Pipeline - Receive.
+ * Worker - Pipeline - Receive - Receive.
  *
  * Extracts method, hostname, headers, and body from the incoming
  * request and handles HTTP-to-HTTPS redirects when appropriate.

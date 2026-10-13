@@ -57,7 +57,7 @@ const mockConfig: Tests_Worker_Landing_Page_MockConfig = {
 };
 
 /**
- * Tests - Worker - Landing - Page.
+ * Tests - Worker - Landing - Page - Landing Page.
  *
  * @since 2.0.0
  */

@@ -15,7 +15,7 @@ import type {
 } from '../../types/worker/pipeline/parse.d.ts';
 
 /**
- * Worker - Pipeline - Parse.
+ * Worker - Pipeline - Parse - Parse.
  *
  * Classifies and converts the raw request body into a typed
  * result of text, JSON, or binary based on content analysis.

@@ -9,6 +9,8 @@ import type {
   Tests_Worker_Pipeline_Respond_Respond_IncludesDebugInfoWhenShowResponseOutputIsTrue_Body,
   Tests_Worker_Pipeline_Respond_Respond_IncludesDebugInfoWhenShowResponseOutputIsTrue_Response,
   Tests_Worker_Pipeline_Respond_Respond_IncludesDebugInfoWhenShowResponseOutputIsTrue_SendResult,
+  Tests_Worker_Pipeline_Respond_Respond_ReturnsAcceptedWhenDurableDeliveryIsQueued_Body,
+  Tests_Worker_Pipeline_Respond_Respond_ReturnsAcceptedWhenDurableDeliveryIsQueued_Response,
   Tests_Worker_Pipeline_Respond_Respond_ReturnsFailedWhenAllServersFail_Body,
   Tests_Worker_Pipeline_Respond_Respond_ReturnsFailedWhenAllServersFail_Response,
   Tests_Worker_Pipeline_Respond_Respond_ReturnsFailedWhenAllServersFail_SendResult,
@@ -23,7 +25,7 @@ import type {
 } from '../../../types/tests/worker/pipeline/respond.test.d.ts';
 
 /**
- * Tests - Worker - Pipeline - Respond.
+ * Tests - Worker - Pipeline - Respond - Respond.
  *
  * @since 2.0.0
  */
@@ -39,7 +41,12 @@ describe('respond', () => {
       fallbackUsed: false,
     };
 
-    const response: Tests_Worker_Pipeline_Respond_Respond_ReturnsSuccessWhenAllServersSucceed_Response = respond(sendResult, { showResponseOutput: false });
+    const response: Tests_Worker_Pipeline_Respond_Respond_ReturnsSuccessWhenAllServersSucceed_Response = respond({
+      deliveryId: 'delivery-success',
+      state: 'delivered',
+      pending: 0,
+      sendResult,
+    }, { showResponseOutput: false });
 
     expect(response['status']).toBe(200);
 
@@ -65,7 +72,12 @@ describe('respond', () => {
       fallbackUsed: true,
     };
 
-    const response: Tests_Worker_Pipeline_Respond_Respond_ReturnsPartialWhenSomeServersFail_Response = respond(sendResult, { showResponseOutput: false });
+    const response: Tests_Worker_Pipeline_Respond_Respond_ReturnsPartialWhenSomeServersFail_Response = respond({
+      deliveryId: 'delivery-partial',
+      state: 'delivered',
+      pending: 0,
+      sendResult,
+    }, { showResponseOutput: false });
     const body: Tests_Worker_Pipeline_Respond_Respond_ReturnsPartialWhenSomeServersFail_Body = await response.json();
 
     expect(body['status']).toBe('partial');
@@ -84,7 +96,12 @@ describe('respond', () => {
       fallbackUsed: false,
     };
 
-    const response: Tests_Worker_Pipeline_Respond_Respond_ReturnsFailedWhenAllServersFail_Response = respond(sendResult, { showResponseOutput: false });
+    const response: Tests_Worker_Pipeline_Respond_Respond_ReturnsFailedWhenAllServersFail_Response = respond({
+      deliveryId: 'delivery-failed',
+      state: 'delivered',
+      pending: 0,
+      sendResult,
+    }, { showResponseOutput: false });
     const body: Tests_Worker_Pipeline_Respond_Respond_ReturnsFailedWhenAllServersFail_Body = await response.json();
 
     expect(body['status']).toBe('failed');
@@ -98,7 +115,12 @@ describe('respond', () => {
       fallbackUsed: false,
     };
 
-    const response: Tests_Worker_Pipeline_Respond_Respond_ReturnsFailedWhenResultsArrayIsEmpty_Response = respond(sendResult, {
+    const response: Tests_Worker_Pipeline_Respond_Respond_ReturnsFailedWhenResultsArrayIsEmpty_Response = respond({
+      deliveryId: 'delivery-empty',
+      state: 'delivered',
+      pending: 0,
+      sendResult,
+    }, {
       showResponseOutput: true,
       contextName: 'test-context',
       interpreterName: 'plain-text',
@@ -127,7 +149,12 @@ describe('respond', () => {
       fallbackUsed: false,
     };
 
-    const response: Tests_Worker_Pipeline_Respond_Respond_IncludesDebugInfoWhenShowResponseOutputIsTrue_Response = respond(sendResult, {
+    const response: Tests_Worker_Pipeline_Respond_Respond_IncludesDebugInfoWhenShowResponseOutputIsTrue_Response = respond({
+      deliveryId: 'delivery-debug',
+      state: 'delivered',
+      pending: 0,
+      sendResult,
+    }, {
       showResponseOutput: true,
       contextName: 'test-context',
       interpreterName: 'plain-text',
@@ -160,12 +187,40 @@ describe('respond', () => {
       fallbackUsed: false,
     };
 
-    const response: Tests_Worker_Pipeline_Respond_Respond_ExcludesDebugInfoWhenShowResponseOutputIsFalse_Response = respond(sendResult, { showResponseOutput: false });
+    const response: Tests_Worker_Pipeline_Respond_Respond_ExcludesDebugInfoWhenShowResponseOutputIsFalse_Response = respond({
+      deliveryId: 'delivery-private',
+      state: 'delivered',
+      pending: 0,
+      sendResult,
+    }, { showResponseOutput: false });
     const body: Tests_Worker_Pipeline_Respond_Respond_ExcludesDebugInfoWhenShowResponseOutputIsFalse_Body = await response.json();
 
     expect(body['servers']).toBeUndefined();
 
     expect(body['message']).toBeUndefined();
+
+    return;
+  });
+
+  it('returns accepted when durable delivery is queued', async () => {
+    const response: Tests_Worker_Pipeline_Respond_Respond_ReturnsAcceptedWhenDurableDeliveryIsQueued_Response = respond({
+      deliveryId: 'delivery-queued',
+      state: 'queued',
+      pending: 2,
+    }, {
+      showResponseOutput: true,
+      contextName: 'test-context',
+      interpreterName: 'plain-text',
+    });
+    const body: Tests_Worker_Pipeline_Respond_Respond_ReturnsAcceptedWhenDurableDeliveryIsQueued_Body = await response.json();
+
+    expect(response['status']).toBe(202);
+
+    expect(body['status']).toBe('queued');
+
+    expect(body['delivery_id']).toBe('delivery-queued');
+
+    expect(body['pending']).toBe(2);
 
     return;
   });

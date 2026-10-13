@@ -37,7 +37,7 @@ const interpreterMap: Worker_Pipeline_Interpret_InterpreterMap = {
 };
 
 /**
- * Worker - Pipeline - Interpret.
+ * Worker - Pipeline - Interpret - Interpret.
  *
  * Looks up the named interpreter and invokes it against the
  * parsed input to produce a structured notification object.

@@ -60,6 +60,8 @@ The interactive config menu starts from the packaged template and guides you thr
 5. **Run `nrp validate`** from the CLI to check config integrity. Validation also runs automatically as part of the deploy step. This catches missing fields and invalid references before deployment.
 6. **Run deploy** to generate `wrangler.toml` and deploy to Cloudflare Workers.
 
+The generated Worker configuration includes a SQLite-backed Durable Object automatically. You do not need to create a queue or database. It provides [durable delivery](/docs/features/durable-delivery/) by keeping a separate FIFO notification lane for each context.
+
 :::tip
 The CLI validates config against its schema on every load. You can also run validation manually with `nrp validate` or through the interactive menu.
 :::
@@ -105,5 +107,6 @@ If deployment fails or notifications are not arriving, check [Troubleshooting](/
 - **[Interpreters](/docs/interpreters/overview/)** — Choose the right <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> for your webhook source.
 - **[Deployment](/docs/getting-started/deployment/)** — Cloudflare-specific setup details, including DNS and <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> configuration.
 - **[Email Routing](/docs/features/email-routing/)** — Receive notifications via email through <Terminology title="Cloudflare feature that forwards email to the Worker" to="/docs/reference/terminology#cloudflare-email-routing">Cloudflare Email Routing</Terminology>.
+- **[Durable Delivery](/docs/features/durable-delivery/)** — Understand automatic retries, context isolation, and delivery guarantees.
 - **[Security](/docs/features/security/)** — Authentication, WAF configuration, and best practices.
 - **[Troubleshooting](/docs/reference/troubleshooting/)** — Common issues and solutions.

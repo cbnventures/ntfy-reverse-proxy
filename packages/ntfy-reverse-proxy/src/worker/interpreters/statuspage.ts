@@ -348,8 +348,8 @@ function buildIncidentNotification(serviceName: Worker_Interpreters_Statuspage_B
  * Parses Statuspage webhook and email payloads and builds
  * structured ntfy notifications with component tracking via KV.
  *
- * @param {Worker_Interpreters_Statuspage_Input}    input   - Input.
- * @param {Worker_Interpreters_Statuspage_Context} [context] - Optional context with KV.
+ * @param {Worker_Interpreters_Statuspage_Input}   input     - Input.
+ * @param {Worker_Interpreters_Statuspage_Context} [context] - Context.
  *
  * @returns {Worker_Interpreters_Statuspage_StatuspageInterpreter_Returns}
  *

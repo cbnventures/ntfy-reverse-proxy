@@ -110,6 +110,18 @@ function generateWranglerToml(configPath: Cli_Commands_Generate_GenerateWrangler
   }
 
   lines.push('');
+  lines.push('#########################');
+  lines.push('#### Durable Objects ####');
+  lines.push('#########################');
+  lines.push('[[durable_objects.bindings]]');
+  lines.push('name = "DELIVERY_OUTBOX"');
+  lines.push('class_name = "DeliveryOutbox"');
+  lines.push('');
+  lines.push('[[migrations]]');
+  lines.push('tag = "v1"');
+  lines.push('new_sqlite_classes = ["DeliveryOutbox"]');
+
+  lines.push('');
   lines.push('##############');
   lines.push('#### Vars ####');
   lines.push('##############');

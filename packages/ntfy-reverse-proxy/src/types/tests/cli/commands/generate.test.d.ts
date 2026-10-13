@@ -21,6 +21,13 @@ export type Tests_Cli_Commands_Generate_TestOutputPath = string;
 export type Tests_Cli_Commands_Generate_GenerateCommand_ConfigJson = string;
 
 /**
+ * Tests - CLI - Commands - Generate - Generate Command - Binds The SQLite Delivery Outbox Durable Object.
+ *
+ * @since UNRELEASED
+ */
+export type Tests_Cli_Commands_Generate_GenerateCommand_BindsTheSQLiteDeliveryOutboxDurableObject_Toml = string;
+
+/**
  * Tests - CLI - Commands - Generate.
  *
  * @since 2.0.0

@@ -1,4 +1,7 @@
-import type { Worker_Pipeline_Send_Result } from '../../../worker/pipeline/send.d.ts';
+import type {
+  Worker_Pipeline_Send_OptionsOnStageSuccess,
+  Worker_Pipeline_Send_Result,
+} from '../../../worker/pipeline/send.d.ts';
 
 /**
  * Tests - Worker - Pipeline - Send.
@@ -47,6 +50,15 @@ export type Tests_Worker_Pipeline_Send_Send_HandlesStage2BinaryAttachment_Attach
 export type Tests_Worker_Pipeline_Send_Send_HandlesStage2BinaryAttachment_Result = Readonly<Worker_Pipeline_Send_Result>;
 
 /**
+ * Tests - Worker - Pipeline - Send - Send - Resumes At The First Unfinished Stage.
+ *
+ * @since UNRELEASED
+ */
+export type Tests_Worker_Pipeline_Send_Send_ResumesAtTheFirstUnfinishedStage_Attachment = ArrayBuffer;
+
+export type Tests_Worker_Pipeline_Send_Send_ResumesAtTheFirstUnfinishedStage_Result = Readonly<Worker_Pipeline_Send_Result>;
+
+/**
  * Tests - Worker - Pipeline - Send - Send - Sends To All Servers In Send All Mode.
  *
  * @since 2.0.0
@@ -70,3 +82,12 @@ export type Tests_Worker_Pipeline_Send_Send_SendsToPrimaryServerInSendOnceMode_R
 export type Tests_Worker_Pipeline_Send_Send_SkipsStage2IfStage1FailsOnAServer_Attachment = ArrayBuffer;
 
 export type Tests_Worker_Pipeline_Send_Send_SkipsStage2IfStage1FailsOnAServer_Result = Readonly<Worker_Pipeline_Send_Result>;
+
+/**
+ * Tests - Worker - Pipeline - Send - Send - Uses Stable Sequence IDs And Checkpoints Successful Stages.
+ *
+ * @since UNRELEASED
+ */
+export type Tests_Worker_Pipeline_Send_Send_UsesStableSequenceIDsAndCheckpointsSuccessfulStages_OnStageSuccess = Worker_Pipeline_Send_OptionsOnStageSuccess & {};
+
+export type Tests_Worker_Pipeline_Send_Send_UsesStableSequenceIDsAndCheckpointsSuccessfulStages_Result = Readonly<Worker_Pipeline_Send_Result>;

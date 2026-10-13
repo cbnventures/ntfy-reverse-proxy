@@ -14,7 +14,7 @@ import type {
 } from '../../../types/tests/worker/pipeline/format.test.d.ts';
 
 /**
- * Tests - Worker - Pipeline - Format.
+ * Tests - Worker - Pipeline - Format - Format.
  *
  * @since 2.0.0
  */

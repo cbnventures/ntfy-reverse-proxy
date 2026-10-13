@@ -11,7 +11,7 @@ labels: [ "bug" ]
 body:
   - type: "markdown"
     attributes:
-      value: "we truly appreciate you taking the time to share this bug report with us."
+      value: "We truly appreciate you taking the time to share this bug report with us."
   - type: "markdown"
     attributes:
       value: "Please __fill out the form with as much detail as possible__ so we can easily recreate the bug and work swiftly to assist you in resolving it. Thank you for your cooperation!"

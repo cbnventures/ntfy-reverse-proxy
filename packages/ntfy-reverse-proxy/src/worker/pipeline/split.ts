@@ -23,7 +23,7 @@ import type {
 const MAX_BYTES = 4000;
 
 /**
- * Worker - Pipeline - Split.
+ * Worker - Pipeline - Split - Split.
  *
  * Breaks a notification body into multiple parts when the
  * UTF-8 byte length exceeds the ntfy server size limit.

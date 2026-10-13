@@ -56,6 +56,21 @@ export type Worker_Pipeline_Send_OptionsFilename = string | undefined;
 
 export type Worker_Pipeline_Send_OptionsAttachmentHeaders = Record<string, string> | undefined;
 
+export type Worker_Pipeline_Send_OptionsDeliveryId = string | undefined;
+
+export type Worker_Pipeline_Send_OptionsCompletedStages = Record<string, string[]> | undefined;
+
+export type Worker_Pipeline_Send_OptionsOnStageSuccess_ServerName = string;
+
+export type Worker_Pipeline_Send_OptionsOnStageSuccess_Stage = string;
+
+export type Worker_Pipeline_Send_OptionsOnStageSuccess_Returns = Promise<void> | void;
+
+export type Worker_Pipeline_Send_OptionsOnStageSuccess = (
+  serverName: Worker_Pipeline_Send_OptionsOnStageSuccess_ServerName,
+  stage: Worker_Pipeline_Send_OptionsOnStageSuccess_Stage,
+) => Worker_Pipeline_Send_OptionsOnStageSuccess_Returns;
+
 export type Worker_Pipeline_Send_Options = {
   messages: Worker_Pipeline_Send_OptionsMessages;
   servers: Worker_Pipeline_Send_OptionsServers;
@@ -66,6 +81,9 @@ export type Worker_Pipeline_Send_Options = {
   attachment?: Worker_Pipeline_Send_OptionsAttachment;
   filename?: Worker_Pipeline_Send_OptionsFilename;
   attachmentHeaders?: Worker_Pipeline_Send_OptionsAttachmentHeaders;
+  deliveryId?: Worker_Pipeline_Send_OptionsDeliveryId;
+  completedStages?: Worker_Pipeline_Send_OptionsCompletedStages;
+  onStageSuccess?: Worker_Pipeline_Send_OptionsOnStageSuccess;
 };
 
 export type Worker_Pipeline_Send_Returns = Promise<Worker_Pipeline_Send_Result>;
@@ -87,6 +105,12 @@ export type Worker_Pipeline_Send_Attachment = Worker_Pipeline_Send_OptionsAttach
 export type Worker_Pipeline_Send_Filename = Worker_Pipeline_Send_OptionsFilename;
 
 export type Worker_Pipeline_Send_AttachmentHeaders = Worker_Pipeline_Send_OptionsAttachmentHeaders;
+
+export type Worker_Pipeline_Send_DeliveryId = Worker_Pipeline_Send_OptionsDeliveryId;
+
+export type Worker_Pipeline_Send_CompletedStages = Worker_Pipeline_Send_OptionsCompletedStages;
+
+export type Worker_Pipeline_Send_OnStageSuccess = Worker_Pipeline_Send_OptionsOnStageSuccess | undefined;
 
 export type Worker_Pipeline_Send_Results = Worker_Pipeline_Send_ServerResult[];
 
@@ -153,6 +177,21 @@ export type Worker_Pipeline_Send_SendToServer_Filename = string | undefined;
 
 export type Worker_Pipeline_Send_SendToServer_AttachmentHeaders = Record<string, string> | undefined;
 
+export type Worker_Pipeline_Send_SendToServer_DeliveryId = string | undefined;
+
+export type Worker_Pipeline_Send_SendToServer_CompletedStages = Record<string, string[]> | undefined;
+
+export type Worker_Pipeline_Send_SendToServer_OnStageSuccess_ServerName = string;
+
+export type Worker_Pipeline_Send_SendToServer_OnStageSuccess_Stage = string;
+
+export type Worker_Pipeline_Send_SendToServer_OnStageSuccess_Returns = Promise<void> | void;
+
+export type Worker_Pipeline_Send_SendToServer_OnStageSuccess = ((
+  serverName: Worker_Pipeline_Send_SendToServer_OnStageSuccess_ServerName,
+  stage: Worker_Pipeline_Send_SendToServer_OnStageSuccess_Stage,
+) => Worker_Pipeline_Send_SendToServer_OnStageSuccess_Returns) | undefined;
+
 export type Worker_Pipeline_Send_SendToServer_Stage = string;
 
 export type Worker_Pipeline_Send_SendToServer_Stages = Worker_Pipeline_Send_SendToServer_Stage[];
@@ -167,11 +206,19 @@ export type Worker_Pipeline_Send_SendToServer_PartIndex = number;
 
 export type Worker_Pipeline_Send_SendToServer_PartLabel = string;
 
+export type Worker_Pipeline_Send_SendToServer_StageKey = string;
+
+export type Worker_Pipeline_Send_SendToServer_StageCompleted = boolean;
+
 export type Worker_Pipeline_Send_SendToServer_Headers = Record<string, string>;
 
 export type Worker_Pipeline_Send_SendToServer_Response = Response;
 
 export type Worker_Pipeline_Send_SendToServer_ErrorMessage = string;
+
+export type Worker_Pipeline_Send_SendToServer_AttachmentStageKey = string;
+
+export type Worker_Pipeline_Send_SendToServer_AttachmentStageCompleted = boolean;
 
 export type Worker_Pipeline_Send_SendToServer_AttachmentRequestHeaders = Record<string, string>;
 

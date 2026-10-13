@@ -1,6 +1,8 @@
 import type { vi } from 'vitest';
 
 import type { Lib_Schema_ConfigSchema } from '../../lib/schema.d.ts';
+import type { Worker_Pipeline_Deliver_Namespace } from '../../worker/pipeline/deliver.d.ts';
+import type { Worker_Pipeline_Send_Result } from '../../worker/pipeline/send.d.ts';
 
 /**
  * Tests - Worker - Index.
@@ -20,6 +22,10 @@ export type Tests_Worker_Index_MockEmailConfigWithAllowedFrom = Lib_Schema_Confi
 export type Tests_Worker_Index_MockEmailConfigWithErrorTopicAndErrorEvents = Lib_Schema_ConfigSchema & {};
 
 export type Tests_Worker_Index_MockConfigWithErrorTopicAndErrorEvents = Lib_Schema_ConfigSchema & {};
+
+export type Tests_Worker_Index_Outbox = Worker_Pipeline_Deliver_Namespace & {};
+
+export type Tests_Worker_Index_SendResult = Worker_Pipeline_Send_Result & {};
 
 /**
  * Tests - Worker - Index - Handle Email - Accepts Email From Authorized Sender.

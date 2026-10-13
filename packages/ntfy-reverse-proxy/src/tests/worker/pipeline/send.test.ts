@@ -9,11 +9,15 @@ import type {
   Tests_Worker_Pipeline_Send_Send_FallsBackToNextServerWhenPrimaryFailsInSendOnce_Result,
   Tests_Worker_Pipeline_Send_Send_HandlesStage2BinaryAttachment_Attachment,
   Tests_Worker_Pipeline_Send_Send_HandlesStage2BinaryAttachment_Result,
+  Tests_Worker_Pipeline_Send_Send_ResumesAtTheFirstUnfinishedStage_Attachment,
+  Tests_Worker_Pipeline_Send_Send_ResumesAtTheFirstUnfinishedStage_Result,
   Tests_Worker_Pipeline_Send_Send_SendsToAllServersInSendAllMode_EveryResult,
   Tests_Worker_Pipeline_Send_Send_SendsToAllServersInSendAllMode_Result,
   Tests_Worker_Pipeline_Send_Send_SendsToPrimaryServerInSendOnceMode_Result,
   Tests_Worker_Pipeline_Send_Send_SkipsStage2IfStage1FailsOnAServer_Attachment,
   Tests_Worker_Pipeline_Send_Send_SkipsStage2IfStage1FailsOnAServer_Result,
+  Tests_Worker_Pipeline_Send_Send_UsesStableSequenceIDsAndCheckpointsSuccessfulStages_OnStageSuccess,
+  Tests_Worker_Pipeline_Send_Send_UsesStableSequenceIDsAndCheckpointsSuccessfulStages_Result,
   Tests_Worker_Pipeline_Send_Servers,
 } from '../../../types/tests/worker/pipeline/send.test.d.ts';
 
@@ -55,7 +59,7 @@ const messages: Tests_Worker_Pipeline_Send_Messages = [{
 }];
 
 /**
- * Tests - Worker - Pipeline - Send.
+ * Tests - Worker - Pipeline - Send - Send.
  *
  * @since 2.0.0
  */
@@ -182,6 +186,60 @@ describe('send', () => {
     expect(result['results'][0]!['success']).toBe(false);
 
     expect(result['results'][0]!['stages']).not.toContain('stage-2: ok');
+
+    return;
+  });
+
+  it('uses stable sequence IDs and checkpoints successful stages', async () => {
+    mockFetch.mockResolvedValueOnce(new Response('ok', { status: 200 }));
+
+    const onStageSuccess: Tests_Worker_Pipeline_Send_Send_UsesStableSequenceIDsAndCheckpointsSuccessfulStages_OnStageSuccess = vi.fn();
+    const result: Tests_Worker_Pipeline_Send_Send_UsesStableSequenceIDsAndCheckpointsSuccessfulStages_Result = await send({
+      messages,
+      servers: [servers[0]!],
+      primaryServer: servers[0]!,
+      topic: 'test-topic',
+      mode: 'send-once',
+      deliveryId: 'delivery-123',
+      onStageSuccess,
+    });
+
+    expect(result['results'][0]!['success']).toBe(true);
+
+    expect(mockFetch).toHaveBeenCalledWith('https://ntfy.alpha.example.com/test-topic', expect.objectContaining({
+      headers: expect.objectContaining({ 'X-Sequence-ID': 'delivery-123-message-1' }),
+    }));
+
+    expect(onStageSuccess).toHaveBeenCalledWith('alpha', 'message:0');
+
+    return;
+  });
+
+  it('resumes at the first unfinished stage', async () => {
+    mockFetch.mockResolvedValueOnce(new Response('ok', { status: 200 }));
+
+    const attachment: Tests_Worker_Pipeline_Send_Send_ResumesAtTheFirstUnfinishedStage_Attachment = new TextEncoder().encode('binary data').buffer as ArrayBuffer;
+    const result: Tests_Worker_Pipeline_Send_Send_ResumesAtTheFirstUnfinishedStage_Result = await send({
+      messages,
+      servers: [servers[0]!],
+      primaryServer: servers[0]!,
+      topic: 'test-topic',
+      mode: 'send-once',
+      attachment,
+      deliveryId: 'delivery-456',
+      completedStages: { alpha: ['message:0'] },
+    });
+
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+
+    expect(mockFetch).toHaveBeenCalledWith('https://ntfy.alpha.example.com/test-topic', expect.objectContaining({
+      method: 'PUT',
+      headers: expect.objectContaining({ 'X-Sequence-ID': 'delivery-456-attachment' }),
+    }));
+
+    expect(result['results'][0]!['stages']).toContain('stage-1: already delivered');
+
+    expect(result['results'][0]!['stages']).toContain('stage-2: ok');
 
     return;
   });

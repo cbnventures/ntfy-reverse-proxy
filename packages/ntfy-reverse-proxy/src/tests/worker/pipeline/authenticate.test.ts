@@ -17,7 +17,7 @@ import type {
 } from '../../../types/tests/worker/pipeline/authenticate.test.d.ts';
 
 /**
- * Tests - Worker - Pipeline - Authenticate.
+ * Tests - Worker - Pipeline - Authenticate - Authenticate.
  *
  * @since 2.0.0
  */

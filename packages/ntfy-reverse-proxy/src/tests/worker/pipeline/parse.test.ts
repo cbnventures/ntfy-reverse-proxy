@@ -24,7 +24,7 @@ import type {
 } from '../../../types/tests/worker/pipeline/parse.test.d.ts';
 
 /**
- * Tests - Worker - Pipeline - Parse.
+ * Tests - Worker - Pipeline - Parse - Parse.
  *
  * @since 2.0.0
  */

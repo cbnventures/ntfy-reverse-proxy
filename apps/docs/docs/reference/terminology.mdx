@@ -25,11 +25,13 @@ The Worker is the Cloudflare-hosted entry point that receives incoming HTTP webh
 
 ## Pipeline
 
-The pipeline is the ordered sequence of stages a request or email passes through inside the Worker, grouped into Ingress, Processing, and Delivery phases. The HTTP pipeline runs 9 stages (Receive, Route, Authenticate, Parse, Interpret, Format, Split, Send, Respond); the email pipeline runs 8, replacing Receive with Parse Email and Respond with Log.
+The pipeline is the ordered sequence of stages a request or email passes through inside the Worker, grouped into Ingress, Processing, and Delivery phases. The HTTP pipeline runs 10 stages (Receive, Route, Authenticate, Parse, Interpret, Format, Split, Deliver, Send, Respond); the email pipeline runs 9, replacing Receive with Parse Email and Respond with Log.
 
 ## Context
 
 A context is a notification source configuration that defines a subdomain or email address, an interpreter, a topic, a server list, and a delivery mode. Each webhook source or email sender maps to one context, and a context is either the HTTP type or the email type.
+
+Each context ID also names its own durable delivery lane. A failed notification blocks only later notifications from that same context.
 
 ## Interpreter
 
@@ -58,6 +60,22 @@ The primary server is the preferred ntfy server for a context, and `send-once` t
 ## send-all
 
 `send-all` is a delivery mode that sends the notification to every server in the context's list at the same time, with no failover. Every server gets contacted regardless of whether the others succeed or fail.
+
+## Delivery Outbox
+
+The delivery outbox is the SQLite-backed Durable Object storage that saves a fully formatted notification before sending it to ntfy. It keeps the notification until the delivery mode's success condition is met.
+
+## Delivery Lane
+
+A delivery lane is one context's independent FIFO list inside the delivery outbox. The oldest item must finish before the next item can send, while lanes belonging to other context IDs continue independently.
+
+## At-Least-Once Delivery
+
+At-least-once delivery means a saved notification is retried until delivery is confirmed, but an uncommon crash between ntfy accepting a request and the proxy saving that success can produce a duplicate. This is different from exactly-once delivery, which the proxy cannot guarantee across two independent systems.
+
+## Durable Object
+
+A Durable Object is Cloudflare's strongly consistent Worker storage and coordination primitive. Reverse Proxy for ntfy creates one logical SQLite-backed Durable Object per context ID for its delivery lane; the CLI adds the binding and migration to `wrangler.toml` automatically.
 
 ## Smart Split
 
@@ -109,7 +127,7 @@ A KV namespace is a Cloudflare Workers KV store the Worker uses to track Statusp
 
 ## wrangler.toml
 
-`wrangler.toml` is the Cloudflare Workers configuration file the CLI generates from `config.json`, containing routes, environment variables, and KV bindings. It stays gitignored because it embeds serialized config values, and Wrangler (Cloudflare's deployment CLI) reads it to deploy the Worker.
+`wrangler.toml` is the Cloudflare Workers configuration file the CLI generates from `config.json`, containing routes, environment variables, the delivery outbox Durable Object binding, its SQLite migration, and any KV binding. It stays gitignored because it embeds serialized config values, and Wrangler (Cloudflare's deployment CLI) reads it to deploy the Worker.
 
 ## Custom Domain Route
 

@@ -192,7 +192,7 @@ const envFilePath = resolve(configDir, '.env');
 const ENV_TOKEN_KEY = 'CLOUDFLARE_API_TOKEN';
 
 /**
- * CLI - Commands - Deploy.
+ * CLI - Commands - Deploy - Deploy.
  *
  * Orchestrates the full deployment pipeline from authentication
  * through worker deployment and optional email routing setup.

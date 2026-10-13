@@ -1,5 +1,6 @@
 import { landingPage } from './landing/page.js';
 import { authenticate } from './pipeline/authenticate.js';
+import { deliver } from './pipeline/deliver.js';
 import { parseEmail } from './pipeline/email.js';
 import { format } from './pipeline/format.js';
 import { interpret } from './pipeline/interpret.js';
@@ -7,7 +8,6 @@ import { parse } from './pipeline/parse.js';
 import { receive } from './pipeline/receive.js';
 import { respond } from './pipeline/respond.js';
 import { route } from './pipeline/route.js';
-import { send } from './pipeline/send.js';
 import { split } from './pipeline/split.js';
 
 import type {
@@ -19,6 +19,7 @@ import type {
   Worker_Handlers_HandleEmail_Ctx,
   Worker_Handlers_HandleEmail_DebugLogStr,
   Worker_Handlers_HandleEmail_DebugRawEmailStr,
+  Worker_Handlers_HandleEmail_DeliveryResult,
   Worker_Handlers_HandleEmail_EmailInput,
   Worker_Handlers_HandleEmail_ErrorIssues,
   Worker_Handlers_HandleEmail_ErrorIssuesRaw,
@@ -35,6 +36,7 @@ import type {
   Worker_Handlers_HandleEmail_InterpretErrorAttachmentJson,
   Worker_Handlers_HandleEmail_Kv,
   Worker_Handlers_HandleEmail_Messages,
+  Worker_Handlers_HandleEmail_Outbox,
   Worker_Handlers_HandleEmail_Parsed,
   Worker_Handlers_HandleEmail_PrimaryServer,
   Worker_Handlers_HandleEmail_RawEmail,
@@ -42,7 +44,6 @@ import type {
   Worker_Handlers_HandleEmail_ResolvedServers,
   Worker_Handlers_HandleEmail_Returns,
   Worker_Handlers_HandleEmail_Routed,
-  Worker_Handlers_HandleEmail_SendResult,
   Worker_Handlers_HandleRequest_AuthEntryName,
   Worker_Handlers_HandleRequest_AuthEntryValue,
   Worker_Handlers_HandleRequest_AuthErrorAttachmentBuffer,
@@ -57,6 +58,7 @@ import type {
   Worker_Handlers_HandleRequest_Config,
   Worker_Handlers_HandleRequest_Ctx,
   Worker_Handlers_HandleRequest_DebugRawRequestStr,
+  Worker_Handlers_HandleRequest_DeliveryResult,
   Worker_Handlers_HandleRequest_FatalErrorMessage,
   Worker_Handlers_HandleRequest_Formatted,
   Worker_Handlers_HandleRequest_Input,
@@ -75,6 +77,7 @@ import type {
   Worker_Handlers_HandleRequest_InterpretErrorStack,
   Worker_Handlers_HandleRequest_Kv,
   Worker_Handlers_HandleRequest_Messages,
+  Worker_Handlers_HandleRequest_Outbox,
   Worker_Handlers_HandleRequest_Parsed,
   Worker_Handlers_HandleRequest_PrimaryServer,
   Worker_Handlers_HandleRequest_RawBodyJsonStr,
@@ -86,7 +89,6 @@ import type {
   Worker_Handlers_HandleRequest_ResponseBody,
   Worker_Handlers_HandleRequest_Returns,
   Worker_Handlers_HandleRequest_Routed,
-  Worker_Handlers_HandleRequest_SendResult,
   Worker_Handlers_HandleRequest_Subdomain,
   Worker_Handlers_HandleRequest_VisitorIpHeader,
   Worker_Handlers_ShouldNotifyError_Category,
@@ -129,12 +131,13 @@ function shouldNotifyError(ctx: Worker_Handlers_ShouldNotifyError_Ctx, category:
  * @param {Worker_Handlers_HandleRequest_Request} request - Request.
  * @param {Worker_Handlers_HandleRequest_Config}  config  - Config.
  * @param {Worker_Handlers_HandleRequest_Kv}      kv      - Kv.
+ * @param {Worker_Handlers_HandleRequest_Outbox}  outbox  - Outbox.
  *
  * @returns {Worker_Handlers_HandleRequest_Returns}
  *
  * @since 2.0.0
  */
-async function handleRequest(request: Worker_Handlers_HandleRequest_Request, config: Worker_Handlers_HandleRequest_Config, kv: Worker_Handlers_HandleRequest_Kv): Worker_Handlers_HandleRequest_Returns {
+async function handleRequest(request: Worker_Handlers_HandleRequest_Request, config: Worker_Handlers_HandleRequest_Config, kv: Worker_Handlers_HandleRequest_Kv, outbox: Worker_Handlers_HandleRequest_Outbox): Worker_Handlers_HandleRequest_Returns {
   try {
     // 1. Receive.
     const received: Worker_Handlers_HandleRequest_Received = await receive(request, config['settings']['base_domain']);
@@ -246,7 +249,7 @@ async function handleRequest(request: Worker_Handlers_HandleRequest_Request, con
           const authErrorAttachmentJson: Worker_Handlers_HandleRequest_AuthErrorAttachmentJson = JSON.stringify(authErrorAttachmentData, null, 2);
           const authErrorAttachmentBuffer: Worker_Handlers_HandleRequest_AuthErrorAttachmentBuffer = new TextEncoder().encode(authErrorAttachmentJson).buffer as ArrayBuffer;
 
-          await send({
+          await deliver(ctx['id'], outbox, {
             messages: [],
             servers: resolvedServers,
             primaryServer,
@@ -375,7 +378,7 @@ async function handleRequest(request: Worker_Handlers_HandleRequest_Request, con
           const interpretErrorAttachmentJson: Worker_Handlers_HandleRequest_InterpretErrorAttachmentJson = JSON.stringify(interpretErrorAttachmentData, null, 2);
           const interpretErrorAttachmentBuffer: Worker_Handlers_HandleRequest_InterpretErrorAttachmentBuffer = new TextEncoder().encode(interpretErrorAttachmentJson).buffer as ArrayBuffer;
 
-          await send({
+          await deliver(ctx['id'], outbox, {
             messages: [],
             servers: resolvedServers,
             primaryServer,
@@ -424,8 +427,8 @@ async function handleRequest(request: Worker_Handlers_HandleRequest_Request, con
     // 7. Split.
     const messages: Worker_Handlers_HandleRequest_Messages = split(formatted['body'], formatted['headers']);
 
-    // 8. Send.
-    const sendResult: Worker_Handlers_HandleRequest_SendResult = await send({
+    // 8. Persist and deliver.
+    const deliveryResult: Worker_Handlers_HandleRequest_DeliveryResult = await deliver(ctx['id'], outbox, {
       messages,
       servers: resolvedServers,
       primaryServer,
@@ -437,7 +440,7 @@ async function handleRequest(request: Worker_Handlers_HandleRequest_Request, con
     });
 
     // 9. Respond.
-    const response: Worker_Handlers_HandleRequest_Response = respond(sendResult, {
+    const response: Worker_Handlers_HandleRequest_Response = respond(deliveryResult, {
       showResponseOutput: config['settings']['show_response_output'],
       contextName: ctx['name'],
       interpreterName: ctx['interpreter'],
@@ -481,12 +484,13 @@ async function handleRequest(request: Worker_Handlers_HandleRequest_Request, con
  * @param {Worker_Handlers_HandleEmail_From}     from     - From.
  * @param {Worker_Handlers_HandleEmail_Config}   config   - Config.
  * @param {Worker_Handlers_HandleEmail_Kv}       kv       - Kv.
+ * @param {Worker_Handlers_HandleEmail_Outbox}   outbox   - Outbox.
  *
  * @returns {Worker_Handlers_HandleEmail_Returns}
  *
  * @since 2.0.0
  */
-async function handleEmail(rawEmail: Worker_Handlers_HandleEmail_RawEmail, from: Worker_Handlers_HandleEmail_From, config: Worker_Handlers_HandleEmail_Config, kv: Worker_Handlers_HandleEmail_Kv): Worker_Handlers_HandleEmail_Returns {
+async function handleEmail(rawEmail: Worker_Handlers_HandleEmail_RawEmail, from: Worker_Handlers_HandleEmail_From, config: Worker_Handlers_HandleEmail_Config, kv: Worker_Handlers_HandleEmail_Kv, outbox: Worker_Handlers_HandleEmail_Outbox): Worker_Handlers_HandleEmail_Returns {
   try {
     // 1. Parse email.
     const parsed: Worker_Handlers_HandleEmail_Parsed = await parseEmail(rawEmail);
@@ -555,7 +559,7 @@ async function handleEmail(rawEmail: Worker_Handlers_HandleEmail_RawEmail, from:
           const authErrorAttachmentJson: Worker_Handlers_HandleEmail_AuthErrorAttachmentJson = JSON.stringify(authErrorAttachmentData, null, 2);
           const authErrorAttachmentBuffer: Worker_Handlers_HandleEmail_AuthErrorAttachmentBuffer = new TextEncoder().encode(authErrorAttachmentJson).buffer as ArrayBuffer;
 
-          await send({
+          await deliver(ctx['id'], outbox, {
             messages: [],
             servers: resolvedServers,
             primaryServer,
@@ -629,7 +633,7 @@ async function handleEmail(rawEmail: Worker_Handlers_HandleEmail_RawEmail, from:
           const interpretErrorAttachmentJson: Worker_Handlers_HandleEmail_InterpretErrorAttachmentJson = JSON.stringify(interpretErrorAttachmentData, null, 2);
           const interpretErrorAttachmentBuffer: Worker_Handlers_HandleEmail_InterpretErrorAttachmentBuffer = new TextEncoder().encode(interpretErrorAttachmentJson).buffer as ArrayBuffer;
 
-          await send({
+          await deliver(ctx['id'], outbox, {
             messages: [],
             servers: resolvedServers,
             primaryServer,
@@ -665,8 +669,8 @@ async function handleEmail(rawEmail: Worker_Handlers_HandleEmail_RawEmail, from:
     // 6. Split.
     const messages: Worker_Handlers_HandleEmail_Messages = split(formatted['body'], formatted['headers']);
 
-    // 7. Send.
-    const sendResult: Worker_Handlers_HandleEmail_SendResult = await send({
+    // 7. Persist and deliver.
+    const deliveryResult: Worker_Handlers_HandleEmail_DeliveryResult = await deliver(ctx['id'], outbox, {
       messages,
       servers: resolvedServers,
       primaryServer,
@@ -680,7 +684,9 @@ async function handleEmail(rawEmail: Worker_Handlers_HandleEmail_RawEmail, from:
     const debugLogStr: Worker_Handlers_HandleEmail_DebugLogStr = JSON.stringify({
       context: ctx['name'],
       interpreter: ctx['interpreter'],
-      servers: sendResult['results'],
+      deliveryState: deliveryResult['state'],
+      pending: deliveryResult['pending'],
+      servers: (deliveryResult['sendResult'] === undefined) ? [] : deliveryResult['sendResult']['results'],
       bodySize: formatted['body'].length,
       parts: messages.length,
     }, null, 2);

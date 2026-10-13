@@ -1,4 +1,5 @@
 import { configSchema } from '../lib/schema.js';
+import { Runner } from './durable-objects/delivery-outbox.js';
 import { handleEmail, handleRequest } from './handlers.js';
 
 import type {
@@ -10,6 +11,7 @@ import type {
   Worker_Index_Email_EnvString,
   Worker_Index_Email_Kv,
   Worker_Index_Email_Message,
+  Worker_Index_Email_Outbox,
   Worker_Index_Email_RawEmail,
   Worker_Index_Email_Reader,
   Worker_Index_Email_ReadResult,
@@ -21,6 +23,7 @@ import type {
   Worker_Index_Fetch_Env,
   Worker_Index_Fetch_EnvString,
   Worker_Index_Fetch_Kv,
+  Worker_Index_Fetch_Outbox,
   Worker_Index_Fetch_Request,
   Worker_Index_Fetch_Result,
   Worker_Index_Fetch_Returns,
@@ -75,8 +78,9 @@ const moduleExports: Worker_Index_ModuleExports = {
     }
 
     const kv: Worker_Index_Fetch_Kv = env['KV'] as Worker_Index_Fetch_Kv;
+    const outbox: Worker_Index_Fetch_Outbox = env['DELIVERY_OUTBOX'] as Worker_Index_Fetch_Outbox;
 
-    return handleRequest(request, result['data'], kv);
+    return handleRequest(request, result['data'], kv, outbox);
   },
   async email(message: Worker_Index_Email_Message, env: Worker_Index_Email_Env): Worker_Index_Email_Returns {
     let settings: Worker_Index_Email_Settings = undefined;
@@ -118,11 +122,16 @@ const moduleExports: Worker_Index_ModuleExports = {
     const decoder: Worker_Index_Email_Decoder = new TextDecoder();
     const rawEmail: Worker_Index_Email_RawEmail = chunks.map((chunk) => decoder.decode(chunk, { stream: true })).join('') + decoder.decode();
     const kv: Worker_Index_Email_Kv = env['KV'] as Worker_Index_Email_Kv;
+    const outbox: Worker_Index_Email_Outbox = env['DELIVERY_OUTBOX'] as Worker_Index_Email_Outbox;
 
-    await handleEmail(rawEmail, message['from'], result['data'], kv);
+    await handleEmail(rawEmail, message['from'], result['data'], kv, outbox);
 
     return;
   },
 };
 
 export default moduleExports;
+
+export {
+  Runner as DeliveryOutbox,
+};

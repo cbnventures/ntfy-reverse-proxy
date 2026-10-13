@@ -15,6 +15,7 @@ import { generateWranglerToml } from '../../../cli/commands/generate.js';
 import { getWorkerEntryPath } from '../../../lib/package-runtime.js';
 
 import type {
+  Tests_Cli_Commands_Generate_GenerateCommand_BindsTheSQLiteDeliveryOutboxDurableObject_Toml,
   Tests_Cli_Commands_Generate_GenerateCommand_ConfigJson,
   Tests_Cli_Commands_Generate_GenerateCommand_EmbedsConfigAsVars_Toml,
   Tests_Cli_Commands_Generate_GenerateCommand_GeneratesEmailRoutingCommentsForEmailContexts_Toml,
@@ -149,6 +150,20 @@ describe('generate command', () => {
     const toml: Tests_Cli_Commands_Generate_GenerateCommand_EmbedsConfigAsVars_Toml = readFileSync(testOutputPath, 'utf-8');
 
     expect(toml).toContain('[vars]');
+
+    return;
+  });
+
+  it('binds the SQLite delivery outbox Durable Object', () => {
+    generateWranglerToml(testConfigPath, testOutputPath);
+
+    const toml: Tests_Cli_Commands_Generate_GenerateCommand_BindsTheSQLiteDeliveryOutboxDurableObject_Toml = readFileSync(testOutputPath, 'utf-8');
+
+    expect(toml).toContain('[[durable_objects.bindings]]');
+
+    expect(toml).toContain('name = "DELIVERY_OUTBOX"');
+
+    expect(toml).toContain('new_sqlite_classes = ["DeliveryOutbox"]');
 
     return;
   });

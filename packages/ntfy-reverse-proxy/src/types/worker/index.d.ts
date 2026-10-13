@@ -1,6 +1,7 @@
 import type { z } from 'zod';
 
 import type { Lib_Schema_ConfigSchema } from '../lib/schema.d.ts';
+import type { Worker_Pipeline_Deliver_Namespace } from './pipeline/deliver.d.ts';
 
 /**
  * Worker - Index - Module Exports.
@@ -9,7 +10,7 @@ import type { Lib_Schema_ConfigSchema } from '../lib/schema.d.ts';
  */
 export type Worker_Index_ModuleExports_FetchRequest = Request;
 
-export type Worker_Index_ModuleExports_FetchEnv = Record<string, string | KVNamespace | undefined>;
+export type Worker_Index_ModuleExports_FetchEnv = Record<string, string | KVNamespace | Worker_Pipeline_Deliver_Namespace | undefined>;
 
 export type Worker_Index_ModuleExports_FetchReturns = Promise<Response>;
 
@@ -30,7 +31,7 @@ export type Worker_Index_ModuleExports_EmailMessage = {
   raw: Worker_Index_ModuleExports_EmailMessage_Raw;
 };
 
-export type Worker_Index_ModuleExports_EmailEnv = Record<string, string | KVNamespace | undefined>;
+export type Worker_Index_ModuleExports_EmailEnv = Record<string, string | KVNamespace | Worker_Pipeline_Deliver_Namespace | undefined>;
 
 export type Worker_Index_ModuleExports_EmailReturns = Promise<void>;
 
@@ -61,7 +62,7 @@ export type Worker_Index_Email_Message = {
   raw: Worker_Index_Email_Message_Raw;
 };
 
-export type Worker_Index_Email_Env = Record<string, string | KVNamespace | undefined>;
+export type Worker_Index_Email_Env = Record<string, string | KVNamespace | Worker_Pipeline_Deliver_Namespace | undefined>;
 
 export type Worker_Index_Email_Returns = Promise<void>;
 
@@ -89,6 +90,8 @@ export type Worker_Index_Email_RawEmail = string;
 
 export type Worker_Index_Email_Kv = KVNamespace | undefined;
 
+export type Worker_Index_Email_Outbox = Worker_Pipeline_Deliver_Namespace & {};
+
 /**
  * Worker - Index - Fetch.
  *
@@ -96,7 +99,7 @@ export type Worker_Index_Email_Kv = KVNamespace | undefined;
  */
 export type Worker_Index_Fetch_Request = Request;
 
-export type Worker_Index_Fetch_Env = Record<string, string | KVNamespace | undefined>;
+export type Worker_Index_Fetch_Env = Record<string, string | KVNamespace | Worker_Pipeline_Deliver_Namespace | undefined>;
 
 export type Worker_Index_Fetch_Returns = Promise<Response>;
 
@@ -111,3 +114,5 @@ export type Worker_Index_Fetch_EnvString = string;
 export type Worker_Index_Fetch_Result = z.ZodSafeParseResult<Lib_Schema_ConfigSchema>;
 
 export type Worker_Index_Fetch_Kv = KVNamespace | undefined;
+
+export type Worker_Index_Fetch_Outbox = Worker_Pipeline_Deliver_Namespace & {};

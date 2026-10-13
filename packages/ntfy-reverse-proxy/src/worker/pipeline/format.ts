@@ -13,7 +13,7 @@ import type {
 } from '../../types/worker/pipeline/format.d.ts';
 
 /**
- * Worker - Pipeline - Format.
+ * Worker - Pipeline - Format - Format.
  *
  * Transforms a parsed notification object into the final request
  * body and ntfy-compatible headers for delivery to the server.

@@ -51,6 +51,15 @@ export type Tests_Worker_Pipeline_Respond_Respond_IncludesDebugInfoWhenShowRespo
 
 export type Tests_Worker_Pipeline_Respond_Respond_IncludesDebugInfoWhenShowResponseOutputIsTrue_Body = Record<string, unknown>;
 
+/**
+ * Tests - Worker - Pipeline - Respond - Respond - Returns Accepted When Durable Delivery Is Queued.
+ *
+ * @since UNRELEASED
+ */
+export type Tests_Worker_Pipeline_Respond_Respond_ReturnsAcceptedWhenDurableDeliveryIsQueued_Response = Response;
+
+export type Tests_Worker_Pipeline_Respond_Respond_ReturnsAcceptedWhenDurableDeliveryIsQueued_Body = Record<string, unknown>;
+
 export type Tests_Worker_Pipeline_Respond_Respond_ReturnsFailedWhenAllServersFail_SendResult_ResultsItem_Name = string;
 export type Tests_Worker_Pipeline_Respond_Respond_ReturnsFailedWhenAllServersFail_SendResult_ResultsItem_Success = boolean;
 export type Tests_Worker_Pipeline_Respond_Respond_ReturnsFailedWhenAllServersFail_SendResult_ResultsItem_Status = number;

@@ -1,7 +1,7 @@
 ---
 id: architecture
 title: Architecture
-description: Trace how requests move through a 9-stage HTTP pipeline and an 8-stage email pipeline, with a separate Node.js CLI for configuration.
+description: Trace how requests move through a 10-stage HTTP pipeline and a 9-stage email pipeline, including durable per-context delivery lanes.
 sidebar_position: 2
 keywords:
   - ntfy reverse proxy
@@ -29,9 +29,9 @@ The <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to
 
 ## HTTP Pipeline
 
-The <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> processes HTTP requests through a linear 9-stage <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology>. Each stage transforms data and passes it to the next.
+The <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> processes HTTP requests through a linear 10-stage <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology>. Each stage transforms data and passes it to the next.
 
-If any stage fails, the <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology> stops and returns an error response.
+Failures before durable storage stop the <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology> and return an error response. A delivery failure after storage returns HTTP 202 and leaves the notification queued instead.
 
 ```mermaid
 graph TD
@@ -53,7 +53,8 @@ graph TD
 
     subgraph Delivery [Delivery]
         direction TB
-        Split --> Send
+        Split --> Deliver[Durable Deliver]
+        Deliver --> Send
         Send --> Respond
     end
 ```
@@ -89,19 +90,26 @@ graph TD
 
 - Messages under the limit pass through as a single part.
 
+**Deliver** — Saves the formatted notification and optional attachment in the SQLite-backed delivery outbox assigned to the context ID, then asks that lane to drain oldest-first.
+
+- A failed head stays saved and blocks only that context's later notifications.
+- The next notification for the same context triggers another attempt; there is no timer or manual retry action.
+- Other context lanes continue independently. See [Durable Delivery](/docs/features/durable-delivery/) for the full behavior.
+
 **Send** — Delivers notification parts to ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology> according to the delivery mode.
 
 - In `send-once` mode, tries the <Terminology title="preferred ntfy server, tried first" to="/docs/reference/terminology#primary-server">primary server</Terminology> first, then fallbacks in order.
 - In `send-all` mode, sends to all <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology> in parallel.
 - Handles <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachments</Terminology> as a separate PUT request per <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>.
+- Checkpoints successful message parts and attachments so retries skip confirmed work.
 
-**Respond** — Builds the JSON response with a status of `"success"`, `"partial"`, or `"failed"`. Returns HTTP 200 if any <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> succeeded, 502 if all failed.
+**Respond** — Builds the JSON response. Completed delivery returns HTTP 200. A notification that is safely saved but still waiting returns `"queued"` with HTTP 202.
 
 - Includes detailed <Terminology title="the show_response_output setting" to="/docs/reference/terminology#debug-mode">debug output</Terminology> if `show_response_output` is enabled.
 
 ## Email Pipeline
 
-The email <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology> processes messages from <Terminology title="Cloudflare feature that forwards email to the Worker" to="/docs/reference/terminology#cloudflare-email-routing">Cloudflare Email Routing</Terminology> through 8 stages.
+The email <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology> processes messages from <Terminology title="Cloudflare feature that forwards email to the Worker" to="/docs/reference/terminology#cloudflare-email-routing">Cloudflare Email Routing</Terminology> through 9 stages.
 
 ```mermaid
 graph TD
@@ -122,7 +130,8 @@ graph TD
 
     subgraph Delivery [Delivery]
         direction TB
-        Split --> Send
+        Split --> Deliver[Durable Deliver]
+        Deliver --> Send
         Send --> Log
     end
 ```
@@ -135,7 +144,7 @@ graph TD
 
 **Authenticate** — Validates the sender address against the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s `allowed_from` field. Supports exact match and wildcard patterns (`*@domain.com`).
 
-The remaining stages (Interpret, Format, Split, Send) work identically to the HTTP <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology>.
+The remaining stages (Interpret, Format, Split, Deliver, Send) work identically to the HTTP <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology>.
 
 **Log** — Outputs a debug JSON log with <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> name, <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>, <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> results, body size, and part count to Cloudflare's real-time logs.
 
@@ -177,6 +186,7 @@ The CLI reads and writes `config.json` through a config I/O layer. All config mu
 | Worker entry point | Try/catch around entire <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology>. Returns JSON with HTTP status. Includes <Terminology title="the show_response_output setting" to="/docs/reference/terminology#debug-mode">debug details</Terminology> if `show_response_output` is on.             |
 | Pipeline stages    | Each stage returns a typed result or throws. The entry point identifies which stage failed.                                                                                                                                                                                                                                                                               |
 | Interpreters       | Manual payload extraction. The `ntfy-json` <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> uses strict schema validation; all others use lenient field detection. Optionally forwards to `error_topic` if configured.                                                    |
+| Delivery outbox    | Persists before sending. Keeps a failed head in its context lane and retries it when the next notification for that context arrives.                                                                                                                                                                                                                                      |
 | Send/fallback      | Never throws. Collects per-<Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> results. Primary failure triggers fallback. Returns success/failure per <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>. |
 | CLI                | Try/catch at command level. Chalk-formatted errors. Non-zero exit code on failure.                                                                                                                                                                                                                                                                                        |
 | Config validation  | Schema validation on load. Checks orphaned <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> refs, duplicate <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> IDs, missing fields, invalid token format.          |
@@ -187,6 +197,8 @@ The CLI reads and writes `config.json` through a config I/O layer. All config mu
 src/
   worker/
     index.ts                — Worker entry point (fetch + email handlers)
+    durable-objects/
+      delivery-outbox.ts    — Per-context SQLite FIFO lane
     pipeline/
       receive.ts            — Extract request metadata
       route.ts              — Match subdomain/email to context
@@ -197,6 +209,8 @@ src/
       format.ts             — Build message body and ntfy headers
       split.ts              — Smart split for large messages
       email.ts              — RFC 5322 email parser
+      deliver.ts            — Persist and trigger the context lane
+      drain-fifo.ts         — Oldest-first drain behavior
       send.ts               — Deliver to servers with fallback
       respond.ts            — Build HTTP response
     interpreters/

@@ -1,4 +1,9 @@
 import type {
+  Worker_Pipeline_Deliver_Result,
+  Worker_Pipeline_Deliver_ResultDeliveryId,
+  Worker_Pipeline_Deliver_ResultPending,
+} from './deliver.d.ts';
+import type {
   Worker_Pipeline_Send_Result,
   Worker_Pipeline_Send_ResultFallbackNote,
   Worker_Pipeline_Send_ResultResults,
@@ -33,6 +38,8 @@ export type Worker_Pipeline_Respond_Options = {
   hasAttachment?: Worker_Pipeline_Respond_OptionsHasAttachment;
 };
 
+export type Worker_Pipeline_Respond_DeliveryResult = Worker_Pipeline_Deliver_Result;
+
 export type Worker_Pipeline_Respond_SendResult = Worker_Pipeline_Send_Result;
 
 export type Worker_Pipeline_Respond_Returns = Response;
@@ -59,7 +66,7 @@ export type Worker_Pipeline_Respond_AnySuccess = boolean;
 
 export type Worker_Pipeline_Respond_AllSuccess = boolean;
 
-export type Worker_Pipeline_Respond_Status = 'success' | 'partial' | 'failed';
+export type Worker_Pipeline_Respond_Status = 'success' | 'partial' | 'failed' | 'queued';
 
 export type Worker_Pipeline_Respond_HttpStatus = number;
 
@@ -71,11 +78,17 @@ export type Worker_Pipeline_Respond_BodyContext = string | undefined;
 
 export type Worker_Pipeline_Respond_BodyInterpreter = string | undefined;
 
+export type Worker_Pipeline_Respond_BodyDeliveryId = Worker_Pipeline_Deliver_ResultDeliveryId | undefined;
+
+export type Worker_Pipeline_Respond_BodyPending = Worker_Pipeline_Deliver_ResultPending | undefined;
+
 export type Worker_Pipeline_Respond_Body = {
   status: Worker_Pipeline_Respond_BodyStatus;
   fallback_note?: Worker_Pipeline_Respond_BodyFallbackNote;
   context?: Worker_Pipeline_Respond_BodyContext;
   interpreter?: Worker_Pipeline_Respond_BodyInterpreter;
+  delivery_id?: Worker_Pipeline_Respond_BodyDeliveryId;
+  pending?: Worker_Pipeline_Respond_BodyPending;
   servers?: Worker_Pipeline_Respond_BodyServers;
   message?: Worker_Pipeline_Respond_BodyMessage;
 };
@@ -112,6 +125,26 @@ export type Worker_Pipeline_Respond_BodyMessage = {
   has_attachment: Worker_Pipeline_Respond_BodyMessageHasAttachment;
 };
 
+export type Worker_Pipeline_Respond_Respond_QueuedBodyStatus = 'queued';
+
+export type Worker_Pipeline_Respond_Respond_QueuedBodyDeliveryId = Worker_Pipeline_Deliver_ResultDeliveryId | undefined;
+
+export type Worker_Pipeline_Respond_Respond_QueuedBodyPending = Worker_Pipeline_Deliver_ResultPending | undefined;
+
+export type Worker_Pipeline_Respond_Respond_QueuedBodyContext = string | undefined;
+
+export type Worker_Pipeline_Respond_Respond_QueuedBodyInterpreter = string | undefined;
+
+export type Worker_Pipeline_Respond_Respond_QueuedBody = {
+  status: Worker_Pipeline_Respond_Respond_QueuedBodyStatus;
+  delivery_id?: Worker_Pipeline_Respond_Respond_QueuedBodyDeliveryId;
+  pending?: Worker_Pipeline_Respond_Respond_QueuedBodyPending;
+  context?: Worker_Pipeline_Respond_Respond_QueuedBodyContext;
+  interpreter?: Worker_Pipeline_Respond_Respond_QueuedBodyInterpreter;
+};
+
+export type Worker_Pipeline_Respond_Respond_SendResult = Worker_Pipeline_Send_Result & {};
+
 export type Worker_Pipeline_Respond_Respond_ResultsItemName = string;
 
 export type Worker_Pipeline_Respond_Respond_ResultsItemSuccess = boolean;
@@ -134,7 +167,7 @@ export type Worker_Pipeline_Respond_Respond_Results = Worker_Pipeline_Respond_Re
 
 export type Worker_Pipeline_Respond_Respond_FallbackNote = string | undefined;
 
-export type Worker_Pipeline_Respond_Respond_PartialStatus = 'success' | 'partial' | 'failed';
+export type Worker_Pipeline_Respond_Respond_PartialStatus = 'partial' | 'failed';
 
 export type Worker_Pipeline_Respond_Respond_ServersItemName = string;
 

@@ -265,4 +265,6 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: "${{ secrets.PROJECT_CLOUDFLARE_API_TOKEN }}"
           CLOUDFLARE_ACCOUNT_ID: "${{ vars.PROJECT_CLOUDFLARE_ACCOUNT_ID }}"
-        run: "npx -y wrangler@3 pages deploy ./apps/docs/build --project-name=${{ vars.DOCS_CLOUDFLARE_PROJECT_NAME }} --branch=${{ github.event.repository.default_branch }}"
+          CLOUDFLARE_PROJECT_NAME: "${{ vars.DOCS_CLOUDFLARE_PROJECT_NAME }}"
+          DEFAULT_BRANCH: "${{ github.event.repository.default_branch }}"
+        run: "npx -y wrangler@3 pages deploy ./apps/docs/build --project-name=\"$CLOUDFLARE_PROJECT_NAME\" --branch=\"$DEFAULT_BRANCH\""

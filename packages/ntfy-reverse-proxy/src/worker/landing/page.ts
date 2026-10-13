@@ -46,7 +46,7 @@ function escapeHtml(str: Worker_Landing_Page_EscapeHtml_Str): Worker_Landing_Pag
 }
 
 /**
- * Worker - Landing - Page.
+ * Worker - Landing - Page - Landing Page.
  *
  * Renders the HTML landing page shown when a GET request
  * arrives at the reverse proxy root endpoint.

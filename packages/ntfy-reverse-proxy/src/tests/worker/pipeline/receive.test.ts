@@ -23,7 +23,7 @@ import type {
 } from '../../../types/tests/worker/pipeline/receive.test.d.ts';
 
 /**
- * Tests - Worker - Pipeline - Receive.
+ * Tests - Worker - Pipeline - Receive - Receive.
  *
  * @since 2.0.0
  */

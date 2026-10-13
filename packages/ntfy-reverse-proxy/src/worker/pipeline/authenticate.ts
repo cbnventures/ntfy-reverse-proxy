@@ -69,7 +69,7 @@ function timingSafeEqual(a: Worker_Pipeline_Authenticate_TimingSafeEqual_A, b: W
 }
 
 /**
- * Worker - Pipeline - Authenticate.
+ * Worker - Pipeline - Authenticate - Authenticate.
  *
  * Validates incoming requests against the configured auth method,
  * checking HTTP bearer tokens or email sender addresses.

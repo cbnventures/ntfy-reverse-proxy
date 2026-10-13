@@ -6,13 +6,16 @@ import type {
   Lib_Schema_ServerConfig,
 } from '../lib/schema.d.ts';
 import type { Worker_Pipeline_Authenticate_Result } from './pipeline/authenticate.d.ts';
+import type {
+  Worker_Pipeline_Deliver_Namespace,
+  Worker_Pipeline_Deliver_Result,
+} from './pipeline/deliver.d.ts';
 import type { Worker_Pipeline_Email_Result } from './pipeline/email.d.ts';
 import type { Worker_Pipeline_Format_Result } from './pipeline/format.d.ts';
 import type { Worker_Pipeline_Interpret_Result } from './pipeline/interpret.d.ts';
 import type { Worker_Pipeline_Parse_Result } from './pipeline/parse.d.ts';
 import type { Worker_Pipeline_Receive_Result } from './pipeline/receive.d.ts';
 import type { Worker_Pipeline_Route_Result } from './pipeline/route.d.ts';
-import type { Worker_Pipeline_Send_Result } from './pipeline/send.d.ts';
 import type { Worker_Pipeline_Split_MessagePart } from './pipeline/split.d.ts';
 
 /**
@@ -27,6 +30,8 @@ export type Worker_Handlers_HandleEmail_From = string;
 export type Worker_Handlers_HandleEmail_Config = Lib_Schema_ConfigSchema;
 
 export type Worker_Handlers_HandleEmail_Kv = KVNamespace | undefined;
+
+export type Worker_Handlers_HandleEmail_Outbox = Worker_Pipeline_Deliver_Namespace;
 
 export type Worker_Handlers_HandleEmail_Returns = Promise<void>;
 
@@ -76,7 +81,7 @@ export type Worker_Handlers_HandleEmail_Formatted = Worker_Pipeline_Format_Resul
 
 export type Worker_Handlers_HandleEmail_Messages = Array<Worker_Pipeline_Split_MessagePart>;
 
-export type Worker_Handlers_HandleEmail_SendResult = Worker_Pipeline_Send_Result & {};
+export type Worker_Handlers_HandleEmail_DeliveryResult = Worker_Pipeline_Deliver_Result & {};
 
 export type Worker_Handlers_HandleEmail_DebugLogStr = string;
 
@@ -94,6 +99,8 @@ export type Worker_Handlers_HandleRequest_Request = Request;
 export type Worker_Handlers_HandleRequest_Config = Lib_Schema_ConfigSchema;
 
 export type Worker_Handlers_HandleRequest_Kv = KVNamespace | undefined;
+
+export type Worker_Handlers_HandleRequest_Outbox = Worker_Pipeline_Deliver_Namespace;
 
 export type Worker_Handlers_HandleRequest_Returns = Promise<Response>;
 
@@ -169,7 +176,7 @@ export type Worker_Handlers_HandleRequest_Formatted = Worker_Pipeline_Format_Res
 
 export type Worker_Handlers_HandleRequest_Messages = Array<Worker_Pipeline_Split_MessagePart>;
 
-export type Worker_Handlers_HandleRequest_SendResult = Worker_Pipeline_Send_Result & {};
+export type Worker_Handlers_HandleRequest_DeliveryResult = Worker_Pipeline_Deliver_Result & {};
 
 export type Worker_Handlers_HandleRequest_Response = Response;
 

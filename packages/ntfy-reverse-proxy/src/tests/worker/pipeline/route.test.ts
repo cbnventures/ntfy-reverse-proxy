@@ -73,7 +73,7 @@ const mockConfig: Tests_Worker_Pipeline_Route_MockConfig = {
 };
 
 /**
- * Tests - Worker - Pipeline - Route.
+ * Tests - Worker - Pipeline - Route - Route.
  *
  * @since 2.0.0
  */
