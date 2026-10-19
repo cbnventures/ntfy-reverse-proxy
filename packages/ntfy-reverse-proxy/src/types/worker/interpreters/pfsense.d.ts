@@ -1,6 +1,6 @@
 import type {
   Worker_Pipeline_Interpret_Input,
-  Worker_Pipeline_Interpret_NotificationObjectPriority,
+  Worker_Pipeline_Interpret_Priority,
   Worker_Pipeline_Interpret_Result,
 } from '../pipeline/interpret.d.ts';
 
@@ -11,9 +11,9 @@ import type {
  */
 export type Worker_Interpreters_Pfsense_Input = Worker_Pipeline_Interpret_Input;
 
-export type Worker_Interpreters_Pfsense_Result = Worker_Pipeline_Interpret_Result;
+export type Worker_Interpreters_Pfsense_Returns = Worker_Pipeline_Interpret_Result;
 
-export type Worker_Interpreters_Pfsense_PfsenseInterpreter = (input: Worker_Interpreters_Pfsense_Input) => Worker_Interpreters_Pfsense_Result;
+export type Worker_Interpreters_Pfsense_PfsenseInterpreter = (input: Worker_Interpreters_Pfsense_Input) => Worker_Interpreters_Pfsense_Returns;
 
 /**
  * Worker - Interpreters - Pfsense - Extract Content Tags.
@@ -35,7 +35,7 @@ export type Worker_Interpreters_Pfsense_ExtractContentTags_Tags = string[];
  */
 export type Worker_Interpreters_Pfsense_MapKeywordsToPriority_Text = string;
 
-export type Worker_Interpreters_Pfsense_MapKeywordsToPriority_Returns = Worker_Pipeline_Interpret_NotificationObjectPriority;
+export type Worker_Interpreters_Pfsense_MapKeywordsToPriority_Returns = Worker_Pipeline_Interpret_Priority;
 
 export type Worker_Interpreters_Pfsense_MapKeywordsToPriority_Lower = string;
 
@@ -44,7 +44,7 @@ export type Worker_Interpreters_Pfsense_MapKeywordsToPriority_Lower = string;
  *
  * @since 2.0.0
  */
-export type Worker_Interpreters_Pfsense_MapPriorityToEmojiTag_Priority = Worker_Pipeline_Interpret_NotificationObjectPriority;
+export type Worker_Interpreters_Pfsense_MapPriorityToEmojiTag_Priority = Worker_Pipeline_Interpret_Priority;
 
 export type Worker_Interpreters_Pfsense_MapPriorityToEmojiTag_Returns = string;
 

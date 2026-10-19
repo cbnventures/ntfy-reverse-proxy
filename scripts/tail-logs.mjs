@@ -94,6 +94,17 @@ const RESTART_BUFFER_MS = 300_000; // Restart 5 min before expiry.
  */
 
 /**
+ * Tail Logs - Tail Config.
+ *
+ * Describes one discovered worker configuration that can be selected
+ * when starting a tail session.
+ *
+ * @typedef {{ path: string, workerName: string, baseDomain: string }} TailConfig
+ *
+ * @since 2.2.1
+ */
+
+/**
  * Tail Logs - Server Result.
  *
  * Shape of one per-server interpreter result parsed out of a debug log line so
@@ -206,6 +217,8 @@ const c = {
  * Reads the Cloudflare API token from the project .env file, exiting with an
  * error when it is missing so downstream API calls never run unauthenticated.
  *
+ * @returns {string}
+ *
  * @since 2.0.0
  */
 function loadToken() {
@@ -234,6 +247,8 @@ function loadToken() {
  *
  * Walks up from cwd looking for a package.json that declares workspaces so the
  * monorepo root can be searched for a matching config file.
+ *
+ * @returns {string | undefined}
  *
  * @since 2.0.0
  */
@@ -266,6 +281,8 @@ function findProjectRoot() {
  *
  * Searches cwd, project root, and config dir for config.json
  * files, matching the same strategy as the manage CLI.
+ *
+ * @returns {TailConfig[]}
  *
  * @since 2.0.0
  */
@@ -330,6 +347,8 @@ function discoverConfigs() {
  * Discovers candidate configs and prompts the user to choose when several are
  * found, exiting cleanly when none exist or the prompt is cancelled.
  *
+ * @returns {Promise<TailConfig>}
+ *
  * @since 2.0.0
  */
 async function chooseConfig() {
@@ -342,7 +361,13 @@ async function chooseConfig() {
   }
 
   if (configs.length === 1) {
-    return configs[0];
+    const config = configs[0];
+
+    if (config === undefined) {
+      process.exit(1);
+    }
+
+    return config;
   }
 
   const response = await prompts({
@@ -1005,6 +1030,8 @@ const accountId = await getAccountId(token, config.baseDomain);
  *
  * Handles Ctrl+C and termination by removing stale sessions before exiting, or
  * exits immediately when a second signal arrives mid-cleanup.
+ *
+ * @returns {Promise<void>}
  *
  * @since 2.0.0
  */

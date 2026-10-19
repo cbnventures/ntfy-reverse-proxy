@@ -42,6 +42,8 @@ const interpreterMap: Worker_Pipeline_Interpret_InterpreterMap = {
  * Looks up the named interpreter and invokes it against the
  * parsed input to produce a structured notification object.
  *
+ * @returns {Worker_Pipeline_Interpret_Returns}
+ *
  * @since 2.0.0
  */
 async function interpret(interpreterName: Worker_Pipeline_Interpret_Interpret_InterpreterName, input: Worker_Pipeline_Interpret_Input, context?: Worker_Pipeline_Interpret_Context): Worker_Pipeline_Interpret_Returns {

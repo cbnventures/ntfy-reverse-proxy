@@ -197,6 +197,8 @@ import type {
  * Orchestrates the top-level interactive CLI menu loop.
  * Dispatches user selections to the appropriate sub-menus.
  *
+ * @returns {Cli_Menu_Interactive_InteractiveMenu_Returns}
+ *
  * @since 2.0.0
  */
 async function interactiveMenu(configDirs: Cli_Menu_Interactive_InteractiveMenu_ConfigDirs): Cli_Menu_Interactive_InteractiveMenu_Returns {
@@ -303,6 +305,8 @@ async function interactiveMenu(configDirs: Cli_Menu_Interactive_InteractiveMenu_
  *
  * Presents the server management sub-menu in a loop.
  * Handles adding, editing, and removing server entries.
+ *
+ * @returns {Cli_Menu_Interactive_ServerMenu_Returns}
  *
  * @since 2.0.0
  */
@@ -566,6 +570,8 @@ async function serverMenu(configPath: Cli_Menu_Interactive_ServerMenu_ConfigPath
  *
  * Presents the context management sub-menu in a loop.
  * Handles adding, editing, and removing context entries.
+ *
+ * @returns {Cli_Menu_Interactive_ContextMenu_Returns}
  *
  * @since 2.0.0
  */
@@ -1069,6 +1075,8 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
  * Walks the user through creating a new HTTP or email context.
  * Collects all required fields before persisting the configuration.
  *
+ * @returns {Cli_Menu_Interactive_AddContextFlow_Returns}
+ *
  * @since 2.0.0
  */
 async function addContextFlow(configPath: Cli_Menu_Interactive_AddContextFlow_ConfigPath, servers: Cli_Menu_Interactive_AddContextFlow_Servers): Cli_Menu_Interactive_AddContextFlow_Returns {
@@ -1395,6 +1403,8 @@ async function addContextFlow(configPath: Cli_Menu_Interactive_AddContextFlow_Co
  *
  * Prompts the user for updated settings values.
  * Persists changes to the configuration file on confirmation.
+ *
+ * @returns {Cli_Menu_Interactive_SettingsFlow_Returns}
  *
  * @since 2.0.0
  */

@@ -55,6 +55,8 @@ if (envDir !== undefined) {
  * Resolves the configuration file path and copies the sample
  * config into place when no config file exists yet.
  *
+ * @returns {Cli_Index_GetConfigFilePath_Returns}
+ *
  * @since 2.0.0
  */
 function getConfigFilePath(): Cli_Index_GetConfigFilePath_Returns {
@@ -96,6 +98,8 @@ program.name('ntfy-reverse-proxy').alias('nrp').description('CLI management tool
  *
  * Bootstraps the CLI by resolving config, registering all
  * subcommands, and dispatching to the interactive menu or parser.
+ *
+ * @returns {Cli_Index_Main_Returns}
  *
  * @since 2.0.0
  */

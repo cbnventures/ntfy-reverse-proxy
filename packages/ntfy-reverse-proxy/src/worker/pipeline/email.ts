@@ -67,6 +67,8 @@ import type {
  * Extracts a bare email address from a header value that may
  * contain a display name and angle-bracket-wrapped address.
  *
+ * @returns {Worker_Pipeline_Email_ExtractEmailAddress_Returns}
+ *
  * @since 2.0.0
  */
 function extractEmailAddress(header: Worker_Pipeline_Email_ExtractEmailAddress_Header): Worker_Pipeline_Email_ExtractEmailAddress_Returns {
@@ -80,6 +82,8 @@ function extractEmailAddress(header: Worker_Pipeline_Email_ExtractEmailAddress_H
  *
  * Splits a nested multipart MIME section into its parts and
  * returns the first text/plain and text/html bodies found.
+ *
+ * @returns {Worker_Pipeline_Email_ExtractFromMultipart_Returns}
  *
  * @since 2.0.0
  */
@@ -137,6 +141,8 @@ function extractFromMultipart(body: Worker_Pipeline_Email_ExtractFromMultipart_B
  *
  * Parses a raw RFC 5322 email string into structured parts by
  * splitting headers from body and handling multipart MIME.
+ *
+ * @returns {Worker_Pipeline_Email_ParseEmail_Returns}
  *
  * @since 2.0.0
  */

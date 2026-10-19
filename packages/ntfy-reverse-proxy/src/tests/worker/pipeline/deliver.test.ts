@@ -13,7 +13,7 @@ import type {
 /**
  * Tests - Worker - Pipeline - Deliver - Deliver.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 describe('deliver', () => {
   it('uses the explicit context ID as the isolated lane name', async () => {

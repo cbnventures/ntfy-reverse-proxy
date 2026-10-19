@@ -55,13 +55,13 @@ export type Lib_Schema_EmailContextConfig = {
   id: Lib_Schema_EmailContextConfigId;
   interpreter: Lib_Schema_EmailContextConfigInterpreter;
   topic: Lib_Schema_EmailContextConfigTopic;
-  error_topic?: Lib_Schema_EmailContextConfigErrorTopic | undefined;
-  error_events?: Lib_Schema_EmailContextConfigErrorEvents | undefined;
+  error_topic?: Lib_Schema_EmailContextConfigErrorTopic;
+  error_events?: Lib_Schema_EmailContextConfigErrorEvents;
   mode: Lib_Schema_EmailContextConfigMode;
   show_visitor_info: Lib_Schema_EmailContextConfigShowVisitorInfo;
   primary_server: Lib_Schema_EmailContextConfigPrimaryServer;
   servers: Lib_Schema_EmailContextConfigServers;
-  allowed_from?: Lib_Schema_EmailContextConfigAllowedFrom | undefined;
+  allowed_from?: Lib_Schema_EmailContextConfigAllowedFrom;
 };
 
 export type Lib_Schema_HttpContextConfigName = string;
@@ -94,13 +94,13 @@ export type Lib_Schema_HttpContextConfig = {
   id: Lib_Schema_HttpContextConfigId;
   interpreter: Lib_Schema_HttpContextConfigInterpreter;
   topic: Lib_Schema_HttpContextConfigTopic;
-  error_topic?: Lib_Schema_HttpContextConfigErrorTopic | undefined;
-  error_events?: Lib_Schema_HttpContextConfigErrorEvents | undefined;
+  error_topic?: Lib_Schema_HttpContextConfigErrorTopic;
+  error_events?: Lib_Schema_HttpContextConfigErrorEvents;
   mode: Lib_Schema_HttpContextConfigMode;
   show_visitor_info: Lib_Schema_HttpContextConfigShowVisitorInfo;
   primary_server: Lib_Schema_HttpContextConfigPrimaryServer;
   servers: Lib_Schema_HttpContextConfigServers;
-  token?: Lib_Schema_HttpContextConfigToken | undefined;
+  token?: Lib_Schema_HttpContextConfigToken;
 };
 
 export type Lib_Schema_ContextConfig = Lib_Schema_HttpContextConfig | Lib_Schema_EmailContextConfig;

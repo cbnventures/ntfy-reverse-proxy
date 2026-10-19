@@ -16,6 +16,8 @@ import type {
  * Loads the configuration file and returns the settings object
  * so callers can inspect or display current values.
  *
+ * @returns {Cli_Commands_Settings_GetSettings_Returns}
+ *
  * @since 2.0.0
  */
 function getSettings(configPath: Cli_Commands_Settings_GetSettings_ConfigPath): Cli_Commands_Settings_GetSettings_Returns {
@@ -27,6 +29,8 @@ function getSettings(configPath: Cli_Commands_Settings_GetSettings_ConfigPath): 
  *
  * Merges partial setting updates into the current settings
  * and persists the result to the configuration file.
+ *
+ * @returns {Cli_Commands_Settings_UpdateSettings_Returns}
  *
  * @since 2.0.0
  */

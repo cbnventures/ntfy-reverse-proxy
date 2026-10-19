@@ -23,7 +23,7 @@ import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
 
 The configuration lives in a single `config.json` file managed through the CLI (never edited by hand in production). The file is gitignored — only `config.sample.json` is committed.
 
-The config has three top-level sections: `settings`, `servers`, and `contexts`.
+The config has three top-level sections: `servers`, `contexts`, and `settings`.
 
 ## Settings
 
@@ -99,11 +99,6 @@ This example shows a complete `config.json` with two <Terminology title="an ntfy
 
 ```json
 {
-  "settings": {
-    "worker_name": "ntfy-reverse-proxy",
-    "base_domain": "ntfy.example.com",
-    "show_response_output": false
-  },
   "servers": [
     {
       "name": "primary",
@@ -189,7 +184,12 @@ This example shows a complete `config.json` with two <Terminology title="an ntfy
       "servers": ["primary"],
       "allowed_from": "*@unifi.local"
     }
-  ]
+  ],
+  "settings": {
+    "worker_name": "ntfy-reverse-proxy",
+    "base_domain": "ntfy.example.com",
+    "show_response_output": false
+  }
 }
 ```
 

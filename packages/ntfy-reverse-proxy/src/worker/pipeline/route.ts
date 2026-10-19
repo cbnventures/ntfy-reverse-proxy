@@ -1,10 +1,10 @@
-import type { Lib_Schema_ServerConfig } from '../../types/lib/schema.d.ts';
 import type {
   Worker_Pipeline_Route_Config,
   Worker_Pipeline_Route_Context,
   Worker_Pipeline_Route_Identifier,
   Worker_Pipeline_Route_PrimaryServer,
   Worker_Pipeline_Route_Returns,
+  Worker_Pipeline_Route_Route_Filter_TypeGuard,
   Worker_Pipeline_Route_Route_ResolvedServers,
   Worker_Pipeline_Route_RouteType,
 } from '../../types/worker/pipeline/route.d.ts';
@@ -14,6 +14,8 @@ import type {
  *
  * Matches the incoming request to a configured context by type
  * and identifier, then resolves the associated server list.
+ *
+ * @returns {Worker_Pipeline_Route_Returns}
  *
  * @since 2.0.0
  */
@@ -31,7 +33,7 @@ function route(routeType: Worker_Pipeline_Route_RouteType, identifier: Worker_Pi
 
   const resolvedServers: Worker_Pipeline_Route_Route_ResolvedServers = context['servers']
     .map((serverName) => config['servers'].find((server) => server['name'] === serverName))
-    .filter((server): server is Lib_Schema_ServerConfig => server !== undefined);
+    .filter((server): server is Worker_Pipeline_Route_Route_Filter_TypeGuard => server !== undefined);
 
   const primaryServer: Worker_Pipeline_Route_PrimaryServer = config['servers'].find(
     (server) => server['name'] === context['primary_server'],

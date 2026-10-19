@@ -18,6 +18,8 @@ import type {
  * Transforms a parsed notification object into the final request
  * body and ntfy-compatible headers for delivery to the server.
  *
+ * @returns {Worker_Pipeline_Format_Returns}
+ *
  * @since 2.0.0
  */
 function format(notification: Worker_Pipeline_Format_Notification, options: Worker_Pipeline_Format_Options): Worker_Pipeline_Format_Returns {

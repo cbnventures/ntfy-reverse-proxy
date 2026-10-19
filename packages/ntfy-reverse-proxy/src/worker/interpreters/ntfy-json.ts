@@ -7,7 +7,7 @@ import type {
   Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_Decoder,
   Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_Notification,
   Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_Parsed,
-  Worker_Interpreters_NtfyJson_Result,
+  Worker_Interpreters_NtfyJson_Returns,
 } from '../../types/worker/interpreters/ntfy-json.d.ts';
 
 /**
@@ -52,9 +52,11 @@ const ntfyJsonSchema = z.object({
  * Parses incoming payloads against the ntfy JSON schema and returns
  * the validated notification object for downstream formatting.
  *
+ * @returns {Worker_Interpreters_NtfyJson_Returns}
+ *
  * @since 2.0.0
  */
-const ntfyJsonInterpreter: Worker_Interpreters_NtfyJson_NtfyJsonInterpreter = (input: Worker_Interpreters_NtfyJson_Input): Worker_Interpreters_NtfyJson_Result => {
+const ntfyJsonInterpreter: Worker_Interpreters_NtfyJson_NtfyJsonInterpreter = (input: Worker_Interpreters_NtfyJson_Input): Worker_Interpreters_NtfyJson_Returns => {
   let parsed: Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_Parsed = undefined;
 
   if (typeof input === 'string') {

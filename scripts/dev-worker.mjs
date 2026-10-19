@@ -129,6 +129,8 @@ function promptChoice(localPath, xdgPath) {
  * Searches for config.json in the local directory, project
  * root, and XDG config directory. Returns the first match.
  *
+ * @returns {string | undefined}
+ *
  * @since 2.0.0
  */
 function resolveConfigJson() {
@@ -220,6 +222,8 @@ function generateWranglerToml(configJsonPath, outputPath) {
  *
  * Checks for local and XDG wrangler.toml locations.
  * Prompts the developer to choose when both exist.
+ *
+ * @returns {Promise<string>}
  *
  * @since 2.0.0
  */

@@ -1,9 +1,4 @@
 {
-  "settings": {
-    "worker_name": "ntfy-reverse-proxy",
-    "base_domain": "ntfy.example.com",
-    "show_response_output": false
-  },
   "servers": [
     {
       "name": "primary",
@@ -89,5 +84,10 @@
       "servers": ["primary"],
       "allowed_from": "*@unifi.local"
     }
-  ]
+  ],
+  "settings": {
+    "worker_name": "ntfy-reverse-proxy",
+    "base_domain": "ntfy.example.com",
+    "show_response_output": false
+  }
 }

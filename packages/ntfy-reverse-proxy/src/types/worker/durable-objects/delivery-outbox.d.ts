@@ -8,14 +8,14 @@ import type { Worker_Pipeline_Send_Result } from '../pipeline/send.d.ts';
 /**
  * Worker - Durable Objects - Delivery Outbox - Attachment Chunk Bytes.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Worker_DurableObjects_DeliveryOutbox_AttachmentChunkBytes = number;
 
 /**
  * Worker - Durable Objects - Delivery Outbox - Delivery Succeeded.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Worker_DurableObjects_DeliveryOutbox_DeliverySucceeded_Mode = 'send-once' | 'send-all';
 
@@ -26,7 +26,7 @@ export type Worker_DurableObjects_DeliveryOutbox_DeliverySucceeded_Returns = boo
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Worker_DurableObjects_DeliveryOutbox_Runner_EnvServers = string | undefined;
 
@@ -39,7 +39,7 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_DrainPromise = Promise<M
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Attempt.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_NotificationPosition = number;
 
@@ -101,7 +101,7 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_Resolved = {
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Checkpoint.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Checkpoint_DeliveryId = string;
 
@@ -114,7 +114,7 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Checkpoint_Returns = voi
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Constructor.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Constructor_Ctx = DurableObjectState;
 
@@ -127,7 +127,7 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Constructor_Env = {
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Delete.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Delete_DeliveryId = string;
 
@@ -136,14 +136,14 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Delete_Returns = void;
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Drain.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Drain_Returns = Promise<Map<string, Worker_Pipeline_Send_Result>>;
 
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Enqueue.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_Options = Worker_Pipeline_Deliver_EnqueueOptions & {};
 
@@ -212,7 +212,7 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_SendResult = Wor
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Handle Error.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_NotificationPosition = number;
 
@@ -235,7 +235,7 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_ErrorMessage
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Peek.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Peek_ReturnsPosition = number;
 
@@ -266,7 +266,7 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Peek_Rows = Worker_Durab
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Read Attachment.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Worker_DurableObjects_DeliveryOutbox_Runner_ReadAttachment_DeliveryId = string;
 
@@ -293,7 +293,7 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_ReadAttachment_ChunkByte
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Read Completed Stages.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Worker_DurableObjects_DeliveryOutbox_Runner_ReadCompletedStages_DeliveryId = string;
 
@@ -317,7 +317,7 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_ReadCompletedStages_Serv
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Remove.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Remove_NotificationPosition = number;
 
@@ -336,7 +336,7 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Remove_Returns = void;
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Resolve Servers.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_PayloadServerNames = string[];
 
@@ -369,7 +369,7 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_PrimarySe
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Succeeded.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Succeeded_NotificationPosition = number;
 

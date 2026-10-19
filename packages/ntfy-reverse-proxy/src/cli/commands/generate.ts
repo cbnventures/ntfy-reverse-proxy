@@ -62,6 +62,8 @@ const defaultWranglerTomlPath: Cli_Commands_Generate_DefaultWranglerTomlPath = r
  * Builds a wrangler.toml from the current config by mapping servers,
  * contexts, and settings into Cloudflare Workers configuration format.
  *
+ * @returns {Cli_Commands_Generate_GenerateWranglerToml_Returns}
+ *
  * @since 2.0.0
  */
 function generateWranglerToml(configPath: Cli_Commands_Generate_GenerateWranglerToml_ConfigPath, outputPath: Cli_Commands_Generate_GenerateWranglerToml_OutputPath = defaultWranglerTomlPath, accountId?: Cli_Commands_Generate_GenerateWranglerToml_AccountId, kvNamespaceId?: Cli_Commands_Generate_GenerateWranglerToml_KvNamespaceId): Cli_Commands_Generate_GenerateWranglerToml_Returns {

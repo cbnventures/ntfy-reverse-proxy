@@ -23,6 +23,8 @@ import type {
  * Extracts method, hostname, headers, and body from the incoming
  * request and handles HTTP-to-HTTPS redirects when appropriate.
  *
+ * @returns {Worker_Pipeline_Receive_Returns}
+ *
  * @since 2.0.0
  */
 async function receive(request: Worker_Pipeline_Receive_Request, baseDomain: Worker_Pipeline_Receive_BaseDomain): Worker_Pipeline_Receive_Returns {

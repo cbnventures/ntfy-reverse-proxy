@@ -3,7 +3,7 @@ import type { Worker_Pipeline_Send_Options, Worker_Pipeline_Send_Result } from '
 /**
  * Worker - Pipeline - Deliver.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Worker_Pipeline_Deliver_ContextId = string;
 
@@ -75,6 +75,6 @@ export type Worker_Pipeline_Deliver_EnqueueInput = Worker_Pipeline_Deliver_Enque
 /**
  * Worker - Pipeline - Deliver - Deliver.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Worker_Pipeline_Deliver_Deliver_ServerNames = string[];

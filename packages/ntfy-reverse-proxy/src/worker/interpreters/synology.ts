@@ -4,7 +4,7 @@ import type {
   Worker_Interpreters_Synology_Input,
   Worker_Interpreters_Synology_MapSeverityToPriority_Returns,
   Worker_Interpreters_Synology_MapSeverityToPriority_Severity,
-  Worker_Interpreters_Synology_Result,
+  Worker_Interpreters_Synology_Returns,
   Worker_Interpreters_Synology_SynologyInterpreter,
   Worker_Interpreters_Synology_SynologyInterpreter_Body,
   Worker_Interpreters_Synology_SynologyInterpreter_BodyLines,
@@ -109,11 +109,11 @@ function validateUrl(rawUrl: Worker_Interpreters_Synology_ValidateUrl_RawUrl): W
  *
  * @param {Worker_Interpreters_Synology_Input} input - Input.
  *
- * @returns {Worker_Interpreters_Synology_Result}
+ * @returns {Worker_Interpreters_Synology_Returns}
  *
  * @since 2.0.0
  */
-const synologyInterpreter: Worker_Interpreters_Synology_SynologyInterpreter = (input: Worker_Interpreters_Synology_Input): Worker_Interpreters_Synology_Result => {
+const synologyInterpreter: Worker_Interpreters_Synology_SynologyInterpreter = (input: Worker_Interpreters_Synology_Input): Worker_Interpreters_Synology_Returns => {
   if (typeof input === 'string' || input instanceof ArrayBuffer) {
     let body: Worker_Interpreters_Synology_SynologyInterpreter_Body = undefined;
 

@@ -49,3 +49,5 @@ export type Worker_Pipeline_Route_Route_ResolvedServersItem = {
 };
 
 export type Worker_Pipeline_Route_Route_ResolvedServers = Worker_Pipeline_Route_Route_ResolvedServersItem[];
+
+export type Worker_Pipeline_Route_Route_Filter_TypeGuard = Lib_Schema_ServerConfig;

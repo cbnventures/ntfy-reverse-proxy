@@ -5,9 +5,9 @@
  */
 export type Shared_StatusPage_ComponentDiffEntry_Name = string;
 
-export type Shared_StatusPage_ComponentDiffEntry_NewStatus = string;
-
 export type Shared_StatusPage_ComponentDiffEntry_OldStatus = string | undefined;
+
+export type Shared_StatusPage_ComponentDiffEntry_NewStatus = string;
 
 export type Shared_StatusPage_ComponentDiffEntry_Changed = boolean;
 

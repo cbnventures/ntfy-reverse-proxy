@@ -56,6 +56,8 @@ import type {
  * Registers a new context entry in the configuration after checking
  * for duplicate names and validating server references.
  *
+ * @returns {Cli_Commands_Context_AddContext_Returns}
+ *
  * @since 2.0.0
  */
 function addContext(configPath: Cli_Commands_Context_AddContext_ConfigPath, context: Cli_Commands_Context_AddContext_Context): Cli_Commands_Context_AddContext_Returns {
@@ -108,6 +110,8 @@ function addContext(configPath: Cli_Commands_Context_AddContext_ConfigPath, cont
  * Loads the configuration file and returns the full list of context
  * entries so callers can display or inspect them.
  *
+ * @returns {Cli_Commands_Context_ListContexts_Returns}
+ *
  * @since 2.0.0
  */
 function listContexts(configPath: Cli_Commands_Context_ListContexts_ConfigPath): Cli_Commands_Context_ListContexts_Returns {
@@ -119,6 +123,8 @@ function listContexts(configPath: Cli_Commands_Context_ListContexts_ConfigPath):
  *
  * Locates an existing context by name and merges the provided updates
  * into its configuration, then persists the result.
+ *
+ * @returns {Cli_Commands_Context_EditContext_Returns}
  *
  * @since 2.0.0
  */
@@ -172,6 +178,8 @@ function editContext(configPath: Cli_Commands_Context_EditContext_ConfigPath, na
  * Filters a named context out of the configuration and saves the
  * result so the context is no longer available.
  *
+ * @returns {Cli_Commands_Context_RemoveContext_Returns}
+ *
  * @since 2.0.0
  */
 function removeContext(configPath: Cli_Commands_Context_RemoveContext_ConfigPath, name: Cli_Commands_Context_RemoveContext_Name): Cli_Commands_Context_RemoveContext_Returns {
@@ -190,6 +198,8 @@ function removeContext(configPath: Cli_Commands_Context_RemoveContext_ConfigPath
  *
  * Rebuilds a context object with type, name, and id placed first so
  * that the serialized output matches the interactive UI prompt order.
+ *
+ * @returns {Cli_Commands_Context_OrderContextKeys_Returns}
  *
  * @since 2.0.0
  */
@@ -219,6 +229,8 @@ function orderContextKeys(context: Cli_Commands_Context_OrderContextKeys_Context
  * Produces a random alphanumeric string of the requested length using
  * cryptographic random bytes for unpredictability.
  *
+ * @returns {Cli_Commands_Context_GenerateRandomString_Returns}
+ *
  * @since 2.0.0
  */
 function generateRandomString(length: Cli_Commands_Context_GenerateRandomString_Length, lowercase: Cli_Commands_Context_GenerateRandomString_Lowercase = false): Cli_Commands_Context_GenerateRandomString_Returns {
@@ -239,6 +251,8 @@ function generateRandomString(length: Cli_Commands_Context_GenerateRandomString_
  * Creates a short lowercase identifier used to uniquely distinguish
  * each context entry within the configuration.
  *
+ * @returns {Cli_Commands_Context_GenerateId_Returns}
+ *
  * @since 2.0.0
  */
 function generateId(): Cli_Commands_Context_GenerateId_Returns {
@@ -250,6 +264,8 @@ function generateId(): Cli_Commands_Context_GenerateId_Returns {
  *
  * Creates a long mixed-case token used for authenticating incoming
  * HTTP requests against a specific context.
+ *
+ * @returns {Cli_Commands_Context_GenerateToken_Returns}
  *
  * @since 2.0.0
  */

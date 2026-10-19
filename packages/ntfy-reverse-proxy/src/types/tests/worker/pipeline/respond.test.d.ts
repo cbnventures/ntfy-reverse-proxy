@@ -54,7 +54,7 @@ export type Tests_Worker_Pipeline_Respond_Respond_IncludesDebugInfoWhenShowRespo
 /**
  * Tests - Worker - Pipeline - Respond - Respond - Returns Accepted When Durable Delivery Is Queued.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Tests_Worker_Pipeline_Respond_Respond_ReturnsAcceptedWhenDurableDeliveryIsQueued_Response = Response;
 

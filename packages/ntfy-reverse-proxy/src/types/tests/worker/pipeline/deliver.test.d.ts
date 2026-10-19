@@ -8,7 +8,7 @@ import type { Worker_Pipeline_Send_Options } from '../../../worker/pipeline/send
 /**
  * Tests - Worker - Pipeline - Deliver - Deliver - Uses The Explicit Context ID As The Isolated Lane Name.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Tests_Worker_Pipeline_Deliver_Deliver_UsesTheExplicitContextIDAsTheIsolatedLaneName_RequestedName = string | undefined;
 

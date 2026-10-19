@@ -3,13 +3,13 @@
  *
  * @since 2.0.0
  */
-export type Worker_Pipeline_Authenticate_AuthConfigToken = string;
-
-export type Worker_Pipeline_Authenticate_AuthConfigAllowedFrom = string;
-
 export type Worker_Pipeline_Authenticate_AuthConfigTypeHttp = 'http';
 
+export type Worker_Pipeline_Authenticate_AuthConfigToken = string;
+
 export type Worker_Pipeline_Authenticate_AuthConfigTypeEmail = 'email';
+
+export type Worker_Pipeline_Authenticate_AuthConfigAllowedFrom = string;
 
 export type Worker_Pipeline_Authenticate_AuthConfig = {
   type: Worker_Pipeline_Authenticate_AuthConfigTypeHttp;

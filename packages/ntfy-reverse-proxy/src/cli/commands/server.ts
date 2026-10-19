@@ -31,6 +31,8 @@ import type {
  * Appends a new server entry to the configuration file after verifying
  * that no server with the same name already exists.
  *
+ * @returns {Cli_Commands_Server_AddServer_Returns}
+ *
  * @since 2.0.0
  */
 function addServer(configPath: Cli_Commands_Server_AddServer_ConfigPath, server: Cli_Commands_Server_AddServer_Server): Cli_Commands_Server_AddServer_Returns {
@@ -54,6 +56,8 @@ function addServer(configPath: Cli_Commands_Server_AddServer_ConfigPath, server:
  * Loads the configuration file and returns the full list of server
  * entries so callers can display or inspect them.
  *
+ * @returns {Cli_Commands_Server_ListServers_Returns}
+ *
  * @since 2.0.0
  */
 function listServers(configPath: Cli_Commands_Server_ListServers_ConfigPath): Cli_Commands_Server_ListServers_Returns {
@@ -65,6 +69,8 @@ function listServers(configPath: Cli_Commands_Server_ListServers_ConfigPath): Cl
  *
  * Locates an existing server by name and merges the provided updates
  * into its configuration, then persists the result.
+ *
+ * @returns {Cli_Commands_Server_EditServer_Returns}
  *
  * @since 2.0.0
  */
@@ -93,6 +99,8 @@ function editServer(configPath: Cli_Commands_Server_EditServer_ConfigPath, name:
  *
  * Checks that no context references the server before filtering it
  * out of the configuration and saving the result.
+ *
+ * @returns {Cli_Commands_Server_RemoveServer_Returns}
  *
  * @since 2.0.0
  */

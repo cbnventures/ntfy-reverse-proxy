@@ -7,7 +7,7 @@
 - **Project name:** ntfy-reverse-proxy
 - **Description:** A Cloudflare Workers reverse proxy and notification gateway for ntfy with built-in webhook interpreters, CLI config management, and server fallback.
 - **Primary language:** TypeScript
-- **Framework / runtime:** Cloudflare Workers (Wrangler) + Node.js CLI (Commander)
+- **Framework / runtime:** Cloudflare Workers (Wrangler), Node.js CLI (Commander), and Docusaurus documentation
 
 ### Repository URL
 
@@ -17,179 +17,117 @@
 
 ```
 ntfy-reverse-proxy/
-├── .github/              — GitHub Actions workflows
-├── docs/                 — Design specs and documentation
-├── src/                  — Application source code
-│   ├── worker/           — Cloudflare Worker (pipeline, interpreters, landing page)
-│   ├── cli/              — CLI management tool (commands, interactive menu)
-│   ├── lib/              — Shared libraries (Zod schemas, config validation)
-│   ├── types/            — TypeScript type definitions (.d.ts), mirrors src/ structure
-│   └── tests/            — Unit and integration tests, mirrors src/ structure
-├── .editorconfig         — Editor formatting rules
-├── .gitignore            — Git ignore patterns
-├── config.sample.json    — Sample configuration file
-├── eslint.config.ts      — ESLint flat config
-├── LICENSE               — MIT license
-├── package.json          — Node.js manifest and scripts
-├── README.md             — Project overview and badges
-└── tsconfig.json         — TypeScript compiler configuration
+├── .changelog/                    — Pending Nova changelog fragments
+├── .github/workflows/             — Nova-generated GitHub Actions workflows
+├── apps/
+│   └── docs/                      — Docusaurus documentation site
+├── packages/
+│   └── ntfy-reverse-proxy/        — Published CLI and Cloudflare Worker package
+│       └── src/
+│           ├── cli/               — CLI commands and interactive menu
+│           ├── lib/               — Shared schemas and runtime utilities
+│           ├── worker/            — Worker handlers, pipeline, and durable outbox
+│           ├── tests/             — Package unit and integration tests
+│           └── types/             — Type declarations mirroring package source
+├── scripts/                       — Repository build, development, and release helpers
+├── tests/                         — Root tooling and package-script contracts
+├── config.sample.json             — User configuration example
+├── nova.config.json               — Nova project and workspace configuration
+├── package.json                   — Private monorepo coordinator
+└── README.md                      — Project overview and generated sections
 ```
 
 ## Source Structure
 
 ```
-src/
-├── worker/
-│   ├── index.ts                — Worker entry point (fetch handler)
-│   ├── pipeline/
-│   │   ├── receive.ts          — Extract request metadata, HTTPS auto-detect
-│   │   ├── route.ts            — Match subdomain to context
-│   │   ├── parse.ts            — Detect body type (text, JSON, binary, multipart)
-│   │   ├── interpret.ts        — Dispatcher to interpreter modules
-│   │   ├── format.ts           — Build final message body + ntfy headers
-│   │   ├── split.ts            — Smart split for large messages
-│   │   ├── send.ts             — Send to servers with fallback logic
-│   │   └── respond.ts          — Build HTTP response (+ debug output)
-│   ├── interpreters/
-│   │   ├── plain-text.ts       — Pass-through text interpreter
-│   │   ├── ntfy-json.ts        — ntfy JSON to ntfy field mapping
-│   │   ├── synology.ts         — Synology DSM webhook interpreter
-│   │   └── statuspage.ts       — Statuspage.io webhook interpreter
-│   └── landing/
-│       └── page.ts             — "Powered by" HTML page + debug view
+packages/ntfy-reverse-proxy/src/
 ├── cli/
-│   ├── index.ts                — CLI entry point (commander setup)
-│   ├── commands/
-│   │   ├── server.ts           — server add/list/edit/remove
-│   │   ├── context.ts          — context add/list/edit/remove
-│   │   ├── settings.ts         — settings management
-│   │   ├── generate.ts         — generate wrangler.toml from config
-│   │   └── validate.ts         — validate config integrity
-│   └── menu/
-│       └── interactive.ts      — Interactive TUI menu
+│   ├── commands/                    — Config, deployment, generation, and validation commands
+│   ├── menu/                        — Interactive configuration interface
+│   └── index.ts                     — Commander entry point
 ├── lib/
-│   └── schema.ts               — Zod schemas for config validation
-├── types/
-│   ├── worker/
-│   │   ├── index.d.ts
-│   │   ├── pipeline/
-│   │   │   ├── receive.d.ts
-│   │   │   ├── route.d.ts
-│   │   │   ├── parse.d.ts
-│   │   │   ├── interpret.d.ts
-│   │   │   ├── format.d.ts
-│   │   │   ├── split.d.ts
-│   │   │   ├── send.d.ts
-│   │   │   └── respond.d.ts
-│   │   ├── interpreters/
-│   │   │   ├── plain-text.d.ts
-│   │   │   ├── ntfy-json.d.ts
-│   │   │   ├── synology.d.ts
-│   │   │   └── statuspage.d.ts
-│   │   └── landing/
-│   │       └── page.d.ts
-│   ├── cli/
-│   │   ├── index.d.ts
-│   │   ├── commands/
-│   │   │   ├── server.d.ts
-│   │   │   ├── context.d.ts
-│   │   │   ├── settings.d.ts
-│   │   │   ├── generate.d.ts
-│   │   │   └── validate.d.ts
-│   │   └── menu/
-│   │       └── interactive.d.ts
-│   └── lib/
-│       └── schema.d.ts
-└── tests/
-    ├── worker/
-    │   ├── index.test.ts
-    │   ├── pipeline/
-    │   │   ├── receive.test.ts
-    │   │   ├── route.test.ts
-    │   │   ├── parse.test.ts
-    │   │   ├── interpret.test.ts
-    │   │   ├── format.test.ts
-    │   │   ├── split.test.ts
-    │   │   ├── send.test.ts
-    │   │   └── respond.test.ts
-    │   └── interpreters/
-    │       ├── plain-text.test.ts
-    │       ├── ntfy-json.test.ts
-    │       ├── synology.test.ts
-    │       └── statuspage.test.ts
-    ├── cli/
-    │   ├── commands/
-    │   │   ├── server.test.ts
-    │   │   ├── context.test.ts
-    │   │   ├── settings.test.ts
-    │   │   ├── generate.test.ts
-    │   │   └── validate.test.ts
-    │   └── menu/
-    │       └── interactive.test.ts
-    └── lib/
-        └── schema.test.ts
+│   ├── schema.ts                    — Zod configuration schemas
+│   ├── package-runtime.ts           — Packaged CLI path and version resolution
+│   └── utility.ts                   — Shared configuration helpers
+├── worker/
+│   ├── durable-objects/             — Durable delivery outbox and retries
+│   ├── interpreters/                — ntfy, pfSense, Seerr, Synology, UniFi, and text adapters
+│   ├── landing/                     — Public landing page response
+│   ├── pipeline/                    — Request, email, formatting, and delivery stages
+│   ├── handlers.ts                  — HTTP and email pipeline orchestration
+│   └── index.ts                     — Cloudflare Worker entry point
+├── tests/                           — Tests mirroring package behavior
+└── types/                           — Declarations mirroring source and tests
 ```
 
 ## Key Files
 
-| File                               | Purpose                   | When to modify                                         |
-|------------------------------------|---------------------------|--------------------------------------------------------|
-| `src/worker/index.ts`              | Worker entry point        | Changing the pipeline orchestration                    |
-| `src/worker/pipeline/send.ts`      | Send logic with fallback  | Changing server fallback or send modes                 |
-| `src/worker/pipeline/interpret.ts` | Interpreter dispatcher    | Adding or changing interpreter routing                 |
-| `src/cli/index.ts`                 | CLI entry point           | Adding or changing CLI commands                        |
-| `src/cli/menu/interactive.ts`      | Interactive TUI           | Changing the menu flow                                 |
-| `src/lib/schema.ts`                | Config validation schemas | Changing the config shape                              |
-| `config.sample.json`               | Sample config reference   | Changing the config shape                              |
-| `package.json`                     | Manifest                  | Adding dependencies, changing scripts, bumping version |
-| `tsconfig.json`                    | TS config                 | Changing compiler options or path aliases              |
+| File                                                                        | Purpose                           | When to modify                                       |
+|-----------------------------------------------------------------------------|-----------------------------------|------------------------------------------------------|
+| `packages/ntfy-reverse-proxy/src/worker/index.ts`                           | Worker entry point                | Changing exported Worker handlers                    |
+| `packages/ntfy-reverse-proxy/src/worker/handlers.ts`                        | HTTP and email orchestration      | Changing pipeline sequencing                         |
+| `packages/ntfy-reverse-proxy/src/worker/durable-objects/delivery-outbox.ts` | Durable delivery and retry queue  | Changing queued-delivery behavior                    |
+| `packages/ntfy-reverse-proxy/src/worker/pipeline/deliver.ts`                | Delivery routing                  | Changing immediate versus durable delivery           |
+| `packages/ntfy-reverse-proxy/src/worker/pipeline/interpret.ts`              | Interpreter dispatcher            | Adding or changing interpreter routing               |
+| `packages/ntfy-reverse-proxy/src/cli/index.ts`                              | CLI entry point                   | Adding or changing CLI commands                      |
+| `packages/ntfy-reverse-proxy/src/cli/menu/interactive.ts`                   | Interactive configuration UI      | Changing the guided menu flow                        |
+| `packages/ntfy-reverse-proxy/src/lib/schema.ts`                             | Configuration validation schemas  | Changing the user configuration contract             |
+| `apps/docs/docusaurus.config.ts`                                            | Documentation site configuration  | Changing navigation, search, metadata, or deployment |
+| `config.sample.json`                                                        | Sample configuration              | Changing the user configuration contract             |
+| `nova.config.json`                                                          | Repository and workspace metadata | Changing Nova-managed project behavior               |
+| `packages/ntfy-reverse-proxy/package.json`                                  | Published package manifest        | Adding dependencies, scripts, or release metadata    |
 
 ## Build and Tooling
 
 ### Prerequisites
 
-| Tool     | Version | Purpose                                 |
-|----------|---------|-----------------------------------------|
-| Node.js  | >= 22.x | Runtime (CLI and build)                 |
-| npm      | >= 10.x | Package manager                         |
-| Wrangler | >= 4.x  | Cloudflare Workers CLI (dev dependency) |
+| Tool     | Version                    | Purpose                                   |
+|----------|----------------------------|-------------------------------------------|
+| Node.js  | See root `engines`         | Runtime, CLI, documentation, and build    |
+| npm      | See root `packageManager`  | Package manager                           |
+| Wrangler | See package dependency pin | Cloudflare Workers development and deploy |
 
 ### Commands
 
-| Command          | What it does                                                |
-|------------------|-------------------------------------------------------------|
-| `npm install`    | Install all dependencies                                    |
-| `npm start`      | Start local development server (wrangler dev)               |
-| `npm run manage` | Launch interactive config management TUI                    |
-| `npm run check`  | Run lint, type checks, and tests                            |
-| `npm run deploy` | Validate config, generate wrangler.toml, and deploy         |
-| `npm test`       | Run the test suite (Vitest with Miniflare for worker tests) |
+| Command             | What it does                                           |
+|---------------------|--------------------------------------------------------|
+| `npm install`       | Install every workspace dependency                     |
+| `npm run dev`       | Run available workspace development processes          |
+| `npm run prod`      | Run available compiled production processes            |
+| `npm run manage`    | Launch the interactive package configuration UI        |
+| `npm run tail`      | Stream and persist Cloudflare Worker logs              |
+| `npm run check`     | Run root and workspace linting, type checks, and tests |
+| `npm run build`     | Build the package and documentation site               |
+| `npm run deploy`    | Validate, generate Worker configuration, and deploy    |
+| `npm run clean`     | Remove root and workspace build output                 |
+| `npm run changelog` | Record or release Nova changelog entries               |
+| `npm run recipes`   | Apply enabled Nova recipes across the repository       |
 
 ### Environment Variables
 
-No environment variables. All configuration lives in `config.json` (managed via CLI). Cloudflare credentials are handled by `wrangler login`.
+Nova supplies `NODE_ENV`, `LOG_LEVEL`, and `LOG_TIME` in generated dotenv files. The root also accepts `CLOUDFLARE_API_TOKEN` for non-interactive Cloudflare operations. Product configuration lives in `config.json`, while the CLI can also use credentials established by `wrangler login`.
 
 ## Workspace Rules
 
 ### Naming Conventions
 
-| Entity               | Convention                   | Example                                           |
-|----------------------|------------------------------|---------------------------------------------------|
-| Source files         | kebab-case                   | `ntfy-json.ts`, `plain-text.ts`                   |
-| Config keys          | snake_case                   | `base_domain`, `show_visitor_info`, `error_topic` |
-| Server/context names | user-defined free text       | `"central"`, `"homebridge-adt-pulse"`             |
-| Type files           | Mirror source path           | `src/types/worker/pipeline/send.d.ts`             |
-| Test files           | Mirror source path + `.test` | `src/tests/worker/pipeline/send.test.ts`          |
-| CLI commands         | kebab-case noun              | `server`, `context`, `settings`                   |
+| Entity               | Convention                   | Example                                                                 |
+|----------------------|------------------------------|-------------------------------------------------------------------------|
+| Source files         | kebab-case                   | `ntfy-json.ts`, `plain-text.ts`                                         |
+| Config keys          | snake_case                   | `base_domain`, `show_visitor_info`, `error_topic`                       |
+| Server/context names | user-defined free text       | `"central"`, `"homebridge-adt-pulse"`                                   |
+| Type files           | Mirror source path           | `packages/ntfy-reverse-proxy/src/types/worker/pipeline/deliver.d.ts`    |
+| Test files           | Mirror source path + `.test` | `packages/ntfy-reverse-proxy/src/tests/worker/pipeline/deliver.test.ts` |
+| CLI commands         | kebab-case noun              | `server`, `context`, `settings`                                         |
 
 ### Do / Don't
 
 **Do:**
-- Keep worker code (`src/worker/`) and CLI code (`src/cli/`) cleanly separated. They run on different runtimes (Cloudflare Workers vs Node.js).
-- Add new interpreters as single files in `src/worker/interpreters/` and register them in the dispatcher map.
+- Keep Worker code (`packages/ntfy-reverse-proxy/src/worker/`) and CLI code (`packages/ntfy-reverse-proxy/src/cli/`) separated. They run on different runtimes.
+- Add new interpreters under `packages/ntfy-reverse-proxy/src/worker/interpreters/` and register them in the dispatcher map.
 - Use Zod schemas for all external input validation (config, webhook payloads).
 - Mask sensitive values (tokens, URLs, subdomains) in any user-visible output. Tokens show as `tk_***`, server URLs as `*** name url ***`, subdomains as last 5 chars only.
-- Mirror source structure in `src/types/` and `src/tests/` exactly.
+- Mirror package source structure in `packages/ntfy-reverse-proxy/src/types/` and `packages/ntfy-reverse-proxy/src/tests/` exactly.
 
 **Don't:**
 - Don't put Cloudflare-specific settings (compatibility_date, routes) in the user-facing config. Those are generated.
@@ -207,7 +145,11 @@ Pipeline architecture with two entry points:
 HTTP Request (Cloudflare Worker)
   |
   v
-Receive -> Route -> Parse -> Interpret -> Format -> Split -> Send -> Respond
+Receive -> Route -> Authenticate -> Parse -> Interpret -> Format -> Split -> Deliver -> Respond
+
+Email -> Route -> Authenticate -> Interpret -> Format -> Split -> Deliver
+
+Deliver -> Durable Object outbox -> Primary/fallback ntfy servers
 
 CLI (Node.js)
   |
@@ -215,18 +157,18 @@ CLI (Node.js)
 Interactive Menu / Direct Commands -> Config Read/Write -> Validate -> Generate wrangler.toml
 ```
 
-The worker pipeline is linear: each stage transforms data and passes it to the next. The CLI manages the config file that the worker reads at runtime.
+The request and email handlers coordinate the transformation stages. Delivery can complete immediately or enter the Durable Object outbox for ordered retries. The CLI manages configuration and generates the Worker deployment file.
 
 ### Data Flow
 
-1. **Receive** — HTTP request arrives at Cloudflare Worker. Extract method, URL, headers, raw body. Module: `src/worker/pipeline/receive.ts`.
-2. **Route** — Match hostname subdomain against contexts config. Module: `src/worker/pipeline/route.ts`.
-3. **Parse** — Determine body type (text, JSON, binary, multipart). Module: `src/worker/pipeline/parse.ts`.
-4. **Interpret** — Transform raw payload into standardized notification object via the configured interpreter. Module: `src/worker/pipeline/interpret.ts` + `src/worker/interpreters/*.ts`.
-5. **Format** — Build final message body with visitor info and ntfy headers. Module: `src/worker/pipeline/format.ts`.
-6. **Split** — Split large messages into numbered parts if over ~4000 bytes. Module: `src/worker/pipeline/split.ts`.
-7. **Send** — Deliver to ntfy servers with fallback logic. Module: `src/worker/pipeline/send.ts`.
-8. **Respond** — Return JSON response to caller. Module: `src/worker/pipeline/respond.ts`.
+1. **Receive or parse email** — Normalize the HTTP request or inbound email into pipeline input.
+2. **Route** — Match the HTTP subdomain or email recipient to a configured context.
+3. **Authenticate** — Validate the request token or allowed email sender before processing content.
+4. **Parse** — Determine HTTP body type or extract the email body and attachments.
+5. **Interpret** — Transform the input through the context's configured interpreter.
+6. **Format and split** — Produce ntfy messages and divide oversized content safely.
+7. **Deliver** — Send immediately or enqueue ordered delivery through the Durable Object outbox.
+8. **Respond** — Return the final HTTP status and optional debug information.
 
 ### Error Strategy
 
@@ -243,37 +185,46 @@ The worker pipeline is linear: each stage transforms data and passes it to the n
 
 ### Framework
 
-- **Framework:** None
-- **Source directory:** `docs/`
+- **Framework:** Docusaurus with `@cbnventures/docusaurus-preset-nova`
+- **Source directory:** `apps/docs/`
 
 ### Site Structure
 
 ```
-docs/
-└── superpowers/
-    └── specs/              — Design specification documents
+apps/docs/
+├── blog/                       — Release and project articles
+├── docs/
+│   ├── features/               — Delivery, email, and security behavior
+│   ├── getting-started/        — Configuration and deployment guides
+│   ├── interpreters/           — Supported webhook formats
+│   └── reference/              — Architecture, CLI, development, and troubleshooting
+└── src/pages/                  — Documentation homepage
 ```
 
 ### Commands
 
-No documentation site commands. Documentation lives as markdown in the `docs/` directory.
+- `npm run dev --workspace ntfy-reverse-proxy-docs` starts the documentation site.
+- `npm run check --workspace ntfy-reverse-proxy-docs` validates docs, links, types, and formatting.
+- `npm run build --workspace ntfy-reverse-proxy-docs` builds the production site.
+- `npm run i18n --workspace ntfy-reverse-proxy-docs` synchronizes and validates translations.
 
 ## Publishing and Deployment
 
 ### Release Process
 
-1. All changes committed, `git status --short` is clean.
-2. Run `npm run check` and `npm run build` to verify the repository and package.
-3. Run `npm run manage validate` to verify config integrity.
-4. Run `npm run deploy` (validates, generates `wrangler.toml`, and deploys).
-5. Tag the commit if publishing a release.
+1. Record user-facing changes through `npm run changelog` while developing.
+2. Preview the release with `npm run changelog -- --release --dry-run`, then run the real release after approval.
+3. Run a clean install, `npm run check`, and `npm run build` against the released working copy.
+4. Run `npm run manage -- validate` to verify config integrity.
+5. Commit the verified release and tag it with the released package version; the publish workflow handles package and documentation deployment.
 
 ### CI/CD Workflows
 
-| Workflow file               | Trigger                  | What it does                         |
-|-----------------------------|--------------------------|--------------------------------------|
-| `lock-inactive-issues.yml`  | Weekly cron (Sunday)     | Lock issues inactive > 30 days       |
-| `sponsor-gated-support.yml` | Issue open/close/comment | GitHub Sponsors-based support gating |
+| Workflow file                                       | Trigger                  | What it does                                      |
+|-----------------------------------------------------|--------------------------|---------------------------------------------------|
+| `nova-check-sponsor-gated-issues-sponsor-check.yml` | Issue open/close/comment | Apply GitHub Sponsors-based support policy        |
+| `nova-lock-inactive-issues-lock-inactive.yml`       | Weekly cron or manual    | Lock inactive issues and pull requests            |
+| `nova-publish-project.yml`                          | Version tag or manual    | Check, build, and publish package and docs output |
 
 ### Environments
 

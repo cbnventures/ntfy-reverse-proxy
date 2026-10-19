@@ -1,5 +1,11 @@
 # ntfy-reverse-proxy
 
+## 2.2.1 - 2026-10-18
+
+### UPDATED
+- Aligned the sample configuration and full documentation example with the CLI's canonical server, context, and settings ordering.
+- Updated the project toolchain to Nova 0.33.0, including native workspace orchestration and the dedicated custom-rule preset entry point.
+
 ## 2.2.0 - 2026-10-13
 
 ### UPDATED

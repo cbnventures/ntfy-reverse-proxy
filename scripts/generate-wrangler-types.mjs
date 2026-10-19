@@ -50,6 +50,8 @@ const outputFile = resolve(packageDir, 'worker-configuration.d.ts');
  * Wrangler generates a mainModule property that references the build
  * output path, which fails type checks when the build directory is absent.
  *
+ * @returns {void}
+ *
  * @since 2.0.0
  */
 function stripGlobalProps() {
@@ -99,6 +101,8 @@ function stripTrailingWhitespace() {
  * Generates Cloudflare Workers runtime type definitions from wrangler.toml.
  * If wrangler.toml does not exist (e.g. CI environments), the step is
  * skipped and the committed worker-configuration.d.ts is used instead.
+ *
+ * @returns {void}
  *
  * @since 2.0.0
  */

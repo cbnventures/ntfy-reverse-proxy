@@ -18,7 +18,7 @@ import type {
 /**
  * Tests - Worker - Pipeline - Drain Fifo - Drain Fifo.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 describe('drainFifo', () => {
   it('keeps a failed head and retries it before later items', async () => {

@@ -29,6 +29,8 @@ import type {
  * Builds the final HTTP response by aggregating per-server send
  * results into a JSON body with appropriate status codes.
  *
+ * @returns {Worker_Pipeline_Respond_Returns}
+ *
  * @since 2.0.0
  */
 function respond(deliveryResult: Worker_Pipeline_Respond_DeliveryResult, options: Worker_Pipeline_Respond_Options): Worker_Pipeline_Respond_Returns {

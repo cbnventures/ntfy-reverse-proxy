@@ -20,6 +20,8 @@ import type {
  * Classifies and converts the raw request body into a typed
  * result of text, JSON, or binary based on content analysis.
  *
+ * @returns {Worker_Pipeline_Parse_Returns}
+ *
  * @since 2.0.0
  */
 function parse(rawBody: Worker_Pipeline_Parse_Parse_RawBody, headers: Worker_Pipeline_Parse_Parse_Headers): Worker_Pipeline_Parse_Returns {

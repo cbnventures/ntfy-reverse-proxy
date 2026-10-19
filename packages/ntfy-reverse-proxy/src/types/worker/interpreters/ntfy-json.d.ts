@@ -10,14 +10,14 @@ import type {
  */
 export type Worker_Interpreters_NtfyJson_Input = Worker_Pipeline_Interpret_Input;
 
-export type Worker_Interpreters_NtfyJson_Result = Worker_Pipeline_Interpret_Result | null;
+export type Worker_Interpreters_NtfyJson_Returns = Worker_Pipeline_Interpret_Result | null;
 
 /**
  * Worker - Interpreters - Ntfy JSON - Ntfy JSON Interpreter.
  *
  * @since 2.0.0
  */
-export type Worker_Interpreters_NtfyJson_NtfyJsonInterpreter = (input: Worker_Interpreters_NtfyJson_Input) => Worker_Interpreters_NtfyJson_Result;
+export type Worker_Interpreters_NtfyJson_NtfyJsonInterpreter = (input: Worker_Interpreters_NtfyJson_Input) => Worker_Interpreters_NtfyJson_Returns;
 
 export type Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_Parsed = unknown;
 

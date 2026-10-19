@@ -4,7 +4,7 @@ import type {
   Worker_Interpreters_Seerr_MapNotificationTypeToPriority_Returns,
   Worker_Interpreters_Seerr_MapPriorityToEmojiTag_Priority,
   Worker_Interpreters_Seerr_MapPriorityToEmojiTag_Returns,
-  Worker_Interpreters_Seerr_Result,
+  Worker_Interpreters_Seerr_Returns,
   Worker_Interpreters_Seerr_SeerrInterpreter,
   Worker_Interpreters_Seerr_SeerrInterpreter_Actions,
   Worker_Interpreters_Seerr_SeerrInterpreter_Body,
@@ -157,11 +157,11 @@ function validateUrl(rawUrl: Worker_Interpreters_Seerr_ValidateUrl_RawUrl): Work
  *
  * @param {Worker_Interpreters_Seerr_Input} input - Input.
  *
- * @returns {Worker_Interpreters_Seerr_Result}
+ * @returns {Worker_Interpreters_Seerr_Returns}
  *
  * @since 2.0.0
  */
-const seerrInterpreter: Worker_Interpreters_Seerr_SeerrInterpreter = (input: Worker_Interpreters_Seerr_Input): Worker_Interpreters_Seerr_Result => {
+const seerrInterpreter: Worker_Interpreters_Seerr_SeerrInterpreter = (input: Worker_Interpreters_Seerr_Input): Worker_Interpreters_Seerr_Returns => {
   let parsed: Worker_Interpreters_Seerr_SeerrInterpreter_Parsed = undefined;
 
   if (typeof input === 'string') {

@@ -52,7 +52,7 @@ export type Tests_Worker_Pipeline_Send_Send_HandlesStage2BinaryAttachment_Result
 /**
  * Tests - Worker - Pipeline - Send - Send - Resumes At The First Unfinished Stage.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Tests_Worker_Pipeline_Send_Send_ResumesAtTheFirstUnfinishedStage_Attachment = ArrayBuffer;
 
@@ -86,7 +86,7 @@ export type Tests_Worker_Pipeline_Send_Send_SkipsStage2IfStage1FailsOnAServer_Re
 /**
  * Tests - Worker - Pipeline - Send - Send - Uses Stable Sequence IDs And Checkpoints Successful Stages.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Tests_Worker_Pipeline_Send_Send_UsesStableSequenceIDsAndCheckpointsSuccessfulStages_OnStageSuccess = Worker_Pipeline_Send_OptionsOnStageSuccess & {};
 

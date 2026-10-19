@@ -33,7 +33,7 @@ import type {
   Worker_Interpreters_Pfsense_PfsenseInterpreter_Subject,
   Worker_Interpreters_Pfsense_PfsenseInterpreter_Tags,
   Worker_Interpreters_Pfsense_PfsenseInterpreter_TextBody,
-  Worker_Interpreters_Pfsense_Result,
+  Worker_Interpreters_Pfsense_Returns,
 } from '../../types/worker/interpreters/pfsense.d.ts';
 
 /**
@@ -206,11 +206,11 @@ function parseNotifications(textBody: Worker_Interpreters_Pfsense_ParseNotificat
  *
  * @param {Worker_Interpreters_Pfsense_Input} input - Input.
  *
- * @returns {Worker_Interpreters_Pfsense_Result}
+ * @returns {Worker_Interpreters_Pfsense_Returns}
  *
  * @since 2.0.0
  */
-const pfsenseInterpreter: Worker_Interpreters_Pfsense_PfsenseInterpreter = (input: Worker_Interpreters_Pfsense_Input): Worker_Interpreters_Pfsense_Result => {
+const pfsenseInterpreter: Worker_Interpreters_Pfsense_PfsenseInterpreter = (input: Worker_Interpreters_Pfsense_Input): Worker_Interpreters_Pfsense_Returns => {
   if (typeof input === 'string') {
     const stringPriority: Worker_Interpreters_Pfsense_PfsenseInterpreter_StringPriority = mapKeywordsToPriority(input);
     const stringEmojiTag: Worker_Interpreters_Pfsense_PfsenseInterpreter_StringEmojiTag = mapPriorityToEmojiTag(stringPriority);

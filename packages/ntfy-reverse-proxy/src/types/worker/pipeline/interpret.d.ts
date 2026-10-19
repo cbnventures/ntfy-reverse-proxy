@@ -3,34 +3,36 @@
  *
  * @since 2.0.0
  */
-export type Worker_Pipeline_Interpret_NotificationObjectTitle = string;
+export type Worker_Pipeline_Interpret_NotificationObjectTitle = string | undefined;
 
 export type Worker_Pipeline_Interpret_NotificationObjectBody = string;
 
-export type Worker_Pipeline_Interpret_NotificationObjectPriority = 1 | 2 | 3 | 4 | 5;
+export type Worker_Pipeline_Interpret_Priority = 1 | 2 | 3 | 4 | 5;
 
-export type Worker_Pipeline_Interpret_NotificationObjectTags = string[];
+export type Worker_Pipeline_Interpret_NotificationObjectPriority = Worker_Pipeline_Interpret_Priority | undefined;
 
-export type Worker_Pipeline_Interpret_NotificationObjectIcon = string;
+export type Worker_Pipeline_Interpret_NotificationObjectTags = string[] | undefined;
 
-export type Worker_Pipeline_Interpret_NotificationObjectActions = string;
+export type Worker_Pipeline_Interpret_NotificationObjectIcon = string | undefined;
 
-export type Worker_Pipeline_Interpret_NotificationObjectAttach = string;
+export type Worker_Pipeline_Interpret_NotificationObjectActions = string | undefined;
 
-export type Worker_Pipeline_Interpret_NotificationObjectFilename = string;
+export type Worker_Pipeline_Interpret_NotificationObjectAttach = string | undefined;
 
-export type Worker_Pipeline_Interpret_NotificationObjectMarkdown = boolean;
+export type Worker_Pipeline_Interpret_NotificationObjectFilename = string | undefined;
+
+export type Worker_Pipeline_Interpret_NotificationObjectMarkdown = boolean | undefined;
 
 export type Worker_Pipeline_Interpret_NotificationObject = {
-  title?: Worker_Pipeline_Interpret_NotificationObjectTitle | undefined;
+  title?: Worker_Pipeline_Interpret_NotificationObjectTitle;
   body: Worker_Pipeline_Interpret_NotificationObjectBody;
-  priority?: Worker_Pipeline_Interpret_NotificationObjectPriority | undefined;
-  tags?: Worker_Pipeline_Interpret_NotificationObjectTags | undefined;
-  icon?: Worker_Pipeline_Interpret_NotificationObjectIcon | undefined;
-  actions?: Worker_Pipeline_Interpret_NotificationObjectActions | undefined;
-  attach?: Worker_Pipeline_Interpret_NotificationObjectAttach | undefined;
-  filename?: Worker_Pipeline_Interpret_NotificationObjectFilename | undefined;
-  markdown?: Worker_Pipeline_Interpret_NotificationObjectMarkdown | undefined;
+  priority?: Worker_Pipeline_Interpret_NotificationObjectPriority;
+  tags?: Worker_Pipeline_Interpret_NotificationObjectTags;
+  icon?: Worker_Pipeline_Interpret_NotificationObjectIcon;
+  actions?: Worker_Pipeline_Interpret_NotificationObjectActions;
+  attach?: Worker_Pipeline_Interpret_NotificationObjectAttach;
+  filename?: Worker_Pipeline_Interpret_NotificationObjectFilename;
+  markdown?: Worker_Pipeline_Interpret_NotificationObjectMarkdown;
 };
 
 export type Worker_Pipeline_Interpret_ResultNotification = Worker_Pipeline_Interpret_NotificationObject;

@@ -321,6 +321,12 @@ export type Cli_Commands_Deploy_ListEmailRoutingRules_ZoneId = string;
 
 export type Cli_Commands_Deploy_ListEmailRoutingRules_Returns = Promise<Cli_Commands_Deploy_ListEmailRoutingRules_Rule[]>;
 
+export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleTag = string;
+
+export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleName = string;
+
+export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleEnabled = boolean;
+
 export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleMatcherType = string;
 
 export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleMatcherField = string;
@@ -345,12 +351,6 @@ export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleAction = {
 };
 
 export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleActions = Cli_Commands_Deploy_ListEmailRoutingRules_RuleAction[];
-
-export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleTag = string;
-
-export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleName = string;
-
-export type Cli_Commands_Deploy_ListEmailRoutingRules_RuleEnabled = boolean;
 
 export type Cli_Commands_Deploy_ListEmailRoutingRules_Rule = {
   tag: Cli_Commands_Deploy_ListEmailRoutingRules_RuleTag;
@@ -507,6 +507,12 @@ export type Cli_Commands_Deploy_SetupEmailRouting_ZoneInfo = {
 
 export type Cli_Commands_Deploy_SetupEmailRouting_ZoneId = string;
 
+export type Cli_Commands_Deploy_SetupEmailRouting_RuleTag = string;
+
+export type Cli_Commands_Deploy_SetupEmailRouting_RuleName = string;
+
+export type Cli_Commands_Deploy_SetupEmailRouting_RuleEnabled = boolean;
+
 export type Cli_Commands_Deploy_SetupEmailRouting_RuleMatcherType = string;
 
 export type Cli_Commands_Deploy_SetupEmailRouting_RuleMatcherField = string;
@@ -531,12 +537,6 @@ export type Cli_Commands_Deploy_SetupEmailRouting_RuleAction = {
 };
 
 export type Cli_Commands_Deploy_SetupEmailRouting_RuleActions = Cli_Commands_Deploy_SetupEmailRouting_RuleAction[];
-
-export type Cli_Commands_Deploy_SetupEmailRouting_RuleTag = string;
-
-export type Cli_Commands_Deploy_SetupEmailRouting_RuleName = string;
-
-export type Cli_Commands_Deploy_SetupEmailRouting_RuleEnabled = boolean;
 
 export type Cli_Commands_Deploy_SetupEmailRouting_Rule = {
   tag: Cli_Commands_Deploy_SetupEmailRouting_RuleTag;

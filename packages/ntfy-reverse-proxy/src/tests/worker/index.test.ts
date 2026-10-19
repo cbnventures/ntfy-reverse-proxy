@@ -287,7 +287,7 @@ const mockConfigWithErrorTopicAndErrorEvents: Tests_Worker_Index_MockConfigWithE
  * Lightweight adapter used by pipeline-focused handler tests. Durable
  * persistence and FIFO behavior are covered by the Workers runtime tests.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 const outbox: Tests_Worker_Index_Outbox = {
   getByName: () => ({

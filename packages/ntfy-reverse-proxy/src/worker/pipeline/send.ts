@@ -78,6 +78,8 @@ const MAX_BYTES = 4000;
  * Delivers one or more message parts and an optional attachment
  * to a single ntfy server, recording each stage outcome.
  *
+ * @returns {Worker_Pipeline_Send_ToServerReturns}
+ *
  * @since 2.0.0
  */
 async function sendToServer(
@@ -255,6 +257,8 @@ async function sendToServer(
  *
  * Orchestrates delivery across all configured servers using
  * either send-all or send-once-with-fallback strategy.
+ *
+ * @returns {Worker_Pipeline_Send_Returns}
  *
  * @since 2.0.0
  */

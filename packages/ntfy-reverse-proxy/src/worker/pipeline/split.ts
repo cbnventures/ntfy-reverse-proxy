@@ -28,6 +28,8 @@ const MAX_BYTES = 4000;
  * Breaks a notification body into multiple parts when the
  * UTF-8 byte length exceeds the ntfy server size limit.
  *
+ * @returns {Worker_Pipeline_Split_Returns}
+ *
  * @since 2.0.0
  */
 function split(body: Worker_Pipeline_Split_Split_Body, headers: Worker_Pipeline_Split_Split_Headers): Worker_Pipeline_Split_Returns {

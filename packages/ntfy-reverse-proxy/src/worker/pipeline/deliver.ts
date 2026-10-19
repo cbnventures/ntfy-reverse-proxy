@@ -20,7 +20,7 @@ import type {
  *
  * @returns {Worker_Pipeline_Deliver_Returns}
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 async function deliver(contextId: Worker_Pipeline_Deliver_ContextId, outbox: Worker_Pipeline_Deliver_Outbox, options: Worker_Pipeline_Deliver_Options): Worker_Pipeline_Deliver_Returns {
   const stub: Worker_Pipeline_Deliver_Stub = outbox.getByName(contextId);

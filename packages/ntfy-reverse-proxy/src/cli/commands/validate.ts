@@ -20,6 +20,8 @@ import type {
  * Runs structural and referential integrity checks on the configuration
  * file, returning a list of any validation errors found.
  *
+ * @returns {Cli_Commands_Validate_ValidateConfig_Returns}
+ *
  * @since 2.0.0
  */
 function validateConfig(configPath: Cli_Commands_Validate_ValidateConfig_ConfigPath): Cli_Commands_Validate_ValidateConfig_Returns {

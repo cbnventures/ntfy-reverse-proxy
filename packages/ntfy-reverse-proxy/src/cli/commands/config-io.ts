@@ -19,6 +19,8 @@ import type {
  * because the parsed JSON has not been schema-validated; callers must run
  * configSchema.parse() or configSchema.safeParse() before operating on the result.
  *
+ * @returns {Cli_Commands_ConfigIo_LoadConfig_Returns}
+ *
  * @since 2.0.0
  */
 function loadConfig(configPath: Cli_Commands_ConfigIo_LoadConfig_ConfigPath): Cli_Commands_ConfigIo_LoadConfig_Returns {
@@ -30,6 +32,8 @@ function loadConfig(configPath: Cli_Commands_ConfigIo_LoadConfig_ConfigPath): Cl
  *
  * Reorders top-level keys to match the interactive menu order
  * and sorts servers and contexts alphabetically by name.
+ *
+ * @returns {Cli_Commands_ConfigIo_NormalizeConfig_Returns}
  *
  * @since 2.0.0
  */
@@ -54,6 +58,8 @@ function normalizeConfig(config: Cli_Commands_ConfigIo_NormalizeConfig_Config): 
  *
  * Normalizes key ordering and serializes the configuration
  * object to JSON, then writes it to disk.
+ *
+ * @returns {Cli_Commands_ConfigIo_SaveConfig_Returns}
  *
  * @since 2.0.0
  */

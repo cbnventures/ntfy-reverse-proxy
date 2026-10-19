@@ -82,17 +82,6 @@ export type Worker_Pipeline_Respond_BodyDeliveryId = Worker_Pipeline_Deliver_Res
 
 export type Worker_Pipeline_Respond_BodyPending = Worker_Pipeline_Deliver_ResultPending | undefined;
 
-export type Worker_Pipeline_Respond_Body = {
-  status: Worker_Pipeline_Respond_BodyStatus;
-  fallback_note?: Worker_Pipeline_Respond_BodyFallbackNote;
-  context?: Worker_Pipeline_Respond_BodyContext;
-  interpreter?: Worker_Pipeline_Respond_BodyInterpreter;
-  delivery_id?: Worker_Pipeline_Respond_BodyDeliveryId;
-  pending?: Worker_Pipeline_Respond_BodyPending;
-  servers?: Worker_Pipeline_Respond_BodyServers;
-  message?: Worker_Pipeline_Respond_BodyMessage;
-};
-
 export type Worker_Pipeline_Respond_BodyServersItemName = string;
 
 export type Worker_Pipeline_Respond_BodyServersItemStatus = number;
@@ -123,6 +112,17 @@ export type Worker_Pipeline_Respond_BodyMessage = {
   body_size: Worker_Pipeline_Respond_BodyMessageBodySize;
   parts: Worker_Pipeline_Respond_BodyMessageParts;
   has_attachment: Worker_Pipeline_Respond_BodyMessageHasAttachment;
+};
+
+export type Worker_Pipeline_Respond_Body = {
+  status: Worker_Pipeline_Respond_BodyStatus;
+  fallback_note?: Worker_Pipeline_Respond_BodyFallbackNote;
+  context?: Worker_Pipeline_Respond_BodyContext;
+  interpreter?: Worker_Pipeline_Respond_BodyInterpreter;
+  delivery_id?: Worker_Pipeline_Respond_BodyDeliveryId;
+  pending?: Worker_Pipeline_Respond_BodyPending;
+  servers?: Worker_Pipeline_Respond_BodyServers;
+  message?: Worker_Pipeline_Respond_BodyMessage;
 };
 
 export type Worker_Pipeline_Respond_Respond_QueuedBodyStatus = 'queued';

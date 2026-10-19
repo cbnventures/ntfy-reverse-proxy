@@ -17,7 +17,7 @@ import type {
   Worker_Interpreters_Unifi_MapEventToPriority_Text,
   Worker_Interpreters_Unifi_MapPriorityToEmojiTag_Priority,
   Worker_Interpreters_Unifi_MapPriorityToEmojiTag_Returns,
-  Worker_Interpreters_Unifi_Result,
+  Worker_Interpreters_Unifi_Returns,
   Worker_Interpreters_Unifi_StripSubjectPrefix_Returns,
   Worker_Interpreters_Unifi_StripSubjectPrefix_Stripped,
   Worker_Interpreters_Unifi_StripSubjectPrefix_Subject,
@@ -226,11 +226,11 @@ function validateUrl(rawUrl: Worker_Interpreters_Unifi_ValidateUrl_RawUrl): Work
  *
  * @param {Worker_Interpreters_Unifi_Input} input - Input.
  *
- * @returns {Worker_Interpreters_Unifi_Result}
+ * @returns {Worker_Interpreters_Unifi_Returns}
  *
  * @since 2.0.0
  */
-const unifiInterpreter: Worker_Interpreters_Unifi_UnifiInterpreter = (input: Worker_Interpreters_Unifi_Input): Worker_Interpreters_Unifi_Result => {
+const unifiInterpreter: Worker_Interpreters_Unifi_UnifiInterpreter = (input: Worker_Interpreters_Unifi_Input): Worker_Interpreters_Unifi_Returns => {
   if (typeof input === 'string') {
     const stringPriority: Worker_Interpreters_Unifi_UnifiInterpreter_StringPriority = mapEventToPriority(input);
     const stringEmojiTag: Worker_Interpreters_Unifi_UnifiInterpreter_StringEmojiTag = mapPriorityToEmojiTag(stringPriority);

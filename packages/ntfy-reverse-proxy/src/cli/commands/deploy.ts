@@ -197,6 +197,8 @@ const ENV_TOKEN_KEY = 'CLOUDFLARE_API_TOKEN';
  * Orchestrates the full deployment pipeline from authentication
  * through worker deployment and optional email routing setup.
  *
+ * @returns {Cli_Commands_Deploy_Deploy_Returns}
+ *
  * @since 2.0.0
  */
 async function deploy(configPath: Cli_Commands_Deploy_Deploy_ConfigPath, interactive: Cli_Commands_Deploy_Deploy_Interactive = false): Cli_Commands_Deploy_Deploy_Returns {
@@ -294,6 +296,8 @@ async function deploy(configPath: Cli_Commands_Deploy_Deploy_ConfigPath, interac
  * Checks for a saved token in the env file and falls back
  * to an interactive prompt when no valid token is available.
  *
+ * @returns {Cli_Commands_Deploy_ResolveApiToken_Returns}
+ *
  * @since 2.0.0
  */
 async function resolveApiToken(interactive: Cli_Commands_Deploy_ResolveApiToken_Interactive): Cli_Commands_Deploy_ResolveApiToken_Returns {
@@ -328,6 +332,8 @@ async function resolveApiToken(interactive: Cli_Commands_Deploy_ResolveApiToken_
  * Calls the Cloudflare token verify endpoint to confirm
  * the token is valid and has not expired.
  *
+ * @returns {Cli_Commands_Deploy_VerifyApiToken_Returns}
+ *
  * @since 2.0.0
  */
 async function verifyApiToken(token: Cli_Commands_Deploy_VerifyApiToken_Token): Cli_Commands_Deploy_VerifyApiToken_Returns {
@@ -349,6 +355,8 @@ async function verifyApiToken(token: Cli_Commands_Deploy_VerifyApiToken_Token): 
  *
  * Probes the Cloudflare API for each required permission scope
  * and prompts the user to fix missing ones before continuing.
+ *
+ * @returns {Cli_Commands_Deploy_VerifyPermissions_Returns}
  *
  * @since 2.0.0
  */
@@ -487,6 +495,8 @@ async function verifyPermissions(token: Cli_Commands_Deploy_VerifyPermissions_To
  * Walks the user through creating a Cloudflare API token
  * and saves the validated result to the local env file.
  *
+ * @returns {Cli_Commands_Deploy_PromptForApiToken_Returns}
+ *
  * @since 2.0.0
  */
 async function promptForApiToken(): Cli_Commands_Deploy_PromptForApiToken_Returns {
@@ -537,6 +547,8 @@ async function promptForApiToken(): Cli_Commands_Deploy_PromptForApiToken_Return
  *
  * Spawns the Wrangler deploy process with the generated
  * configuration file and aborts on non-zero exit codes.
+ *
+ * @returns {Cli_Commands_Deploy_DeployWorker_Returns}
  *
  * @since 2.0.0
  */
@@ -660,6 +672,8 @@ async function ensureKvNamespace(token: Cli_Commands_Deploy_EnsureKvNamespace_To
  * Walks progressively shorter domain segments to find the
  * matching Cloudflare zone and returns its ID and account ID.
  *
+ * @returns {Cli_Commands_Deploy_GetZoneInfo_Returns}
+ *
  * @since 2.0.0
  */
 async function getZoneInfo(token: Cli_Commands_Deploy_GetZoneInfo_Token, baseDomain: Cli_Commands_Deploy_GetZoneInfo_BaseDomain): Cli_Commands_Deploy_GetZoneInfo_Returns {
@@ -708,6 +722,8 @@ async function getZoneInfo(token: Cli_Commands_Deploy_GetZoneInfo_Token, baseDom
  * Fetches all email routing rules for the given zone so
  * the caller can compare desired state against existing rules.
  *
+ * @returns {Cli_Commands_Deploy_ListEmailRoutingRules_Returns}
+ *
  * @since 2.0.0
  */
 async function listEmailRoutingRules(token: Cli_Commands_Deploy_ListEmailRoutingRules_Token, zoneId: Cli_Commands_Deploy_ListEmailRoutingRules_ZoneId): Cli_Commands_Deploy_ListEmailRoutingRules_Returns {
@@ -740,6 +756,8 @@ async function listEmailRoutingRules(token: Cli_Commands_Deploy_ListEmailRouting
  *
  * Creates a new email routing rule that directs incoming
  * messages for the given address to the worker for processing.
+ *
+ * @returns {Cli_Commands_Deploy_CreateEmailRoutingRule_Returns}
  *
  * @since 2.0.0
  */
@@ -791,6 +809,8 @@ async function createEmailRoutingRule(token: Cli_Commands_Deploy_CreateEmailRout
  * Removes a stale email routing rule that no longer matches
  * any configured context in the current deployment.
  *
+ * @returns {Cli_Commands_Deploy_DeleteEmailRoutingRule_Returns}
+ *
  * @since 2.0.0
  */
 async function deleteEmailRoutingRule(token: Cli_Commands_Deploy_DeleteEmailRoutingRule_Token, zoneId: Cli_Commands_Deploy_DeleteEmailRoutingRule_ZoneId, ruleId: Cli_Commands_Deploy_DeleteEmailRoutingRule_RuleId): Cli_Commands_Deploy_DeleteEmailRoutingRule_Returns {
@@ -825,6 +845,8 @@ async function deleteEmailRoutingRule(token: Cli_Commands_Deploy_DeleteEmailRout
  * Reads the local env file and extracts the Cloudflare API
  * token value, stripping surrounding quotes if present.
  *
+ * @returns {Cli_Commands_Deploy_LoadEnvToken_Returns}
+ *
  * @since 2.0.0
  */
 function loadEnvToken(): Cli_Commands_Deploy_LoadEnvToken_Returns {
@@ -857,6 +879,8 @@ function loadEnvToken(): Cli_Commands_Deploy_LoadEnvToken_Returns {
  * Writes or updates the Cloudflare API token in the local
  * env file so subsequent deploys can reuse it automatically.
  *
+ * @returns {Cli_Commands_Deploy_SaveEnvToken_Returns}
+ *
  * @since 2.0.0
  */
 function saveEnvToken(token: Cli_Commands_Deploy_SaveEnvToken_Token): Cli_Commands_Deploy_SaveEnvToken_Returns {
@@ -888,6 +912,8 @@ function saveEnvToken(token: Cli_Commands_Deploy_SaveEnvToken_Token): Cli_Comman
  *
  * Synchronizes email routing rules with the configured contexts
  * by creating missing rules and removing stale ones.
+ *
+ * @returns {Cli_Commands_Deploy_SetupEmailRouting_Returns}
  *
  * @since 2.0.0
  */
@@ -964,6 +990,8 @@ async function setupEmailRouting(configPath: Cli_Commands_Deploy_SetupEmailRouti
  *
  * Logs a formatted overview of all configured contexts
  * with their URLs or email addresses for quick reference.
+ *
+ * @returns {Cli_Commands_Deploy_PrintContextSummary_Returns}
  *
  * @since 2.0.0
  */

@@ -6,7 +6,7 @@ import type {
 /**
  * Tests - Worker - Pipeline - Drain Fifo.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Tests_Worker_Pipeline_DrainFifo_DrainFifo_KeepsAFailedHeadAndRetriesItBeforeLaterItems_ItemBody = string;
 
@@ -35,7 +35,7 @@ export type Tests_Worker_Pipeline_DrainFifo_DrainFifo_KeepsAFailedHeadAndRetries
 /**
  * Tests - Worker - Pipeline - Drain Fifo.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Tests_Worker_Pipeline_DrainFifo_DrainFifo_LetsAnIndependentLaneDrainWhileAnotherLaneIsBlocked_ItemBody = string;
 

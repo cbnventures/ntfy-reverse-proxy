@@ -1,6 +1,6 @@
 import type {
   Worker_Pipeline_Interpret_Input,
-  Worker_Pipeline_Interpret_NotificationObjectPriority,
+  Worker_Pipeline_Interpret_Priority,
   Worker_Pipeline_Interpret_Result,
 } from '../pipeline/interpret.d.ts';
 
@@ -11,9 +11,9 @@ import type {
  */
 export type Worker_Interpreters_Seerr_Input = Worker_Pipeline_Interpret_Input;
 
-export type Worker_Interpreters_Seerr_Result = Worker_Pipeline_Interpret_Result;
+export type Worker_Interpreters_Seerr_Returns = Worker_Pipeline_Interpret_Result;
 
-export type Worker_Interpreters_Seerr_SeerrInterpreter = (input: Worker_Interpreters_Seerr_Input) => Worker_Interpreters_Seerr_Result;
+export type Worker_Interpreters_Seerr_SeerrInterpreter = (input: Worker_Interpreters_Seerr_Input) => Worker_Interpreters_Seerr_Returns;
 
 /**
  * Worker - Interpreters - Seerr - Map Notification Type To Priority.
@@ -22,14 +22,14 @@ export type Worker_Interpreters_Seerr_SeerrInterpreter = (input: Worker_Interpre
  */
 export type Worker_Interpreters_Seerr_MapNotificationTypeToPriority_NotificationType = string;
 
-export type Worker_Interpreters_Seerr_MapNotificationTypeToPriority_Returns = Worker_Pipeline_Interpret_NotificationObjectPriority;
+export type Worker_Interpreters_Seerr_MapNotificationTypeToPriority_Returns = Worker_Pipeline_Interpret_Priority;
 
 /**
  * Worker - Interpreters - Seerr - Map Priority To Emoji Tag.
  *
  * @since 2.0.0
  */
-export type Worker_Interpreters_Seerr_MapPriorityToEmojiTag_Priority = Worker_Pipeline_Interpret_NotificationObjectPriority;
+export type Worker_Interpreters_Seerr_MapPriorityToEmojiTag_Priority = Worker_Pipeline_Interpret_Priority;
 
 export type Worker_Interpreters_Seerr_MapPriorityToEmojiTag_Returns = string;
 

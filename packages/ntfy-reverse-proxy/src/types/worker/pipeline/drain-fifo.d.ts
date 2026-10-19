@@ -1,7 +1,7 @@
 /**
  * Worker - Pipeline - Drain Fifo.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Worker_Pipeline_DrainFifo_ItemDeliveryId = string;
 
@@ -33,13 +33,13 @@ export type Worker_Pipeline_DrainFifo_Returns<Result> = Promise<Map<string, Resu
 
 export type Worker_Pipeline_DrainFifo_Results<Result> = Map<string, Result>;
 
-export type Worker_Pipeline_DrainFifo_CurrentItem<Item extends Worker_Pipeline_DrainFifo_Item> = Item | undefined;
+export type Worker_Pipeline_DrainFifo_DrainFifo_Item<Item extends Worker_Pipeline_DrainFifo_Item> = Item | undefined;
 
-export type Worker_Pipeline_DrainFifo_AttemptResult<Result> = Result;
+export type Worker_Pipeline_DrainFifo_DrainFifo_Result<Result> = Result;
 
 /**
  * Worker - Pipeline - Drain Fifo.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 export type Worker_Pipeline_DrainFifo_DrainFifo_Succeeded = boolean;

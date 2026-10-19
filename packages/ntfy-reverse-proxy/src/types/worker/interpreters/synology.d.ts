@@ -1,6 +1,6 @@
 import type {
   Worker_Pipeline_Interpret_Input,
-  Worker_Pipeline_Interpret_NotificationObjectPriority,
+  Worker_Pipeline_Interpret_Priority,
   Worker_Pipeline_Interpret_Result,
 } from '../pipeline/interpret.d.ts';
 
@@ -11,9 +11,9 @@ import type {
  */
 export type Worker_Interpreters_Synology_Input = Worker_Pipeline_Interpret_Input;
 
-export type Worker_Interpreters_Synology_Result = Worker_Pipeline_Interpret_Result;
+export type Worker_Interpreters_Synology_Returns = Worker_Pipeline_Interpret_Result;
 
-export type Worker_Interpreters_Synology_SynologyInterpreter = (input: Worker_Interpreters_Synology_Input) => Worker_Interpreters_Synology_Result;
+export type Worker_Interpreters_Synology_SynologyInterpreter = (input: Worker_Interpreters_Synology_Input) => Worker_Interpreters_Synology_Returns;
 
 /**
  * Worker - Interpreters - Synology - Map Severity To Priority.
@@ -22,7 +22,7 @@ export type Worker_Interpreters_Synology_SynologyInterpreter = (input: Worker_In
  */
 export type Worker_Interpreters_Synology_MapSeverityToPriority_Severity = string;
 
-export type Worker_Interpreters_Synology_MapSeverityToPriority_Returns = Worker_Pipeline_Interpret_NotificationObjectPriority;
+export type Worker_Interpreters_Synology_MapSeverityToPriority_Returns = Worker_Pipeline_Interpret_Priority;
 
 /**
  * Worker - Interpreters - Synology - Synology Interpreter.

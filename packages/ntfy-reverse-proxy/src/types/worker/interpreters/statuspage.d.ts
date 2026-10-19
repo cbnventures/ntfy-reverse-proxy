@@ -6,7 +6,7 @@ import type {
 import type {
   Worker_Pipeline_Interpret_Context,
   Worker_Pipeline_Interpret_Input,
-  Worker_Pipeline_Interpret_NotificationObjectPriority,
+  Worker_Pipeline_Interpret_Priority,
   Worker_Pipeline_Interpret_Result,
 } from '../pipeline/interpret.d.ts';
 
@@ -120,7 +120,7 @@ export type Worker_Interpreters_Statuspage_IsTerminalStatus_Lowered = string;
  */
 export type Worker_Interpreters_Statuspage_MapImpactToPriority_Impact = string;
 
-export type Worker_Interpreters_Statuspage_MapImpactToPriority_Returns = Worker_Pipeline_Interpret_NotificationObjectPriority;
+export type Worker_Interpreters_Statuspage_MapImpactToPriority_Returns = Worker_Pipeline_Interpret_Priority;
 
 /**
  * Worker - Interpreters - Statuspage - Map Status To Emoji Tag.

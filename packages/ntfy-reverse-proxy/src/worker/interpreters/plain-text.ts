@@ -3,7 +3,7 @@ import type {
   Worker_Interpreters_PlainText_PlainTextInterpreter,
   Worker_Interpreters_PlainText_PlainTextInterpreter_Body,
   Worker_Interpreters_PlainText_PlainTextInterpreter_Decoder,
-  Worker_Interpreters_PlainText_Result,
+  Worker_Interpreters_PlainText_Returns,
 } from '../../types/worker/interpreters/plain-text.d.ts';
 
 /**
@@ -12,9 +12,11 @@ import type {
  * Converts raw request input into a notification body by decoding
  * binary buffers and stringifying JSON objects as-is.
  *
+ * @returns {Worker_Interpreters_PlainText_Returns}
+ *
  * @since 2.0.0
  */
-const plainTextInterpreter: Worker_Interpreters_PlainText_PlainTextInterpreter = (input: Worker_Interpreters_PlainText_Input): Worker_Interpreters_PlainText_Result => {
+const plainTextInterpreter: Worker_Interpreters_PlainText_PlainTextInterpreter = (input: Worker_Interpreters_PlainText_Input): Worker_Interpreters_PlainText_Returns => {
   let body: Worker_Interpreters_PlainText_PlainTextInterpreter_Body = undefined;
 
   if (typeof input === 'string') {

@@ -83,7 +83,7 @@ import type {
  * Keeps every SQLite BLOB safely below Cloudflare's
  * per-value limit for Durable Object storage.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 const attachmentChunkBytes: Worker_DurableObjects_DeliveryOutbox_AttachmentChunkBytes = 1024 * 1024;
 
@@ -98,7 +98,7 @@ const attachmentChunkBytes: Worker_DurableObjects_DeliveryOutbox_AttachmentChunk
  *
  * @returns {Worker_DurableObjects_DeliveryOutbox_DeliverySucceeded_Returns}
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 function deliverySucceeded(mode: Worker_DurableObjects_DeliveryOutbox_DeliverySucceeded_Mode, sendResult: Worker_DurableObjects_DeliveryOutbox_DeliverySucceeded_SendResult): Worker_DurableObjects_DeliveryOutbox_DeliverySucceeded_Returns {
   if (mode === 'send-all') {
@@ -114,7 +114,7 @@ function deliverySucceeded(mode: Worker_DurableObjects_DeliveryOutbox_DeliverySu
  * Owns one SQLite-backed FIFO lane per configured context. A lane only
  * drains when a notification for that context arrives.
  *
- * @since UNRELEASED
+ * @since 2.2.1
  */
 class Runner extends DurableObject<Worker_DurableObjects_DeliveryOutbox_Runner_Env> {
   /**
@@ -125,7 +125,7 @@ class Runner extends DurableObject<Worker_DurableObjects_DeliveryOutbox_Runner_E
    *
    * @private
    *
-   * @since UNRELEASED
+   * @since 2.2.1
    */
   #drainPromise: Worker_DurableObjects_DeliveryOutbox_Runner_DrainPromise;
 
@@ -135,7 +135,7 @@ class Runner extends DurableObject<Worker_DurableObjects_DeliveryOutbox_Runner_E
    * Initializes the three SQLite tables used for notifications,
    * attachment chunks, and confirmed delivery stages.
    *
-   * @since UNRELEASED
+   * @since 2.2.1
    */
   public constructor(ctx: Worker_DurableObjects_DeliveryOutbox_Runner_Constructor_Ctx, env: Worker_DurableObjects_DeliveryOutbox_Runner_Constructor_Env) {
     super(ctx, env);
@@ -182,7 +182,7 @@ class Runner extends DurableObject<Worker_DurableObjects_DeliveryOutbox_Runner_E
    *
    * @returns {Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_Returns}
    *
-   * @since UNRELEASED
+   * @since 2.2.1
    */
   public async enqueue(options: Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_Options): Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_Returns {
     const deliveryId: Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_DeliveryId = crypto.randomUUID();
@@ -259,7 +259,9 @@ class Runner extends DurableObject<Worker_DurableObjects_DeliveryOutbox_Runner_E
    *
    * @private
    *
-   * @since UNRELEASED
+   * @returns {Worker_DurableObjects_DeliveryOutbox_Runner_ReadAttachment_Returns}
+   *
+   * @since 2.2.1
    */
   #readAttachment(deliveryId: Worker_DurableObjects_DeliveryOutbox_Runner_ReadAttachment_DeliveryId, hasAttachment: Worker_DurableObjects_DeliveryOutbox_Runner_ReadAttachment_HasAttachment): Worker_DurableObjects_DeliveryOutbox_Runner_ReadAttachment_Returns {
     if (hasAttachment === false) {
@@ -292,7 +294,9 @@ class Runner extends DurableObject<Worker_DurableObjects_DeliveryOutbox_Runner_E
    *
    * @private
    *
-   * @since UNRELEASED
+   * @returns {Worker_DurableObjects_DeliveryOutbox_Runner_ReadCompletedStages_Returns}
+   *
+   * @since 2.2.1
    */
   #readCompletedStages(deliveryId: Worker_DurableObjects_DeliveryOutbox_Runner_ReadCompletedStages_DeliveryId): Worker_DurableObjects_DeliveryOutbox_Runner_ReadCompletedStages_Returns {
     const rows: Worker_DurableObjects_DeliveryOutbox_Runner_ReadCompletedStages_Rows = this['ctx']['storage']['sql'].exec<Worker_DurableObjects_DeliveryOutbox_Runner_ReadCompletedStages_RowsItem>(
@@ -320,7 +324,9 @@ class Runner extends DurableObject<Worker_DurableObjects_DeliveryOutbox_Runner_E
    *
    * @private
    *
-   * @since UNRELEASED
+   * @returns {Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_Returns}
+   *
+   * @since 2.2.1
    */
   #resolveServers(payload: Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_Payload): Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_Returns {
     const serversJson: Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_ServersJson = this['env']['SERVERS'] ?? '[]';
@@ -354,7 +360,9 @@ class Runner extends DurableObject<Worker_DurableObjects_DeliveryOutbox_Runner_E
    *
    * @private
    *
-   * @since UNRELEASED
+   * @returns {Worker_DurableObjects_DeliveryOutbox_Runner_Checkpoint_Returns}
+   *
+   * @since 2.2.1
    */
   #checkpoint(deliveryId: Worker_DurableObjects_DeliveryOutbox_Runner_Checkpoint_DeliveryId, serverName: Worker_DurableObjects_DeliveryOutbox_Runner_Checkpoint_ServerName, stage: Worker_DurableObjects_DeliveryOutbox_Runner_Checkpoint_Stage): Worker_DurableObjects_DeliveryOutbox_Runner_Checkpoint_Returns {
     this['ctx']['storage']['sql'].exec(
@@ -375,7 +383,9 @@ class Runner extends DurableObject<Worker_DurableObjects_DeliveryOutbox_Runner_E
    *
    * @private
    *
-   * @since UNRELEASED
+   * @returns {Worker_DurableObjects_DeliveryOutbox_Runner_Delete_Returns}
+   *
+   * @since 2.2.1
    */
   #delete(deliveryId: Worker_DurableObjects_DeliveryOutbox_Runner_Delete_DeliveryId): Worker_DurableObjects_DeliveryOutbox_Runner_Delete_Returns {
     this['ctx']['storage'].transactionSync(() => {
@@ -399,7 +409,9 @@ class Runner extends DurableObject<Worker_DurableObjects_DeliveryOutbox_Runner_E
    *
    * @private
    *
-   * @since UNRELEASED
+   * @returns {Worker_DurableObjects_DeliveryOutbox_Runner_Peek_Returns}
+   *
+   * @since 2.2.1
    */
   #peek(): Worker_DurableObjects_DeliveryOutbox_Runner_Peek_Returns {
     const rows: Worker_DurableObjects_DeliveryOutbox_Runner_Peek_Rows = this['ctx']['storage']['sql'].exec<Worker_DurableObjects_DeliveryOutbox_Runner_Peek_RowsItem>(
@@ -417,7 +429,9 @@ class Runner extends DurableObject<Worker_DurableObjects_DeliveryOutbox_Runner_E
    *
    * @private
    *
-   * @since UNRELEASED
+   * @returns {Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_Returns}
+   *
+   * @since 2.2.1
    */
   async #attempt(notification: Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_Notification): Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_Returns {
     const payload: Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_Payload = JSON.parse(notification['payload']) as Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_Payload;
@@ -453,7 +467,9 @@ class Runner extends DurableObject<Worker_DurableObjects_DeliveryOutbox_Runner_E
    *
    * @private
    *
-   * @since UNRELEASED
+   * @returns {Worker_DurableObjects_DeliveryOutbox_Runner_Succeeded_Returns}
+   *
+   * @since 2.2.1
    */
   #succeeded(notification: Worker_DurableObjects_DeliveryOutbox_Runner_Succeeded_Notification, sendResult: Worker_DurableObjects_DeliveryOutbox_Runner_Succeeded_SendResult): Worker_DurableObjects_DeliveryOutbox_Runner_Succeeded_Returns {
     const payload: Worker_DurableObjects_DeliveryOutbox_Runner_Succeeded_Payload = JSON.parse(notification['payload']) as Worker_DurableObjects_DeliveryOutbox_Runner_Succeeded_Payload;
@@ -469,7 +485,9 @@ class Runner extends DurableObject<Worker_DurableObjects_DeliveryOutbox_Runner_E
    *
    * @private
    *
-   * @since UNRELEASED
+   * @returns {Worker_DurableObjects_DeliveryOutbox_Runner_Remove_Returns}
+   *
+   * @since 2.2.1
    */
   #remove(notification: Worker_DurableObjects_DeliveryOutbox_Runner_Remove_Notification): Worker_DurableObjects_DeliveryOutbox_Runner_Remove_Returns {
     this.#delete(notification['deliveryId']);
@@ -485,7 +503,9 @@ class Runner extends DurableObject<Worker_DurableObjects_DeliveryOutbox_Runner_E
    *
    * @private
    *
-   * @since UNRELEASED
+   * @returns {Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_Returns}
+   *
+   * @since 2.2.1
    */
   #handleError(notification: Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_Notification, err: Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_Err): Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_Returns {
     const errorMessage: Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_ErrorMessage = (err instanceof Error) ? err.message : 'Unknown delivery outbox error';
@@ -507,7 +527,9 @@ class Runner extends DurableObject<Worker_DurableObjects_DeliveryOutbox_Runner_E
    *
    * @private
    *
-   * @since UNRELEASED
+   * @returns {Worker_DurableObjects_DeliveryOutbox_Runner_Drain_Returns}
+   *
+   * @since 2.2.1
    */
   #drain(): Worker_DurableObjects_DeliveryOutbox_Runner_Drain_Returns {
     return drainFifo({

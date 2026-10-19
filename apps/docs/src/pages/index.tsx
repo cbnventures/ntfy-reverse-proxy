@@ -20,6 +20,8 @@ import styles from './index.module.css';
  *
  * @constructor
  *
+ * @returns {JSX.Element}
+ *
  * @since 0.11.0
  */
 function Home() {

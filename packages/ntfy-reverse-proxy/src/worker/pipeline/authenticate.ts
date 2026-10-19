@@ -60,6 +60,8 @@ function timingSafeEqual(a: Worker_Pipeline_Authenticate_TimingSafeEqual_A, b: W
    * Accumulates byte mismatches between the two encoded strings
    * without short-circuiting, ensuring constant-time comparison.
    *
+   * @returns {Worker_Pipeline_Authenticate_Authenticate_Returns}
+   *
    * @since 2.1.0
    */
   const reducer: Worker_Pipeline_Authenticate_TimingSafeEqual_Reducer_Reducer = (acc, byte, i) => acc + ((byte === paddedB[i]) ? 0 : 1);
@@ -73,6 +75,8 @@ function timingSafeEqual(a: Worker_Pipeline_Authenticate_TimingSafeEqual_A, b: W
  *
  * Validates incoming requests against the configured auth method,
  * checking HTTP bearer tokens or email sender addresses.
+ *
+ * @returns {Worker_Pipeline_Authenticate_Authenticate_Returns}
  *
  * @since 2.0.0
  */
