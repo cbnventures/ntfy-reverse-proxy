@@ -2,7 +2,7 @@
 id: seerr
 title: Seerr
 description: Format Seerr webhook notifications with event-based priority mapping, media request details, TMDB action links, and optional Seerr dashboard buttons.
-sidebar_position: 5
+sidebar_position: 9
 keywords:
   - ntfy reverse proxy
   - seerr interpreter
@@ -60,7 +60,7 @@ The <Terminology title="module that transforms a payload into a notification" to
 - **Body**: Markdown-formatted with subject, message, requester/reporter, and comment if applicable.
 - **Priority**: Based on notification type (see table above).
 - **Tags**: Includes `seerr` and an emoji tag.
-- **Actions**: Links to TMDB page and Seerr dashboard (if `ntfy-reverse-proxy.url` is provided).
+- **Actions**: "View on TMDB" when the payload has `media.media_type` and `media.tmdbId`, and "Open Seerr" when `ntfy-reverse-proxy.url` is provided.
 
 ## Custom Fields
 
@@ -78,5 +78,5 @@ Add an `ntfy-reverse-proxy` object with a `url` field pointing to your Seerr ins
 ```
 
 :::tip
-Configure the `ntfy-reverse-proxy.url` field in your Seerr webhook settings to add a "View in Seerr" action button to every notification.
+Configure the `ntfy-reverse-proxy.url` field in your Seerr webhook settings to add an "Open Seerr" action button to every notification.
 :::

@@ -59,3 +59,10 @@ export type Lib_PackageRuntime_GetWorkerEntryPath_Extension = string;
 export type Lib_PackageRuntime_GetWorkerEntryPath_WorkerFileName = string;
 
 export type Lib_PackageRuntime_GetWorkerEntryPath_WorkerEntryPath = string;
+
+/**
+ * Lib - Package Runtime - Get Wrangler CLI Path.
+ *
+ * @since 2.3.0
+ */
+export type Lib_PackageRuntime_GetWranglerCliPath_Returns = string;

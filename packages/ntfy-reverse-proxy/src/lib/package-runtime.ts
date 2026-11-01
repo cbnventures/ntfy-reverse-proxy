@@ -1,4 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import {
   dirname, extname, join, resolve,
 } from 'node:path';
@@ -26,6 +27,7 @@ import type {
   Lib_PackageRuntime_GetWorkerEntryPath_Returns,
   Lib_PackageRuntime_GetWorkerEntryPath_WorkerEntryPath,
   Lib_PackageRuntime_GetWorkerEntryPath_WorkerFileName,
+  Lib_PackageRuntime_GetWranglerCliPath_Returns,
 } from '../types/lib/package-runtime.d.ts';
 
 /**
@@ -136,9 +138,24 @@ function getWorkerEntryPath(): Lib_PackageRuntime_GetWorkerEntryPath_Returns {
   return workerEntryPath;
 }
 
+/**
+ * Lib - Package Runtime - Get Wrangler CLI Path.
+ *
+ * Resolves the Wrangler executable installed with this package so deploys use
+ * the declared dependency instead of allowing npx to select or download one.
+ *
+ * @returns {Lib_PackageRuntime_GetWranglerCliPath_Returns}
+ *
+ * @since 2.3.0
+ */
+function getWranglerCliPath(): Lib_PackageRuntime_GetWranglerCliPath_Returns {
+  return createRequire(import.meta.url).resolve('wrangler');
+}
+
 export {
   getConfigSamplePath,
   getPackageRoot,
   getPackageVersion,
   getWorkerEntryPath,
+  getWranglerCliPath,
 };

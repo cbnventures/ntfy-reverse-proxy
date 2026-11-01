@@ -7,15 +7,6 @@ import type {
 } from '../../lib/schema.d.ts';
 
 /**
- * CLI - Commands - Generate.
- *
- * @since 2.0.0
- */
-export type Cli_Commands_Generate_ProjectRoot = string;
-
-export type Cli_Commands_Generate_DefaultWranglerTomlPath = string;
-
-/**
  * CLI - Commands - Generate - Generate Wrangler Toml.
  *
  * @since 2.0.0
@@ -44,21 +35,29 @@ export type Cli_Commands_Generate_GenerateWranglerToml_Config = {
 
 export type Cli_Commands_Generate_GenerateWranglerToml_Settings = Cli_Commands_Generate_GenerateWranglerToml_Config['settings'];
 
-export type Cli_Commands_Generate_GenerateWranglerToml_Servers = Cli_Commands_Generate_GenerateWranglerToml_Config['servers'];
-
 export type Cli_Commands_Generate_GenerateWranglerToml_Contexts = Cli_Commands_Generate_GenerateWranglerToml_Config['contexts'];
 
 export type Cli_Commands_Generate_GenerateWranglerToml_CompatibilityDate = string;
 
 export type Cli_Commands_Generate_GenerateWranglerToml_OutputDir = string;
 
+export type Cli_Commands_Generate_GenerateWranglerToml_BundleDir = string;
+
+export type Cli_Commands_Generate_GenerateWranglerToml_BundleConfigPath = string;
+
+export type Cli_Commands_Generate_GenerateWranglerToml_BundleEntryPath = string;
+
+export type Cli_Commands_Generate_GenerateWranglerToml_RealBundleDir = string;
+
 export type Cli_Commands_Generate_GenerateWranglerToml_WorkerEntryPath = string;
 
 export type Cli_Commands_Generate_GenerateWranglerToml_WorkerEntryRelativePath = string;
 
-export type Cli_Commands_Generate_GenerateWranglerToml_WorkerEntryConfigPath = string;
+export type Cli_Commands_Generate_GenerateWranglerToml_WorkerEntryImportPath = string;
 
-export type Cli_Commands_Generate_GenerateWranglerToml_WorkerEntryToml = string;
+export type Cli_Commands_Generate_GenerateWranglerToml_WorkerEntryImport = string;
+
+export type Cli_Commands_Generate_GenerateWranglerToml_EntryLines = string[];
 
 export type Cli_Commands_Generate_GenerateWranglerToml_HttpContexts = Array<Lib_Schema_HttpContextConfig>;
 
@@ -68,8 +67,11 @@ export type Cli_Commands_Generate_GenerateWranglerToml_RouteLines = string[];
 
 export type Cli_Commands_Generate_GenerateWranglerToml_Lines = string[];
 
-export type Cli_Commands_Generate_GenerateWranglerToml_SettingsJson = string;
+/**
+ * CLI - Commands - Generate - Get Wrangler Toml Path.
+ *
+ * @since 2.3.0
+ */
+export type Cli_Commands_Generate_GetWranglerTomlPath_ConfigPath = string;
 
-export type Cli_Commands_Generate_GenerateWranglerToml_ServersJson = string;
-
-export type Cli_Commands_Generate_GenerateWranglerToml_ContextsJson = string;
+export type Cli_Commands_Generate_GetWranglerTomlPath_Returns = string;

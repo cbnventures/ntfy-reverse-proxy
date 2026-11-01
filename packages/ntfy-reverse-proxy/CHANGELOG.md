@@ -1,5 +1,26 @@
 # ntfy-reverse-proxy
 
+## 2.3.0 - 2026-11-01
+
+### UPDATED
+- Bundled and validated the config once at Worker startup instead of storing it in Worker variables, raising practical context capacity from about 20 to thousands.
+- Used the package-installed Wrangler for deployments instead of allowing npx to select or download a different version.
+- Capped local compatibility dates to the installed Workers runtime and included delivery outcomes in tailed email logs.
+- Generated wrangler.toml beside the selected config and regenerated the local Worker bundle on every development run.
+
+### FIXED
+- Surfaced malformed ntfy JSON and Statuspage payloads as interpretation errors instead of silent mismatches.
+- Validated HTTP context IDs and preserved explicit email context IDs when resolving collisions.
+- Returned failing CLI statuses for invalid configurations and clear errors when requested servers or contexts do not exist.
+- Prevented failed error-topic diagnostics from entering the durable queue and blocking later alerts.
+- Paginated Cloudflare email-routing rule discovery so deployments reconcile more than 50 existing routes.
+- Preserved binary plain-text payloads as attachments without adding an empty notification message.
+
+### ADDED
+- Added app-mismatch diagnostics that identify the correct supported interpreter for each incoming alert.
+- Added Transmission VPN, pfSense Actions, Discord Stonker Bot, and Outpost interpreters that preserve source priorities and tags while labeling each notification by app.
+- Added the X-NRP-Context header for selecting a context during localhost development.
+
 ## 2.2.1 - 2026-10-18
 
 ### UPDATED

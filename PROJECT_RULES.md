@@ -13,7 +13,9 @@
 
 - **URL:** https://github.com/cbnventures/ntfy-reverse-proxy
 
-## Repository Layout
+## Repository Structure
+
+### Repository Layout
 
 ```
 ntfy-reverse-proxy/
@@ -37,7 +39,7 @@ ntfy-reverse-proxy/
 └── README.md                      — Project overview and generated sections
 ```
 
-## Source Structure
+### Source Structure
 
 ```
 packages/ntfy-reverse-proxy/src/
@@ -51,7 +53,7 @@ packages/ntfy-reverse-proxy/src/
 │   └── utility.ts                   — Shared configuration helpers
 ├── worker/
 │   ├── durable-objects/             — Durable delivery outbox and retries
-│   ├── interpreters/                — ntfy, pfSense, Seerr, Synology, UniFi, and text adapters
+│   ├── interpreters/                — ntfy, pfSense, Seerr, Statuspage, Synology, UniFi, and text adapters, plus app-alert adapters for outpost, pfsense-actions, transmission-vpn, and discord-stonker-bot
 │   ├── landing/                     — Public landing page response
 │   ├── pipeline/                    — Request, email, formatting, and delivery stages
 │   ├── handlers.ts                  — HTTP and email pipeline orchestration
@@ -60,7 +62,7 @@ packages/ntfy-reverse-proxy/src/
 └── types/                           — Declarations mirroring source and tests
 ```
 
-## Key Files
+### Key Files
 
 | File                                                                        | Purpose                           | When to modify                                       |
 |-----------------------------------------------------------------------------|-----------------------------------|------------------------------------------------------|
@@ -105,7 +107,7 @@ packages/ntfy-reverse-proxy/src/
 
 ### Environment Variables
 
-Nova supplies `NODE_ENV`, `LOG_LEVEL`, and `LOG_TIME` in generated dotenv files. The root also accepts `CLOUDFLARE_API_TOKEN` for non-interactive Cloudflare operations. Product configuration lives in `config.json`, while the CLI can also use credentials established by `wrangler login`.
+Nova supplies `NODE_ENV`, `LOG_LEVEL`, and `LOG_TIME` in generated dotenv files. The root also accepts `CLOUDFLARE_API_TOKEN` for non-interactive Cloudflare operations. Product configuration lives in `config.json`. Deploying needs that API token: the CLI reads it from the environment or `.env` and verifies it, and the interactive flow prompts for one when it's missing or invalid. Credentials from `wrangler login` aren't used.
 
 ## Workspace Rules
 
@@ -135,7 +137,7 @@ Nova supplies `NODE_ENV`, `LOG_LEVEL`, and `LOG_TIME` in generated dotenv files.
 - Don't expose server URLs, full subdomains, or tokens in GET landing page debug output or POST/PUT response debug output.
 - Don't silently swallow interpreter failures. Hard fail and optionally forward to `error_topic` if configured.
 
-## Project-Specific Patterns
+## Architecture and Data
 
 ### Architecture
 
@@ -159,7 +161,7 @@ Interactive Menu / Direct Commands -> Config Read/Write -> Validate -> Generate 
 
 The request and email handlers coordinate the transformation stages. Delivery can complete immediately or enter the Durable Object outbox for ordered retries. The CLI manages configuration and generates the Worker deployment file.
 
-### Data Flow
+### Data Flow and Ownership
 
 1. **Receive or parse email** — Normalize the HTTP request or inbound email into pipeline input.
 2. **Route** — Match the HTTP subdomain or email recipient to a configured context.
@@ -181,14 +183,24 @@ The request and email handlers coordinate the transformation stages. Delivery ca
 | CLI                | Try/catch at command level. Chalk-formatted errors. Non-zero exit code on failure.                              |
 | Config validation  | Zod schemas on load. Checks: orphaned server refs, duplicate subdomains, missing fields, invalid token format.  |
 
-## Documentation Site
+## Project Guardrails
 
-### Framework
+No additional project-specific guardrails are currently documented beyond the workspace rules and shared convention files.
+
+## Testing and Verification
+
+The supported verification commands are documented under Build and Tooling. Changes must pass every check applicable to the affected workspaces and platforms.
+
+## Documentation and Ownership
+
+### Documentation Structure
+
+#### Framework
 
 - **Framework:** Docusaurus with `@cbnventures/docusaurus-preset-nova`
 - **Source directory:** `apps/docs/`
 
-### Site Structure
+#### Site Structure
 
 ```
 apps/docs/
@@ -201,7 +213,7 @@ apps/docs/
 └── src/pages/                  — Documentation homepage
 ```
 
-### Commands
+#### Commands
 
 - `npm run dev --workspace ntfy-reverse-proxy-docs` starts the documentation site.
 - `npm run check --workspace ntfy-reverse-proxy-docs` validates docs, links, types, and formatting.
@@ -231,3 +243,7 @@ apps/docs/
 | Environment        | URL / Identifier                        | Purpose                         |
 |--------------------|-----------------------------------------|---------------------------------|
 | Cloudflare Workers | Custom domains via `base_domain` config | Production notification gateway |
+
+## Additional Project Rules
+
+No additional project rules are currently documented.

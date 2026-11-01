@@ -60,20 +60,12 @@ const ntfyJsonInterpreter: Worker_Interpreters_NtfyJson_NtfyJsonInterpreter = (i
   let parsed: Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_Parsed = undefined;
 
   if (typeof input === 'string') {
-    try {
-      parsed = JSON.parse(input);
-    } catch {
-      return null;
-    }
+    parsed = JSON.parse(input);
   } else if (input instanceof ArrayBuffer) {
     const decoder: Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_Decoder = new TextDecoder('utf-8');
     const decodedBody: Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_DecodedBody = decoder.decode(input);
 
-    try {
-      parsed = JSON.parse(decodedBody);
-    } catch {
-      return null;
-    }
+    parsed = JSON.parse(decodedBody);
   } else {
     parsed = input;
   }

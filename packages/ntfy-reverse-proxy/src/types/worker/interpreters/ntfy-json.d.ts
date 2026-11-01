@@ -10,7 +10,7 @@ import type {
  */
 export type Worker_Interpreters_NtfyJson_Input = Worker_Pipeline_Interpret_Input;
 
-export type Worker_Interpreters_NtfyJson_Returns = Worker_Pipeline_Interpret_Result | null;
+export type Worker_Interpreters_NtfyJson_Returns = Worker_Pipeline_Interpret_Result;
 
 /**
  * Worker - Interpreters - Ntfy JSON - Ntfy JSON Interpreter.

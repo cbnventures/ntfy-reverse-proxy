@@ -8,6 +8,7 @@ import { parse } from './pipeline/parse.js';
 import { receive } from './pipeline/receive.js';
 import { respond } from './pipeline/respond.js';
 import { route } from './pipeline/route.js';
+import { send } from './pipeline/send.js';
 import { split } from './pipeline/split.js';
 
 import type {
@@ -61,6 +62,7 @@ import type {
   Worker_Handlers_HandleRequest_DeliveryResult,
   Worker_Handlers_HandleRequest_FatalErrorMessage,
   Worker_Handlers_HandleRequest_Formatted,
+  Worker_Handlers_HandleRequest_HostnameLabel,
   Worker_Handlers_HandleRequest_Input,
   Worker_Handlers_HandleRequest_Interpreted,
   Worker_Handlers_HandleRequest_InterpretEntryName,
@@ -76,6 +78,7 @@ import type {
   Worker_Handlers_HandleRequest_InterpretErrorName,
   Worker_Handlers_HandleRequest_InterpretErrorStack,
   Worker_Handlers_HandleRequest_Kv,
+  Worker_Handlers_HandleRequest_LocalContext,
   Worker_Handlers_HandleRequest_Messages,
   Worker_Handlers_HandleRequest_Outbox,
   Worker_Handlers_HandleRequest_Parsed,
@@ -95,6 +98,16 @@ import type {
   Worker_Handlers_ShouldNotifyError_Ctx,
   Worker_Handlers_ShouldNotifyError_Returns,
 } from '../types/worker/handlers.d.ts';
+
+/**
+ * Worker - Handlers - Local Context Header.
+ *
+ * Header a local request uses to name its context. Wrangler dev serves every request as
+ * localhost, so the hostname cannot say which context is meant.
+ *
+ * @since 2.3.0
+ */
+const LOCAL_CONTEXT_HEADER = 'X-NRP-Context';
 
 /**
  * Worker - Handlers - Should Notify Error.
@@ -160,8 +173,10 @@ async function handleRequest(request: Worker_Handlers_HandleRequest_Request, con
       return landingPage(config);
     }
 
-    // 2. Route.
-    const subdomain: Worker_Handlers_HandleRequest_Subdomain = received['hostname'].split('.')[0] ?? '';
+    // 2. Route. Only a localhost request may name its context in a header; deployed requests use the hostname.
+    const localContext: Worker_Handlers_HandleRequest_LocalContext = (received['hostname'] === 'localhost') ? received['headers'].get(LOCAL_CONTEXT_HEADER) : null;
+    const hostnameLabel: Worker_Handlers_HandleRequest_HostnameLabel = received['hostname'].split('.')[0] ?? '';
+    const subdomain: Worker_Handlers_HandleRequest_Subdomain = localContext ?? hostnameLabel;
     const routed: Worker_Handlers_HandleRequest_Routed = route('http', subdomain, config);
 
     if (
@@ -249,7 +264,7 @@ async function handleRequest(request: Worker_Handlers_HandleRequest_Request, con
           const authErrorAttachmentJson: Worker_Handlers_HandleRequest_AuthErrorAttachmentJson = JSON.stringify(authErrorAttachmentData, null, 2);
           const authErrorAttachmentBuffer: Worker_Handlers_HandleRequest_AuthErrorAttachmentBuffer = new TextEncoder().encode(authErrorAttachmentJson).buffer as ArrayBuffer;
 
-          await deliver(ctx['id'], outbox, {
+          await send({
             messages: [],
             servers: resolvedServers,
             primaryServer,
@@ -378,7 +393,7 @@ async function handleRequest(request: Worker_Handlers_HandleRequest_Request, con
           const interpretErrorAttachmentJson: Worker_Handlers_HandleRequest_InterpretErrorAttachmentJson = JSON.stringify(interpretErrorAttachmentData, null, 2);
           const interpretErrorAttachmentBuffer: Worker_Handlers_HandleRequest_InterpretErrorAttachmentBuffer = new TextEncoder().encode(interpretErrorAttachmentJson).buffer as ArrayBuffer;
 
-          await deliver(ctx['id'], outbox, {
+          await send({
             messages: [],
             servers: resolvedServers,
             primaryServer,
@@ -425,7 +440,7 @@ async function handleRequest(request: Worker_Handlers_HandleRequest_Request, con
     });
 
     // 7. Split.
-    const messages: Worker_Handlers_HandleRequest_Messages = split(formatted['body'], formatted['headers']);
+    const messages: Worker_Handlers_HandleRequest_Messages = (interpreted['attachment'] !== undefined && formatted['body'].length === 0) ? [] : split(formatted['body'], formatted['headers']);
 
     // 8. Persist and deliver.
     const deliveryResult: Worker_Handlers_HandleRequest_DeliveryResult = await deliver(ctx['id'], outbox, {
@@ -559,7 +574,7 @@ async function handleEmail(rawEmail: Worker_Handlers_HandleEmail_RawEmail, from:
           const authErrorAttachmentJson: Worker_Handlers_HandleEmail_AuthErrorAttachmentJson = JSON.stringify(authErrorAttachmentData, null, 2);
           const authErrorAttachmentBuffer: Worker_Handlers_HandleEmail_AuthErrorAttachmentBuffer = new TextEncoder().encode(authErrorAttachmentJson).buffer as ArrayBuffer;
 
-          await deliver(ctx['id'], outbox, {
+          await send({
             messages: [],
             servers: resolvedServers,
             primaryServer,
@@ -633,7 +648,7 @@ async function handleEmail(rawEmail: Worker_Handlers_HandleEmail_RawEmail, from:
           const interpretErrorAttachmentJson: Worker_Handlers_HandleEmail_InterpretErrorAttachmentJson = JSON.stringify(interpretErrorAttachmentData, null, 2);
           const interpretErrorAttachmentBuffer: Worker_Handlers_HandleEmail_InterpretErrorAttachmentBuffer = new TextEncoder().encode(interpretErrorAttachmentJson).buffer as ArrayBuffer;
 
-          await deliver(ctx['id'], outbox, {
+          await send({
             messages: [],
             servers: resolvedServers,
             primaryServer,
@@ -667,7 +682,7 @@ async function handleEmail(rawEmail: Worker_Handlers_HandleEmail_RawEmail, from:
     });
 
     // 6. Split.
-    const messages: Worker_Handlers_HandleEmail_Messages = split(formatted['body'], formatted['headers']);
+    const messages: Worker_Handlers_HandleEmail_Messages = (interpreted['attachment'] !== undefined && formatted['body'].length === 0) ? [] : split(formatted['body'], formatted['headers']);
 
     // 7. Persist and deliver.
     const deliveryResult: Worker_Handlers_HandleEmail_DeliveryResult = await deliver(ctx['id'], outbox, {

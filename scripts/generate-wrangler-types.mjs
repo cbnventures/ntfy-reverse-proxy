@@ -70,6 +70,32 @@ function stripGlobalProps() {
 }
 
 /**
+ * Generate Wrangler Types - Point Durable Objects At Source.
+ *
+ * Rewrites Durable Object types that Wrangler imports through the generated Worker
+ * entry in .wrangler, which is gitignored and fails type checks when it is absent,
+ * to the Worker source that defines the classes the entry re-exports.
+ *
+ * @returns {void}
+ *
+ * @since 0.0.0
+ */
+function pointDurableObjectsAtSource() {
+  const content = readFileSync(outputFile, 'utf-8');
+  const generatedEntryImport = 'import("../../.wrangler/ntfy-reverse-proxy/worker")';
+  const workerSourceImport = 'import("./src/worker/index")';
+  const pointed = content.replaceAll(generatedEntryImport, workerSourceImport);
+
+  if (pointed !== content) {
+    writeFileSync(outputFile, pointed);
+
+    process.stdout.write('generate-wrangler-types: Pointed Durable Object types at the Worker source (generated entry is gitignored).\n');
+  }
+
+  return;
+}
+
+/**
  * Generate Wrangler Types - Strip Trailing Whitespace.
  *
  * Removes trailing spaces from Wrangler's generated comments so the committed
@@ -127,6 +153,7 @@ function generateWranglerTypes() {
   });
 
   stripGlobalProps();
+  pointDurableObjectsAtSource();
   stripTrailingWhitespace();
 
   process.stdout.write('generate-wrangler-types: Done.\n');

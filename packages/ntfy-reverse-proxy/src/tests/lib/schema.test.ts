@@ -17,6 +17,10 @@ import type {
   Tests_Lib_Schema_ConfigSchema_RejectsAllowedFromFieldOnHTTPContext_Result,
   Tests_Lib_Schema_ConfigSchema_RejectsContextWithoutTypeDiscriminator_Invalid,
   Tests_Lib_Schema_ConfigSchema_RejectsContextWithoutTypeDiscriminator_Result,
+  Tests_Lib_Schema_ConfigSchema_RejectsHTTPContextIDsThatCannotBeHostLabels_AssertInvalidId,
+  Tests_Lib_Schema_ConfigSchema_RejectsHTTPContextIDsThatCannotBeHostLabels_AssertInvalidId_Invalid,
+  Tests_Lib_Schema_ConfigSchema_RejectsHTTPContextIDsThatCannotBeHostLabels_AssertInvalidId_Result,
+  Tests_Lib_Schema_ConfigSchema_RejectsHTTPContextIDsThatCannotBeHostLabels_InvalidIds,
   Tests_Lib_Schema_ConfigSchema_RejectsInvalidErrorEventsValues_Invalid,
   Tests_Lib_Schema_ConfigSchema_RejectsInvalidErrorEventsValues_Result,
   Tests_Lib_Schema_ConfigSchema_RejectsInvalidInterpreterNames_Invalid,
@@ -79,6 +83,52 @@ describe('configSchema', () => {
     const result: Tests_Lib_Schema_ConfigSchema_ValidatesACompleteValidHTTPContextConfig_Result = configSchema.safeParse(valid);
 
     expect(result['success']).toBe(true);
+
+    return;
+  });
+
+  it('rejects HTTP context IDs that cannot be host labels', () => {
+    const invalidIds: Tests_Lib_Schema_ConfigSchema_RejectsHTTPContextIDsThatCannotBeHostLabels_InvalidIds = [
+      'Uppercase',
+      'has.dot',
+      'has_underscore',
+      '-leading',
+      'trailing-',
+      'a'.repeat(64),
+    ];
+
+    const assertInvalidId: Tests_Lib_Schema_ConfigSchema_RejectsHTTPContextIDsThatCannotBeHostLabels_AssertInvalidId = (invalidId) => {
+      const invalid: Tests_Lib_Schema_ConfigSchema_RejectsHTTPContextIDsThatCannotBeHostLabels_AssertInvalidId_Invalid = {
+        settings: {
+          worker_name: 'test-worker',
+          base_domain: 'ntfy.example.com',
+          show_response_output: false,
+        },
+        servers: [{
+          name: 'primary',
+          server: 'https://ntfy.example.com',
+          token: 'tk_abc123',
+        }],
+        contexts: [{
+          name: 'test-context',
+          type: 'http',
+          id: invalidId,
+          interpreter: 'plain-text',
+          topic: 'test-topic',
+          mode: 'send-once',
+          show_visitor_info: true,
+          primary_server: 'primary',
+          servers: ['primary'],
+        }],
+      };
+      const result: Tests_Lib_Schema_ConfigSchema_RejectsHTTPContextIDsThatCannotBeHostLabels_AssertInvalidId_Result = configSchema.safeParse(invalid);
+
+      expect(result['success']).toBe(false);
+
+      return;
+    };
+
+    invalidIds.forEach(assertInvalidId);
 
     return;
   });
@@ -437,7 +487,7 @@ describe('configSchema', () => {
       contexts: [{
         name: 'homebridge',
         type: 'http',
-        id: 'aBcDeFgHiJkLmNoPqRsT',
+        id: 'abcdefghijklmnopqrst',
         interpreter: 'plain-text',
         topic: 'homebridge',
         mode: 'send-once',
@@ -673,7 +723,7 @@ describe('configSchema', () => {
         {
           name: 'homebridge',
           type: 'http',
-          id: 'aBcDeFgHiJkLmNoPqRsT',
+          id: 'abcdefghijklmnopqrst',
           interpreter: 'plain-text',
           topic: 'homebridge',
           error_topic: 'errors',

@@ -7,9 +7,10 @@ import chalk from 'chalk';
 import prompts from 'prompts';
 
 import { APP_NAME } from '../../lib/item.js';
+import { getWranglerCliPath } from '../../lib/package-runtime.js';
 import { LIB_REGEX_SURROUNDING_QUOTES } from '../../lib/regex.js';
 import { listContexts } from './context.js';
-import { generateWranglerToml } from './generate.js';
+import { generateWranglerToml, getWranglerTomlPath } from './generate.js';
 import { listServers } from './server.js';
 import { getSettings } from './settings.js';
 import { validateConfig } from './validate.js';
@@ -39,7 +40,6 @@ import type {
   Cli_Commands_Deploy_Deploy_HasEmailContexts,
   Cli_Commands_Deploy_Deploy_Interactive,
   Cli_Commands_Deploy_Deploy_KvNamespaceId,
-  Cli_Commands_Deploy_Deploy_ProjectRoot,
   Cli_Commands_Deploy_Deploy_Result,
   Cli_Commands_Deploy_Deploy_Returns,
   Cli_Commands_Deploy_Deploy_Servers,
@@ -48,8 +48,8 @@ import type {
   Cli_Commands_Deploy_Deploy_WorkerName,
   Cli_Commands_Deploy_Deploy_WranglerTomlPath,
   Cli_Commands_Deploy_DeployWorker_DeployResult,
-  Cli_Commands_Deploy_DeployWorker_ProjectRoot,
   Cli_Commands_Deploy_DeployWorker_Returns,
+  Cli_Commands_Deploy_DeployWorker_WranglerCliPath,
   Cli_Commands_Deploy_DeployWorker_WranglerTomlPath,
   Cli_Commands_Deploy_EnsureKvNamespace_AccountId,
   Cli_Commands_Deploy_EnsureKvNamespace_AllNamespaces,
@@ -80,9 +80,12 @@ import type {
   Cli_Commands_Deploy_GetZoneInfo_Response,
   Cli_Commands_Deploy_GetZoneInfo_Returns,
   Cli_Commands_Deploy_GetZoneInfo_Token,
+  Cli_Commands_Deploy_ListEmailRoutingRules_AllRules,
   Cli_Commands_Deploy_ListEmailRoutingRules_Data,
   Cli_Commands_Deploy_ListEmailRoutingRules_DataErrors,
   Cli_Commands_Deploy_ListEmailRoutingRules_ErrorDetails,
+  Cli_Commands_Deploy_ListEmailRoutingRules_Page,
+  Cli_Commands_Deploy_ListEmailRoutingRules_PageRules,
   Cli_Commands_Deploy_ListEmailRoutingRules_Response,
   Cli_Commands_Deploy_ListEmailRoutingRules_Returns,
   Cli_Commands_Deploy_ListEmailRoutingRules_Token,
@@ -223,6 +226,8 @@ async function deploy(configPath: Cli_Commands_Deploy_Deploy_ConfigPath, interac
       Logger.error(`  - ${error}`);
     }
 
+    process.exitCode = 1;
+
     return;
   }
 
@@ -260,17 +265,16 @@ async function deploy(configPath: Cli_Commands_Deploy_Deploy_ConfigPath, interac
   // Step 5: Generate wrangler.toml.
   Logger.info('Generating wrangler.toml...');
 
-  const projectRoot: Cli_Commands_Deploy_Deploy_ProjectRoot = Bootstrap.getProjectRoot() ?? process.cwd();
-  const wranglerTomlPath: Cli_Commands_Deploy_Deploy_WranglerTomlPath = resolve(projectRoot, 'wrangler.toml');
+  const wranglerTomlPath: Cli_Commands_Deploy_Deploy_WranglerTomlPath = getWranglerTomlPath(configPath);
 
   generateWranglerToml(configPath, wranglerTomlPath, accountId, kvNamespaceId);
 
-  Logger.info('wrangler.toml generated.');
+  Logger.info(`Generated "wrangler.toml" at "${wranglerTomlPath}".`);
 
   // Step 6: Deploy worker.
   Logger.info('Deploying worker...');
 
-  deployWorker();
+  deployWorker(wranglerTomlPath);
 
   Logger.info('Worker deployed.');
 
@@ -316,7 +320,7 @@ async function resolveApiToken(interactive: Cli_Commands_Deploy_ResolveApiToken_
     Logger.warn('Saved API token in .env is invalid or expired.');
   } else {
     if (interactive === false) {
-      throw new Error('No API token found. Create a .env file with CLOUDFLARE_API_TOKEN=<your-token> or run "npm run manage" for guided setup.');
+      throw new Error('No API token found. Create a .env file with CLOUDFLARE_API_TOKEN=<your-token> or run the CLI without a command for guided setup.');
     }
 
     Logger.warn('No API token found. Let\'s set one up.');
@@ -548,16 +552,16 @@ async function promptForApiToken(): Cli_Commands_Deploy_PromptForApiToken_Return
  * Spawns the Wrangler deploy process with the generated
  * configuration file and aborts on non-zero exit codes.
  *
+ * @param {Cli_Commands_Deploy_DeployWorker_WranglerTomlPath} wranglerTomlPath - Wrangler toml path.
+ *
  * @returns {Cli_Commands_Deploy_DeployWorker_Returns}
  *
  * @since 2.0.0
  */
-function deployWorker(): Cli_Commands_Deploy_DeployWorker_Returns {
-  const projectRoot: Cli_Commands_Deploy_DeployWorker_ProjectRoot = Bootstrap.getProjectRoot() ?? process.cwd();
-  const wranglerTomlPath: Cli_Commands_Deploy_DeployWorker_WranglerTomlPath = resolve(projectRoot, 'wrangler.toml');
-
-  const deployResult: Cli_Commands_Deploy_DeployWorker_DeployResult = spawnSync('npx', [
-    'wrangler',
+function deployWorker(wranglerTomlPath: Cli_Commands_Deploy_DeployWorker_WranglerTomlPath): Cli_Commands_Deploy_DeployWorker_Returns {
+  const wranglerCliPath: Cli_Commands_Deploy_DeployWorker_WranglerCliPath = getWranglerCliPath();
+  const deployResult: Cli_Commands_Deploy_DeployWorker_DeployResult = spawnSync(process.execPath, [
+    wranglerCliPath,
     'deploy',
     '--config',
     wranglerTomlPath,
@@ -727,28 +731,38 @@ async function getZoneInfo(token: Cli_Commands_Deploy_GetZoneInfo_Token, baseDom
  * @since 2.0.0
  */
 async function listEmailRoutingRules(token: Cli_Commands_Deploy_ListEmailRoutingRules_Token, zoneId: Cli_Commands_Deploy_ListEmailRoutingRules_ZoneId): Cli_Commands_Deploy_ListEmailRoutingRules_Returns {
-  const response: Cli_Commands_Deploy_ListEmailRoutingRules_Response = await fetch(`${CLOUDFLARE_API_BASE}/zones/${zoneId}/email/routing/rules`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+  const allRules: Cli_Commands_Deploy_ListEmailRoutingRules_AllRules = [];
+  let page: Cli_Commands_Deploy_ListEmailRoutingRules_Page = 1;
+  let pageRules: Cli_Commands_Deploy_ListEmailRoutingRules_PageRules = [];
 
-  if (response['ok'] === false) {
-    throw new Error(`Failed to list email routing rules: HTTP ${String(response['status'])}`);
-  }
+  do {
+    const response: Cli_Commands_Deploy_ListEmailRoutingRules_Response = await fetch(`${CLOUDFLARE_API_BASE}/zones/${zoneId}/email/routing/rules?page=${String(page)}&per_page=50`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-  const data: Cli_Commands_Deploy_ListEmailRoutingRules_Data = await response.json<Cli_Commands_Deploy_ListEmailRoutingRules_Data>();
-
-  if (data['success'] === false) {
-    const dataErrors: Cli_Commands_Deploy_ListEmailRoutingRules_DataErrors = data['errors'];
-    let errorDetails: Cli_Commands_Deploy_ListEmailRoutingRules_ErrorDetails = 'Unknown error';
-
-    if (dataErrors !== undefined) {
-      errorDetails = dataErrors.map((e) => `${String(e['code'])}: ${e['message']}`).join(', ');
+    if (response['ok'] === false) {
+      throw new Error(`Failed to list email routing rules: HTTP ${String(response['status'])}`);
     }
 
-    throw new Error(`Failed to list email routing rules: ${errorDetails}`);
-  }
+    const data: Cli_Commands_Deploy_ListEmailRoutingRules_Data = await response.json<Cli_Commands_Deploy_ListEmailRoutingRules_Data>();
 
-  return data['result'];
+    if (data['success'] === false) {
+      const dataErrors: Cli_Commands_Deploy_ListEmailRoutingRules_DataErrors = data['errors'];
+      let errorDetails: Cli_Commands_Deploy_ListEmailRoutingRules_ErrorDetails = 'Unknown error';
+
+      if (dataErrors !== undefined) {
+        errorDetails = dataErrors.map((e) => `${String(e['code'])}: ${e['message']}`).join(', ');
+      }
+
+      throw new Error(`Failed to list email routing rules: ${errorDetails}`);
+    }
+
+    pageRules = data['result'];
+    allRules.push(...pageRules);
+    page += 1;
+  } while (pageRules.length === 50);
+
+  return allRules;
 }
 
 /**

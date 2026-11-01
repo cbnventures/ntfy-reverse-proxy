@@ -25,7 +25,9 @@ Reverse Proxy for ntfy has two entry points running on different runtimes:
 - **Cloudflare <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">Worker</Terminology>** — Handles incoming HTTP webhooks and email messages. Runs on Cloudflare's edge network.
 - **Node.js CLI** — Manages the configuration file. Runs locally on your machine.
 
-The <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> and CLI are cleanly separated. The CLI writes `config.json`, and the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> reads it (injected as environment variables at deploy time).
+The <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> and CLI are cleanly separated. The CLI writes `config.json`, and deploy bundles a copy into the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology>, which checks it once when it starts instead of on every request and email.
+
+Shipping the config inside the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> avoids environment variables, which Cloudflare caps at 5 KB each, so the number of <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology> has no small fixed limit. A test config with 5,000 <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology> built a <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> of about 430 KiB gzipped that spent about 25 ms of CPU starting up on a laptop.
 
 ## HTTP Pipeline
 
@@ -69,15 +71,17 @@ graph TD
 **Route** — Matches the request's subdomain against configured HTTP <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology>. Resolves the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> list and <Terminology title="preferred ntfy server, tried first" to="/docs/reference/terminology#primary-server">primary server</Terminology>.
 
 - Returns 404 if no matching <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> is found.
+- On `localhost`, the `X-NRP-Context` header names the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> instead (see [Local Development](/docs/reference/local-development/#local-testing)).
 
 **Authenticate** — Validates the `Authorization` header against the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s optional token. If the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> has no token configured, all requests are allowed.
 
 - Returns 403 on failure.
-- Optionally forwards error details to the `error_topic` if configured.
+- Optionally forwards error details directly to the `error_topic` if configured. This best-effort send bypasses the durable lane so its failure cannot block normal notifications.
 
 **Parse** — Classifies the request body as JSON, text, or binary. Detects binary content via content-type headers or null byte scanning.
 
 - Attempts JSON parsing if the content-type is `application/json` or the body starts with `{` or `[`.
+- Returns 400 (`Unknown content type`) for an empty body.
 
 **Interpret** — Invokes the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s configured <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> to transform the raw payload into a standardized <Terminology title="standardized result an interpreter returns" to="/docs/reference/terminology#notification-object">notification object</Terminology> (title, body, priority, tags, icon, actions, etc.). HTML is automatically stripped from the notification body.
 
@@ -90,7 +94,7 @@ graph TD
 
 - Messages under the limit pass through as a single part.
 
-**Deliver** — Saves the formatted notification and optional attachment in the SQLite-backed delivery outbox assigned to the context ID, then asks that lane to drain oldest-first.
+**Deliver** — Saves a normal formatted notification and optional attachment in the SQLite-backed delivery outbox assigned to the context ID, then asks that lane to drain oldest-first.
 
 - A failed head stays saved and blocks only that context's later notifications.
 - The next notification for the same context triggers another attempt; there is no timer or manual retry action.
@@ -176,69 +180,78 @@ graph TD
 
 The CLI reads and writes `config.json` through a config I/O layer. All config mutations go through schema validation.
 
-- The generate command produces a `wrangler.toml` file from the config.
+- The generate command produces a `wrangler.toml` file from the config and writes it next to your `config.json`, plus the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> entry and a copy of the config in `.wrangler/ntfy-reverse-proxy/` beside it.
 - The deploy command chains validation, permission verification, KV provisioning, <Terminology title="Cloudflare Workers config file generated from config.json" to="/docs/reference/terminology#wranglertoml">wrangler.toml</Terminology> generation, and deployment into a single step.
 
 ## Error Strategy
 
-| Layer              | Strategy                                                                                                                                                                                                                                                                                                                                                                  |
-|--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Worker entry point | Try/catch around entire <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology>. Returns JSON with HTTP status. Includes <Terminology title="the show_response_output setting" to="/docs/reference/terminology#debug-mode">debug details</Terminology> if `show_response_output` is on.             |
-| Pipeline stages    | Each stage returns a typed result or throws. The entry point identifies which stage failed.                                                                                                                                                                                                                                                                               |
-| Interpreters       | Manual payload extraction. The `ntfy-json` <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> uses strict schema validation; all others use lenient field detection. Optionally forwards to `error_topic` if configured.                                                    |
-| Delivery outbox    | Persists before sending. Keeps a failed head in its context lane and retries it when the next notification for that context arrives.                                                                                                                                                                                                                                      |
-| Send/fallback      | Never throws. Collects per-<Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> results. Primary failure triggers fallback. Returns success/failure per <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>. |
-| CLI                | Try/catch at command level. Chalk-formatted errors. Non-zero exit code on failure.                                                                                                                                                                                                                                                                                        |
-| Config validation  | Schema validation on load. Checks orphaned <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> refs, duplicate <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> IDs, missing fields, invalid token format.          |
+| Layer              | Strategy                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+|--------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Worker entry point | Try/catch around entire <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology>. Returns JSON with HTTP status. Includes <Terminology title="the show_response_output setting" to="/docs/reference/terminology#debug-mode">debug details</Terminology> if `show_response_output` is on.                                                                                                                                                                                                                                                                      |
+| Pipeline stages    | Each stage returns a typed result or throws. The entry point identifies which stage failed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Interpreters       | Manual payload extraction. The `ntfy-json` <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> and the `transmission-vpn`, `pfsense-actions`, `discord-stonker-bot`, and `outpost` <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreters</Terminology> use strict schema validation; all others use lenient field detection. Malformed JSON and schema failures throw. The entry point can forward the failure directly to `error_topic` if configured. |
+| Delivery outbox    | Persists before sending. Keeps a failed head in its context lane and retries it when the next notification for that context arrives.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| Error topics       | Sends `error-debug.json` directly as a one-shot diagnostic. A failed diagnostic is not retried and never enters or blocks the durable delivery lane.                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| Send/fallback      | Never throws. Collects per-<Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> results. Primary failure triggers fallback. Returns success/failure per <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>.                                                                                                                                                                                                                                                          |
+| CLI                | Try/catch at command level. Chalk-formatted errors. Non-zero exit code on failure.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Config validation  | Schema validation on load. Checks orphaned <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> refs, duplicate <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> IDs, missing fields, invalid token format.                                                                                                                                                                                                                                                                   |
 
 ## Source Structure
 
 ```text
 src/
   worker/
-    index.ts                — Worker entry point (fetch + email handlers)
+    index.ts                 — Worker entry point (fetch + email handlers)
+    handlers.ts              — HTTP and email pipeline orchestration
     durable-objects/
-      delivery-outbox.ts    — Per-context SQLite FIFO lane
+      delivery-outbox.ts     — Per-context SQLite FIFO lane
     pipeline/
-      receive.ts            — Extract request metadata
-      route.ts              — Match subdomain/email to context
-      authenticate.ts       — Validate tokens and sender addresses
-      parse.ts              — Detect body type (text, JSON, binary)
-      interpret.ts          — Dispatcher to interpreter modules
-      accumulate.ts         — KV state management for Statuspage
-      format.ts             — Build message body and ntfy headers
-      split.ts              — Smart split for large messages
-      email.ts              — RFC 5322 email parser
-      deliver.ts            — Persist and trigger the context lane
-      drain-fifo.ts         — Oldest-first drain behavior
-      send.ts               — Deliver to servers with fallback
-      respond.ts            — Build HTTP response
+      receive.ts             — Extract request metadata
+      route.ts               — Match subdomain/email to context
+      authenticate.ts        — Validate tokens and sender addresses
+      parse.ts               — Detect body type (text, JSON, binary)
+      interpret.ts           — Dispatcher to interpreter modules
+      accumulate.ts          — KV state management for Statuspage
+      format.ts              — Build message body and ntfy headers
+      split.ts               — Smart split for large messages
+      email.ts               — RFC 5322 email parser
+      deliver.ts             — Persist and trigger the context lane
+      drain-fifo.ts          — Oldest-first drain behavior
+      send.ts                — Deliver to servers with fallback
+      respond.ts             — Build HTTP response
     interpreters/
-      plain-text.ts         — Pass-through text
-      ntfy-json.ts          — ntfy JSON mapping
-      synology.ts           — Synology DSM webhooks
-      statuspage.ts         — Statuspage.io webhooks/emails
-      seerr.ts              — Seerr media requests
-      pfsense.ts            — pfSense email notifications
-      unifi.ts              — UniFi email notifications
+      plain-text.ts          — Pass-through text or binary attachment
+      ntfy-json.ts           — ntfy JSON mapping
+      synology.ts            — Synology DSM webhooks
+      statuspage.ts          — Statuspage.io webhooks
+      seerr.ts               — Seerr media requests
+      pfsense.ts             — pfSense email notifications
+      unifi.ts               — UniFi email notifications
+      app-payload.ts         — Shared reader for app alert payloads
+      transmission-vpn.ts    — Transmission VPN alerts
+      pfsense-actions.ts     — pfSense Actions alerts
+      discord-stonker-bot.ts — Discord Stonker Bot alerts
+      outpost.ts             — Outpost alerts
     landing/
-      page.ts               — Landing page HTML
+      page.ts                — Landing page HTML
   cli/
-    index.ts                — CLI entry point
+    index.ts                 — CLI entry point
     commands/
-      server.ts             — Server CRUD
-      context.ts            — Context CRUD
-      settings.ts           — Settings management
-      config-io.ts          — Config file read/write
-      generate.ts           — wrangler.toml generation
-      validate.ts           — Config validation
-      deploy.ts             — Cloudflare deployment
+      server.ts              — Server CRUD
+      context.ts             — Context CRUD
+      settings.ts            — Settings management
+      config-io.ts           — Config file read/write
+      generate.ts            — wrangler.toml generation
+      validate.ts            — Config validation
+      deploy.ts              — Cloudflare deployment
     menu/
-      interactive.ts        — Interactive TUI
+      interactive.ts         — Interactive TUI
   lib/
-    item.ts                 — App name constant
-    regex.ts                — Shared regex patterns
-    schema.ts               — Zod schemas
-    utility.ts              — Helper functions (HTML stripping)
-  types/                    — TypeScript type definitions (mirrors src/)
+    item.ts                  — App name constant
+    package-runtime.ts       — Packaged CLI paths and version
+    regex.ts                 — Shared regex patterns
+    schema.ts                — Zod schemas
+    utility.ts               — Helper functions (HTML stripping)
+  tests/                     — Unit and integration tests (mirrors src/)
+  types/                     — TypeScript type definitions (mirrors src/)
 ```

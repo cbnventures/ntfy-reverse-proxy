@@ -19,7 +19,7 @@ import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
 
 Choose between `send-once` failover and `send-all` broadcast to control how notifications reach your ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology>.
 
-Both modes use [durable delivery](/docs/features/durable-delivery/): the proxy saves the formatted notification before sending and keeps failed work in a FIFO lane dedicated to that context.
+Both modes use [durable delivery](/docs/features/durable-delivery/) for normal notifications: the proxy saves the formatted notification before sending and keeps failed work in a FIFO lane dedicated to that context. Error-topic diagnostics use the same server mode but are one-shot, best-effort sends outside the lane, so a failed diagnostic cannot block later alerts.
 
 ```mermaid
 flowchart TD
@@ -122,19 +122,18 @@ If no <Terminology title="module that transforms a payload into a notification" 
 
 ## Attachments
 
-When the notification includes a binary <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology> (e.g., an image), delivery happens in two stages per <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>:
+When a notification carries a binary <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology>, delivery happens in two stages per <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>:
 
-1. **Stage 1** — POST the text message body with <Terminology title="8 outgoing headers the proxy sets from the notification" to="/docs/reference/terminology#ntfy-headers">ntfy headers</Terminology>.
+1. **Stage 1** — POST each text message part with <Terminology title="8 outgoing headers the proxy sets from the notification" to="/docs/reference/terminology#ntfy-headers">ntfy headers</Terminology>.
 2. **Stage 2** — PUT the binary <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology> with the `X-Filename` header.
 
-If `show_visitor_info` is enabled, visitor details (IP, location, ISP) are appended to the notification body text — they are not sent as a separate message. When the request also includes a binary <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology>, the proxy sends two requests per <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>: a POST with the text body (which includes visitor info) and a PUT with the binary <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology>.
+The `plain-text` <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> preserves a binary request body, such as an image, as the <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology>. Because it has no text part, each <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> gets only the PUT. Error topics likewise send `error-debug.json` as an attachment-only PUT, but those diagnostics are best-effort rather than durable.
 
 ### Attachment Message Count
 
-The number of messages you receive depends on your settings and delivery mode. For example, if you send one <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology> with `show_visitor_info` enabled, `mode` set to `send-all`, and two ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology> configured, you will receive four messages total:
+The number of messages you receive depends on the delivery mode. For example, an <Terminology title="optional topic that receives failure notifications" to="/docs/reference/terminology#error-topic">error topic</Terminology> notification with `mode` set to `send-all` and two ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology> configured arrives as two messages, one `error-debug.json` <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology> per <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>.
 
-- 1st request: Notification text with visitor info appended (one per <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>, so 2 messages)
-- 2nd request: Binary <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology> (one per <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>, so 2 messages)
+Visitor details from `show_visitor_info` are appended to the text body rather than sent as a separate message, so they never add to the count.
 
 :::info
 Customizations made via headers are not applied to the <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology> message. This prevents duplicate high-priority vibrations (from `X-Priority: 5`) on the <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology> message.
@@ -156,11 +155,11 @@ The <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to
 }
 ```
 
-If a fallback <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> was used, a `fallback_note` field is included:
+If a fallback <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> was used, the status is `partial`, because the <Terminology title="preferred ntfy server, tried first" to="/docs/reference/terminology#primary-server">primary server</Terminology> failed, and a `fallback_note` field is included:
 
 ```json
 {
-  "status": "success",
+  "status": "partial",
   "fallback_note": "Delivered via fallback server \"secondary\""
 }
 ```
@@ -173,10 +172,10 @@ When `show_response_output` is enabled, the response includes full details:
   "context": "GitHub Status",
   "interpreter": "statuspage",
   "servers": [
-    { "name": "primary", "success": true, "status": 200, "stages": ["stage-1: ok"] }
+    { "name": "primary", "status": 200, "success": true, "stages": ["stage-1: ok"] }
   ],
   "message": {
-    "title": "[GitHub] Elevated Error Rates",
+    "title": "[githubstatus.com] Elevated Error Rates",
     "body_size": 342,
     "parts": 1,
     "has_attachment": false
@@ -187,7 +186,7 @@ When `show_response_output` is enabled, the response includes full details:
 Possible status values:
 
 - `"success"` — All <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology> returned 2xx. HTTP status is 200.
-- `"partial"` — Some <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology> succeeded, some failed. HTTP status is 200.
+- `"partial"` — Some <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology> succeeded and some failed, as when a fallback delivered a `send-once` notification. HTTP status is 200.
 - `"queued"` — The notification is safely stored but has not completed its delivery mode. HTTP status is 202, and the next notification for the same context triggers another attempt.
 - `"failed"` — Delivery produced no successful server result and was not retained by the durable flow. HTTP status is 502.
 - `"error"` — A <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology> error occurred (authentication, routing, interpretation, etc.). HTTP status varies: 400, 403, 404, 405, 422, or 500.

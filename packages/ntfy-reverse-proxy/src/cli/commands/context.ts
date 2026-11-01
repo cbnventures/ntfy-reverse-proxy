@@ -72,6 +72,10 @@ function addContext(configPath: Cli_Commands_Context_AddContext_ConfigPath, cont
   const existingIds: Cli_Commands_Context_AddContext_ExistingIds = new Set(config['contexts'].map((existingContext) => existingContext['id']));
 
   if (existingIds.has(currentContext['id']) === true) {
+    if (currentContext['type'] === 'email') {
+      throw new Error(`Context with id "${currentContext['id']}" already exists.`);
+    }
+
     let newId: Cli_Commands_Context_AddContext_NewId = generateId();
 
     while (existingIds.has(newId) === true) {
@@ -145,6 +149,10 @@ function editContext(configPath: Cli_Commands_Context_EditContext_ConfigPath, na
     );
 
     if (existingIds.has(newId) === true) {
+      if (config['contexts'][index]!['type'] === 'email') {
+        throw new Error(`Context with id "${newId}" already exists.`);
+      }
+
       newId = generateId();
 
       while (existingIds.has(newId) === true) {
@@ -185,6 +193,10 @@ function editContext(configPath: Cli_Commands_Context_EditContext_ConfigPath, na
 function removeContext(configPath: Cli_Commands_Context_RemoveContext_ConfigPath, name: Cli_Commands_Context_RemoveContext_Name): Cli_Commands_Context_RemoveContext_Returns {
   const config: Cli_Commands_Context_RemoveContext_Config = configSchema.parse(loadConfig(configPath));
   const filtered: Cli_Commands_Context_RemoveContext_Filtered = config['contexts'].filter((context) => context['name'] !== name);
+
+  if (filtered['length'] === config['contexts']['length']) {
+    throw new Error(`Context with name "${name}" not found.`);
+  }
 
   Reflect.set(config, 'contexts', filtered);
 

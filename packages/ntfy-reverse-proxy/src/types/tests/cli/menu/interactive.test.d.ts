@@ -212,6 +212,31 @@ export type Tests_Cli_Menu_Interactive_InteractiveMenu_CtrlCAtServerEditSelectRe
 export type Tests_Cli_Menu_Interactive_InteractiveMenu_CtrlCAtServerEditSelectReturnsToServerMenu_Call = Record<string, unknown>;
 
 /**
+ * Tests - CLI - Menu - Interactive - Interactive Menu - Email Context Edit Prompts For A Replacement ID.
+ *
+ * @since 2.3.0
+ */
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_Prompts_Default = typeof prompts;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_Prompts = {
+  default: Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_Prompts_Default;
+};
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_PromptsDefaultUnknown = unknown;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_MockPrompts = ReturnType<typeof vi['fn']>;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_ContextModuleUnknown = unknown;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_ContextModule = Record<string, unknown>;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_ListContexts = ReturnType<typeof vi['fn']>;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_EditContext = ReturnType<typeof vi['fn']>;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_GenerateId = ReturnType<typeof vi['fn']>;
+
+/**
  * Tests - CLI - Menu - Interactive - Interactive Menu - Exits On Ctrl C At Config Dir Selection.
  *
  * @since 2.0.0

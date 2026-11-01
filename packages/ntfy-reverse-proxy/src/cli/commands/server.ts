@@ -118,6 +118,10 @@ function removeServer(configPath: Cli_Commands_Server_RemoveServer_ConfigPath, n
 
   const filtered: Cli_Commands_Server_RemoveServer_Filtered = config['servers'].filter((server) => server['name'] !== name);
 
+  if (filtered['length'] === config['servers']['length']) {
+    throw new Error(`Server with name "${name}" not found.`);
+  }
+
   Reflect.set(config, 'servers', filtered);
 
   saveConfig(configPath, config);

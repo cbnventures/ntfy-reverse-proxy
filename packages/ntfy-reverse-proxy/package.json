@@ -1,6 +1,6 @@
 {
   "name": "ntfy-reverse-proxy",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "Notification gateway on Cloudflare Workers that routes webhooks and emails to ntfy with automatic server failover",
   "keywords": [
     "ntfy",
@@ -12,7 +12,11 @@
     "synology",
     "seerr",
     "pfsense",
-    "unifi"
+    "unifi",
+    "transmission-vpn",
+    "pfsense-actions",
+    "discord-stonker-bot",
+    "outpost"
   ],
   "license": "MIT",
   "homepage": "https://nrp.cbnventures.io/",
@@ -76,10 +80,10 @@
     "manage": "tsx src/cli/index.ts"
   },
   "engines": {
-    "node": "^22 || ^24"
+    "node": "^22 || ^24 || ^26"
   },
   "dependencies": {
-    "@cbnventures/nova": "0.33.0",
+    "@cbnventures/nova": "0.38.0",
     "chalk": "6.0.0",
     "commander": "15.0.0",
     "prompts": "2.4.2",

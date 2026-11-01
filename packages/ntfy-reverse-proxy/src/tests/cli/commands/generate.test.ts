@@ -1,37 +1,47 @@
 import { randomUUID } from 'node:crypto';
 import {
-  existsSync, readFileSync, unlinkSync, writeFileSync,
+  copyFileSync, existsSync, mkdirSync, readFileSync, realpathSync, rmSync, symlinkSync, unlinkSync, writeFileSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import {
-  dirname, join, relative, sep,
+  join, relative, resolve, sep,
 } from 'node:path';
 
 import {
   afterEach, beforeEach, describe, expect, it,
 } from 'vitest';
 
-import { generateWranglerToml } from '../../../cli/commands/generate.js';
+import { loadConfig } from '../../../cli/commands/config-io.js';
+import { generateWranglerToml, getWranglerTomlPath } from '../../../cli/commands/generate.js';
 import { getWorkerEntryPath } from '../../../lib/package-runtime.js';
+import { configSchema } from '../../../lib/schema.js';
 
 import type {
   Tests_Cli_Commands_Generate_GenerateCommand_BindsTheSQLiteDeliveryOutboxDurableObject_Toml,
   Tests_Cli_Commands_Generate_GenerateCommand_ConfigJson,
-  Tests_Cli_Commands_Generate_GenerateCommand_EmbedsConfigAsVars_Toml,
   Tests_Cli_Commands_Generate_GenerateCommand_GeneratesEmailRoutingCommentsForEmailContexts_Toml,
   Tests_Cli_Commands_Generate_GenerateCommand_GeneratesRoutesFromHTTPContextIdsAndBaseDomain_Toml,
   Tests_Cli_Commands_Generate_GenerateCommand_GeneratesValidWranglerToml_Toml,
   Tests_Cli_Commands_Generate_GenerateCommand_OmitsEmailRoutingSectionWhenNoEmailContextsExist_ConfigJson,
   Tests_Cli_Commands_Generate_GenerateCommand_OmitsEmailRoutingSectionWhenNoEmailContextsExist_Toml,
-  Tests_Cli_Commands_Generate_GenerateCommand_ReferencesAnExistingWorkerEntry_OutputDir,
-  Tests_Cli_Commands_Generate_GenerateCommand_ReferencesAnExistingWorkerEntry_Toml,
-  Tests_Cli_Commands_Generate_GenerateCommand_ReferencesAnExistingWorkerEntry_WorkerEntryPath,
-  Tests_Cli_Commands_Generate_GenerateCommand_ReferencesAnExistingWorkerEntry_WorkerEntryRelativePath,
+  Tests_Cli_Commands_Generate_GenerateCommand_PointsMainAtTheBundledWorkerEntry_Toml,
+  Tests_Cli_Commands_Generate_GenerateCommand_ResolvesTheWorkerImportFromASymlinkedConfigFolder_BundleDir,
+  Tests_Cli_Commands_Generate_GenerateCommand_ResolvesTheWorkerImportFromASymlinkedConfigFolder_EntryLines,
+  Tests_Cli_Commands_Generate_GenerateCommand_ResolvesTheWorkerImportFromASymlinkedConfigFolder_ImportPath,
+  Tests_Cli_Commands_Generate_GenerateCommand_ResolvesTheWorkerImportFromASymlinkedConfigFolder_LinkedDir,
+  Tests_Cli_Commands_Generate_GenerateCommand_ResolvesTheWorkerImportFromASymlinkedConfigFolder_RealDir,
+  Tests_Cli_Commands_Generate_GenerateCommand_WritesNextToTheConfigFileByDefault_ConfigPath,
+  Tests_Cli_Commands_Generate_GenerateCommand_WritesTheConfigAndAnEntryThatImportsTheWorker_BundledConfig,
+  Tests_Cli_Commands_Generate_GenerateCommand_WritesTheConfigAndAnEntryThatImportsTheWorker_BundleDir,
+  Tests_Cli_Commands_Generate_GenerateCommand_WritesTheConfigAndAnEntryThatImportsTheWorker_Entry,
+  Tests_Cli_Commands_Generate_GenerateCommand_WritesTheConfigAndAnEntryThatImportsTheWorker_ExpectedConfig,
+  Tests_Cli_Commands_Generate_GenerateCommand_WritesTheConfigAndAnEntryThatImportsTheWorker_ExpectedImport,
+  Tests_Cli_Commands_Generate_GenerateCommand_WritesTheConfigAndAnEntryThatImportsTheWorker_WorkerEntryPath,
   Tests_Cli_Commands_Generate_TestConfigPath,
   Tests_Cli_Commands_Generate_TestConfigPathFragment,
   Tests_Cli_Commands_Generate_TestConfigTmpDir,
+  Tests_Cli_Commands_Generate_TestOutputDir,
   Tests_Cli_Commands_Generate_TestOutputPath,
-  Tests_Cli_Commands_Generate_TestOutputPathFragment,
 } from '../../../types/tests/cli/commands/generate.test.d.ts';
 
 const testConfigPathFragment: Tests_Cli_Commands_Generate_TestConfigPathFragment = `ntfy-test-gen-config-${randomUUID()}.json`;
@@ -40,9 +50,9 @@ const testConfigTmpDir: Tests_Cli_Commands_Generate_TestConfigTmpDir = tmpdir();
 
 const testConfigPath: Tests_Cli_Commands_Generate_TestConfigPath = join(testConfigTmpDir, testConfigPathFragment);
 
-const testOutputPathFragment: Tests_Cli_Commands_Generate_TestOutputPathFragment = `ntfy-test-gen-wrangler-${randomUUID()}.toml`;
+const testOutputDir: Tests_Cli_Commands_Generate_TestOutputDir = join(testConfigTmpDir, `ntfy-test-gen-wrangler-${randomUUID()}`);
 
-const testOutputPath: Tests_Cli_Commands_Generate_TestOutputPath = join(testConfigTmpDir, testOutputPathFragment);
+const testOutputPath: Tests_Cli_Commands_Generate_TestOutputPath = join(testOutputDir, 'wrangler.toml');
 
 /**
  * Tests - CLI - Commands - Generate - Generate Command.
@@ -98,9 +108,10 @@ describe('generate command', () => {
       unlinkSync(testConfigPath);
     }
 
-    if (existsSync(testOutputPath) === true) {
-      unlinkSync(testOutputPath);
-    }
+    rmSync(testOutputDir, {
+      recursive: true,
+      force: true,
+    });
 
     return;
   });
@@ -117,17 +128,78 @@ describe('generate command', () => {
     return;
   });
 
-  it('references an existing Worker entry', () => {
+  it('points main at the bundled Worker entry', () => {
     generateWranglerToml(testConfigPath, testOutputPath);
 
-    const toml: Tests_Cli_Commands_Generate_GenerateCommand_ReferencesAnExistingWorkerEntry_Toml = readFileSync(testOutputPath, 'utf-8');
-    const outputDir: Tests_Cli_Commands_Generate_GenerateCommand_ReferencesAnExistingWorkerEntry_OutputDir = dirname(testOutputPath);
-    const workerEntryPath: Tests_Cli_Commands_Generate_GenerateCommand_ReferencesAnExistingWorkerEntry_WorkerEntryPath = getWorkerEntryPath();
-    const workerEntryRelativePath: Tests_Cli_Commands_Generate_GenerateCommand_ReferencesAnExistingWorkerEntry_WorkerEntryRelativePath = relative(outputDir, workerEntryPath).split(sep).join('/');
+    const toml: Tests_Cli_Commands_Generate_GenerateCommand_PointsMainAtTheBundledWorkerEntry_Toml = readFileSync(testOutputPath, 'utf-8');
 
-    expect(toml).toContain(`main = ${JSON.stringify(workerEntryRelativePath)}`);
+    expect(toml).toContain('main = ".wrangler/ntfy-reverse-proxy/worker.js"');
+
+    expect(toml).not.toContain('[vars]');
+
+    return;
+  });
+
+  it('writes the config and an entry that imports the Worker', () => {
+    generateWranglerToml(testConfigPath, testOutputPath);
+
+    const bundleDir: Tests_Cli_Commands_Generate_GenerateCommand_WritesTheConfigAndAnEntryThatImportsTheWorker_BundleDir = join(testOutputDir, '.wrangler', 'ntfy-reverse-proxy');
+    const bundledConfig: Tests_Cli_Commands_Generate_GenerateCommand_WritesTheConfigAndAnEntryThatImportsTheWorker_BundledConfig = JSON.parse(readFileSync(join(bundleDir, 'config.json'), 'utf-8'));
+    const expectedConfig: Tests_Cli_Commands_Generate_GenerateCommand_WritesTheConfigAndAnEntryThatImportsTheWorker_ExpectedConfig = configSchema.parse(loadConfig(testConfigPath));
+    const entry: Tests_Cli_Commands_Generate_GenerateCommand_WritesTheConfigAndAnEntryThatImportsTheWorker_Entry = readFileSync(join(bundleDir, 'worker.js'), 'utf-8');
+    const workerEntryPath: Tests_Cli_Commands_Generate_GenerateCommand_WritesTheConfigAndAnEntryThatImportsTheWorker_WorkerEntryPath = realpathSync(getWorkerEntryPath());
+    const expectedImport: Tests_Cli_Commands_Generate_GenerateCommand_WritesTheConfigAndAnEntryThatImportsTheWorker_ExpectedImport = relative(realpathSync(bundleDir), workerEntryPath).split(sep).join('/');
+
+    expect(bundledConfig).toEqual(expectedConfig);
+
+    expect(entry).toContain(`import { createWorker } from "${expectedImport}";`);
+
+    expect(entry).toContain('import config from "./config.json";');
+
+    expect(entry).toContain('export default createWorker(config);');
+
+    expect(entry).toContain(`export { DeliveryOutbox } from "${expectedImport}";`);
 
     expect(existsSync(workerEntryPath)).toBe(true);
+
+    return;
+  });
+
+  it('writes next to the config file by default', () => {
+    const configPath: Tests_Cli_Commands_Generate_GenerateCommand_WritesNextToTheConfigFileByDefault_ConfigPath = join(testOutputDir, 'config.json');
+
+    mkdirSync(testOutputDir, { recursive: true });
+
+    copyFileSync(testConfigPath, configPath);
+
+    generateWranglerToml(configPath);
+
+    expect(getWranglerTomlPath(configPath)).toBe(testOutputPath);
+
+    expect(existsSync(testOutputPath)).toBe(true);
+
+    expect(existsSync(join(testOutputDir, '.wrangler', 'ntfy-reverse-proxy', 'worker.js'))).toBe(true);
+
+    return;
+  });
+
+  it('resolves the worker import from a symlinked config folder', () => {
+    const realDir: Tests_Cli_Commands_Generate_GenerateCommand_ResolvesTheWorkerImportFromASymlinkedConfigFolder_RealDir = join(testOutputDir, 'real', 'nested');
+    const linkedDir: Tests_Cli_Commands_Generate_GenerateCommand_ResolvesTheWorkerImportFromASymlinkedConfigFolder_LinkedDir = join(testOutputDir, 'linked');
+
+    mkdirSync(realDir, { recursive: true });
+
+    symlinkSync(realDir, linkedDir, 'junction');
+
+    copyFileSync(testConfigPath, join(linkedDir, 'config.json'));
+
+    generateWranglerToml(join(linkedDir, 'config.json'));
+
+    const bundleDir: Tests_Cli_Commands_Generate_GenerateCommand_ResolvesTheWorkerImportFromASymlinkedConfigFolder_BundleDir = realpathSync(join(linkedDir, '.wrangler', 'ntfy-reverse-proxy'));
+    const entryLines: Tests_Cli_Commands_Generate_GenerateCommand_ResolvesTheWorkerImportFromASymlinkedConfigFolder_EntryLines = readFileSync(join(bundleDir, 'worker.js'), 'utf-8').split('\n');
+    const importPath: Tests_Cli_Commands_Generate_GenerateCommand_ResolvesTheWorkerImportFromASymlinkedConfigFolder_ImportPath = (entryLines[1] ?? '').split('"')[1] ?? '';
+
+    expect(existsSync(resolve(bundleDir, importPath))).toBe(true);
 
     return;
   });
@@ -140,16 +212,6 @@ describe('generate command', () => {
     expect(toml).toContain('abc123.ntfy.example.com');
 
     expect(toml).toContain('custom_domain = true');
-
-    return;
-  });
-
-  it('embeds config as vars', () => {
-    generateWranglerToml(testConfigPath, testOutputPath);
-
-    const toml: Tests_Cli_Commands_Generate_GenerateCommand_EmbedsConfigAsVars_Toml = readFileSync(testOutputPath, 'utf-8');
-
-    expect(toml).toContain('[vars]');
 
     return;
   });

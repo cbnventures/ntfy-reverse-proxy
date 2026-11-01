@@ -11,7 +11,7 @@ keywords:
   - nrp
 tags:
   - reference
-  - CLI
+  - cli
 ---
 
 import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
@@ -44,13 +44,15 @@ The interactive menu uses `prompts` for terminal UI. It walks you through each f
 ### Server Submenu
 
 - **Add** — Prompts for name, <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> URL (must start with `https://`), and token (must start with `tk_`).
-- **Edit** — Select an existing <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>, then update its URL or token. Leave a field blank to keep the current value.
+- **Edit** — Select an existing <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>, then update its URL, which starts filled in with the current one, or its token. Leave the token blank to keep the current one.
 - **Remove** — Select a <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> to remove. Fails if any <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> references it.
 
 ### Context Submenu
 
-- **Add** — Prompts for name, type (HTTP or email), <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>, <Terminology title="the ntfy channel a context publishes notifications to" to="/docs/reference/terminology#topic">topic</Terminology>, <Terminology title="preferred ntfy server, tried first" to="/docs/reference/terminology#primary-server">primary server</Terminology>, selected <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology>, and visitor info toggle. The <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> ID (20 lowercase alphanumeric characters) and token (64 mixed-case alphanumeric characters) are auto-generated. Requires at least one <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> to exist first.
-- **Edit** — Select an existing <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>, then update individual fields.
+- **Add** — Prompts for the type (HTTP or email), name, ID, <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>, <Terminology title="the ntfy channel a context publishes notifications to" to="/docs/reference/terminology#topic">topic</Terminology>, <Terminology title="optional topic that receives failure notifications" to="/docs/reference/terminology#error-topic">error topic</Terminology> and the errors that notify it, delivery mode, visitor info toggle, <Terminology title="preferred ntfy server, tried first" to="/docs/reference/terminology#primary-server">primary server</Terminology>, and the <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology> to use. It ends with an auth token for an HTTP <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> or an allowed sender for an email <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>, and it requires at least one <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> to exist first.
+- **IDs and tokens** — Leaving the ID blank gives an HTTP <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> a generated 20-character lowercase ID. A manually entered HTTP ID must be a 1–63 character DNS host label made of lowercase letters, digits, and interior hyphens. An email <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> needs an ID you choose, since it becomes the address's local part. The suggested auth token is a generated 64-character mixed-case string, and clearing it leaves the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> without a token.
+- **Interpreter choices** — HTTP <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology> offer Plain Text, ntfy JSON, Seerr, Synology DSM, Statuspage.io, Transmission VPN, pfSense Actions, Discord Stonker Bot, and Outpost. Email <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology> offer Plain Text, pfSense, and UniFi.
+- **Edit** — Select an existing <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>, then step through the same fields with the current values filled in. You can keep the ID; choosing a new HTTP ID generates one, while choosing a new email ID prompts for its replacement local part. You can also keep or regenerate an HTTP auth token, add a token to an HTTP <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> without one, or clear an email <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s allowed sender.
 - **Remove** — Select a <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> to remove.
 
 :::info
@@ -59,39 +61,42 @@ The interactive menu uses `prompts` for terminal UI. It walks you through each f
 
 ## Commands
 
+:::info
+Changes to `config.json` reach the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">Worker</Terminology> only after the next deploy. That's why `server remove`, `context remove`, and the menu's **Remove** and **Settings** remind you to run `nrp deploy`.
+:::
+
 ### `server remove <name>`
 
-Removes a <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> definition by name. Fails if any <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> still references the <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> in its `primary_server` or `servers` list — you will need to update those <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology> first.
+Removes a <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> definition by name. Fails if the named server does not exist, or if any <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> still references it in `primary_server` or `servers` — you will need to update those <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology> first.
 
 ### `context remove <name>`
 
-Removes a <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> by name.
+Removes a <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> by name. Fails if the named context does not exist.
 
 ### `validate`
 
 Validates the current config file. Checks:
 
-- Schema validation (required fields, correct types)
-- <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">Server</Terminology> reference integrity (all `primary_server` and `servers` entries point to existing <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology>)
+- Schema validation (required fields, correct types, and no unknown <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> keys)
+- <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">Server</Terminology> reference integrity (all `primary_server` and `servers` entries point to existing <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology>, and each `primary_server` is in its <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s `servers`)
 - No duplicate <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> IDs
 
-Returns a list of errors if any are found.
+Prints each error it finds, and exits with code 1 when the config is invalid.
 
 ### `generate`
 
-Generates a `wrangler.toml` file from the config. The generated file includes:
+Generates a `wrangler.toml` file from the config and writes it next to your `config.json`, plus a <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">Worker</Terminology> entry and a copy of the config in `.wrangler/ntfy-reverse-proxy/` beside it. The generated `wrangler.toml` includes:
 
-- <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">Worker</Terminology> name, compatibility date, and main entry pointing to the Worker included with the installed package
+- <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">Worker</Terminology> name, compatibility date, and main entry pointing to the generated entry, which imports the Worker included with the installed package
 - Routes array with `{context-id}.{base_domain}` patterns for each HTTP <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>
 - Email routing section showing required forwarding addresses for email <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology>
-- Environment variables (`SETTINGS`, `SERVERS`, `CONTEXTS`) as JSON strings
-- <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology> bindings if a namespace ID is provided
+- No <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology> binding, which only `deploy` adds after it creates or finds the namespace
 
 ### `deploy`
 
 Runs the full deployment pipeline:
 
-1. Resolves the Cloudflare API token (from `.env` or interactive prompt).
+1. Resolves the Cloudflare API token from `CLOUDFLARE_API_TOKEN` in the environment or a `.env` file. When none works, **Deploy** in the interactive menu prompts for one and saves it to the `.env` file in your config directory, while `nrp deploy` stops with an error.
 2. Validates config integrity.
 3. Verifies Cloudflare API permissions (Workers, KV, and optionally Email Routing).
 4. Creates or locates a <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology> for Statuspage deduplication.
@@ -108,7 +113,7 @@ The CLI looks for config files in this order:
 2. Project root directory.
 3. Platform-specific config directory.
 
-If no `config.json` is found, the CLI copies the starter template bundled with the npm package to the default config directory.
+If no `config.json` is found, the CLI copies the starter template bundled with the npm package to the default config directory. When `nrp` opens the interactive menu and finds `config.json` in more than one of these places, it asks which one to use, while commands use the first one found.
 
 :::tip
 The CLI also checks for `.env` files in the same locations and loads environment variables from the first one found. The `CLOUDFLARE_API_TOKEN` variable is used for deployment.

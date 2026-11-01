@@ -2,7 +2,7 @@
 id: synology
 title: Synology
 description: Format Synology DSM webhook notifications with automatic hostname extraction, severity-based and keyword-based priority inference, and DSM action buttons.
-sidebar_position: 7
+sidebar_position: 11
 keywords:
   - ntfy reverse proxy
   - synology interpreter
@@ -42,6 +42,7 @@ Priority is determined in two ways:
    - "error", "bad sector", "failure" = 4 (high)
    - "warning", "packet loss", "high latency", "running out" = 3 (default)
    - "is available", "restored", "completed successfully" = 2 (low)
+   - No keyword matched = 2 (low)
 
 ## Notification Output
 

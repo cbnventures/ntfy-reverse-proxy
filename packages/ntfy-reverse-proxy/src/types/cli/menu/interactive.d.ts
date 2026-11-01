@@ -49,6 +49,8 @@ export type Cli_Menu_Interactive_AddContextFlow_IdResponse = prompts.Answers<str
 
 export type Cli_Menu_Interactive_AddContextFlow_IdValidateValue = string;
 
+export type Cli_Menu_Interactive_AddContextFlow_Trimmed = string;
+
 export type Cli_Menu_Interactive_AddContextFlow_RawId = string | undefined;
 
 export type Cli_Menu_Interactive_AddContextFlow_InterpreterChoices = Cli_Menu_Interactive_AddContextFlow_Choice[];
@@ -101,7 +103,7 @@ export type Cli_Menu_Interactive_AddContextFlow_ResolvedErrorTopic = string | un
 
 export type Cli_Menu_Interactive_AddContextFlow_TopicString = string;
 
-export type Cli_Menu_Interactive_AddContextFlow_TypedInterpreter = 'plain-text' | 'ntfy-json' | 'seerr' | 'synology' | 'statuspage' | 'pfsense' | 'unifi';
+export type Cli_Menu_Interactive_AddContextFlow_TypedInterpreter = 'plain-text' | 'ntfy-json' | 'seerr' | 'synology' | 'statuspage' | 'pfsense' | 'unifi' | 'transmission-vpn' | 'pfsense-actions' | 'discord-stonker-bot' | 'outpost';
 
 export type Cli_Menu_Interactive_AddContextFlow_TypedMode = 'send-once' | 'send-all';
 
@@ -164,6 +166,12 @@ export type Cli_Menu_Interactive_ContextMenu_KeepIdResponse = prompts.Answers<st
 export type Cli_Menu_Interactive_ContextMenu_KeepId = boolean | undefined;
 
 export type Cli_Menu_Interactive_ContextMenu_Id = string | undefined;
+
+export type Cli_Menu_Interactive_ContextMenu_IdResponse = prompts.Answers<string>;
+
+export type Cli_Menu_Interactive_ContextMenu_RawId = string | undefined;
+
+export type Cli_Menu_Interactive_ContextMenu_IdTrimmed = string;
 
 export type Cli_Menu_Interactive_ContextMenu_ChoiceTitle = string;
 

@@ -159,7 +159,7 @@ function run() {
       throw new Error(generationErrorLines.join('\n'));
     }
 
-    const wranglerConfigPath = join(consumerDirectory, 'wrangler.toml');
+    const wranglerConfigPath = join(dirname(generatedConfigPath), 'wrangler.toml');
     const wranglerConfigRaw = readFileSync(wranglerConfigPath, 'utf-8');
     const mainLine = wranglerConfigRaw.split('\n').find((line) => line.startsWith('main = '));
 

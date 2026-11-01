@@ -3,9 +3,30 @@ import {
 } from 'vitest';
 
 import { handleEmail, handleRequest } from '../../worker/handlers.js';
+import { createWorker } from '../../worker/index.js';
 import { send } from '../../worker/pipeline/send.js';
 
 import type {
+  Tests_Worker_Index_CloudflareWorkers_DurableObject,
+  Tests_Worker_Index_CreateWorker_IgnoresAnEmailWhenTheConfigIsInvalid_Message,
+  Tests_Worker_Index_CreateWorker_IgnoresAnEmailWhenTheConfigIsInvalid_MockFetch,
+  Tests_Worker_Index_CreateWorker_IgnoresAnEmailWhenTheConfigIsInvalid_RawEmail,
+  Tests_Worker_Index_CreateWorker_IgnoresAnEmailWhenTheConfigIsInvalid_Worker,
+  Tests_Worker_Index_CreateWorker_ProcessesAnEmailWithAValidConfig_Message,
+  Tests_Worker_Index_CreateWorker_ProcessesAnEmailWithAValidConfig_MockFetch,
+  Tests_Worker_Index_CreateWorker_ProcessesAnEmailWithAValidConfig_RawEmail,
+  Tests_Worker_Index_CreateWorker_ProcessesAnEmailWithAValidConfig_Worker,
+  Tests_Worker_Index_CreateWorker_ProcessesARequestWithAValidConfig_Body,
+  Tests_Worker_Index_CreateWorker_ProcessesARequestWithAValidConfig_MockFetch,
+  Tests_Worker_Index_CreateWorker_ProcessesARequestWithAValidConfig_Request,
+  Tests_Worker_Index_CreateWorker_ProcessesARequestWithAValidConfig_Response,
+  Tests_Worker_Index_CreateWorker_ProcessesARequestWithAValidConfig_Worker,
+  Tests_Worker_Index_CreateWorker_Returns500ForARequestWhenTheConfigIsInvalid_Body,
+  Tests_Worker_Index_CreateWorker_Returns500ForARequestWhenTheConfigIsInvalid_MockFetch,
+  Tests_Worker_Index_CreateWorker_Returns500ForARequestWhenTheConfigIsInvalid_Request,
+  Tests_Worker_Index_CreateWorker_Returns500ForARequestWhenTheConfigIsInvalid_Response,
+  Tests_Worker_Index_CreateWorker_Returns500ForARequestWhenTheConfigIsInvalid_Worker,
+  Tests_Worker_Index_Env,
   Tests_Worker_Index_HandleEmail_AcceptsEmailFromAuthorizedSender_MockFetch,
   Tests_Worker_Index_HandleEmail_AcceptsEmailFromAuthorizedSender_RawEmail,
   Tests_Worker_Index_HandleEmail_AllowsEmailWhenNoAllowedFromIsConfigured_MockFetch,
@@ -18,11 +39,24 @@ import type {
   Tests_Worker_Index_HandleEmail_SilentlyIgnoresEmailsWithNoMatchingContext_RawEmail,
   Tests_Worker_Index_HandleEmail_SuppressesAuthErrorNotificationWhenEmailErrorEventsExcludesAuthentication_MockFetch,
   Tests_Worker_Index_HandleEmail_SuppressesAuthErrorNotificationWhenEmailErrorEventsExcludesAuthentication_RawEmail,
+  Tests_Worker_Index_HandleRequest_IgnoresTheContextHeaderOutsideLocalhost_Request,
+  Tests_Worker_Index_HandleRequest_IgnoresTheContextHeaderOutsideLocalhost_Response,
   Tests_Worker_Index_HandleRequest_PassesThroughWhenNoTokenConfigured_Request,
   Tests_Worker_Index_HandleRequest_PassesThroughWhenNoTokenConfigured_Response,
+  Tests_Worker_Index_HandleRequest_PreservesBinaryRequestBodiesAsAttachments_Bytes,
+  Tests_Worker_Index_HandleRequest_PreservesBinaryRequestBodiesAsAttachments_MockFetch,
+  Tests_Worker_Index_HandleRequest_PreservesBinaryRequestBodiesAsAttachments_Request,
+  Tests_Worker_Index_HandleRequest_PreservesBinaryRequestBodiesAsAttachments_Response,
   Tests_Worker_Index_HandleRequest_ProcessesAValidPOSTRequestThroughThePipeline_Body,
   Tests_Worker_Index_HandleRequest_ProcessesAValidPOSTRequestThroughThePipeline_Request,
   Tests_Worker_Index_HandleRequest_ProcessesAValidPOSTRequestThroughThePipeline_Response,
+  Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_Enqueue,
+  Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_FailedRequest,
+  Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_FailedResponse,
+  Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_IsolatedOutbox,
+  Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_MockFetch,
+  Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_ValidRequest,
+  Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_ValidResponse,
   Tests_Worker_Index_HandleRequest_Returns403WithNoAuthorizationHeaderWhenTokenRequired_Request,
   Tests_Worker_Index_HandleRequest_Returns403WithNoAuthorizationHeaderWhenTokenRequired_Response,
   Tests_Worker_Index_HandleRequest_Returns403WithWrongToken_Body,
@@ -32,6 +66,9 @@ import type {
   Tests_Worker_Index_HandleRequest_Returns404ForUnmatchedSubdomain_Response,
   Tests_Worker_Index_HandleRequest_Returns405ForUnsupportedMethods_Request,
   Tests_Worker_Index_HandleRequest_Returns405ForUnsupportedMethods_Response,
+  Tests_Worker_Index_HandleRequest_RoutesALocalhostRequestByItsContextHeader_Body,
+  Tests_Worker_Index_HandleRequest_RoutesALocalhostRequestByItsContextHeader_Request,
+  Tests_Worker_Index_HandleRequest_RoutesALocalhostRequestByItsContextHeader_Response,
   Tests_Worker_Index_HandleRequest_SendsErrorNotificationWhenAuthFailsAndErrorTopicConfigured_MockFetch,
   Tests_Worker_Index_HandleRequest_SendsErrorNotificationWhenAuthFailsAndErrorTopicConfigured_Request,
   Tests_Worker_Index_HandleRequest_SendsErrorNotificationWhenAuthFailsAndErrorTopicConfigured_Response,
@@ -54,6 +91,22 @@ import type {
   Tests_Worker_Index_Outbox,
   Tests_Worker_Index_SendResult,
 } from '../../types/tests/worker/index.test.d.ts';
+
+/**
+ * Tests - Worker.
+ *
+ * Stands in for the Workers runtime module, because the Worker entry also exports
+ * the delivery outbox Durable Object, which extends a class only Workers provide.
+ *
+ * @since 2.3.0
+ */
+vi.mock('cloudflare:workers', () => {
+  const durableObject: Tests_Worker_Index_CloudflareWorkers_DurableObject = vi.fn();
+
+  return {
+    DurableObject: durableObject,
+  };
+});
 
 /**
  * Tests - Worker.
@@ -324,6 +377,157 @@ const outbox: Tests_Worker_Index_Outbox = {
 };
 
 /**
+ * Tests - Worker - Env.
+ *
+ * Bindings handed to the Worker handlers. The KV namespace stays unset, like a
+ * deploy that has not created one yet.
+ *
+ * @since 2.3.0
+ */
+const env: Tests_Worker_Index_Env = {
+  DELIVERY_OUTBOX: outbox,
+};
+
+/**
+ * Tests - Worker - Create Worker.
+ *
+ * @since 2.3.0
+ */
+describe('createWorker', () => {
+  /**
+   * Tests - Worker.
+   *
+   * @since 2.3.0
+   */
+  it('processes a request with a valid config', async () => {
+    const mockFetch: Tests_Worker_Index_CreateWorker_ProcessesARequestWithAValidConfig_MockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
+
+    vi.stubGlobal('fetch', mockFetch);
+
+    const worker: Tests_Worker_Index_CreateWorker_ProcessesARequestWithAValidConfig_Worker = createWorker(mockConfig);
+    const request: Tests_Worker_Index_CreateWorker_ProcessesARequestWithAValidConfig_Request = new Request('https://abc123.ntfy.example.com/', {
+      method: 'POST',
+      body: 'Hello world',
+    });
+    const response: Tests_Worker_Index_CreateWorker_ProcessesARequestWithAValidConfig_Response = await worker.fetch(request, env);
+
+    expect(response['status']).toBe(200);
+
+    const body: Tests_Worker_Index_CreateWorker_ProcessesARequestWithAValidConfig_Body = await response.json();
+
+    expect(body['status']).toBe('success');
+
+    expect(mockFetch).toHaveBeenCalled();
+
+    return;
+  });
+
+  /**
+   * Tests - Worker.
+   *
+   * @since 2.3.0
+   */
+  it('returns 500 for a request when the config is invalid', async () => {
+    const mockFetch: Tests_Worker_Index_CreateWorker_Returns500ForARequestWhenTheConfigIsInvalid_MockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
+
+    vi.stubGlobal('fetch', mockFetch);
+
+    const worker: Tests_Worker_Index_CreateWorker_Returns500ForARequestWhenTheConfigIsInvalid_Worker = createWorker({
+      ...mockConfig,
+      contexts: 'not-a-list',
+    });
+    const request: Tests_Worker_Index_CreateWorker_Returns500ForARequestWhenTheConfigIsInvalid_Request = new Request('https://abc123.ntfy.example.com/', {
+      method: 'POST',
+      body: 'Hello world',
+    });
+    const response: Tests_Worker_Index_CreateWorker_Returns500ForARequestWhenTheConfigIsInvalid_Response = await worker.fetch(request, env);
+
+    expect(response['status']).toBe(500);
+
+    const body: Tests_Worker_Index_CreateWorker_Returns500ForARequestWhenTheConfigIsInvalid_Body = await response.json();
+
+    expect(body['status']).toBe('error');
+
+    expect(body['message']).toBe('Invalid configuration');
+
+    expect(mockFetch).not.toHaveBeenCalled();
+
+    return;
+  });
+
+  /**
+   * Tests - Worker.
+   *
+   * @since 2.3.0
+   */
+  it('processes an email with a valid config', async () => {
+    const mockFetch: Tests_Worker_Index_CreateWorker_ProcessesAnEmailWithAValidConfig_MockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
+
+    vi.stubGlobal('fetch', mockFetch);
+
+    const worker: Tests_Worker_Index_CreateWorker_ProcessesAnEmailWithAValidConfig_Worker = createWorker(mockEmailConfig);
+    const rawEmail: Tests_Worker_Index_CreateWorker_ProcessesAnEmailWithAValidConfig_RawEmail = [
+      'From: sender@example.com',
+      'To: pfsense@ntfy.example.com',
+      'Subject: Test Alert',
+      'Content-Type: text/plain',
+      '',
+      'This is a test email body.',
+    ].join('\r\n');
+    const message: Tests_Worker_Index_CreateWorker_ProcessesAnEmailWithAValidConfig_Message = {
+      from: 'sender@example.com',
+      to: 'pfsense@ntfy.example.com',
+      headers: new Headers(),
+      raw: new Blob([rawEmail]).stream(),
+    };
+
+    await worker.email(message, env);
+
+    expect(mockFetch).toHaveBeenCalled();
+
+    return;
+  });
+
+  /**
+   * Tests - Worker.
+   *
+   * @since 2.3.0
+   */
+  it('ignores an email when the config is invalid', async () => {
+    const mockFetch: Tests_Worker_Index_CreateWorker_IgnoresAnEmailWhenTheConfigIsInvalid_MockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
+
+    vi.stubGlobal('fetch', mockFetch);
+
+    const worker: Tests_Worker_Index_CreateWorker_IgnoresAnEmailWhenTheConfigIsInvalid_Worker = createWorker({
+      ...mockEmailConfig,
+      contexts: 'not-a-list',
+    });
+    const rawEmail: Tests_Worker_Index_CreateWorker_IgnoresAnEmailWhenTheConfigIsInvalid_RawEmail = [
+      'From: sender@example.com',
+      'To: pfsense@ntfy.example.com',
+      'Subject: Test Alert',
+      'Content-Type: text/plain',
+      '',
+      'This is a test email body.',
+    ].join('\r\n');
+    const message: Tests_Worker_Index_CreateWorker_IgnoresAnEmailWhenTheConfigIsInvalid_Message = {
+      from: 'sender@example.com',
+      to: 'pfsense@ntfy.example.com',
+      headers: new Headers(),
+      raw: new Blob([rawEmail]).stream(),
+    };
+
+    await worker.email(message, env);
+
+    expect(mockFetch).not.toHaveBeenCalled();
+
+    return;
+  });
+
+  return;
+});
+
+/**
  * Tests - Worker - Handle Request.
  *
  * @since 2.0.0
@@ -346,6 +550,42 @@ describe('handleRequest', () => {
     const body: Tests_Worker_Index_HandleRequest_ProcessesAValidPOSTRequestThroughThePipeline_Body = await response.json();
 
     expect(body['status']).toBe('success');
+
+    return;
+  });
+
+  /**
+   * Tests - Worker.
+   *
+   * @since 2.3.0
+   */
+  it('preserves binary request bodies as attachments', async () => {
+    const mockFetch: Tests_Worker_Index_HandleRequest_PreservesBinaryRequestBodiesAsAttachments_MockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
+
+    vi.stubGlobal('fetch', mockFetch);
+
+    const bytes: Tests_Worker_Index_HandleRequest_PreservesBinaryRequestBodiesAsAttachments_Bytes = new Uint8Array([
+      137,
+      80,
+      78,
+      71,
+      0,
+      255,
+    ]);
+    const request: Tests_Worker_Index_HandleRequest_PreservesBinaryRequestBodiesAsAttachments_Request = new Request('https://abc123.ntfy.example.com/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'image/png' },
+      body: bytes.buffer,
+    });
+    const response: Tests_Worker_Index_HandleRequest_PreservesBinaryRequestBodiesAsAttachments_Response = await handleRequest(request, mockConfig, undefined, outbox);
+
+    expect(response['status']).toBe(200);
+
+    expect(mockFetch).toHaveBeenCalledOnce();
+
+    expect(mockFetch).toHaveBeenCalledWith('https://ntfy.alpha.example.com/test-topic', expect.objectContaining({ method: 'PUT' }));
+
+    expect(new Uint8Array((mockFetch.mock.calls[0]![1] as RequestInit)['body'] as ArrayBuffer)).toEqual(bytes);
 
     return;
   });
@@ -394,6 +634,46 @@ describe('handleRequest', () => {
       body: 'test',
     });
     const response: Tests_Worker_Index_HandleRequest_Returns404ForUnmatchedSubdomain_Response = await handleRequest(request, mockConfig, undefined, outbox);
+
+    expect(response['status']).toBe(404);
+
+    return;
+  });
+
+  /**
+   * Tests - Worker.
+   *
+   * @since 2.3.0
+   */
+  it('routes a localhost request by its context header', async () => {
+    const request: Tests_Worker_Index_HandleRequest_RoutesALocalhostRequestByItsContextHeader_Request = new Request('http://localhost/', {
+      method: 'POST',
+      headers: { 'X-NRP-Context': 'abc123' },
+      body: 'Hello world',
+    });
+    const response: Tests_Worker_Index_HandleRequest_RoutesALocalhostRequestByItsContextHeader_Response = await handleRequest(request, mockConfig, undefined, outbox);
+
+    expect(response['status']).toBe(200);
+
+    const body: Tests_Worker_Index_HandleRequest_RoutesALocalhostRequestByItsContextHeader_Body = await response.json();
+
+    expect(body['status']).toBe('success');
+
+    return;
+  });
+
+  /**
+   * Tests - Worker.
+   *
+   * @since 2.3.0
+   */
+  it('ignores the context header outside localhost', async () => {
+    const request: Tests_Worker_Index_HandleRequest_IgnoresTheContextHeaderOutsideLocalhost_Request = new Request('https://unknown.ntfy.example.com/', {
+      method: 'POST',
+      headers: { 'X-NRP-Context': 'abc123' },
+      body: 'test',
+    });
+    const response: Tests_Worker_Index_HandleRequest_IgnoresTheContextHeaderOutsideLocalhost_Response = await handleRequest(request, mockConfig, undefined, outbox);
 
     expect(response['status']).toBe(404);
 
@@ -498,6 +778,65 @@ describe('handleRequest', () => {
     expect(response['status']).toBe(403);
 
     expect(mockFetch).toHaveBeenCalled();
+
+    return;
+  });
+
+  /**
+   * Tests - Worker.
+   *
+   * @since 2.3.0
+   */
+  it('processes later notifications after an error-topic attachment fails', async () => {
+    const mockFetch: Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_MockFetch = vi.fn()
+      .mockResolvedValueOnce(new Response('too large', { status: 413 }));
+    const enqueue: Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_Enqueue = vi.fn().mockResolvedValue({
+      deliveryId: 'later-delivery',
+      state: 'delivered',
+      pending: 0,
+      sendResult: {
+        results: [{
+          name: 'alpha',
+          success: true,
+          status: 200,
+          stages: ['stage-1: ok'],
+        }],
+        fallbackUsed: false,
+      },
+    });
+    const isolatedOutbox: Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_IsolatedOutbox = {
+      getByName: vi.fn(() => ({ enqueue })),
+    };
+
+    vi.stubGlobal('fetch', mockFetch);
+
+    const failedRequest: Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_FailedRequest = new Request('https://errctx.ntfy.example.com/', {
+      method: 'POST',
+      body: 'Bad auth',
+      headers: { Authorization: 'Bearer wrong' },
+    });
+    const failedResponse: Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_FailedResponse = await handleRequest(failedRequest, mockConfigWithErrorTopic, undefined, isolatedOutbox);
+
+    expect(failedResponse['status']).toBe(403);
+
+    expect(mockFetch).toHaveBeenCalledOnce();
+
+    expect(mockFetch).toHaveBeenCalledWith('https://ntfy.alpha.example.com/error-notifications', expect.objectContaining({ method: 'PUT' }));
+
+    expect(enqueue).not.toHaveBeenCalled();
+
+    const validRequest: Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_ValidRequest = new Request('https://errctx.ntfy.example.com/', {
+      method: 'POST',
+      body: 'Later alert',
+      headers: { Authorization: 'Bearer my-secret-token' },
+    });
+    const validResponse: Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_ValidResponse = await handleRequest(validRequest, mockConfigWithErrorTopic, undefined, isolatedOutbox);
+
+    expect(validResponse['status']).toBe(200);
+
+    expect(enqueue).toHaveBeenCalledOnce();
+
+    expect(enqueue).toHaveBeenCalledWith(expect.objectContaining({ topic: 'error-topic' }));
 
     return;
   });

@@ -96,6 +96,25 @@ export type Tests_Lib_Schema_ConfigSchema_RejectsContextWithoutTypeDiscriminator
 };
 
 /**
+ * Tests - Lib - Schema - Config Schema - Rejects HTTP Context IDs That Cannot Be Host Labels.
+ *
+ * @since 2.3.0
+ */
+export type Tests_Lib_Schema_ConfigSchema_RejectsHTTPContextIDsThatCannotBeHostLabels_InvalidIds = string[];
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsHTTPContextIDsThatCannotBeHostLabels_InvalidId = string;
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsHTTPContextIDsThatCannotBeHostLabels_AssertInvalidId = (invalidId: Tests_Lib_Schema_ConfigSchema_RejectsHTTPContextIDsThatCannotBeHostLabels_InvalidId) => void;
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsHTTPContextIDsThatCannotBeHostLabels_AssertInvalidId_Invalid = Record<string, unknown>;
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsHTTPContextIDsThatCannotBeHostLabels_AssertInvalidId_ResultSuccess = boolean;
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsHTTPContextIDsThatCannotBeHostLabels_AssertInvalidId_Result = {
+  success: Tests_Lib_Schema_ConfigSchema_RejectsHTTPContextIDsThatCannotBeHostLabels_AssertInvalidId_ResultSuccess;
+};
+
+/**
  * Tests - Lib - Schema - Config Schema - Rejects Invalid Error Events Values.
  *
  * @since 2.1.0

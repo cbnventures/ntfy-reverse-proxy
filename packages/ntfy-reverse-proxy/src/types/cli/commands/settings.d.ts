@@ -23,3 +23,5 @@ export type Cli_Commands_Settings_UpdateSettings_Updates = Partial<Lib_Schema_Se
 export type Cli_Commands_Settings_UpdateSettings_Returns = void;
 
 export type Cli_Commands_Settings_UpdateSettings_Config = { [Key in keyof Lib_Schema_ConfigSchema]: Lib_Schema_ConfigSchema[Key] };
+
+export type Cli_Commands_Settings_UpdateSettings_UpdatedConfig = { [Key in keyof Lib_Schema_ConfigSchema]: Lib_Schema_ConfigSchema[Key] };

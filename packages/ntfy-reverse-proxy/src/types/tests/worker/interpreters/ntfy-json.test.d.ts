@@ -11,7 +11,7 @@ export type Tests_Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_HandlesString
 
 export type Tests_Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_HandlesStringInputByParsingJSON_Result = {
   notification: Tests_Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_HandlesStringInputByParsingJSON_Result_Notification;
-} | null;
+};
 
 /**
  * Tests - Worker - Interpreters - Ntfy JSON - Ntfy JSON Interpreter - Ignores Unknown Fields.
@@ -26,7 +26,7 @@ export type Tests_Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_IgnoresUnknow
 
 export type Tests_Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_IgnoresUnknownFields_Result = {
   notification: Tests_Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_IgnoresUnknownFields_Result_Notification;
-} | null;
+};
 
 export type Tests_Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_IgnoresUnknownFields_RecordCast = Record<string, unknown>;
 
@@ -54,7 +54,7 @@ export type Tests_Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_MapsJSONField
 
 export type Tests_Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_MapsJSONFieldsToNotificationObject_Result = {
   notification: Tests_Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_MapsJSONFieldsToNotificationObject_Result_Notification;
-} | null;
+};
 
 /**
  * Tests - Worker - Interpreters - Ntfy JSON - Ntfy JSON Interpreter - Maps Optional Ntfy Fields.
@@ -78,7 +78,7 @@ export type Tests_Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_MapsOptionalN
 
 export type Tests_Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_MapsOptionalNtfyFields_Result = {
   notification: Tests_Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_MapsOptionalNtfyFields_Result_Notification;
-} | null;
+};
 
 /**
  * Tests - Worker - Interpreters - Ntfy JSON - Ntfy JSON Interpreter - Requires Body Field.
@@ -88,16 +88,8 @@ export type Tests_Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_MapsOptionalN
 export type Tests_Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_RequiresBodyField_Input = Record<string, unknown>;
 
 /**
- * Tests - Worker - Interpreters - Ntfy JSON - Ntfy JSON Interpreter - Returns Null On Non JSON String Input.
+ * Tests - Worker - Interpreters - Ntfy JSON - Ntfy JSON Interpreter - Throws On Non JSON String Input.
  *
- * @since 2.0.0
+ * @since 2.3.0
  */
-export type Tests_Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_ReturnsNullOnNonJSONStringInput_Result_Notification_Body = string;
-
-export type Tests_Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_ReturnsNullOnNonJSONStringInput_Result_Notification = {
-  body: Tests_Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_ReturnsNullOnNonJSONStringInput_Result_Notification_Body;
-};
-
-export type Tests_Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_ReturnsNullOnNonJSONStringInput_Result = {
-  notification: Tests_Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_ReturnsNullOnNonJSONStringInput_Result_Notification;
-} | null;
+export type Tests_Worker_Interpreters_NtfyJson_NtfyJsonInterpreter_ThrowsOnNonJSONStringInput_Input = string;

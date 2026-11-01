@@ -86,7 +86,7 @@ On Synology NAS, the cert path is `/etc/ssl/certs/`. Add this volume mount and r
 
 - Check that the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> ID matches the subdomain: a request to `abc123.ntfy.example.com` needs a <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> with `"id": "abc123"`.
 - Run `nrp validate` to check for config issues.
-- Re-deploy after config changes — the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> reads config from environment variables injected at deploy time.
+- Re-deploy after config changes — the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> uses the copy of the config bundled into it at deploy time.
 
 ## 403 Authentication Failed
 
@@ -111,7 +111,8 @@ On Synology NAS, the cert path is `/etc/ssl/certs/`. Add this volume mount and r
 - Check that the correct <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> is configured for your webhook source.
 - For `ntfy-json`, verify the payload includes the required `body` field.
 - For service-specific <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreters</Terminology>, check that the payload matches the expected format (see individual [interpreter docs](/docs/interpreters/overview/)).
-- Enable `show_response_output` temporarily to see detailed error information in the response.
+- For `transmission-vpn`, `pfsense-actions`, `discord-stonker-bot`, and `outpost`, a message that starts with `This context reads` means the alert came from a different app. If the message names a supported interpreter, set the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s `interpreter` to it. If it says the app is unsupported, choose from the supported keys it lists or correct the producer's `app` field; do not configure the unknown key.
+- Read the `message` in the 422 response, which is the <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>'s error whether or not `show_response_output` is on. For the stack and the request as well, set an `error_topic` and keep `interpretation` in `error_events`.
 
 ## Notifications Not Arriving
 
@@ -121,9 +122,10 @@ On Synology NAS, the cert path is `/etc/ssl/certs/`. Add this volume mount and r
 
 - Check that the ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> is reachable and the token is valid.
 - Verify the ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> has `behind-proxy` set to `true` and `base-url` configured.
+- If the response is `{"status": "ignored"}`, the <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> suppressed the notification on purpose, such as a duplicate or component-only Statuspage event (see [Notification Suppression](/docs/interpreters/limitations/#notification-suppression)). Malformed JSON instead returns HTTP 422.
 - Enable `show_response_output` to see per-<Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> delivery results in the response JSON.
 - Check ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> logs for authentication or <Terminology title="the ntfy channel a context publishes notifications to" to="/docs/reference/terminology#topic">topic</Terminology> permission errors.
-- For binary <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachments</Terminology> (images, files), verify `attachment-cache-dir` is configured on the ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>. Large text messages are handled by the proxy's <Terminology title="splits message bodies over 4000 UTF-8 bytes into parts" to="/docs/reference/terminology#smart-split">message splitting</Terminology> and do not require this setting.
+- For an <Terminology title="optional topic that receives failure notifications" to="/docs/reference/terminology#error-topic">error topic</Terminology>, verify `attachment-cache-dir` is configured on the ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>, because error details arrive as an `error-debug.json` <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology>. Error-topic delivery is one-shot and best-effort, so a rejected attachment is not retried; importantly, it also cannot block the context's durable notification lane. Large text messages are handled by the proxy's <Terminology title="splits message bodies over 4000 UTF-8 bytes into parts" to="/docs/reference/terminology#smart-split">message splitting</Terminology> and do not require this setting.
 
 ## Email Notifications Not Working
 
@@ -145,12 +147,12 @@ If the <Terminology title="a notification source configuration" to="/docs/refere
 
 **Symptom**: You receive the same Statuspage.io notification multiple times.
 
-**Cause**: Without KV storage, the Statuspage <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> cannot deduplicate updates. The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> uses the `updateId` field from incident updates to detect duplicates.
+**Cause**: Without KV storage, the Statuspage <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> cannot deduplicate updates. The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> compares the ID of the incident's latest update (`incident.incident_updates[0].id`) with the one it stored to detect duplicates.
 
 **Solution**:
 
-- Run `deploy` from the interactive menu — it automatically creates a <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology> named `{worker_name}-kv` and binds it to the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology>.
-- If deploying manually, create a Cloudflare Workers <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology> and provide its ID during `wrangler.toml` generation.
+- Run deploy (**Deploy** in the interactive menu or `nrp deploy`) — it automatically creates a <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology> named `{worker_name}-kv` and binds it to the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology>.
+- If you deploy with Wrangler yourself, add a `[[kv_namespaces]]` block with `binding = "KV"` and your namespace ID to `wrangler.toml`, because `nrp generate` leaves it out.
 - The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> stores incident state with a 24-hour TTL and skips duplicate update IDs.
 
 ## 405 Method Not Allowed

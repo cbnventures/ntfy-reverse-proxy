@@ -358,20 +358,12 @@ function buildIncidentNotification(serviceName: Worker_Interpreters_Statuspage_B
 const statuspageInterpreter: Worker_Interpreters_Statuspage_StatuspageInterpreter = async (input: Worker_Interpreters_Statuspage_Input, context?: Worker_Interpreters_Statuspage_Context): Worker_Interpreters_Statuspage_StatuspageInterpreter_Returns => {
   let parsed: Worker_Interpreters_Statuspage_StatuspageInterpreter_Parsed = undefined;
   if (typeof input === 'string') {
-    try {
-      parsed = JSON.parse(input);
-    } catch {
-      return null;
-    }
+    parsed = JSON.parse(input);
   } else if (input instanceof ArrayBuffer) {
     const decoder: Worker_Interpreters_Statuspage_StatuspageInterpreter_Decoder = new TextDecoder('utf-8');
     const decodedBody: Worker_Interpreters_Statuspage_StatuspageInterpreter_DecodedBody = decoder.decode(input);
 
-    try {
-      parsed = JSON.parse(decodedBody);
-    } catch {
-      return null;
-    }
+    parsed = JSON.parse(decodedBody);
   } else {
     parsed = input;
   }

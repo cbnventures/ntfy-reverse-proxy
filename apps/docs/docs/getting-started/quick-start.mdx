@@ -28,7 +28,9 @@ Before you begin, make sure you have the following ready:
 - **ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>** — At least one self-hosted ntfy instance with token authentication enabled
 
 :::info
-Your ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> needs `base-url` set to its public URL and `behind-proxy` set to `true`. If you plan to receive binary attachments (images, files), also configure `attachment-cache-dir`. See the [ntfy self-hosting documentation](https://docs.ntfy.sh/config/) for details.
+Your ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> needs `base-url` set to its public URL and `behind-proxy` set to `true`. If you plan to use an <Terminology title="optional topic that receives failure notifications" to="/docs/reference/terminology#error-topic">error topic</Terminology>, also configure `attachment-cache-dir`, because error details arrive as an `error-debug.json` <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology>.
+
+See the [ntfy self-hosting documentation](https://docs.ntfy.sh/config/) for details.
 :::
 
 ## Install
@@ -63,7 +65,7 @@ The interactive config menu starts from the packaged template and guides you thr
 The generated Worker configuration includes a SQLite-backed Durable Object automatically. You do not need to create a queue or database. It provides [durable delivery](/docs/features/durable-delivery/) by keeping a separate FIFO notification lane for each context.
 
 :::tip
-The CLI validates config against its schema on every load. You can also run validation manually with `nrp validate` or through the interactive menu.
+The CLI validates config against its schema on every load. You can also run the full validation manually with `nrp validate`, and **Deploy** in the interactive menu runs it before deploying.
 :::
 
 ## Sending Your First Notification

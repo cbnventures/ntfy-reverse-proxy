@@ -9,7 +9,7 @@ export type Lib_Schema_ContextConfigType = 'http' | 'email';
 
 export type Lib_Schema_ContextConfigId = string;
 
-export type Lib_Schema_ContextConfigInterpreter = 'plain-text' | 'ntfy-json' | 'seerr' | 'synology' | 'statuspage' | 'pfsense' | 'unifi';
+export type Lib_Schema_ContextConfigInterpreter = 'plain-text' | 'ntfy-json' | 'seerr' | 'synology' | 'statuspage' | 'pfsense' | 'unifi' | 'transmission-vpn' | 'pfsense-actions' | 'discord-stonker-bot' | 'outpost';
 
 export type Lib_Schema_ContextConfigTopic = string;
 

@@ -20,5 +20,3 @@ export type Worker_Interpreters_PlainText_PlainTextInterpreter = (input: Worker_
  * @since 2.0.0
  */
 export type Worker_Interpreters_PlainText_PlainTextInterpreter_Body = string | undefined;
-
-export type Worker_Interpreters_PlainText_PlainTextInterpreter_Decoder = TextDecoder;

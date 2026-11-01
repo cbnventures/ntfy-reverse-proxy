@@ -1,0 +1,151 @@
+---
+id: outpost
+title: Outpost
+description: Turn Outpost alerts, such as updated containers or a failed update, into ntfy notifications that keep each alert's priority and emoji tags.
+sidebar_position: 6
+keywords:
+  - ntfy reverse proxy
+  - outpost interpreter
+  - outpost
+  - container updates
+  - docker alerts
+  - app alerts
+tags:
+  - interpreters
+  - outpost
+---
+
+import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
+
+Turn the alerts Outpost sends, such as updated containers or a failed update, into ntfy notifications with the app's name before each title.
+
+## Input Handling
+
+The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> reads the JSON alert that Outpost posts to a destination whose service is **ntfy-reverse-proxy**. Every field below is required, and fields that aren't listed are ignored.
+
+| Field        | Type       | Description                                                            |
+|--------------|------------|------------------------------------------------------------------------|
+| `version`    | `1`        | Payload format. Any other version fails.                               |
+| `app`        | `string`   | The app that sent the alert, which must be `outpost`.                  |
+| `event`      | `string`   | The event's key, such as `update-failed`, or `test` for **Send test**. |
+| `title`      | `string`   | The alert's title, such as `Update failed`.                            |
+| `message`    | `string`   | The alert's text.                                                      |
+| `priority`   | `1-5`      | Priority level (1 = min, 3 = default, 5 = max).                        |
+| `tags`       | `string[]` | ntfy tags, such as the emoji shortcode `whale`.                        |
+| `occurredAt` | `string`   | When the alert happened.                                               |
+| `details`    | `object`   | Extra data about the alert.                                            |
+
+The notification uses `title`, `message`, `priority`, and `tags`. The `event`, `occurredAt`, and `details` fields must be present, but they don't appear in it.
+
+## Supported Events
+
+Outpost sends these alerts, each with a fixed priority and tags:
+
+| Title                      | Event Key           | Priority    | Tags                        |
+|----------------------------|---------------------|-------------|-----------------------------|
+| Saved secrets were removed | `secrets-removed`   | 4 (high)    | `key`, `warning`            |
+| Sign-in locked             | `sign-in-locked`    | 4 (high)    | `lock`                      |
+| Containers updated         | `updates-applied`   | 3 (default) | `whale`, `white_check_mark` |
+| New images available       | `updates-available` | 3 (default) | `whale`                     |
+| Update failed              | `update-failed`     | 4 (high)    | `whale`, `warning`          |
+| Test notification          | `test`              | 3 (default) | `bell`                      |
+
+- **Update failed** — Outpost also sends it when a whole update check couldn't run.
+- **Test notification** — It's what **Send test** sends, so a destination can't choose it as an event.
+
+## Context Setup
+
+1. **Add an HTTP <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>** — Run `nrp`, choose **Manage Contexts** > **Add**, pick **HTTP**, and choose **Outpost** as the **Interpreter**.
+2. **Deploy** — Choose **Deploy**, then copy the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s URL and token from the **Context reference** list it prints.
+3. **Add a destination** — On Outpost's **Notifications** page, select **Add notification**, choose **ntfy-reverse-proxy** as the **Service**, and paste the URL into **Context URL**. Paste the token into **Context token** if the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> has one, enter a **Name**, and select **Add notification** to save it.
+4. **Send a test** — Select **Send test** on the destination, and check that `[Outpost] Test notification` arrives on the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s <Terminology title="the ntfy channel a context publishes notifications to" to="/docs/reference/terminology#topic">topic</Terminology>.
+
+Under **Context URL**, the dialog reminds you with `Set the context's interpreter to outpost.`
+
+```json
+{
+  "id": "outpost-example",
+  "name": "Outpost",
+  "type": "http",
+  "interpreter": "outpost",
+  "topic": "containers",
+  "mode": "send-once",
+  "show_visitor_info": false,
+  "primary_server": "primary",
+  "servers": ["primary"],
+  "token": "replace_with_auth_token"
+}
+```
+
+With this <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>, Outpost posts its alerts to `https://outpost-example.ntfy.example.com`.
+
+## Notification Output
+
+- **Title**: `[Outpost]` and the alert's `title` (e.g., `[Outpost] Update failed`).
+- **Body**: The alert's `message`, with HTML tags removed as for every <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> (see [HTML Stripping](/docs/interpreters/limitations/#html-stripping)).
+- **Priority**: The alert's `priority`, unchanged. Outpost sends `4` for high-priority events and `3` for the rest.
+- **Tags**: `outpost` first, then the alert's `tags` (e.g., `outpost`, `whale`, `warning`).
+
+The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> sets no icon, actions, or Markdown.
+
+## Example
+
+Outpost posts this alert when it rolls back a container that failed its update:
+
+```json
+{
+  "app": "outpost",
+  "details": {
+    "containers": [
+      {
+        "container": "api",
+        "image": "ghcr.io/example/api:2",
+        "status": "rolled-back",
+        "detail": "New container is unhealthy; rolled back to the previous container"
+      }
+    ],
+    "finishedAt": "2026-10-26T04:01:12.480Z"
+  },
+  "event": "update-failed",
+  "message": "Couldn't update 1 container: api (ghcr.io/example/api:2) was rolled back: New container is unhealthy; rolled back to the previous container.",
+  "occurredAt": "2026-10-26T04:01:12.503Z",
+  "priority": 4,
+  "tags": ["whale", "warning"],
+  "title": "Update failed",
+  "version": 1
+}
+```
+
+The proxy publishes it to ntfy with these <Terminology title="8 outgoing headers the proxy sets from the notification" to="/docs/reference/terminology#ntfy-headers">ntfy headers</Terminology> and body:
+
+```text
+X-Title: [Outpost] Update failed
+X-Priority: 4
+X-Tags: outpost,whale,warning
+
+Couldn't update 1 container: api (ghcr.io/example/api:2) was rolled back: New container is unhealthy; rolled back to the previous container.
+```
+
+ntfy shows the `whale` and `warning` tags as emoji and lists `outpost` below the notification.
+
+## Wrong App Error
+
+A <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> reads alerts from one app, so a payload whose `app` names a different app fails instead of arriving under the wrong name. When that app has a built-in <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>, the proxy answers with HTTP 422 and names the interpreter to use:
+
+```json
+{
+  "status": "error",
+  "message": "This context reads Outpost alerts, but the payload came from transmission-vpn. Set the context's interpreter to transmission-vpn."
+}
+```
+
+If `app` contains an unknown producer key, the error instead says the app is unsupported and lists the supported interpreter keys. It never recommends configuring the unknown value.
+
+- **Fix** — Set the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s `interpreter` to the key the message names, or point that app at a <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> that uses its own <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>.
+- **Send test** — The sending app reports that the test couldn't be sent, with `HTTP 422` and up to 120 characters of this message as the reason.
+- **Error topic** — If the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> has an `error_topic` and `error_events` includes `interpretation` (or is omitted), the proxy also sends an `Interpretation Error` with `error-debug.json` to that <Terminology title="optional topic that receives failure notifications" to="/docs/reference/terminology#error-topic">topic</Terminology>.
+- **Other payloads** — A non-empty body that isn't JSON, or JSON that isn't an alert (such as one without `title`, or with a `version` other than `1`), also fails with HTTP 422 before the app is checked.
+
+:::tip
+For when each alert is sent, how to manage destinations, and every field in `details`, see [Notifications](https://outpost.cbnventures.io/docs/features/notifications/) in the Outpost docs.
+:::

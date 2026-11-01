@@ -31,11 +31,11 @@ The pipeline is the ordered sequence of stages a request or email passes through
 
 A context is a notification source configuration that defines a subdomain or email address, an interpreter, a topic, a server list, and a delivery mode. Each webhook source or email sender maps to one context, and a context is either the HTTP type or the email type.
 
-Each context ID also names its own durable delivery lane. A failed notification blocks only later notifications from that same context.
+Each context ID also names its own durable delivery lane. A failed normal notification blocks only later normal notifications from that same context; best-effort error-topic diagnostics do not enter the lane.
 
 ## Interpreter
 
-An interpreter is a module that transforms a raw webhook payload or email into a standardized notification object with a title, body, priority, tags, and other ntfy fields. The project maintains built-in interpreters for Statuspage.io, Synology DSM, Seerr, pfSense, and UniFi, plus generic plain-text and ntfy-JSON modes.
+An interpreter is a module that transforms a raw webhook payload or email into a standardized notification object with a title, body, priority, tags, and other ntfy fields. The project maintains built-in interpreters for Statuspage.io, Synology DSM, Seerr, pfSense, UniFi, and the alerts from Transmission VPN, pfSense Actions, Discord Stonker Bot, and Outpost, plus generic plain-text and ntfy-JSON modes.
 
 ## Notification Object
 
@@ -67,7 +67,7 @@ The delivery outbox is the SQLite-backed Durable Object storage that saves a ful
 
 ## Delivery Lane
 
-A delivery lane is one context's independent FIFO list inside the delivery outbox. The oldest item must finish before the next item can send, while lanes belonging to other context IDs continue independently.
+A delivery lane is one context's independent FIFO list of normal notifications inside the delivery outbox. The oldest item must finish before the next item can send, while lanes belonging to other context IDs continue independently. Error-topic diagnostics bypass it.
 
 ## At-Least-Once Delivery
 
@@ -83,7 +83,7 @@ Smart split automatically breaks a notification body exceeding 4000 UTF-8 bytes 
 
 ## Attachment
 
-An attachment is a binary file, such as an image, delivered alongside a notification. The proxy sends it in two stages per server — a POST carries the text message body, then a PUT carries the binary attachment and its filename header.
+An attachment is a binary file delivered alongside a notification. The `plain-text` interpreter preserves binary request bodies as attachments, and error topics send their details as an `error-debug.json` attachment. The proxy sends an attachment to each server as a PUT with its filename header, after any POST requests carrying text message parts.
 
 ## ntfy
 
@@ -99,7 +99,7 @@ ntfy headers are the 8 outgoing HTTP headers the proxy sets from the interpreter
 
 ## Error Topic
 
-An error topic is an optional ntfy topic where the proxy forwards authentication and interpretation failures as JSON debug attachments, so a failure surfaces instead of vanishing silently. The `error_events` setting can narrow this down to just one failure category.
+An error topic is an optional ntfy topic where the proxy forwards authentication and interpretation failures as JSON debug attachments. These diagnostics are one-shot and best-effort: they bypass durable delivery so their own failure cannot block later normal notifications. The `error_events` setting can narrow this down to just one failure category.
 
 ## Base Domain
 
@@ -107,7 +107,7 @@ The base domain is the single domain, such as `ntfy.example.com`, under which ev
 
 ## config.json
 
-`config.json` is the single file holding the `settings`, `servers`, and `contexts` sections that the Worker reads at runtime as injected environment variables. The CLI manages this file and keeps it gitignored — only the `config.sample.json` template gets committed.
+`config.json` is the single file holding the `settings`, `servers`, and `contexts` sections, and deploy ships a copy of it inside the Worker. The CLI manages this file and keeps it gitignored — only the `config.sample.json` template gets committed.
 
 ## Debug Mode
 
@@ -115,7 +115,7 @@ Debug mode is the `show_response_output` setting, and turning it on adds context
 
 ## Landing Page
 
-The landing page is the HTML page a context returns on GET requests, showing operational status with "Powered by ntfy-reverse-proxy" branding. With debug mode enabled, it also includes a collapsible section with the masked configuration.
+The landing page is the HTML page a context returns on GET requests, showing an "Operational" badge, the Reverse Proxy for ntfy name, and a link to the GitHub repository. With debug mode enabled, it also includes a collapsible section with the masked configuration.
 
 ## Cloudflare Email Routing
 
@@ -123,11 +123,11 @@ Cloudflare Email Routing is the Cloudflare feature that forwards email sent to a
 
 ## KV Namespace
 
-A KV namespace is a Cloudflare Workers KV store the Worker uses to track Statuspage.io incident and component state for deduplication, and entries expire after 24 hours. The `deploy` command creates and binds this namespace automatically; without one, the Worker silently ignores component-only updates.
+A KV namespace is a Cloudflare Workers KV store the Worker uses to track Statuspage.io incident and component state for deduplication, and entries expire after 24 hours. The `deploy` command creates and binds this namespace automatically; without one, the Statuspage interpreter can't skip updates it already sent or list affected components.
 
 ## wrangler.toml
 
-`wrangler.toml` is the Cloudflare Workers configuration file the CLI generates from `config.json`, containing routes, environment variables, the delivery outbox Durable Object binding, its SQLite migration, and any KV binding. It stays gitignored because it embeds serialized config values, and Wrangler (Cloudflare's deployment CLI) reads it to deploy the Worker.
+`wrangler.toml` is the Cloudflare Workers configuration file the CLI generates from `config.json`, containing routes, the delivery outbox Durable Object binding, its SQLite migration, any KV binding, and a `main` entry that bundles the config into the Worker. It stays gitignored because it lists your context subdomains, and Wrangler (Cloudflare's deployment CLI) reads it to deploy the Worker.
 
 ## Custom Domain Route
 

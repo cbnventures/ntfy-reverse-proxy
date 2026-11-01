@@ -243,6 +243,13 @@ export type Tests_Worker_Interpreters_Statuspage_StatuspageInterpreter_SilentlyA
 export type Tests_Worker_Interpreters_Statuspage_StatuspageInterpreter_SilentlyAccumulatesComponentOnlyWebhooksInKV_StoredComponents = Record<string, unknown>;
 
 /**
+ * Tests - Worker - Interpreters - Statuspage - Statuspage Interpreter - Throws On Malformed JSON.
+ *
+ * @since 2.3.0
+ */
+export type Tests_Worker_Interpreters_Statuspage_StatuspageInterpreter_ThrowsOnMalformedJSON_Promise = Promise<Worker_Pipeline_Interpret_Result | null>;
+
+/**
  * Tests - Worker - Interpreters - Statuspage - Statuspage Interpreter - Throws On Unrecognized Payload.
  *
  * @since 2.0.0

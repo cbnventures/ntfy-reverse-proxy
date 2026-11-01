@@ -132,8 +132,6 @@ export type Cli_Commands_Deploy_Deploy_AccountId = string;
 
 export type Cli_Commands_Deploy_Deploy_KvNamespaceId = string;
 
-export type Cli_Commands_Deploy_Deploy_ProjectRoot = string;
-
 export type Cli_Commands_Deploy_Deploy_WranglerTomlPath = string;
 
 /**
@@ -141,11 +139,11 @@ export type Cli_Commands_Deploy_Deploy_WranglerTomlPath = string;
  *
  * @since 2.0.0
  */
+export type Cli_Commands_Deploy_DeployWorker_WranglerTomlPath = string;
+
 export type Cli_Commands_Deploy_DeployWorker_Returns = void;
 
-export type Cli_Commands_Deploy_DeployWorker_ProjectRoot = string;
-
-export type Cli_Commands_Deploy_DeployWorker_WranglerTomlPath = string;
+export type Cli_Commands_Deploy_DeployWorker_WranglerCliPath = string;
 
 export type Cli_Commands_Deploy_DeployWorker_DeployResult = SpawnSyncReturns<string>;
 
@@ -359,6 +357,12 @@ export type Cli_Commands_Deploy_ListEmailRoutingRules_Rule = {
   matchers: Cli_Commands_Deploy_ListEmailRoutingRules_RuleMatchers;
   actions: Cli_Commands_Deploy_ListEmailRoutingRules_RuleActions;
 };
+
+export type Cli_Commands_Deploy_ListEmailRoutingRules_AllRules = Cli_Commands_Deploy_ListEmailRoutingRules_Rule[];
+
+export type Cli_Commands_Deploy_ListEmailRoutingRules_Page = number;
+
+export type Cli_Commands_Deploy_ListEmailRoutingRules_PageRules = Cli_Commands_Deploy_ListEmailRoutingRules_Rule[];
 
 export type Cli_Commands_Deploy_ListEmailRoutingRules_Response = Response;
 

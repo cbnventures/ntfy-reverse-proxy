@@ -10,7 +10,7 @@ import {
 } from 'vitest';
 
 import {
-  addContext, generateId, listContexts, removeContext,
+  addContext, editContext, generateId, listContexts, removeContext,
 } from '../../../cli/commands/context.js';
 
 import type {
@@ -25,6 +25,9 @@ import type {
   Tests_Cli_Commands_Context_ContextCommands_ListsContexts_Contexts,
   Tests_Cli_Commands_Context_ContextCommands_RejectsContextReferencingNonExistentServer_Config,
   Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateContextNames_Config,
+  Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateEmailIds_Config,
+  Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateEmailIdsOnEdit_Config,
+  Tests_Cli_Commands_Context_ContextCommands_RejectsRemovalOfAMissingContext_Contexts,
   Tests_Cli_Commands_Context_ContextCommands_RemovesAContext_Contexts,
   Tests_Cli_Commands_Context_TestConfigPath,
   Tests_Cli_Commands_Context_TestConfigPathFragment,
@@ -168,6 +171,78 @@ describe('context commands', () => {
     return;
   });
 
+  it('rejects duplicate email ids', () => {
+    addContext(testConfigPath, {
+      id: 'alerts',
+      name: 'first-email',
+      type: 'email',
+      interpreter: 'plain-text',
+      topic: 'first',
+      mode: 'send-once',
+      show_visitor_info: false,
+      primary_server: 'alpha',
+      servers: ['alpha'],
+      allowed_from: undefined,
+    });
+
+    expect(() => addContext(testConfigPath, {
+      id: 'alerts',
+      name: 'second-email',
+      type: 'email',
+      interpreter: 'plain-text',
+      topic: 'second',
+      mode: 'send-once',
+      show_visitor_info: false,
+      primary_server: 'alpha',
+      servers: ['alpha'],
+      allowed_from: undefined,
+    })).toThrow('Context with id "alerts" already exists.');
+
+    const config: Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateEmailIds_Config = JSON.parse(readFileSync(testConfigPath, 'utf-8'));
+
+    expect(config['contexts']).toHaveLength(1);
+
+    expect(config['contexts'][0]!['id']).toBe('alerts');
+
+    return;
+  });
+
+  it('rejects duplicate email ids on edit', () => {
+    addContext(testConfigPath, {
+      id: 'first',
+      name: 'first-email',
+      type: 'email',
+      interpreter: 'plain-text',
+      topic: 'first',
+      mode: 'send-once',
+      show_visitor_info: false,
+      primary_server: 'alpha',
+      servers: ['alpha'],
+      allowed_from: undefined,
+    });
+
+    addContext(testConfigPath, {
+      id: 'second',
+      name: 'second-email',
+      type: 'email',
+      interpreter: 'plain-text',
+      topic: 'second',
+      mode: 'send-once',
+      show_visitor_info: false,
+      primary_server: 'alpha',
+      servers: ['alpha'],
+      allowed_from: undefined,
+    });
+
+    expect(() => editContext(testConfigPath, 'second-email', { id: 'first' })).toThrow('Context with id "first" already exists.');
+
+    const config: Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateEmailIdsOnEdit_Config = JSON.parse(readFileSync(testConfigPath, 'utf-8'));
+
+    expect(config['contexts'][1]!['id']).toBe('second');
+
+    return;
+  });
+
   it('rejects context referencing non-existent server', () => {
     expect(() => addContext(testConfigPath, {
       id: 'abc',
@@ -227,6 +302,16 @@ describe('context commands', () => {
     removeContext(testConfigPath, 'test');
 
     const contexts: Tests_Cli_Commands_Context_ContextCommands_RemovesAContext_Contexts = listContexts(testConfigPath);
+
+    expect(contexts).toHaveLength(0);
+
+    return;
+  });
+
+  it('rejects removal of a missing context', () => {
+    expect(() => removeContext(testConfigPath, 'missing')).toThrow('Context with name "missing" not found.');
+
+    const contexts: Tests_Cli_Commands_Context_ContextCommands_RejectsRemovalOfAMissingContext_Contexts = listContexts(testConfigPath);
 
     expect(contexts).toHaveLength(0);
 

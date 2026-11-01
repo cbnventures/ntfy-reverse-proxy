@@ -82,6 +82,13 @@ export type Tests_Cli_Commands_Server_ServerCommands_RejectsDuplicateServerNames
 };
 
 /**
+ * Tests - CLI - Commands - Server - Server Commands - Rejects Removal Of A Missing Server.
+ *
+ * @since 2.3.0
+ */
+export type Tests_Cli_Commands_Server_ServerCommands_RejectsRemovalOfAMissingServer_Servers = unknown[];
+
+/**
  * Tests - CLI - Commands - Server - Server Commands - Removes A Server.
  *
  * @since 2.0.0

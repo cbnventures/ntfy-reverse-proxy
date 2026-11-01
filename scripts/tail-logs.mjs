@@ -152,9 +152,9 @@ const RESTART_BUFFER_MS = 300_000; // Restart 5 min before expiry.
  * Tail Logs - Tail Event.
  *
  * Shape of the event block inside a tail entry, holding the request and
- * response pair for HTTP events.
+ * response pair for HTTP events plus the envelope fields for email events.
  *
- * @typedef {{ request?: TailRequest, response?: TailResponse }} TailEvent
+ * @typedef {{ request?: TailRequest, response?: TailResponse, mailFrom?: string, rcptTo?: string }} TailEvent
  *
  * @since 2.0.0
  */
@@ -621,8 +621,9 @@ function formatStatus(status, hasError) {
 /**
  * Tail Logs - Summarize Email.
  *
- * Builds the colored multi-line summary for an email event, parsing the debug
- * logs for sender, recipient, subject, and per-server interpreter results.
+ * Builds the colored multi-line summary for an email event, reading its
+ * envelope and outcome from the tail event while retaining logged subject and
+ * interpreter details.
  *
  * @param {TailEntry} entry - Entry.
  *
@@ -631,17 +632,25 @@ function formatStatus(status, hasError) {
  * @since 2.0.0
  */
 function summarizeEmail(entry) {
+  const event = /** @type {TailEvent} */ (entry['event'] ?? {});
   const logs = entry['logs'] ?? [];
   const timestamp = formatTimestamp(entry['eventTimestamp'] ?? Date.now());
   const lines = [];
+  const outcome = entry['outcome'] ?? '?';
+  let formattedOutcome = c.dim(outcome);
 
-  // Parse debug log for email metadata.
-  let from = '?';
-  let to = '?';
+  let from = event['mailFrom'] ?? '?';
+  let to = event['rcptTo'] ?? '?';
   let subject = '(none)';
   let context = '?';
   let interpreter = '?';
   let serverResults = /** @type {ServerResult[]} */ ([]);
+
+  if (outcome === 'ok') {
+    formattedOutcome = c.green(outcome);
+  } else if (outcome !== '?') {
+    formattedOutcome = c.red(outcome);
+  }
 
   for (const log of logs) {
     const msg = (Array.isArray(log['message']) === true) ? log['message'][0] : log['message'];
@@ -654,8 +663,8 @@ function summarizeEmail(entry) {
       const parsed = JSON.parse(msg);
 
       if (parsed.debug === 'raw_email') {
-        from = parsed.from ?? '?';
-        to = parsed.to ?? '?';
+        from = (from === '?') ? (parsed.from ?? '?') : from;
+        to = (to === '?') ? (parsed.to ?? '?') : to;
         subject = parsed.subject || '(none)';
       } else if (parsed.context !== undefined) {
         context = parsed.context;
@@ -671,7 +680,7 @@ function summarizeEmail(entry) {
   const toLocal = to.split('@')[0] ?? to;
 
   lines.push(`${c.dim(timestamp)} ${formatMethod('EMAIL')} ${c.bold(toLocal)}`);
-  lines.push(`  ${c.dim('From:')} ${from} ${c.dim('|')} ${c.dim('Subject:')} ${subject}`);
+  lines.push(`  ${c.dim('From:')} ${from} ${c.dim('|')} ${c.dim('Subject:')} ${subject} ${c.dim('|')} ${c.dim('Outcome:')} ${formattedOutcome}`);
 
   // Server results.
   if (serverResults.length > 0) {

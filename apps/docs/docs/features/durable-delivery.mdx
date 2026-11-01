@@ -22,7 +22,7 @@ Durable delivery keeps a notification from disappearing when an ntfy <Terminolog
 
 ## The Short Version
 
-Every configured <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> gets its own first-in, first-out delivery lane.
+Every configured <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> gets its own first-in, first-out delivery lane for normal notifications.
 
 1. The proxy formats a notification and saves it in that context's lane.
 2. It starts with the oldest saved notification and attempts delivery.
@@ -31,6 +31,8 @@ Every configured <Terminology title="a notification source configuration" to="/d
 5. The next notification for the same context automatically tries the saved notification again before it sends the new one.
 
 There is no timer, background polling job, or manual retry button. A new notification is the retry trigger.
+
+Error-topic diagnostics are the exception. The proxy sends each `error-debug.json` attachment directly as a one-shot, best-effort alert instead of saving it in the context lane. A rejected diagnostic can therefore be lost, but it can never sit at the head of the lane and block later normal notifications.
 
 ```mermaid
 flowchart LR
@@ -101,5 +103,5 @@ The generated `wrangler.toml` includes the Durable Object binding and its first 
 SQLite-backed Durable Objects are available on Workers Free and Paid plans. On the Free plan, exceeding a daily allowance causes further operations of that type to fail rather than creating an overage charge. Paid accounts can incur charges after their included usage. For a small personal notification proxy, usage follows incoming notifications and retry attempts rather than a continuously running process. Review Cloudflare's current [Durable Objects limits](https://developers.cloudflare.com/durable-objects/platform/limits/) and [pricing](https://developers.cloudflare.com/durable-objects/platform/pricing/) for the allowances on your account.
 
 :::warning
-Strict FIFO is intentional. If the oldest notification keeps failing, later notifications in that same context wait behind it. Fixing the ntfy destination does not start a background retry; the next notification for that context triggers the next attempt.
+Strict FIFO is intentional for normal notifications. If the oldest notification keeps failing, later normal notifications in that same context wait behind it. Fixing the ntfy destination does not start a background retry; the next notification for that context triggers the next attempt. Error-topic diagnostics bypass this lane.
 :::

@@ -17,7 +17,7 @@ const identity = new NovaIdentity().forDocs();
 const config: DocusaurusNovaConfig = {
   // Site Metadata.
   title: identity['title'] ?? '',
-  titleDelimiter: ' - ',
+  titleDelimiter: '-',
   tagline: identity['tagline'],
   favicon: './favicon.ico',
 
@@ -232,7 +232,7 @@ const config: DocusaurusNovaConfig = {
       logo: {
         alt: 'Reverse Proxy for ntfy',
         src: {
-          light: '/images/logo.svg',
+          light: '/images/navbar.svg',
           dark: undefined,
         },
         href: '/',

@@ -1,11 +1,11 @@
 import { DurableObject } from 'cloudflare:workers';
 
-import { serverSchema } from '../../lib/schema.js';
 import { drainFifo } from '../pipeline/drain-fifo.js';
 import { send } from '../pipeline/send.js';
 
 import type {
   Worker_DurableObjects_DeliveryOutbox_AttachmentChunkBytes,
+  Worker_DurableObjects_DeliveryOutbox_ConfiguredServers,
   Worker_DurableObjects_DeliveryOutbox_DeliverySucceeded_Mode,
   Worker_DurableObjects_DeliveryOutbox_DeliverySucceeded_Returns,
   Worker_DurableObjects_DeliveryOutbox_DeliverySucceeded_SendResult,
@@ -69,12 +69,12 @@ import type {
   Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_ResolvedServers,
   Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_Returns,
   Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_Server,
-  Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_Servers,
-  Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_ServersJson,
   Worker_DurableObjects_DeliveryOutbox_Runner_Succeeded_Notification,
   Worker_DurableObjects_DeliveryOutbox_Runner_Succeeded_Payload,
   Worker_DurableObjects_DeliveryOutbox_Runner_Succeeded_Returns,
   Worker_DurableObjects_DeliveryOutbox_Runner_Succeeded_SendResult,
+  Worker_DurableObjects_DeliveryOutbox_SetConfiguredServers_Returns,
+  Worker_DurableObjects_DeliveryOutbox_SetConfiguredServers_Servers,
 } from '../../types/worker/durable-objects/delivery-outbox.d.ts';
 
 /**
@@ -86,6 +86,16 @@ import type {
  * @since 2.2.1
  */
 const attachmentChunkBytes: Worker_DurableObjects_DeliveryOutbox_AttachmentChunkBytes = 1024 * 1024;
+
+/**
+ * Worker - Durable Objects - Delivery Outbox - Configured Servers.
+ *
+ * Servers from the config bundled into the Worker, handed over once by createWorker
+ * when it validates the config at startup. Stored server names resolve against them.
+ *
+ * @since 2.3.0
+ */
+let configuredServers: Worker_DurableObjects_DeliveryOutbox_ConfiguredServers = [];
 
 /**
  * Worker - Durable Objects - Delivery Outbox - Delivery Succeeded.
@@ -329,10 +339,8 @@ class Runner extends DurableObject<Worker_DurableObjects_DeliveryOutbox_Runner_E
    * @since 2.2.1
    */
   #resolveServers(payload: Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_Payload): Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_Returns {
-    const serversJson: Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_ServersJson = this['env']['SERVERS'] ?? '[]';
-    const servers: Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_Servers = serverSchema.array().parse(JSON.parse(serversJson));
     const resolvedServers: Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_ResolvedServers = payload['serverNames'].map((serverName) => {
-      const server: Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_Server = servers.find((configuredServer) => configuredServer['name'] === serverName);
+      const server: Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_Server = configuredServers.find((configuredServer) => configuredServer['name'] === serverName);
 
       if (server === undefined) {
         throw new Error(`Configured ntfy server "${serverName}" is unavailable`);
@@ -542,6 +550,25 @@ class Runner extends DurableObject<Worker_DurableObjects_DeliveryOutbox_Runner_E
   }
 }
 
+/**
+ * Worker - Durable Objects - Delivery Outbox - Set Configured Servers.
+ *
+ * Keeps the servers from the validated bundled config so the outbox can resolve
+ * stored server names without persisting their tokens.
+ *
+ * @param {Worker_DurableObjects_DeliveryOutbox_SetConfiguredServers_Servers} servers - Servers.
+ *
+ * @returns {Worker_DurableObjects_DeliveryOutbox_SetConfiguredServers_Returns}
+ *
+ * @since 2.3.0
+ */
+function setConfiguredServers(servers: Worker_DurableObjects_DeliveryOutbox_SetConfiguredServers_Servers): Worker_DurableObjects_DeliveryOutbox_SetConfiguredServers_Returns {
+  configuredServers = servers;
+
+  return;
+}
+
 export {
   Runner,
+  setConfiguredServers,
 };

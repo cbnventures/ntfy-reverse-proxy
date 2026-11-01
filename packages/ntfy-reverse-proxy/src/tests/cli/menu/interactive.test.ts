@@ -57,6 +57,14 @@ import type {
   Tests_Cli_Menu_Interactive_InteractiveMenu_CtrlCAtServerEditSelectReturnsToServerMenu_MockPrompts,
   Tests_Cli_Menu_Interactive_InteractiveMenu_CtrlCAtServerEditSelectReturnsToServerMenu_Prompts,
   Tests_Cli_Menu_Interactive_InteractiveMenu_CtrlCAtServerEditSelectReturnsToServerMenu_PromptsDefaultUnknown,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_ContextModule,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_ContextModuleUnknown,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_EditContext,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_GenerateId,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_ListContexts,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_MockPrompts,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_Prompts,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_PromptsDefaultUnknown,
   Tests_Cli_Menu_Interactive_InteractiveMenu_ExitsOnCtrlCAtConfigDirSelection_MockPrompts,
   Tests_Cli_Menu_Interactive_InteractiveMenu_ExitsOnCtrlCAtConfigDirSelection_Prompts,
   Tests_Cli_Menu_Interactive_InteractiveMenu_ExitsOnCtrlCAtConfigDirSelection_PromptsDefaultUnknown,
@@ -348,6 +356,63 @@ describe('interactiveMenu', () => {
     expect(lastChoice['title']).toBe('Go back');
 
     expect(lastChoice['value']).toBe('back');
+
+    return;
+  });
+
+  it('email context edit prompts for a replacement id', async () => {
+    const prompts: Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_Prompts = await import('prompts');
+    const promptsDefaultUnknown: Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_PromptsDefaultUnknown = prompts['default'];
+    const mockPrompts: Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_MockPrompts = promptsDefaultUnknown as Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_MockPrompts;
+    const contextModuleUnknown: Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_ContextModuleUnknown = await import('../../../cli/commands/context.js');
+    const contextModule: Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_ContextModule = contextModuleUnknown as Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_ContextModule;
+    const listContexts: Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_ListContexts = contextModule['listContexts'] as Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_ListContexts;
+    const editContext: Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_EditContext = contextModule['editContext'] as Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_EditContext;
+    const generateId: Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_GenerateId = contextModule['generateId'] as Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_GenerateId;
+
+    listContexts.mockReturnValueOnce([{
+      name: 'Test Email',
+      type: 'email',
+      id: 'old-email',
+      interpreter: 'plain-text',
+      topic: 'email-topic',
+      error_topic: undefined,
+      error_events: undefined,
+      mode: 'send-once',
+      show_visitor_info: false,
+      primary_server: 'Server A',
+      servers: ['Server A'],
+      allowed_from: undefined,
+    }]);
+
+    mockPrompts
+      .mockResolvedValueOnce({ action: 'contexts' })
+      .mockResolvedValueOnce({ action: 'edit' })
+      .mockResolvedValueOnce({ name: 'Test Email' })
+      .mockResolvedValueOnce({ keepId: false })
+      .mockResolvedValueOnce({ id: 'new-email' })
+      .mockResolvedValueOnce({ interpreter: 'plain-text' })
+      .mockResolvedValueOnce({ topic: 'email-topic' })
+      .mockResolvedValueOnce({ error_topic: '' })
+      .mockResolvedValueOnce({
+        error_events: [
+          'authentication',
+          'interpretation',
+        ],
+      })
+      .mockResolvedValueOnce({ mode: 'send-once' })
+      .mockResolvedValueOnce({ show_visitor_info: false })
+      .mockResolvedValueOnce({ primary_server: 'Server A' })
+      .mockResolvedValueOnce({ selectedServers: ['Server A'] })
+      .mockResolvedValueOnce({ allowed_from: '' })
+      .mockResolvedValueOnce({ action: 'back' })
+      .mockResolvedValueOnce({ action: 'exit' });
+
+    await interactiveMenu([tempDir1!]);
+
+    expect(editContext).toHaveBeenCalledWith(expect.any(String), 'Test Email', expect.objectContaining({ id: 'new-email' }));
+
+    expect(generateId).not.toHaveBeenCalled();
 
     return;
   });

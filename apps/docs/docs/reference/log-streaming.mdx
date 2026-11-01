@@ -27,7 +27,11 @@ Stream real-time logs from your deployed <Terminology title="Cloudflare-hosted e
 npm run tail
 ```
 
-This requires `CLOUDFLARE_API_TOKEN` to be set in your `.env` file. The stream outputs color-formatted log entries to the terminal and writes raw JSON lines to `tail-logs.jsonl` for later analysis.
+This requires `CLOUDFLARE_API_TOKEN` to be set in the `.env` file in the project root, which the script uses to manage tail sessions. The stream outputs color-formatted log entries to the terminal and writes raw JSON lines to `tail-logs.jsonl` for later analysis.
+
+:::warning
+`wrangler tail` itself runs outside the project and doesn't read that `.env` file, so it also needs `wrangler login` (or `CLOUDFLARE_API_TOKEN` exported in your shell).
+:::
 
 ## Session Management
 
@@ -42,9 +46,9 @@ Log streaming sessions have a limited lifespan set by Cloudflare. The script han
 
 Log entries are color-coded by event type and status:
 
-- **HTTP events** — Method, status code, URL, user agent, geolocation (country, ASN, IP), and per-<Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> delivery results.
-- **Email events** — From/to/subject and <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> results.
+- **HTTP events** — Method, status code, URL, HTTP version, country, network provider and ASN, user agent, and per-<Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> delivery results. The delivery results appear only when `show_response_output` is on, because they come from the logged response.
+- **Email events** — From/to/subject, the tail outcome, and <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> results.
 
 ## Config Resolution
 
-The script discovers `config.json` from the current directory, project root, or XDG config directory. It uses the `worker_name` from your config to identify the correct <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">Worker</Terminology> on Cloudflare.
+The script discovers `config.json` from the current directory, project root, or XDG config directory, and asks which <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">Worker</Terminology> to tail when it finds more than one. It uses the `worker_name` from your config to identify the correct <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">Worker</Terminology> on Cloudflare, and the `base_domain` to find your account.

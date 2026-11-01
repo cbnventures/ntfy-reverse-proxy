@@ -6,7 +6,7 @@
     },
     "description": {
       "short": "Notification gateway on Cloudflare Workers that routes webhooks and emails to ntfy with automatic server failover",
-      "long": "Webhook and email notification gateway with built-in interpreters (Statuspage.io, Synology DSM, Seerr, pfSense, UniFi, ntfy JSON, plain text), automatic primary/fallback server failover, and smart message splitting, powered by Cloudflare Workers and Cloudflare Email Routing. Interactive CLI for configuration, validation, and deployment."
+      "long": "Webhook and email notification gateway with built-in interpreters (Statuspage.io, Synology DSM, Seerr, pfSense, UniFi, Transmission VPN, pfSense Actions, Discord Stonker Bot, Outpost, ntfy JSON, plain text), automatic primary/fallback server failover, and smart message splitting, powered by Cloudflare Workers and Cloudflare Email Routing. Interactive CLI for configuration, validation, and deployment."
     },
     "keywords": [
       "ntfy",
@@ -18,7 +18,11 @@
       "synology",
       "seerr",
       "pfsense",
-      "unifi"
+      "unifi",
+      "transmission-vpn",
+      "pfsense-actions",
+      "discord-stonker-bot",
+      "outpost"
     ],
     "legalName": "CBN Ventures LLC",
     "pronouns": "business",
@@ -206,15 +210,18 @@
       "deploy": [
         {
           "to": "npm",
-          "path": "./packages/ntfy-reverse-proxy"
+          "path": "./packages/ntfy-reverse-proxy",
+          "artifact": "ntfy-reverse-proxy"
         },
         {
           "to": "github-packages",
-          "path": "./packages/ntfy-reverse-proxy"
+          "path": "./packages/ntfy-reverse-proxy",
+          "artifact": "ntfy-reverse-proxy"
         },
         {
-          "to": "cloudflare-pages-docusaurus",
-          "path": "./apps/docs"
+          "to": "cloudflare-pages",
+          "path": "./apps/docs",
+          "artifact": "documentation"
         }
       ]
     }
@@ -261,12 +268,49 @@
       "name": "ntfy-reverse-proxy"
     }
   },
+  "artifacts": {
+    "ntfy-reverse-proxy": {
+      "build": [
+        "./packages/ntfy-reverse-proxy"
+      ],
+      "sources": [
+        {
+          "from": "./packages/ntfy-reverse-proxy/build",
+          "to": "./build"
+        },
+        {
+          "from": "./packages/ntfy-reverse-proxy/package.json",
+          "to": "./package.json"
+        },
+        {
+          "from": "./packages/ntfy-reverse-proxy/README.md",
+          "to": "./README.md"
+        },
+        {
+          "from": "./packages/ntfy-reverse-proxy/LICENSE",
+          "to": "./LICENSE"
+        }
+      ]
+    },
+    "documentation": {
+      "build": [
+        "./apps/docs"
+      ],
+      "sources": [
+        {
+          "from": "./apps/docs/build",
+          "to": "./"
+        }
+      ]
+    }
+  },
   "ignoreFiles": {
     "./.gitignore": {
       "bundles": [
         "nova"
       ],
       "patterns": [
+        "/assets/",
         "!worker-configuration.d.ts",
         "wrangler.toml",
         "config.json",
@@ -516,8 +560,8 @@
     "lockStepVersioning": true,
     "runWorkspaces": {
       "cache": {
-        "directory": "./node_modules/.cache/nova/run-workspaces",
         "enabled": true,
+        "directory": "./node_modules/.cache/nova/run-workspaces",
         "scripts": [
           "build",
           "check"

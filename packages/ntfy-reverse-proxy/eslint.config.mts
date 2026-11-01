@@ -39,10 +39,6 @@ export default [
     ],
   })),
   {
-    name: 'custom-ignores',
-    ignores: ['./worker-configuration.d.ts'],
-  },
-  {
     name: 'worker-console-override',
     files: ['src/worker/**/*.ts'],
     rules: {

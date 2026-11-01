@@ -1,8 +1,8 @@
 ---
 id: plain-text
 title: Plain Text
-description: Forward raw text, JSON, or binary input as an ntfy notification body with zero transformation, using the context name as the fallback title.
-sidebar_position: 3
+description: Forward raw text or JSON as an ntfy notification body and preserve binary input as an attachment, using the context name as the fallback title.
+sidebar_position: 4
 keywords:
   - ntfy reverse proxy
   - plain text interpreter
@@ -20,7 +20,7 @@ Pass the input through as the notification body with no transformation — the s
 ## Behavior
 
 - **String input** — Used directly as the body.
-- **Binary input** — Decoded as UTF-8 text.
+- **Binary input** — Preserved byte-for-byte and uploaded to ntfy as an attachment-only notification instead of being decoded as UTF-8 text.
 - **Object input** — Serialized as pretty-printed JSON (2-space indent).
 
 No title, priority, tags, or other notification fields are set by this <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>. The notification title falls back to the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s `name` field.

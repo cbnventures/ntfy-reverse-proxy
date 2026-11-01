@@ -7,6 +7,7 @@ import type {
   Cli_Commands_Settings_UpdateSettings_Config,
   Cli_Commands_Settings_UpdateSettings_ConfigPath,
   Cli_Commands_Settings_UpdateSettings_Returns,
+  Cli_Commands_Settings_UpdateSettings_UpdatedConfig,
   Cli_Commands_Settings_UpdateSettings_Updates,
 } from '../../types/cli/commands/settings.d.ts';
 
@@ -36,13 +37,15 @@ function getSettings(configPath: Cli_Commands_Settings_GetSettings_ConfigPath): 
  */
 function updateSettings(configPath: Cli_Commands_Settings_UpdateSettings_ConfigPath, updates: Cli_Commands_Settings_UpdateSettings_Updates): Cli_Commands_Settings_UpdateSettings_Returns {
   const config: Cli_Commands_Settings_UpdateSettings_Config = configSchema.parse(loadConfig(configPath));
-
-  Reflect.set(config, 'settings', {
-    ...config['settings'],
-    ...updates,
+  const updatedConfig: Cli_Commands_Settings_UpdateSettings_UpdatedConfig = configSchema.parse({
+    ...config,
+    settings: {
+      ...config['settings'],
+      ...updates,
+    },
   });
 
-  saveConfig(configPath, config);
+  saveConfig(configPath, updatedConfig);
 
   return;
 }

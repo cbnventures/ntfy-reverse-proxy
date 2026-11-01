@@ -2,7 +2,7 @@
 id: statuspage
 title: Statuspage
 description: Monitor Statuspage.io incident webhooks with Cloudflare KV-based deduplication, component state diffing, impact-to-priority mapping, and incident action links.
-sidebar_position: 6
+sidebar_position: 10
 keywords:
   - ntfy reverse proxy
   - statuspage interpreter
@@ -20,13 +20,15 @@ Process Statuspage.io incident webhooks with automatic deduplication and compone
 
 ## Supported Input
 
-Statuspage.io sends webhook payloads for incident updates and component status changes. The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> handles both:
+Statuspage.io sends webhook payloads for incident updates and component status changes. The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> handles both and rejects other payloads:
 
-- **Incident updates** — Creates notifications with the incident name, status, impact level, and affected components. Priority is inferred from impact level: critical = 5, major = 4, minor = 3.
-- **Component updates** — Tracked via Cloudflare KV storage. When a component update arrives alongside an incident, the <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> diffs the previous component state against the current one and includes changed components in the notification.
+- **Incident updates** — Creates notifications with the incident name, status, impact level, and the latest update's text. Priority is inferred from impact level: critical = 5, major = 4, minor = 3.
+- **Component updates** — Stored in Cloudflare KV without sending a notification. The next incident notification lists each stored component, plus any the incident update affects, with its current status.
+- **Malformed JSON** — Fails with HTTP 422 instead of being silently ignored, so the configured error-topic path can report it.
+- **Anything else** — A JSON payload with neither `incident` nor `component_update` fails with HTTP 422 (`Unrecognized Statuspage.io payload: expected "incident" field`).
 
 :::info
-Component-only updates (no incident) silently update the stored state without sending a notification. The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> returns `null` if no <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology> is bound or if the incident update is a duplicate.
+Component-only updates (no incident) never send a notification, and they only update the stored state when a <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology> is bound. The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> also returns `null` for an incident update that KV shows was already sent.
 :::
 
 ## KV State Management
@@ -35,7 +37,7 @@ The Statuspage <Terminology title="module that transforms a payload into a notif
 
 - Stores incident and component state under `statuspage:{pageId}` keys.
 - State has a 24-hour TTL and is automatically cleaned up.
-- Without a <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology> bound, component-only updates are silently ignored.
+- Without a <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology> bound, component-only updates are dropped, and every incident update sends a notification with no duplicate check and no component list.
 
 :::warning
 If you are receiving duplicate Statuspage notifications, see [Troubleshooting](/docs/reference/troubleshooting/) for instructions on setting up KV deduplication.
@@ -43,12 +45,12 @@ If you are receiving duplicate Statuspage notifications, see [Troubleshooting](/
 
 ## Service Name Extraction
 
-The service name is derived from the unsubscribe URL hostname in the webhook payload (with `www.` prefix removed). If no unsubscribe URL is available, it defaults to `Statuspage`.
+The service name is the hostname of the payload's `meta.unsubscribe` URL, without a leading `www.` (e.g., `githubstatus.com`). If no unsubscribe URL is available, it defaults to `Statuspage`.
 
 ## Notification Output
 
-- **Title**: `[Service Name] Incident Name` (e.g., `[GitHub] Elevated Error Rates`).
-- **Body**: Status, impact level, and changed component list with old/new status.
+- **Title**: `[Service Name] Incident Name` (e.g., `[githubstatus.com] Elevated Error Rates`).
+- **Body**: Markdown with the status, impact level, and latest update's text. With a <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology> bound, an **Affected** list follows with each stored component and its current status.
 - **Priority**: Based on impact — `critical` = 5, `major` = 4, `minor` = 3, default = 2. Terminal statuses (`resolved`, `completed`, `postmortem`) override priority to 2 regardless of impact.
 - **Tags**: Includes `statuspage`, the current status (e.g., `investigating`, `resolved`), and an emoji based on the status.
 - **Actions**: "View Incident" link to the Statuspage.io incident page, and "Unsubscribe" link if available.
@@ -57,6 +59,7 @@ The service name is derived from the unsubscribe URL hostname in the webhook pay
 
 ```json
 {
+  "meta": { "unsubscribe": "https://www.githubstatus.com/?unsubscribe=abc123" },
   "page": { "id": "abc123" },
   "incident": {
     "name": "Elevated Error Rates",

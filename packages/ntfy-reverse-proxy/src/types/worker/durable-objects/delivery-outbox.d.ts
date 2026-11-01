@@ -13,6 +13,13 @@ import type { Worker_Pipeline_Send_Result } from '../pipeline/send.d.ts';
 export type Worker_DurableObjects_DeliveryOutbox_AttachmentChunkBytes = number;
 
 /**
+ * Worker - Durable Objects - Delivery Outbox - Configured Servers.
+ *
+ * @since 2.3.0
+ */
+export type Worker_DurableObjects_DeliveryOutbox_ConfiguredServers = Array<Lib_Schema_ServerConfig>;
+
+/**
  * Worker - Durable Objects - Delivery Outbox - Delivery Succeeded.
  *
  * @since 2.2.1
@@ -28,11 +35,7 @@ export type Worker_DurableObjects_DeliveryOutbox_DeliverySucceeded_Returns = boo
  *
  * @since 2.2.1
  */
-export type Worker_DurableObjects_DeliveryOutbox_Runner_EnvServers = string | undefined;
-
-export type Worker_DurableObjects_DeliveryOutbox_Runner_Env = {
-  SERVERS?: Worker_DurableObjects_DeliveryOutbox_Runner_EnvServers;
-};
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Env = Record<string, unknown>;
 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_DrainPromise = Promise<Map<string, Worker_Pipeline_Send_Result>> | undefined;
 
@@ -118,11 +121,7 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Checkpoint_Returns = voi
  */
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Constructor_Ctx = DurableObjectState;
 
-export type Worker_DurableObjects_DeliveryOutbox_Runner_Constructor_EnvServers = string | undefined;
-
-export type Worker_DurableObjects_DeliveryOutbox_Runner_Constructor_Env = {
-  SERVERS?: Worker_DurableObjects_DeliveryOutbox_Runner_Constructor_EnvServers;
-};
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Constructor_Env = Record<string, unknown>;
 
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Delete.
@@ -356,10 +355,6 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_Returns =
   primaryServer: Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_ReturnsPrimaryServer;
 };
 
-export type Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_ServersJson = string;
-
-export type Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_Servers = Array<Lib_Schema_ServerConfig>;
-
 export type Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_ResolvedServers = Array<Lib_Schema_ServerConfig>;
 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_Server = Lib_Schema_ServerConfig | undefined;
@@ -392,3 +387,12 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Succeeded_PayloadMode = 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Succeeded_Payload = {
   mode: Worker_DurableObjects_DeliveryOutbox_Runner_Succeeded_PayloadMode;
 };
+
+/**
+ * Worker - Durable Objects - Delivery Outbox - Set Configured Servers.
+ *
+ * @since 2.3.0
+ */
+export type Worker_DurableObjects_DeliveryOutbox_SetConfiguredServers_Servers = Array<Lib_Schema_ServerConfig>;
+
+export type Worker_DurableObjects_DeliveryOutbox_SetConfiguredServers_Returns = void;

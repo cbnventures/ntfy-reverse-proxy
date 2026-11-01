@@ -106,6 +106,10 @@ export type Worker_Handlers_HandleRequest_Returns = Promise<Response>;
 
 export type Worker_Handlers_HandleRequest_Received = Worker_Pipeline_Receive_Result & {};
 
+export type Worker_Handlers_HandleRequest_LocalContext = string | null;
+
+export type Worker_Handlers_HandleRequest_HostnameLabel = string;
+
 export type Worker_Handlers_HandleRequest_Subdomain = string;
 
 export type Worker_Handlers_HandleRequest_Routed = Worker_Pipeline_Route_Result & {};

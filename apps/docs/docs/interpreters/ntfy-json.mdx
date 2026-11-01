@@ -2,7 +2,7 @@
 id: ntfy-json
 title: ntfy JSON
 description: Send pre-formatted notifications with full control over title, priority, tags, actions, markdown rendering, and file attachments via a JSON payload.
-sidebar_position: 2
+sidebar_position: 3
 keywords:
   - ntfy reverse proxy
   - ntfy json interpreter
@@ -30,6 +30,10 @@ Map a JSON payload with ntfy-compatible fields directly to the <Terminology titl
 | `attach`   | `string`   | No       | URL of a file to attach.                                                                                                                                     |
 | `filename` | `string`   | No       | Filename for the <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology>. |
 | `markdown` | `boolean`  | No       | Set to `true` to enable markdown rendering.                                                                                                                  |
+
+:::warning
+A body that isn't valid JSON, such as plain text, fails with HTTP 422. A JSON body without `body`, or with a field of the wrong type, also fails with HTTP 422. These failures follow the normal interpretation-error path, including a configured `error_topic`.
+:::
 
 ## Example Payload
 

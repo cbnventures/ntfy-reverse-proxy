@@ -68,7 +68,7 @@ The CLI validates configuration integrity — it won't let you delete a server t
 
 Version 1.x routed by subdomain. Version 2.0.0 introduces contexts — named configurations that define the interpreter, authentication method (bearer token for HTTP, sender domain for email), target ntfy server and topic, delivery mode, and optional features like visitor geolocation injection and error topics.
 
-Each context gets a unique ID that serves as its endpoint. HTTP contexts receive webhooks at their ID path. Email contexts receive forwarded emails at their ID address.
+Each context gets a unique ID that serves as its endpoint. HTTP contexts receive webhooks at their ID subdomain, such as `{id}.ntfy.example.com`, and email contexts receive forwarded emails at their ID address.
 
 ## Error Topics
 
@@ -76,4 +76,4 @@ When an interpreter fails to parse a payload — malformed JSON, unexpected form
 
 ## Upgrading
 
-Version 2.0.0 is a full rewrite with a new configuration format. The project is now structured as a monorepo with the worker, CLI, and documentation site as separate workspaces. The v1 configuration format is not compatible — start fresh using the interactive CLI. See the [Quick Start guide](/docs/getting-started/quick-start/) for setup instructions.
+Version 2.0.0 is a full rewrite with a new configuration format. The project is now a monorepo with two workspaces: one package for the worker and CLI, and one for the documentation site. The v1 configuration format is not compatible — start fresh using the interactive CLI. See the [Quick Start guide](/docs/getting-started/quick-start/) for setup instructions.

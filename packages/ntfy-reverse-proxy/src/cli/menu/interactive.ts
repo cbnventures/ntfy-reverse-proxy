@@ -5,7 +5,10 @@ import chalk from 'chalk';
 import prompts from 'prompts';
 
 import { getPackageVersion } from '../../lib/package-runtime.js';
-import { LIB_REGEX_NON_ALPHANUMERIC_ID } from '../../lib/regex.js';
+import {
+  LIB_REGEX_NON_ALPHANUMERIC_ID,
+  LIB_REGEX_WORKER_NAME,
+} from '../../lib/regex.js';
 import {
   addContext, generateId, generateToken, listContexts, removeContext,
 } from '../commands/context.js';
@@ -59,6 +62,7 @@ import type {
   Cli_Menu_Interactive_AddContextFlow_Topic,
   Cli_Menu_Interactive_AddContextFlow_TopicResponse,
   Cli_Menu_Interactive_AddContextFlow_TopicString,
+  Cli_Menu_Interactive_AddContextFlow_Trimmed,
   Cli_Menu_Interactive_AddContextFlow_TypedErrorEvents,
   Cli_Menu_Interactive_AddContextFlow_TypedInterpreter,
   Cli_Menu_Interactive_AddContextFlow_TypedMode,
@@ -94,6 +98,8 @@ import type {
   Cli_Menu_Interactive_ContextMenu_HttpChoices,
   Cli_Menu_Interactive_ContextMenu_HttpValues,
   Cli_Menu_Interactive_ContextMenu_Id,
+  Cli_Menu_Interactive_ContextMenu_IdResponse,
+  Cli_Menu_Interactive_ContextMenu_IdTrimmed,
   Cli_Menu_Interactive_ContextMenu_InMenu,
   Cli_Menu_Interactive_ContextMenu_Interpreter,
   Cli_Menu_Interactive_ContextMenu_InterpreterIdx,
@@ -114,6 +120,7 @@ import type {
   Cli_Menu_Interactive_ContextMenu_PrimaryServerIdx,
   Cli_Menu_Interactive_ContextMenu_PrimaryServerInitial,
   Cli_Menu_Interactive_ContextMenu_PrimaryServerResponse,
+  Cli_Menu_Interactive_ContextMenu_RawId,
   Cli_Menu_Interactive_ContextMenu_RemoveContexts,
   Cli_Menu_Interactive_ContextMenu_RemoveErrorMessage,
   Cli_Menu_Interactive_ContextMenu_RemoveName,
@@ -550,7 +557,7 @@ async function serverMenu(configPath: Cli_Menu_Interactive_ServerMenu_ConfigPath
             if (confirmed === true) {
               removeServer(configPath, removeName);
 
-              Logger.info(`Server "${removeName}" removed.`);
+              Logger.info(`Server "${removeName}" removed. Run "nrp deploy" to apply.`);
             }
           }
         }
@@ -678,9 +685,38 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
               let id: Cli_Menu_Interactive_ContextMenu_Id = undefined;
 
               if (keepId === false) {
-                id = generateId();
+                if (current['type'] === 'http') {
+                  id = generateId();
 
-                Logger.info(`  New ID: ${id}`);
+                  Logger.info(`  New ID: ${id}`);
+                } else {
+                  const idResponse: Cli_Menu_Interactive_ContextMenu_IdResponse = await prompts({
+                    type: 'text',
+                    name: 'id',
+                    message: 'New ID (email local part):',
+                    initial: current['id'],
+                    validate: (value) => {
+                      if (value.trim()['length'] === 0) {
+                        return 'ID is required for email contexts';
+                      }
+
+                      if (LIB_REGEX_NON_ALPHANUMERIC_ID.test(value) === true) {
+                        return 'ID must be alphanumeric (plus . _ -)';
+                      }
+
+                      return true;
+                    },
+                  });
+                  const rawId: Cli_Menu_Interactive_ContextMenu_RawId = idResponse['id'];
+
+                  if (rawId === undefined) {
+                    continue;
+                  }
+
+                  const idTrimmed: Cli_Menu_Interactive_ContextMenu_IdTrimmed = rawId.trim();
+
+                  id = idTrimmed;
+                }
               }
 
               const httpChoices: Cli_Menu_Interactive_ContextMenu_HttpChoices = [
@@ -703,6 +739,22 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
                 {
                   title: 'Statuspage.io',
                   value: 'statuspage',
+                },
+                {
+                  title: 'Transmission VPN',
+                  value: 'transmission-vpn',
+                },
+                {
+                  title: 'pfSense Actions',
+                  value: 'pfsense-actions',
+                },
+                {
+                  title: 'Discord Stonker Bot',
+                  value: 'discord-stonker-bot',
+                },
+                {
+                  title: 'Outpost',
+                  value: 'outpost',
                 },
               ];
               const emailChoices: Cli_Menu_Interactive_ContextMenu_EmailChoices = [
@@ -735,6 +787,10 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
                 'seerr',
                 'synology',
                 'statuspage',
+                'transmission-vpn',
+                'pfsense-actions',
+                'discord-stonker-bot',
+                'outpost',
               ];
               const emailValues: Cli_Menu_Interactive_ContextMenu_EmailValues = [
                 'plain-text',
@@ -1054,7 +1110,7 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
             if (confirmed === true) {
               removeContext(configPath, removeName);
 
-              Logger.info(`Context "${removeName}" removed.`);
+              Logger.info(`Context "${removeName}" removed. Run "nrp deploy" to apply.`);
             }
           }
         }
@@ -1125,6 +1181,22 @@ async function addContextFlow(configPath: Cli_Menu_Interactive_AddContextFlow_Co
       title: 'Statuspage.io',
       value: 'statuspage',
     },
+    {
+      title: 'Transmission VPN',
+      value: 'transmission-vpn',
+    },
+    {
+      title: 'pfSense Actions',
+      value: 'pfsense-actions',
+    },
+    {
+      title: 'Discord Stonker Bot',
+      value: 'discord-stonker-bot',
+    },
+    {
+      title: 'Outpost',
+      value: 'outpost',
+    },
   ];
 
   const emailInterpreters: Cli_Menu_Interactive_AddContextFlow_EmailInterpreters = [
@@ -1163,6 +1235,20 @@ async function addContextFlow(configPath: Cli_Menu_Interactive_AddContextFlow_Co
     message: idMessage,
     validate: (value) => {
       if (contextType === 'http') {
+        const trimmed: Cli_Menu_Interactive_AddContextFlow_Trimmed = value.trim();
+
+        if (trimmed['length'] === 0) {
+          return true;
+        }
+
+        if (trimmed['length'] > 63) {
+          return 'ID must be 63 characters or fewer';
+        }
+
+        if (LIB_REGEX_WORKER_NAME.test(trimmed) === false) {
+          return 'ID must contain only lowercase alphanumeric characters and hyphens, and cannot start or end with a hyphen';
+        }
+
         return true;
       }
 
@@ -1469,7 +1555,7 @@ async function settingsFlow(configPath: Cli_Menu_Interactive_SettingsFlow_Config
       show_response_output: showResponseOutput,
     });
 
-    Logger.info('Settings updated.');
+    Logger.info('Settings updated. Run "nrp deploy" to apply.');
   } catch (error) {
     const updateErrorMessage: Cli_Menu_Interactive_SettingsFlow_UpdateErrorMessage = (error instanceof Error) ? error['message'] : String(error);
 

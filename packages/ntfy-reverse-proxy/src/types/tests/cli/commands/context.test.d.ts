@@ -121,6 +121,47 @@ export type Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateContextNa
 };
 
 /**
+ * Tests - CLI - Commands - Context - Context Commands - Rejects Duplicate Email IDs.
+ *
+ * @since 2.3.0
+ */
+export type Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateEmailIds_Config_Context_Id = string;
+
+export type Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateEmailIds_Config_Context = {
+  id: Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateEmailIds_Config_Context_Id;
+};
+
+export type Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateEmailIds_Config_Contexts = Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateEmailIds_Config_Context[];
+
+export type Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateEmailIds_Config = {
+  contexts: Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateEmailIds_Config_Contexts;
+};
+
+/**
+ * Tests - CLI - Commands - Context - Context Commands - Rejects Duplicate Email IDs On Edit.
+ *
+ * @since 2.3.0
+ */
+export type Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateEmailIdsOnEdit_Config_Context_Id = string;
+
+export type Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateEmailIdsOnEdit_Config_Context = {
+  id: Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateEmailIdsOnEdit_Config_Context_Id;
+};
+
+export type Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateEmailIdsOnEdit_Config_Contexts = Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateEmailIdsOnEdit_Config_Context[];
+
+export type Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateEmailIdsOnEdit_Config = {
+  contexts: Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateEmailIdsOnEdit_Config_Contexts;
+};
+
+/**
+ * Tests - CLI - Commands - Context - Context Commands - Rejects Removal Of A Missing Context.
+ *
+ * @since 2.3.0
+ */
+export type Tests_Cli_Commands_Context_ContextCommands_RejectsRemovalOfAMissingContext_Contexts = unknown[];
+
+/**
  * Tests - CLI - Commands - Context.
  *
  * @since 2.0.0

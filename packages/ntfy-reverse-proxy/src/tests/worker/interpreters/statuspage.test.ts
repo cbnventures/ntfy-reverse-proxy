@@ -59,6 +59,7 @@ import type {
   Tests_Worker_Interpreters_Statuspage_StatuspageInterpreter_SilentlyAccumulatesComponentOnlyWebhooksInKV_Stored,
   Tests_Worker_Interpreters_Statuspage_StatuspageInterpreter_SilentlyAccumulatesComponentOnlyWebhooksInKV_StoredComponents,
   Tests_Worker_Interpreters_Statuspage_StatuspageInterpreter_SilentlyAccumulatesComponentOnlyWebhooksInKV_StoredRaw,
+  Tests_Worker_Interpreters_Statuspage_StatuspageInterpreter_ThrowsOnMalformedJSON_Promise,
   Tests_Worker_Interpreters_Statuspage_StatuspageInterpreter_ThrowsOnUnrecognizedPayload_Input,
   Tests_Worker_Interpreters_Statuspage_StatuspageInterpreter_ThrowsOnUnrecognizedPayload_Promise,
   Tests_Worker_Interpreters_Statuspage_StatuspageInterpreter_UsesIncidentNameInTitleAndStatusImpactInBody_Input,
@@ -433,6 +434,19 @@ describe('statuspageInterpreter', () => {
     const promise: Tests_Worker_Interpreters_Statuspage_StatuspageInterpreter_ThrowsOnUnrecognizedPayload_Promise = statuspageInterpreter(input);
 
     await expect(promise).rejects.toThrow('Unrecognized Statuspage.io payload');
+
+    return;
+  });
+
+  /**
+   * Tests - Worker - Interpreters - Statuspage.
+   *
+   * @since 2.3.0
+   */
+  it('throws on malformed JSON', async () => {
+    const promise: Tests_Worker_Interpreters_Statuspage_StatuspageInterpreter_ThrowsOnMalformedJSON_Promise = statuspageInterpreter('not json');
+
+    await expect(promise).rejects.toThrow(SyntaxError);
 
     return;
   });

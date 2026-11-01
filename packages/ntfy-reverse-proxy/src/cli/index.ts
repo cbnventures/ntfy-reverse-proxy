@@ -9,7 +9,7 @@ import { APP_NAME } from '../lib/item.js';
 import { getConfigSamplePath, getPackageVersion } from '../lib/package-runtime.js';
 import { removeContext } from './commands/context.js';
 import { deploy } from './commands/deploy.js';
-import { generateWranglerToml } from './commands/generate.js';
+import { generateWranglerToml, getWranglerTomlPath } from './commands/generate.js';
 import { removeServer } from './commands/server.js';
 import { validateConfig } from './commands/validate.js';
 import { interactiveMenu } from './menu/interactive.js';
@@ -128,7 +128,7 @@ async function main(): Cli_Index_Main_Returns {
     .action((name) => {
       removeServer(configPath, name);
 
-      Logger.info(`Server "${name}" removed.`);
+      Logger.info(`Server "${name}" removed. Run "nrp deploy" to apply.`);
 
       return;
     });
@@ -141,7 +141,7 @@ async function main(): Cli_Index_Main_Returns {
     .action((name) => {
       removeContext(configPath, name);
 
-      Logger.info(`Context "${name}" removed.`);
+      Logger.info(`Context "${name}" removed. Run "nrp deploy" to apply.`);
 
       return;
     });
@@ -165,6 +165,8 @@ async function main(): Cli_Index_Main_Returns {
 
           Logger.error(`  - ${message}`);
         }
+
+        process.exitCode = 1;
       }
 
       return;
@@ -176,7 +178,7 @@ async function main(): Cli_Index_Main_Returns {
     .action(() => {
       generateWranglerToml(configPath);
 
-      Logger.info('wrangler.toml generated successfully.');
+      Logger.info(`Generated "wrangler.toml" at "${getWranglerTomlPath(configPath)}".`);
 
       return;
     });

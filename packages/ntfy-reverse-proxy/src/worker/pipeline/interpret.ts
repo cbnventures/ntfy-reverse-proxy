@@ -1,11 +1,15 @@
 import { stripHtml } from '../../lib/utility.js';
 
+import { discordStonkerBotInterpreter } from '../interpreters/discord-stonker-bot.js';
 import { ntfyJsonInterpreter } from '../interpreters/ntfy-json.js';
+import { outpostInterpreter } from '../interpreters/outpost.js';
+import { pfsenseActionsInterpreter } from '../interpreters/pfsense-actions.js';
 import { pfsenseInterpreter } from '../interpreters/pfsense.js';
 import { plainTextInterpreter } from '../interpreters/plain-text.js';
 import { seerrInterpreter } from '../interpreters/seerr.js';
 import { statuspageInterpreter } from '../interpreters/statuspage.js';
 import { synologyInterpreter } from '../interpreters/synology.js';
+import { transmissionVpnInterpreter } from '../interpreters/transmission-vpn.js';
 import { unifiInterpreter } from '../interpreters/unifi.js';
 
 import type {
@@ -34,6 +38,10 @@ const interpreterMap: Worker_Pipeline_Interpret_InterpreterMap = {
   'synology': synologyInterpreter,
   'statuspage': statuspageInterpreter,
   'unifi': unifiInterpreter,
+  'transmission-vpn': transmissionVpnInterpreter,
+  'pfsense-actions': pfsenseActionsInterpreter,
+  'discord-stonker-bot': discordStonkerBotInterpreter,
+  'outpost': outpostInterpreter,
 };
 
 /**

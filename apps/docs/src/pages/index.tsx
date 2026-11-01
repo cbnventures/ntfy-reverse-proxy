@@ -62,7 +62,7 @@ function Home() {
                 </span>
                 <span className={styles['termLine']}>
                   Authorization: Bearer
-                  <span className={styles['termExposed']}>ntfy_sk_xxxx</span>
+                  <span className={styles['termExposed']}>tk_xxxx</span>
                 </span>
                 <span className={styles['termLine']}>&nbsp;</span>
                 <span className={styles['termLine']}><span className={styles['termDim']}># After &mdash; proxied through nrp</span></span>
@@ -99,7 +99,7 @@ function Home() {
             {
               icon: 'lucide:cpu',
               title: 'Built-in Interpreters',
-              description: 'Seven parsers for Statuspage.io, Synology DSM, Seerr, pfSense, UniFi, plain text, and ntfy JSON. Raw payloads go in. Clean notifications come out.',
+              description: 'Eleven parsers for Statuspage.io, Synology DSM, Seerr, pfSense, UniFi, Transmission VPN, pfSense Actions, Discord Stonker Bot, Outpost, plain text, and ntfy JSON. Raw payloads go in. Clean notifications come out.',
             },
             {
               icon: 'lucide:shield-check',
@@ -124,7 +124,7 @@ function Home() {
             {
               icon: 'lucide:lock',
               title: 'Edge Security',
-              description: 'Origin IP shielding, per-context token auth, sender filtering, HTTPS enforcement. Your ntfy server stays off the public internet.',
+              description: 'Origin IP shielding, per-context token auth, sender filtering, HTTPS enforcement. Webhook senders never see your ntfy server\'s address.',
             },
           ]}
         />
@@ -132,7 +132,7 @@ function Home() {
           heading="By the Numbers"
           items={[
             {
-              value: '7',
+              value: '11',
               label: 'Built-in interpreters',
               color: 'primary',
             },

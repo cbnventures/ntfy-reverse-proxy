@@ -33,6 +33,10 @@ flowchart TD
         Statuspage[statuspage]
         Synology[synology]
         Seerr[seerr]
+        TransmissionVpn[transmission-vpn]
+        PfsenseActions[pfsense-actions]
+        DiscordStonkerBot[discord-stonker-bot]
+        Outpost[outpost]
     end
 
     subgraph EmailInterpreters [Email Interpreters]
@@ -56,7 +60,7 @@ flowchart TD
 
 When a request or email arrives, the <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology> invokes the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s configured <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>. The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> receives the raw input (string, JSON object, or binary) and returns a result with a `notification` object (title, body, priority, tags, icon, actions, markdown) and an optional `attachment` at the same level (not inside the notification).
 
-The `filename` field accompanies the <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology>.
+The `filename` field accompanies the <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology>. The `plain-text` <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> returns a binary request body as an attachment, while an <Terminology title="optional topic that receives failure notifications" to="/docs/reference/terminology#error-topic">error topic</Terminology> sends its diagnostic data as `error-debug.json`.
 
 - If an <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> returns `null`, the notification is suppressed (useful for filtering duplicate or irrelevant events).
 - If interpretation fails, the <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology> returns HTTP 422 and optionally forwards the error to the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s `error_topic`.
@@ -65,15 +69,19 @@ HTML is automatically stripped from all notification bodies after interpretation
 
 ## Available Interpreters
 
-| Interpreter                                    | Input Type | Best For                                                   |
-|------------------------------------------------|------------|------------------------------------------------------------|
-| [`plain-text`](/docs/interpreters/plain-text/) | Any        | Generic webhooks, simple text notifications, testing       |
-| [`ntfy-json`](/docs/interpreters/ntfy-json/)   | JSON       | Services that can send structured ntfy-compatible payloads |
-| [`statuspage`](/docs/interpreters/statuspage/) | JSON       | Statuspage.io incident and component update webhooks       |
-| [`synology`](/docs/interpreters/synology/)     | JSON       | Synology DSM webhook notifications                         |
-| [`seerr`](/docs/interpreters/seerr/)           | JSON       | Seerr media request and issue notifications                |
-| [`pfsense`](/docs/interpreters/pfsense/)       | Email      | pfSense firewall notification emails                       |
-| [`unifi`](/docs/interpreters/unifi/)           | Email      | UniFi Network controller notification emails               |
+| Interpreter                                                      | Input Type | Best For                                                             |
+|------------------------------------------------------------------|------------|----------------------------------------------------------------------|
+| [`plain-text`](/docs/interpreters/plain-text/)                   | Any        | Generic webhooks, simple text notifications, testing                 |
+| [`ntfy-json`](/docs/interpreters/ntfy-json/)                     | JSON       | Services that can send structured ntfy-compatible payloads           |
+| [`statuspage`](/docs/interpreters/statuspage/)                   | JSON       | Statuspage.io incident and component update webhooks                 |
+| [`synology`](/docs/interpreters/synology/)                       | JSON       | Synology DSM webhook notifications                                   |
+| [`seerr`](/docs/interpreters/seerr/)                             | JSON       | Seerr media request and issue notifications                          |
+| [`transmission-vpn`](/docs/interpreters/transmission-vpn/)       | JSON       | Transmission VPN alerts, such as a dropped VPN or a finished torrent |
+| [`pfsense-actions`](/docs/interpreters/pfsense-actions/)         | JSON       | pfSense Actions alerts, such as pfSense going unreachable            |
+| [`discord-stonker-bot`](/docs/interpreters/discord-stonker-bot/) | JSON       | Discord Stonker Bot alerts, such as a lost Discord connection        |
+| [`outpost`](/docs/interpreters/outpost/)                         | JSON       | Outpost alerts, such as updated containers or a failed update        |
+| [`pfsense`](/docs/interpreters/pfsense/)                         | Email      | pfSense firewall notification emails                                 |
+| [`unifi`](/docs/interpreters/unifi/)                             | Email      | UniFi Network controller notification emails                         |
 
 ## Choosing an Interpreter
 
@@ -81,6 +89,7 @@ HTML is automatically stripped from all notification bodies after interpretation
 - For services where you control the payload format, use `ntfy-json` to send pre-formatted notifications with full control over title, priority, tags, and other fields.
 - For the specific services listed above, use the dedicated <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> to get formatted titles, priority inference, and contextual tags.
 - If you need email-to-ntfy forwarding from pfSense or UniFi, use their respective <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreters</Terminology> with an email <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>.
+- For alerts from Transmission VPN, pfSense Actions, Discord Stonker Bot, or Outpost, use the <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> named after the app, and choose **ntfy-reverse-proxy** as the destination's service on the app's **Notifications** page.
 
 :::tip
 If your webhook does not perfectly match the expected shape, try the dedicated <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> first — most have lenient parsing. If it fails with 422, fall back to `plain-text` to see the raw payload, then consider `ntfy-json` if you can normalize the format on the source side.
@@ -88,20 +97,19 @@ If your webhook does not perfectly match the expected shape, try the dedicated <
 
 ## Notification Suppression
 
-Most <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreters</Terminology> always return a notification. The `statuspage` <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> is the exception — it returns `null` (suppressing the notification) for:
+Most <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreters</Terminology> always return a notification. Statuspage can return `null`, which suppresses the notification:
 
-- Component-only updates without an incident
-- Duplicate incident updates detected via KV deduplication
+- **`statuspage`** — Component-only updates without an incident and incident updates already sent (detected through KV).
 
-See [Statuspage](/docs/interpreters/statuspage/) for details.
+Malformed JSON is not suppression: `statuspage` and `ntfy-json` both fail with HTTP 422, allowing the configured <Terminology title="optional topic that receives failure notifications" to="/docs/reference/terminology#error-topic">error topic</Terminology> to report the problem. See [Statuspage](/docs/interpreters/statuspage/) and [ntfy JSON](/docs/interpreters/ntfy-json/) for details.
 
 ## Interpreter Availability by Context Type
 
 The interactive CLI menu filters the <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> list based on <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> type:
 
-- **HTTP <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology>** — `plain-text`, `ntfy-json`, `seerr`, `synology`, `statuspage`
+- **HTTP <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology>** — `plain-text`, `ntfy-json`, `seerr`, `synology`, `statuspage`, `transmission-vpn`, `pfsense-actions`, `discord-stonker-bot`, `outpost`
 - **Email <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology>** — `plain-text`, `pfsense`, `unifi`
 
 :::info
-The config schema allows any of the 7 <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreters</Terminology> for either type, so you can assign any <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> to any <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> via direct config editing.
+The config schema allows any of the 11 <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreters</Terminology> for either type, so you can assign any <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> to any <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> via direct config editing.
 :::

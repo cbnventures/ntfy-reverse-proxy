@@ -1,6 +1,9 @@
 import { z } from 'zod';
 
-import { LIB_REGEX_BASE_DOMAIN, LIB_REGEX_WORKER_NAME } from './regex.js';
+import {
+  LIB_REGEX_BASE_DOMAIN,
+  LIB_REGEX_WORKER_NAME,
+} from './regex.js';
 
 /**
  * Lib - Schema - Server Schema.
@@ -27,7 +30,7 @@ const serverSchema = z.object({
 const httpContextSchema = z.object({
   type: z.literal('http'),
   name: z.string().min(1),
-  id: z.string().min(1),
+  id: z.string().min(1).max(63).regex(LIB_REGEX_WORKER_NAME, { message: 'HTTP context ID must contain only lowercase alphanumeric characters and hyphens, and cannot start or end with a hyphen' }),
   interpreter: z.enum([
     'plain-text',
     'ntfy-json',
@@ -36,6 +39,10 @@ const httpContextSchema = z.object({
     'statuspage',
     'pfsense',
     'unifi',
+    'transmission-vpn',
+    'pfsense-actions',
+    'discord-stonker-bot',
+    'outpost',
   ]),
   topic: z.string().min(1),
   error_topic: z.string().min(1).optional(),
@@ -73,6 +80,10 @@ const emailContextSchema = z.object({
     'statuspage',
     'pfsense',
     'unifi',
+    'transmission-vpn',
+    'pfsense-actions',
+    'discord-stonker-bot',
+    'outpost',
   ]),
   topic: z.string().min(1),
   error_topic: z.string().min(1).optional(),

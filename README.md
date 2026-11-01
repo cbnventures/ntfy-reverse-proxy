@@ -43,7 +43,7 @@
 <!-- nova-region: introduction -->
 ## Introduction
 
-Webhook and email notification gateway with built-in interpreters (Statuspage.io, Synology DSM, Seerr, pfSense, UniFi, ntfy JSON, plain text), automatic primary/fallback server failover, and smart message splitting, powered by Cloudflare Workers and Cloudflare Email Routing. Interactive CLI for configuration, validation, and deployment.
+Webhook and email notification gateway with built-in interpreters (Statuspage.io, Synology DSM, Seerr, pfSense, UniFi, Transmission VPN, pfSense Actions, Discord Stonker Bot, Outpost, ntfy JSON, plain text), automatic primary/fallback server failover, and smart message splitting, powered by Cloudflare Workers and Cloudflare Email Routing. Interactive CLI for configuration, validation, and deployment.
 <!-- nova-region-end: introduction -->
 
 <!-- nova-region: documentation -->

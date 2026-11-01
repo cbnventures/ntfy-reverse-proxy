@@ -2,7 +2,7 @@
 id: security
 title: Security
 description: Secure Reverse Proxy for ntfy with per-context token and sender authentication, sensitive value masking, WAF rules, and Cloudflare edge protection.
-sidebar_position: 3
+sidebar_position: 4
 keywords:
   - ntfy reverse proxy
   - security
@@ -62,7 +62,7 @@ Supported header formats:
 If the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> has no `token` field, all requests are allowed without authentication.
 
 :::danger
-On authentication failure, the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> returns HTTP 403. If the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> has an `error_topic` configured and `error_events` includes `"authentication"` (or is omitted), an `error-debug.json` <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology> is sent to that <Terminology title="optional topic that receives failure notifications" to="/docs/reference/terminology#error-topic">topic</Terminology> containing the timestamp, error type, <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> name, <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>, and request details (method, URL, headers with the Authorization header value redacted, and Cloudflare properties).
+On authentication failure, the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> returns HTTP 403. If the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> has an `error_topic` configured and `error_events` includes `"authentication"` (or is omitted), an `error-debug.json` <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology> is sent to that <Terminology title="optional topic that receives failure notifications" to="/docs/reference/terminology#error-topic">topic</Terminology> containing the timestamp, error, <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> name and <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>, request details (method, URL, headers with the Authorization header value redacted, and Cloudflare properties), response status, and request body.
 :::
 
 <details>
@@ -73,32 +73,39 @@ On authentication failure, the <Terminology title="Cloudflare-hosted entry point
   "timestamp": "2026-04-15T12:00:00.000Z",
   "error": {
     "type": "authentication",
-    "message": "Token mismatch"
+    "message": "Invalid token"
   },
   "context": {
     "name": "My Service",
-    "interpreter": "plain-text"
+    "interpreter": "plain-text",
+    "stage": "authentication"
   },
   "request": {
     "method": "POST",
     "url": "https://myservice.ntfy.example.com/",
     "headers": {
+      "authorization": "REDACTED",
       "content-type": "text/plain",
       "user-agent": "curl/8.0"
     },
     "cf": {
       "country": "US",
       "colo": "SJC"
-    },
-    "body": {
-      "type": "text",
-      "text": "the raw request body"
     }
+  },
+  "response": {
+    "status": 403
+  },
+  "body": {
+    "type": "text",
+    "text": "the raw request body"
   }
 }
 ```
 
-The `Authorization` header value is redacted (replaced with `REDACTED`) before sending. Both authentication and interpretation error <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachments</Terminology> include a `body` field with `type` and `json` or `text` sub-fields.
+The `Authorization` header value is redacted (replaced with `REDACTED`) before sending, and `error.message` is either `Missing Authorization header` or `Invalid token`. Both authentication and interpretation error <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachments</Terminology> include a `body` field with `type` and `json` or `text` sub-fields.
+
+Interpretation error <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachments</Terminology> also add the error's `name`, `stack`, and any schema `issues` to `error`, and they report status `422`.
 
 </details>
 
@@ -120,21 +127,23 @@ Matching is case-insensitive. If the <Terminology title="a notification source c
   "timestamp": "2026-04-15T12:00:00.000Z",
   "error": {
     "type": "authentication",
-    "message": "Sender not in allowed_from"
+    "message": "Sender domain not allowed"
   },
   "context": {
     "name": "pfSense Alerts",
-    "interpreter": "pfsense"
+    "interpreter": "pfsense",
+    "stage": "authentication"
   },
   "email": {
     "from": "unknown@example.com",
     "to": "pfsense@ntfy.example.com",
-    "subject": "Alert notification"
+    "subject": "Alert notification",
+    "textBody": "the email's text body"
   }
 }
 ```
 
-Email interpretation errors include an additional `textBody` field inside the `email` object.
+The `error.message` is `Sender domain not allowed` for a wildcard rule, `Sender not allowed` for an exact address, or `Missing sender address`. Email interpretation errors use the same `email` object and also add the error's `name`, `stack`, and any schema `issues`.
 
 </details>
 
@@ -156,11 +165,11 @@ This masking applies to the collapsible debug section on the GET <Terminology ti
 The `show_response_output` setting controls whether detailed information is included in responses.
 
 - **Enabled** — POST/PUT responses include <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> name, <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>, per-<Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> delivery results, and message details. The GET <Terminology title="HTML status page returned on GET requests" to="/docs/reference/terminology#landing-page">landing page</Terminology> shows a collapsible debug section with the masked config. Useful during initial setup.
-- **Disabled** — POST/PUT responses include only the delivery status. The GET <Terminology title="HTML status page returned on GET requests" to="/docs/reference/terminology#landing-page">landing page</Terminology> shows only the operational badge. Recommended for production.
+- **Disabled** — POST/PUT responses include only the delivery status, and the GET <Terminology title="HTML status page returned on GET requests" to="/docs/reference/terminology#landing-page">landing page</Terminology> leaves out the debug section. Recommended for production.
 
 Visiting any <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> URL in a browser (GET request) shows a <Terminology title="HTML status page returned on GET requests" to="/docs/reference/terminology#landing-page">landing page</Terminology> instead of processing a notification. When `show_response_output` is enabled, the <Terminology title="HTML status page returned on GET requests" to="/docs/reference/terminology#landing-page">landing page</Terminology> includes a collapsible section with the full configuration, with sensitive values masked.
 
-When disabled, it shows only an operational status badge.
+When disabled, it shows only the operational status badge, the project name, and a link to the GitHub repository.
 
 ## Cloudflare Edge Protection
 

@@ -19,6 +19,7 @@ import type {
   Tests_Cli_Commands_Server_ServerCommands_ConfigJson,
   Tests_Cli_Commands_Server_ServerCommands_ListsServers_Servers,
   Tests_Cli_Commands_Server_ServerCommands_RejectsDuplicateServerNames_Duplicate,
+  Tests_Cli_Commands_Server_ServerCommands_RejectsRemovalOfAMissingServer_Servers,
   Tests_Cli_Commands_Server_ServerCommands_RemovesAServer_Config,
   Tests_Cli_Commands_Server_ServerCommands_RemovesAServer_ConfigJson,
   Tests_Cli_Commands_Server_ServerCommands_WarnsWhenRemovingAServerReferencedByContexts_Config,
@@ -131,6 +132,16 @@ describe('server commands', () => {
     const config: Tests_Cli_Commands_Server_ServerCommands_RemovesAServer_Config = JSON.parse(configJson);
 
     expect(config['servers']).toHaveLength(0);
+
+    return;
+  });
+
+  it('rejects removal of a missing server', () => {
+    expect(() => removeServer(testConfigPath, 'missing')).toThrow('Server with name "missing" not found.');
+
+    const servers: Tests_Cli_Commands_Server_ServerCommands_RejectsRemovalOfAMissingServer_Servers = listServers(testConfigPath);
+
+    expect(servers).toHaveLength(0);
 
     return;
   });

@@ -58,16 +58,24 @@ This applies after interpretation and before formatting, so <Terminology title="
 - **HTTP <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology>** — Returns `{"status": "ignored"}` with HTTP 200.
 - **Email <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology>** — Silently drops the message. No response is sent to the sender.
 
-Currently, only the `statuspage` <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> uses suppression — for duplicate incident updates detected via KV and component-only updates without a bound <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology>.
+Currently, the Statuspage <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> uses suppression:
+
+- **`statuspage`** — Component-only updates (whether or not a <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology> is bound) and incident updates already sent (detected via KV).
+
+Malformed JSON is an interpretation failure, not suppression. Both `statuspage` and `ntfy-json` return HTTP 422 for it, and a configured <Terminology title="optional topic that receives failure notifications" to="/docs/reference/terminology#error-topic">error topic</Terminology> can receive the diagnostic attachment.
 
 ## Interpreter Availability by Context Type
 
-| Interpreter  | HTTP | Email | Notes                                         |
-|--------------|------|-------|-----------------------------------------------|
-| `plain-text` | Yes  | Yes   | Available in CLI menu for both types.         |
-| `ntfy-json`  | Yes  | No    | JSON payloads only — not applicable to email. |
-| `seerr`      | Yes  | No    | Webhook-only service.                         |
-| `synology`   | Yes  | No    | Webhook-only service.                         |
-| `statuspage` | Yes  | No    | Webhook-only service.                         |
-| `pfsense`    | No   | Yes   | Email alerts only.                            |
-| `unifi`      | No   | Yes   | Email alerts only.                            |
+| Interpreter           | HTTP | Email | Notes                                         |
+|-----------------------|------|-------|-----------------------------------------------|
+| `plain-text`          | Yes  | Yes   | Available in CLI menu for both types.         |
+| `ntfy-json`           | Yes  | No    | JSON payloads only — not applicable to email. |
+| `seerr`               | Yes  | No    | Webhook-only service.                         |
+| `synology`            | Yes  | No    | Webhook-only service.                         |
+| `statuspage`          | Yes  | No    | Webhook-only service.                         |
+| `transmission-vpn`    | Yes  | No    | Webhook-only app alerts.                      |
+| `pfsense-actions`     | Yes  | No    | Webhook-only app alerts.                      |
+| `discord-stonker-bot` | Yes  | No    | Webhook-only app alerts.                      |
+| `outpost`             | Yes  | No    | Webhook-only app alerts.                      |
+| `pfsense`             | No   | Yes   | Email alerts only.                            |
+| `unifi`               | No   | Yes   | Email alerts only.                            |
