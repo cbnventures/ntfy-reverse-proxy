@@ -1,6 +1,7 @@
 import { stripHtml } from '../../lib/utility.js';
 
 import { discordStonkerBotInterpreter } from '../interpreters/discord-stonker-bot.js';
+import { mailmaskInterpreter } from '../interpreters/mailmask.js';
 import { ntfyJsonInterpreter } from '../interpreters/ntfy-json.js';
 import { outpostInterpreter } from '../interpreters/outpost.js';
 import { pfsenseActionsInterpreter } from '../interpreters/pfsense-actions.js';
@@ -42,6 +43,7 @@ const interpreterMap: Worker_Pipeline_Interpret_InterpreterMap = {
   'pfsense-actions': pfsenseActionsInterpreter,
   'discord-stonker-bot': discordStonkerBotInterpreter,
   'outpost': outpostInterpreter,
+  'mailmask': mailmaskInterpreter,
 };
 
 /**

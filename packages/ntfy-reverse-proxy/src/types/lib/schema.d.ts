@@ -9,7 +9,7 @@ export type Lib_Schema_ContextConfigType = 'http' | 'email';
 
 export type Lib_Schema_ContextConfigId = string;
 
-export type Lib_Schema_ContextConfigInterpreter = 'plain-text' | 'ntfy-json' | 'seerr' | 'synology' | 'statuspage' | 'pfsense' | 'unifi' | 'transmission-vpn' | 'pfsense-actions' | 'discord-stonker-bot' | 'outpost';
+export type Lib_Schema_ContextConfigInterpreter = 'plain-text' | 'ntfy-json' | 'seerr' | 'synology' | 'statuspage' | 'pfsense' | 'unifi' | 'transmission-vpn' | 'pfsense-actions' | 'discord-stonker-bot' | 'outpost' | 'mailmask';
 
 export type Lib_Schema_ContextConfigTopic = string;
 
@@ -88,6 +88,8 @@ export type Lib_Schema_HttpContextConfigServers = string[];
 
 export type Lib_Schema_HttpContextConfigToken = string | undefined;
 
+export type Lib_Schema_HttpContextConfigSession = Lib_Schema_SessionConfig | undefined;
+
 export type Lib_Schema_HttpContextConfig = {
   name: Lib_Schema_HttpContextConfigName;
   type: Lib_Schema_HttpContextConfigType;
@@ -101,6 +103,7 @@ export type Lib_Schema_HttpContextConfig = {
   primary_server: Lib_Schema_HttpContextConfigPrimaryServer;
   servers: Lib_Schema_HttpContextConfigServers;
   token?: Lib_Schema_HttpContextConfigToken;
+  session?: Lib_Schema_HttpContextConfigSession;
 };
 
 export type Lib_Schema_ContextConfig = Lib_Schema_HttpContextConfig | Lib_Schema_EmailContextConfig;
@@ -115,6 +118,18 @@ export type Lib_Schema_ServerConfig = {
   name: Lib_Schema_ServerConfigName;
   server: Lib_Schema_ServerConfigServer;
   token: Lib_Schema_ServerConfigToken;
+};
+
+export type Lib_Schema_SessionConfigSecret = string;
+
+export type Lib_Schema_SessionConfigTtlSeconds = number | undefined;
+
+export type Lib_Schema_SessionConfigMaxPerHour = number | undefined;
+
+export type Lib_Schema_SessionConfig = {
+  secret: Lib_Schema_SessionConfigSecret;
+  ttl_seconds?: Lib_Schema_SessionConfigTtlSeconds;
+  max_per_hour?: Lib_Schema_SessionConfigMaxPerHour;
 };
 
 export type Lib_Schema_SettingsConfigWorkerName = string;

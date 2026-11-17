@@ -4,6 +4,7 @@ import { emailContextSchema, httpContextSchema } from '../../../lib/schema.js';
 import { interpret, interpreterMap } from '../../../worker/pipeline/interpret.js';
 
 import type {
+  Tests_Worker_Pipeline_Interpret_Interpret_DispatchesToMailmaskInterpreter_Result,
   Tests_Worker_Pipeline_Interpret_Interpret_DispatchesToNtfyJsonInterpreter_Result,
   Tests_Worker_Pipeline_Interpret_Interpret_DispatchesToPlainTextInterpreter_Result,
   Tests_Worker_Pipeline_Interpret_Interpret_DispatchesToStatuspageInterpreter_Input,
@@ -22,6 +23,34 @@ import type {
  * @since 2.0.0
  */
 describe('interpret', () => {
+  it('dispatches to mailmask interpreter', async () => {
+    const result: Tests_Worker_Pipeline_Interpret_Interpret_DispatchesToMailmaskInterpreter_Result = await interpret('mailmask', {
+      version: 1,
+      app: 'mailmask',
+      event: 'message-refused',
+      title: 'Mailmask refused a message',
+      message: 'Mail to alias@example.com from sender@example.com was rejected: Address is disabled.',
+      priority: 3,
+      tags: ['email'],
+      occurredAt: '2026-11-05T12:00:00.000Z',
+      details: {
+        alias: 'alias@example.com',
+        envelopeSender: 'sender@example.com',
+        recipient: 'alias@example.com',
+        reason: 'disabled',
+      },
+    });
+
+    expect(result).not.toStrictEqual(null);
+
+    expect(result!['notification']['tags']).toStrictEqual([
+      'mailmask',
+      'email',
+    ]);
+
+    return;
+  });
+
   it('dispatches to plain-text interpreter', async () => {
     const result: Tests_Worker_Pipeline_Interpret_Interpret_DispatchesToPlainTextInterpreter_Result = await interpret('plain-text', 'hello world');
 

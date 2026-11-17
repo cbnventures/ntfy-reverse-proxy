@@ -183,7 +183,7 @@
         "issue-comment",
         "issues"
       ],
-      "runsOn": "ubuntu-latest",
+      "runsOn": "ubuntu-24.04",
       "timeoutMinutes": 5
     },
     {
@@ -192,7 +192,7 @@
       "triggers": [
         "schedule-weekly"
       ],
-      "runsOn": "ubuntu-latest",
+      "runsOn": "ubuntu-24.04",
       "timeoutMinutes": 5
     },
     {
@@ -201,7 +201,7 @@
       "triggers": [
         "tag-push"
       ],
-      "runsOn": "ubuntu-latest",
+      "runsOn": "ubuntu-24.04",
       "timeoutMinutes": 15,
       "build": [
         "./packages/ntfy-reverse-proxy",
@@ -253,19 +253,19 @@
   },
   "workspaces": {
     "./": {
+      "name": "ntfy-reverse-proxy-project",
       "role": "project",
-      "policy": "freezable",
-      "name": "ntfy-reverse-proxy-project"
+      "policy": "freezable"
     },
     "./apps/docs": {
+      "name": "ntfy-reverse-proxy-docs",
       "role": "docs",
-      "policy": "freezable",
-      "name": "ntfy-reverse-proxy-docs"
+      "policy": "freezable"
     },
     "./packages/ntfy-reverse-proxy": {
+      "name": "ntfy-reverse-proxy",
       "role": "package",
-      "policy": "distributable",
-      "name": "ntfy-reverse-proxy"
+      "policy": "distributable"
     }
   },
   "artifacts": {
@@ -547,7 +547,7 @@
         "prefix": "DOCS_"
       },
       "./packages/ntfy-reverse-proxy": {
-        "prefix": "NTFY_REVERSE_PROXY_"
+        "prefix": "NRP_"
       }
     },
     "workflows": {

@@ -10,7 +10,7 @@ import {
   LIB_REGEX_WORKER_NAME,
 } from '../../lib/regex.js';
 import {
-  addContext, generateId, generateToken, listContexts, removeContext,
+  addContext, generateId, generateSessionSecret, generateToken, listContexts, removeContext,
 } from '../commands/context.js';
 import { deploy } from '../commands/deploy.js';
 import { addServer, listServers, removeServer } from '../commands/server.js';
@@ -67,6 +67,8 @@ import type {
   Cli_Menu_Interactive_AddContextFlow_TypedInterpreter,
   Cli_Menu_Interactive_AddContextFlow_TypedMode,
   Cli_Menu_Interactive_AddContextFlow_TypeResponse,
+  Cli_Menu_Interactive_AddContextFlow_UseSession,
+  Cli_Menu_Interactive_AddContextFlow_UseSessionResponse,
   Cli_Menu_Interactive_ContextMenu_Action,
   Cli_Menu_Interactive_ContextMenu_AddNewToken,
   Cli_Menu_Interactive_ContextMenu_AddToken,
@@ -139,6 +141,8 @@ import type {
   Cli_Menu_Interactive_ContextMenu_Topic,
   Cli_Menu_Interactive_ContextMenu_TopicResponse,
   Cli_Menu_Interactive_ContextMenu_Updates,
+  Cli_Menu_Interactive_ContextMenu_UseSession,
+  Cli_Menu_Interactive_ContextMenu_UseSessionResponse,
   Cli_Menu_Interactive_InteractiveMenu_Action,
   Cli_Menu_Interactive_InteractiveMenu_ConfigDirResponse,
   Cli_Menu_Interactive_InteractiveMenu_ConfigDirs,
@@ -756,6 +760,10 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
                   title: 'Outpost',
                   value: 'outpost',
                 },
+                {
+                  title: 'Mailmask',
+                  value: 'mailmask',
+                },
               ];
               const emailChoices: Cli_Menu_Interactive_ContextMenu_EmailChoices = [
                 {
@@ -791,6 +799,7 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
                 'pfsense-actions',
                 'discord-stonker-bot',
                 'outpost',
+                'mailmask',
               ];
               const emailValues: Cli_Menu_Interactive_ContextMenu_EmailValues = [
                 'plain-text',
@@ -991,7 +1000,39 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
                 Reflect.set(updates, 'error_events', errorEvents);
               }
 
-              if (current['type'] === 'http' && current['token'] !== undefined) {
+              let useSession: Cli_Menu_Interactive_ContextMenu_UseSession = false;
+
+              if (current['type'] === 'http') {
+                const useSessionResponse: Cli_Menu_Interactive_ContextMenu_UseSessionResponse = await prompts({
+                  type: 'confirm',
+                  name: 'useSession',
+                  message: 'Use session tokens?',
+                  initial: current['session'] !== undefined,
+                });
+
+                useSession = useSessionResponse['useSession'];
+
+                if (useSession === undefined) {
+                  continue;
+                }
+
+                // Session tokens replace the static token, so turning them on drops it.
+                if (useSession === true && current['session'] === undefined) {
+                  Reflect.set(updates, 'session', { secret: generateSessionSecret() });
+                  Reflect.set(updates, 'token', undefined);
+                }
+
+                if (useSession === false && current['session'] !== undefined) {
+                  Reflect.set(updates, 'session', undefined);
+                }
+              }
+
+              // With session tokens on, the static token prompts do not apply.
+              if (
+                current['type'] === 'http'
+                && useSession === false
+                && current['token'] !== undefined
+              ) {
                 const keepTokenResponse: Cli_Menu_Interactive_ContextMenu_KeepTokenResponse = await prompts({
                   type: 'confirm',
                   name: 'keepToken',
@@ -1012,7 +1053,11 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
 
                   Logger.info(`  New token: ${newToken}`);
                 }
-              } else if (current['type'] === 'http' && current['token'] === undefined) {
+              } else if (
+                current['type'] === 'http'
+                && useSession === false
+                && current['token'] === undefined
+              ) {
                 const addTokenResponse: Cli_Menu_Interactive_ContextMenu_AddTokenResponse = await prompts({
                   type: 'confirm',
                   name: 'addToken',
@@ -1196,6 +1241,10 @@ async function addContextFlow(configPath: Cli_Menu_Interactive_AddContextFlow_Co
     {
       title: 'Outpost',
       value: 'outpost',
+    },
+    {
+      title: 'Mailmask',
+      value: 'mailmask',
     },
   ];
 
@@ -1415,23 +1464,42 @@ async function addContextFlow(configPath: Cli_Menu_Interactive_AddContextFlow_Co
   const typedErrorEvents: Cli_Menu_Interactive_AddContextFlow_TypedErrorEvents = errorEvents as Cli_Menu_Interactive_AddContextFlow_TypedErrorEvents;
 
   if (contextType === 'http') {
-    const autoToken: Cli_Menu_Interactive_AddContextFlow_AutoToken = generateToken();
-
-    const tokenResponse: Cli_Menu_Interactive_AddContextFlow_TokenResponse = await prompts({
-      type: 'text',
-      name: 'token',
-      message: 'Auth token (blank to skip, enter to accept):',
-      initial: autoToken,
+    const useSessionResponse: Cli_Menu_Interactive_AddContextFlow_UseSessionResponse = await prompts({
+      type: 'confirm',
+      name: 'useSession',
+      message: 'Use session tokens?',
+      initial: false,
     });
 
-    const rawToken: Cli_Menu_Interactive_AddContextFlow_RawToken = tokenResponse['token'];
+    const useSession: Cli_Menu_Interactive_AddContextFlow_UseSession = useSessionResponse['useSession'];
 
-    if (rawToken === undefined) {
+    if (useSession === undefined) {
       return;
     }
 
-    const tokenTrimmed: Cli_Menu_Interactive_AddContextFlow_TokenTrimmed = (rawToken !== undefined) ? rawToken.trim() : '';
-    const resolvedToken: Cli_Menu_Interactive_AddContextFlow_ResolvedToken = (tokenTrimmed !== '') ? tokenTrimmed : undefined;
+    let resolvedToken: Cli_Menu_Interactive_AddContextFlow_ResolvedToken = undefined;
+
+    // Session tokens replace the static token, so its prompt only appears without them.
+    if (useSession === false) {
+      const autoToken: Cli_Menu_Interactive_AddContextFlow_AutoToken = generateToken();
+
+      const tokenResponse: Cli_Menu_Interactive_AddContextFlow_TokenResponse = await prompts({
+        type: 'text',
+        name: 'token',
+        message: 'Auth token (blank to skip, enter to accept):',
+        initial: autoToken,
+      });
+
+      const rawToken: Cli_Menu_Interactive_AddContextFlow_RawToken = tokenResponse['token'];
+
+      if (rawToken === undefined) {
+        return;
+      }
+
+      const tokenTrimmed: Cli_Menu_Interactive_AddContextFlow_TokenTrimmed = (rawToken !== undefined) ? rawToken.trim() : '';
+
+      resolvedToken = (tokenTrimmed !== '') ? tokenTrimmed : undefined;
+    }
 
     addContext(configPath, {
       name,
@@ -1446,6 +1514,7 @@ async function addContextFlow(configPath: Cli_Menu_Interactive_AddContextFlow_Co
       primary_server: primaryServer,
       servers: selectedServers,
       token: resolvedToken,
+      session: (useSession === true) ? { secret: generateSessionSecret() } : undefined,
     });
   } else {
     const allowedFromResponse: Cli_Menu_Interactive_AddContextFlow_AllowedFromResponse = await prompts({

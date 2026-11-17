@@ -9,7 +9,17 @@ export type Worker_Pipeline_Deliver_ContextId = string;
 
 export type Worker_Pipeline_Deliver_Outbox = Worker_Pipeline_Deliver_Namespace;
 
-export type Worker_Pipeline_Deliver_Options = Worker_Pipeline_Send_Options;
+export type Worker_Pipeline_Deliver_OptionsContextName = string;
+
+export type Worker_Pipeline_Deliver_OptionsInterpreterName = string;
+
+export type Worker_Pipeline_Deliver_OptionsErrorTopic = string | undefined;
+
+export type Worker_Pipeline_Deliver_Options = Worker_Pipeline_Send_Options & {
+  contextName: Worker_Pipeline_Deliver_OptionsContextName;
+  interpreterName: Worker_Pipeline_Deliver_OptionsInterpreterName;
+  errorTopic?: Worker_Pipeline_Deliver_OptionsErrorTopic;
+};
 
 export type Worker_Pipeline_Deliver_Returns = Promise<Worker_Pipeline_Deliver_Result>;
 
@@ -22,6 +32,12 @@ export type Worker_Pipeline_Deliver_EnqueueOptionsPrimaryServerName = string;
 export type Worker_Pipeline_Deliver_EnqueueOptionsTopic = Worker_Pipeline_Send_Options['topic'];
 
 export type Worker_Pipeline_Deliver_EnqueueOptionsMode = Worker_Pipeline_Send_Options['mode'];
+
+export type Worker_Pipeline_Deliver_EnqueueOptionsContextName = Worker_Pipeline_Deliver_OptionsContextName;
+
+export type Worker_Pipeline_Deliver_EnqueueOptionsInterpreterName = Worker_Pipeline_Deliver_OptionsInterpreterName;
+
+export type Worker_Pipeline_Deliver_EnqueueOptionsErrorTopic = Worker_Pipeline_Deliver_OptionsErrorTopic;
 
 export type Worker_Pipeline_Deliver_EnqueueOptionsVisitorIp = Worker_Pipeline_Send_Options['visitorIp'];
 
@@ -37,6 +53,9 @@ export type Worker_Pipeline_Deliver_EnqueueOptions = {
   primaryServerName: Worker_Pipeline_Deliver_EnqueueOptionsPrimaryServerName;
   topic: Worker_Pipeline_Deliver_EnqueueOptionsTopic;
   mode: Worker_Pipeline_Deliver_EnqueueOptionsMode;
+  contextName: Worker_Pipeline_Deliver_EnqueueOptionsContextName;
+  interpreterName: Worker_Pipeline_Deliver_EnqueueOptionsInterpreterName;
+  errorTopic?: Worker_Pipeline_Deliver_EnqueueOptionsErrorTopic;
   visitorIp?: Worker_Pipeline_Deliver_EnqueueOptionsVisitorIp;
   attachment?: Worker_Pipeline_Deliver_EnqueueOptionsAttachment;
   filename?: Worker_Pipeline_Deliver_EnqueueOptionsFilename;
@@ -45,7 +64,7 @@ export type Worker_Pipeline_Deliver_EnqueueOptions = {
 
 export type Worker_Pipeline_Deliver_ResultDeliveryId = string;
 
-export type Worker_Pipeline_Deliver_ResultState = 'delivered' | 'queued';
+export type Worker_Pipeline_Deliver_ResultState = 'delivered' | 'discarded' | 'queued';
 
 export type Worker_Pipeline_Deliver_ResultPending = number;
 

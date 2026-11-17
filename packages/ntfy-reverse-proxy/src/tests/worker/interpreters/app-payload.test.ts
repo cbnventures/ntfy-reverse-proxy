@@ -87,7 +87,7 @@ describe('interpretAppPayload', () => {
     expect(() => interpretAppPayload({
       key: 'outpost',
       name: 'Outpost',
-    }, alert)).toThrow('That app is unsupported. Use one of these interpreters: transmission-vpn, pfsense-actions, discord-stonker-bot, outpost.');
+    }, alert)).toThrow('That app is unsupported. Use one of these interpreters: transmission-vpn, pfsense-actions, discord-stonker-bot, outpost, mailmask.');
 
     return;
   });

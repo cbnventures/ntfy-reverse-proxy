@@ -17,9 +17,9 @@ tags:
 
 import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
 
-Choose between `send-once` failover and `send-all` broadcast to control how notifications reach your ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology>.
+Choose between `send-once` failover and `send-all` broadcast to control how notifications reach your ntfy <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">servers</Terminology>.
 
-Both modes use [durable delivery](/docs/features/durable-delivery/) for normal notifications: the proxy saves the formatted notification before sending and keeps failed work in a FIFO lane dedicated to that context. Error-topic diagnostics use the same server mode but are one-shot, best-effort sends outside the lane, so a failed diagnostic cannot block later alerts.
+Both modes use [durable delivery](/docs/features/durable-delivery/) for normal notifications: the proxy saves the formatted notification before sending and keeps transiently failed work in a FIFO lane dedicated to that context. Durable Object alarms retry network errors, HTTP 408, HTTP 429, and HTTP 5xx responses with backoff. Error-topic diagnostics use the same server mode but are one-shot, best-effort sends outside the lane, so a failed diagnostic cannot block later alerts.
 
 ```mermaid
 flowchart TD
@@ -51,9 +51,9 @@ flowchart TD
 
 ## send-once
 
-Tries the <Terminology title="preferred ntfy server, tried first" to="/docs/reference/terminology#primary-server">primary server</Terminology> first. If it fails (network error, non-2xx response), the next <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> in the list is tried.
+Tries the <Terminology title="The ntfy server send-once tries first" to="/docs/reference/terminology#ntfy-servers-and-messages">primary server</Terminology> first. If it fails (network error, non-2xx response), the next <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> in the list is tried.
 
-This continues until one <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> succeeds or all have been exhausted. When a fallback <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> delivers the notification, a warning is prepended to the message body.
+This continues until one <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> succeeds or all have been exhausted. When a fallback <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> delivers the notification, a warning is prepended to the message body.
 
 The prepended warning uses this format:
 
@@ -61,82 +61,82 @@ The prepended warning uses this format:
 ⚠️ Primary server "primary" was unreachable. This notification was delivered via "secondary".
 ```
 
-The <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> names in the warning match the names from your config, not fixed labels.
+The <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> names in the warning match the names from your config, not fixed labels.
 
 Best for:
 
 - **Redundancy setups** — You want notifications delivered reliably, but only once.
-- **Multiple ntfy instances** — A primary NAS <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> with a cloud backup.
+- **Multiple ntfy instances** — A primary NAS <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> with a cloud backup.
 
 ## send-all
 
-Sends the notification to every <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> in the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s `servers` list simultaneously. All <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology> receive the same notification in parallel.
+Sends the notification to every <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> in the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>'s `servers` list simultaneously. All <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">servers</Terminology> receive the same notification in parallel.
 
-The durable notification remains saved until every configured server succeeds. Successful servers and message stages are checkpointed, so a retry contacts only the unfinished work.
+The durable notification remains saved until every configured server succeeds, a permanent failure makes it undeliverable, or a transient failure persists past the 24-hour age limit with at least three attempts. Successful servers and message stages are checkpointed, so a retry contacts only unfinished work. A failed transient destination therefore does not cause successful stages to be sent again.
 
 Best for:
 
-- **Synchronized instances** — You want the same notification on multiple devices or <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology>.
-- **Multi-site deployments** — Each site runs its own ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> and should receive all notifications.
+- **Synchronized instances** — You want the same notification on multiple devices or <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">servers</Terminology>.
+- **Multi-site deployments** — Each site runs its own ntfy <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> and should receive all notifications.
 
 ## Server Failover
 
 In `send-once` mode, failover is automatic and ordered:
 
 1. The `primary_server` is tried first.
-2. If it fails, the remaining <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology> from the `servers` list (excluding the primary) are tried in order.
+2. If it fails, the remaining <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">servers</Terminology> from the `servers` list (excluding the primary) are tried in order.
 3. This continues until one succeeds or all fail.
 
-The response indicates whether a fallback was used and which <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology> succeeded or failed. In `send-all` mode, there is no failover — every <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> is contacted regardless of individual failures.
+The response carries a `fallback_note` when a fallback delivered the notification. With `show_response_output` enabled, it also lists which <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">servers</Terminology> succeeded or failed. In `send-all` mode, there is no failover — every <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> is contacted regardless of individual failures.
 
 ## IP Forwarding
 
-The proxy sets the `X-Forwarded-For` header on outgoing requests to ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology> using the original client IP from Cloudflare's `cf-connecting-ip` header. This means your ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> sees the real client IP, not the Cloudflare edge IP.
+The proxy sets the `X-Forwarded-For` header on outgoing requests to ntfy <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">servers</Terminology> using the original client IP from Cloudflare's `cf-connecting-ip` header. This means your ntfy <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> sees the real client IP, not the Cloudflare edge IP.
 
 This applies to all delivery modes.
 
 ## ntfy Headers
 
-The proxy sets these <Terminology title="8 outgoing headers the proxy sets from the notification" to="/docs/reference/terminology#ntfy-headers">ntfy headers</Terminology> on outgoing requests based on the <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>'s notification output. <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">Interpreters</Terminology> transform the incoming payload and return a <Terminology title="standardized result an interpreter returns" to="/docs/reference/terminology#notification-object">notification object</Terminology>, and the format stage maps those fields to headers.
+The proxy sets these <Terminology title="The X-Title, X-Priority, and friends sent to ntfy" to="/docs/reference/terminology#ntfy-servers-and-messages">ntfy headers</Terminology> on outgoing requests based on the <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology>'s notification output. <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">Interpreters</Terminology> transform the incoming payload and return a <Terminology title="The title, body, and tags an interpreter hands back" to="/docs/reference/terminology#how-it-works">notification object</Terminology>, and the format stage maps those fields to headers.
 
-| Header       | Notification Field | Description                                                                                                                                                                                    |
-|--------------|--------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `X-Title`    | `title`            | Message title displayed prominently in the notification.                                                                                                                                       |
-| `X-Priority` | `priority`         | Priority level from 1 (min) to 5 (max). Controls alert urgency and phone vibration.                                                                                                            |
-| `X-Tags`     | `tags`             | Comma-separated tags. Emoji shortcodes (e.g., `warning`) render as icons.                                                                                                                      |
-| `X-Markdown` | `markdown`         | Set to `true` to enable Markdown rendering in the message body.                                                                                                                                |
-| `X-Icon`     | `icon`             | URL of a custom notification icon.                                                                                                                                                             |
-| `X-Actions`  | `actions`          | Action buttons (view URL, broadcast, HTTP request).                                                                                                                                            |
-| `X-Attach`   | `attach`           | URL of a file to download and attach to the notification.                                                                                                                                      |
-| `X-Filename` | `filename`         | Filename for an <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology> sent as binary in the request body. |
+| Header       | Notification Field | Description                                                                                                                                                                                          |
+|--------------|--------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `X-Title`    | `title`            | Message title displayed prominently in the notification.                                                                                                                                             |
+| `X-Priority` | `priority`         | Priority level from 1 (min) to 5 (max). Controls alert urgency and phone vibration.                                                                                                                  |
+| `X-Tags`     | `tags`             | Comma-separated tags. Emoji shortcodes (e.g., `warning`) render as icons.                                                                                                                            |
+| `X-Markdown` | `markdown`         | Set to `true` to enable Markdown rendering in the message body.                                                                                                                                      |
+| `X-Icon`     | `icon`             | URL of a custom notification icon.                                                                                                                                                                   |
+| `X-Actions`  | `actions`          | Action buttons (view URL, broadcast, HTTP request).                                                                                                                                                  |
+| `X-Attach`   | `attach`           | URL of a file to download and attach to the notification.                                                                                                                                            |
+| `X-Filename` | `filename`         | Filename for an <Terminology title="A file sent along with the notification" to="/docs/reference/terminology#ntfy-servers-and-messages">attachment</Terminology> sent as binary in the request body. |
 
 :::info
-The `ntfy-json` <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> supports all of these fields directly from the JSON payload. Other <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreters</Terminology> (like `synology`, `seerr`, `statuspage`) set a subset automatically based on the parsed content.
+The `ntfy-json` <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> supports all of these fields directly from the JSON payload. Other <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreters</Terminology> (like `synology`, `seerr`, `statuspage`) set a subset automatically based on the parsed content.
 :::
 
 :::warning
-The proxy builds outgoing headers from the <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>'s <Terminology title="standardized result an interpreter returns" to="/docs/reference/terminology#notification-object">notification object</Terminology>. Incoming request headers — including ntfy-specific ones like `X-Click`, `X-Delay`, `X-Email`, `X-Call`, and `X-Template` — are **not forwarded** to ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology>. Only the 8 headers listed above are set. For the full list of ntfy-supported headers, see the [ntfy publishing docs](https://docs.ntfy.sh/publish/).
+The proxy builds outgoing headers from the <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology>'s <Terminology title="The title, body, and tags an interpreter hands back" to="/docs/reference/terminology#how-it-works">notification object</Terminology>. Incoming request headers — including ntfy-specific ones like `X-Click`, `X-Delay`, `X-Email`, `X-Call`, and `X-Template` — are **not forwarded** to ntfy <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">servers</Terminology>. Only the 8 headers listed above come from the notification; delivery itself adds `Authorization`, plus `X-Forwarded-For` and `X-Sequence-ID` when they apply. For the full list of ntfy-supported headers, see the [ntfy publishing docs](https://docs.ntfy.sh/publish/).
 :::
 
-If no <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> sets a title, the proxy falls back to the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s `name` field. For full documentation on <Terminology title="8 outgoing headers the proxy sets from the notification" to="/docs/reference/terminology#ntfy-headers">ntfy headers</Terminology>, see the [ntfy publishing docs](https://docs.ntfy.sh/publish/).
+If no <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> sets a title, the proxy falls back to the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>'s `name` field. For full documentation on <Terminology title="The X-Title, X-Priority, and friends sent to ntfy" to="/docs/reference/terminology#ntfy-servers-and-messages">ntfy headers</Terminology>, see the [ntfy publishing docs](https://docs.ntfy.sh/publish/).
 
 ## Attachments
 
-When a notification carries a binary <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology>, delivery happens in two stages per <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>:
+When a notification carries a binary <Terminology title="A file sent along with the notification" to="/docs/reference/terminology#ntfy-servers-and-messages">attachment</Terminology>, delivery happens in two stages per <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology>:
 
-1. **Stage 1** — POST each text message part with <Terminology title="8 outgoing headers the proxy sets from the notification" to="/docs/reference/terminology#ntfy-headers">ntfy headers</Terminology>.
-2. **Stage 2** — PUT the binary <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology> with the `X-Filename` header.
+1. **Stage 1** — POST each text message part with <Terminology title="The X-Title, X-Priority, and friends sent to ntfy" to="/docs/reference/terminology#ntfy-servers-and-messages">ntfy headers</Terminology>.
+2. **Stage 2** — PUT the binary <Terminology title="A file sent along with the notification" to="/docs/reference/terminology#ntfy-servers-and-messages">attachment</Terminology> with the `X-Filename` header.
 
-The `plain-text` <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> preserves a binary request body, such as an image, as the <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology>. Because it has no text part, each <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> gets only the PUT. Error topics likewise send `error-debug.json` as an attachment-only PUT, but those diagnostics are best-effort rather than durable.
+The `plain-text` <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> preserves a binary request body, such as an image, as the <Terminology title="A file sent along with the notification" to="/docs/reference/terminology#ntfy-servers-and-messages">attachment</Terminology>. Because it has no text part, each <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> gets only the PUT. Error topics likewise send `error-debug.json` as an attachment-only PUT, but those diagnostics are best-effort rather than durable.
 
 ### Attachment Message Count
 
-The number of messages you receive depends on the delivery mode. For example, an <Terminology title="optional topic that receives failure notifications" to="/docs/reference/terminology#error-topic">error topic</Terminology> notification with `mode` set to `send-all` and two ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology> configured arrives as two messages, one `error-debug.json` <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology> per <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>.
+The number of messages you receive depends on the delivery mode. For example, an <Terminology title="Where you hear about alerts the proxy couldn't handle" to="/docs/reference/terminology#ntfy-servers-and-messages">error topic</Terminology> notification with `mode` set to `send-all` and two ntfy <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">servers</Terminology> configured arrives as two messages, one `error-debug.json` <Terminology title="A file sent along with the notification" to="/docs/reference/terminology#ntfy-servers-and-messages">attachment</Terminology> per <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology>.
 
 Visitor details from `show_visitor_info` are appended to the text body rather than sent as a separate message, so they never add to the count.
 
 :::info
-Customizations made via headers are not applied to the <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology> message. This prevents duplicate high-priority vibrations (from `X-Priority: 5`) on the <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology> message.
+Customizations made via headers are not applied to the <Terminology title="A file sent along with the notification" to="/docs/reference/terminology#ntfy-servers-and-messages">attachment</Terminology> message. This prevents duplicate high-priority vibrations (from `X-Priority: 5`) on the <Terminology title="A file sent along with the notification" to="/docs/reference/terminology#ntfy-servers-and-messages">attachment</Terminology> message.
 :::
 
 ## Smart Message Splitting
@@ -147,7 +147,7 @@ Splitting respects UTF-8 character boundaries so multi-byte characters are never
 
 ## Response Format
 
-The <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> returns a JSON response after delivery. The default response includes only the status:
+The <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology> returns a JSON response after delivery. The default response includes only the status:
 
 ```json
 {
@@ -155,7 +155,7 @@ The <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to
 }
 ```
 
-If a fallback <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> was used, the status is `partial`, because the <Terminology title="preferred ntfy server, tried first" to="/docs/reference/terminology#primary-server">primary server</Terminology> failed, and a `fallback_note` field is included:
+If a fallback <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> was used, the status is `partial`, because the <Terminology title="The ntfy server send-once tries first" to="/docs/reference/terminology#ntfy-servers-and-messages">primary server</Terminology> failed, and a `fallback_note` field is included:
 
 ```json
 {
@@ -185,9 +185,9 @@ When `show_response_output` is enabled, the response includes full details:
 
 Possible status values:
 
-- `"success"` — All <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology> returned 2xx. HTTP status is 200.
-- `"partial"` — Some <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology> succeeded and some failed, as when a fallback delivered a `send-once` notification. HTTP status is 200.
-- `"queued"` — The notification is safely stored but has not completed its delivery mode. HTTP status is 202, and the next notification for the same context triggers another attempt.
-- `"failed"` — Delivery produced no successful server result and was not retained by the durable flow. HTTP status is 502.
-- `"error"` — A <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology> error occurred (authentication, routing, interpretation, etc.). HTTP status varies: 400, 403, 404, 405, 422, or 500.
-- `"ignored"` — The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> intentionally suppressed the notification (returned `null`). HTTP status is 200.
+- `"success"` — Every <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> that was tried returned 2xx: every server in `send-all`, or the primary alone when it succeeds in `send-once`. HTTP status is 200.
+- `"partial"` — Some <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">servers</Terminology> succeeded and some failed, as when a fallback delivered a `send-once` notification. HTTP status is 200.
+- `"queued"` — The notification is safely stored but has not completed its delivery mode. HTTP status is 202. A backoff alarm retries transient failures, and new notifications can also trigger a drain; a transient row expires only after 24 hours and at least three failed attempts.
+- `"failed"` — Delivery produced no successful server result and was not retained by the durable flow, including a notification discarded for a permanent failure. HTTP status is 502.
+- `"error"` — A <Terminology title="The steps every webhook or email goes through, in order" to="/docs/reference/terminology#how-it-works">pipeline</Terminology> error occurred (authentication, routing, interpretation, etc.). HTTP status varies: 400, 403, 404, 405, 422, or 500.
+- `"ignored"` — The <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> intentionally suppressed the notification (returned `null`). HTTP status is 200.

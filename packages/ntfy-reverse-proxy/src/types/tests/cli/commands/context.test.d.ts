@@ -83,6 +83,15 @@ export type Tests_Cli_Commands_Context_ContextCommands_AutoRegeneratesDuplicateI
 };
 
 /**
+ * Tests - CLI - Commands - Context - Context Commands - Generates 64 Character Session Secrets.
+ *
+ * @since 2.4.0
+ */
+export type Tests_Cli_Commands_Context_ContextCommands_Generates64CharacterSessionSecrets_Secret1 = string;
+
+export type Tests_Cli_Commands_Context_ContextCommands_Generates64CharacterSessionSecrets_Secret2 = string;
+
+/**
  * Tests - CLI - Commands - Context.
  *
  * @since 2.0.0
@@ -167,3 +176,12 @@ export type Tests_Cli_Commands_Context_ContextCommands_RejectsRemovalOfAMissingC
  * @since 2.0.0
  */
 export type Tests_Cli_Commands_Context_ContextCommands_RemovesAContext_Contexts = unknown[];
+
+/**
+ * Tests - CLI - Commands - Context - Context Commands - Switches A Context From A Token To Session Tokens.
+ *
+ * @since 2.4.0
+ */
+export type Tests_Cli_Commands_Context_ContextCommands_SwitchesAContextFromATokenToSessionTokens_Contexts = unknown[];
+
+export type Tests_Cli_Commands_Context_ContextCommands_SwitchesAContextFromATokenToSessionTokens_Context = unknown;

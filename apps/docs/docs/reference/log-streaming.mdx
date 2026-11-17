@@ -19,7 +19,7 @@ tags:
 
 import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
 
-Stream real-time logs from your deployed <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> for debugging and monitoring using `npm run tail`.
+Stream real-time logs from your deployed <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology> for debugging and monitoring using `npm run tail`.
 
 ## Starting the Log Stream
 
@@ -46,9 +46,22 @@ Log streaming sessions have a limited lifespan set by Cloudflare. The script han
 
 Log entries are color-coded by event type and status:
 
-- **HTTP events** — Method, status code, URL, HTTP version, country, network provider and ASN, user agent, and per-<Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> delivery results. The delivery results appear only when `show_response_output` is on, because they come from the logged response.
-- **Email events** — From/to/subject, the tail outcome, and <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> results.
+- **HTTP events** — Method, status code, URL, HTTP version, country, network provider and ASN, user agent, and per-<Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> delivery results. The delivery results appear only when `show_response_output` is on, because they come from the logged response.
+- **Email events** — From/to/subject, the tail outcome, and <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> results.
+
+### Durable Delivery Events
+
+The delivery outbox writes two structured JSON events independently of `show_response_output`:
+
+| `debug` value               | Meaning                                                                                                                                                 |
+|-----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `delivery_outbox_retry`     | A transient failure remains at the head of its context lane, and one backoff alarm is armed for another attempt.                                        |
+| `delivery_outbox_discarded` | A permanent failure, or a transient failure past both the 24-hour age limit and three-attempt minimum, was removed so later notifications can continue. |
+
+Both events include `deliveryId`, `classification`, `reason`, `httpStatus`, `attemptCount`, and `ageMilliseconds`. `httpStatus` contains the ntfy response code, including the actual 4xx or 5xx status, instead of a generic delivery-mode message. It is `null` when a thrown error—such as invalid queued JSON or a missing configured server—has no HTTP response.
+
+When a discarded notification's context has an `error_topic`, the proxy also sends a one-shot `error-debug.json` attachment with the delivery ID, reason, HTTP status, attempt count, and age. That diagnostic bypasses the outbox, so its failure does not create another retry event or block the lane.
 
 ## Config Resolution
 
-The script discovers `config.json` from the current directory, project root, or XDG config directory, and asks which <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">Worker</Terminology> to tail when it finds more than one. It uses the `worker_name` from your config to identify the correct <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">Worker</Terminology> on Cloudflare, and the `base_domain` to find your account.
+The script discovers `config.json` from the current directory, project root, or XDG config directory, and asks which <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">Worker</Terminology> to tail when it finds more than one. It uses the `worker_name` from your config to identify the correct <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">Worker</Terminology> on Cloudflare, and the `base_domain` to find your account.

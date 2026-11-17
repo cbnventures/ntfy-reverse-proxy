@@ -16,24 +16,24 @@ tags:
 
 import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
 
-Understand the two entry points, processing <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipelines</Terminology>, error strategy, and source structure of Reverse Proxy for ntfy.
+Understand the two entry points, processing <Terminology title="The steps every webhook or email goes through, in order" to="/docs/reference/terminology#how-it-works">pipelines</Terminology>, error strategy, and source structure of Reverse Proxy for ntfy.
 
 ## Overview
 
 Reverse Proxy for ntfy has two entry points running on different runtimes:
 
-- **Cloudflare <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">Worker</Terminology>** — Handles incoming HTTP webhooks and email messages. Runs on Cloudflare's edge network.
+- **Cloudflare <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">Worker</Terminology>** — Handles incoming HTTP webhooks and email messages. Runs on Cloudflare's edge network.
 - **Node.js CLI** — Manages the configuration file. Runs locally on your machine.
 
-The <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> and CLI are cleanly separated. The CLI writes `config.json`, and deploy bundles a copy into the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology>, which checks it once when it starts instead of on every request and email.
+The <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology> and CLI are cleanly separated. The CLI writes `config.json`, and deploy bundles a copy into the <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology>, which checks it once when it starts instead of on every request and email.
 
-Shipping the config inside the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> avoids environment variables, which Cloudflare caps at 5 KB each, so the number of <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology> has no small fixed limit. A test config with 5,000 <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology> built a <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> of about 430 KiB gzipped that spent about 25 ms of CPU starting up on a laptop.
+Shipping the config inside the <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology> avoids environment variables, which Cloudflare caps at 5 KB each, so the number of <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">contexts</Terminology> has no small fixed limit. A test config with 5,000 <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">contexts</Terminology> built a <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology> of about 430 KiB gzipped that spent about 25 ms of CPU starting up on a laptop.
 
 ## HTTP Pipeline
 
-The <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> processes HTTP requests through a linear 10-stage <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology>. Each stage transforms data and passes it to the next.
+The <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology> processes HTTP requests through a linear 10-stage <Terminology title="The steps every webhook or email goes through, in order" to="/docs/reference/terminology#how-it-works">pipeline</Terminology>. Each stage transforms data and passes it to the next.
 
-Failures before durable storage stop the <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology> and return an error response. A delivery failure after storage returns HTTP 202 and leaves the notification queued instead.
+Failures before durable storage stop the <Terminology title="The steps every webhook or email goes through, in order" to="/docs/reference/terminology#how-it-works">pipeline</Terminology> and return an error response. A transient delivery failure after storage returns HTTP 202 and leaves the notification queued for alarm-driven retries. Permanent failures are discarded, while transient rows expire only after 24 hours and at least three failed attempts.
 
 ```mermaid
 graph TD
@@ -66,14 +66,16 @@ graph TD
 **Receive** — Extracts method, hostname, headers, and raw body from the incoming request. Redirects HTTP to HTTPS automatically (except on localhost).
 
 - Rejects methods other than GET, POST, and PUT.
-- GET requests skip the <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology> and return the <Terminology title="HTML status page returned on GET requests" to="/docs/reference/terminology#landing-page">landing page</Terminology>.
+- GET requests skip the <Terminology title="The steps every webhook or email goes through, in order" to="/docs/reference/terminology#how-it-works">pipeline</Terminology> and return the <Terminology title="Open a context's URL in a browser to see it's up" to="/docs/reference/terminology#configuration">landing page</Terminology>.
 
-**Route** — Matches the request's subdomain against configured HTTP <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology>. Resolves the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> list and <Terminology title="preferred ntfy server, tried first" to="/docs/reference/terminology#primary-server">primary server</Terminology>.
+**Route** — Matches the request's subdomain against configured HTTP <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">contexts</Terminology>. Resolves the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>'s <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> list and <Terminology title="The ntfy server send-once tries first" to="/docs/reference/terminology#ntfy-servers-and-messages">primary server</Terminology>.
 
-- Returns 404 if no matching <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> is found.
-- On `localhost`, the `X-NRP-Context` header names the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> instead (see [Local Development](/docs/reference/local-development/#local-testing)).
+- Returns 404 if no matching <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> is found.
+- On `localhost`, the `X-NRP-Context` header names the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> instead (see [Local Development](/docs/reference/local-development/#local-testing)).
 
-**Authenticate** — Validates the `Authorization` header against the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s optional token. If the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> has no token configured, all requests are allowed.
+**Authenticate** — Validates the `Authorization` header against the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>'s optional token or <Terminology title="A short-lived, one-use pass a sender gets from /session" to="/docs/reference/terminology#configuration">session token</Terminology>. If the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> has neither configured, all requests are allowed.
+
+- With `session` set, a `POST` or `PUT` to `/session` gets a new <Terminology title="A short-lived, one-use pass a sender gets from /session" to="/docs/reference/terminology#configuration">session token</Terminology> and ends the request here.
 
 - Returns 403 on failure.
 - Optionally forwards error details directly to the `error_topic` if configured. This best-effort send bypasses the durable lane so its failure cannot block normal notifications.
@@ -83,37 +85,39 @@ graph TD
 - Attempts JSON parsing if the content-type is `application/json` or the body starts with `{` or `[`.
 - Returns 400 (`Unknown content type`) for an empty body.
 
-**Interpret** — Invokes the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s configured <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> to transform the raw payload into a standardized <Terminology title="standardized result an interpreter returns" to="/docs/reference/terminology#notification-object">notification object</Terminology> (title, body, priority, tags, icon, actions, etc.). HTML is automatically stripped from the notification body.
+**Interpret** — Invokes the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>'s configured <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> to transform the raw payload into a standardized <Terminology title="The title, body, and tags an interpreter hands back" to="/docs/reference/terminology#how-it-works">notification object</Terminology> (title, body, priority, tags, icon, actions, etc.). HTML is automatically stripped from the notification body.
 
 - Returns 422 if interpretation fails.
-- Returns a null result if the <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> intentionally ignores the payload, which produces an HTTP 200 with status `"ignored"`.
+- Returns a null result if the <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> intentionally ignores the payload, which produces an HTTP 200 with status `"ignored"`.
 
-**Format** — Builds the final message body and <Terminology title="8 outgoing headers the proxy sets from the notification" to="/docs/reference/terminology#ntfy-headers">ntfy headers</Terminology> (`X-Title`, `X-Priority`, `X-Tags`, `X-Markdown`, `X-Icon`, `X-Actions`, etc.). Appends visitor information (IP, location, ISP) if `show_visitor_info` is enabled.
+**Format** — Builds the final message body and <Terminology title="The X-Title, X-Priority, and friends sent to ntfy" to="/docs/reference/terminology#ntfy-servers-and-messages">ntfy headers</Terminology> (`X-Title`, `X-Priority`, `X-Tags`, `X-Markdown`, `X-Icon`, `X-Actions`, etc.). Appends visitor information (IP, location, ISP) if `show_visitor_info` is enabled.
 
-**Split** — Splits messages exceeding 4000 UTF-8 bytes into <Terminology title="splits message bodies over 4000 UTF-8 bytes into parts" to="/docs/reference/terminology#smart-split">numbered parts</Terminology>. Each part gets a title suffix like "(1/3)", "(2/3)", "(3/3)".
+**Split** — Splits messages exceeding 4000 UTF-8 bytes into <Terminology title="Long messages arrive as (1/3), (2/3), (3/3)" to="/docs/reference/terminology#ntfy-servers-and-messages">numbered parts</Terminology>. Each part gets a title suffix like "(1/3)", "(2/3)", "(3/3)".
 
 - Messages under the limit pass through as a single part.
 
 **Deliver** — Saves a normal formatted notification and optional attachment in the SQLite-backed delivery outbox assigned to the context ID, then asks that lane to drain oldest-first.
 
-- A failed head stays saved and blocks only that context's later notifications.
-- The next notification for the same context triggers another attempt; there is no timer or manual retry action.
+- A transiently failed head stays saved and blocks only that context's later notifications until it succeeds or expires after 24 hours with at least three failed attempts.
+- One Durable Object alarm retries the head with exponential backoff. A new notification for the same context can also trigger a drain without adding another alarm.
+- Network status `0`, HTTP 408, HTTP 429, and HTTP 5xx responses are transient. Most HTTP 4xx responses, invalid saved JSON, and missing or renamed configured servers are permanent.
+- A permanent or expired head emits a discard log, optionally sends a one-shot diagnostic to the context's `error_topic`, and is removed before the same drain continues with later notifications.
 - Other context lanes continue independently. See [Durable Delivery](/docs/features/durable-delivery/) for the full behavior.
 
-**Send** — Delivers notification parts to ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology> according to the delivery mode.
+**Send** — Delivers notification parts to ntfy <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">servers</Terminology> according to the delivery mode.
 
-- In `send-once` mode, tries the <Terminology title="preferred ntfy server, tried first" to="/docs/reference/terminology#primary-server">primary server</Terminology> first, then fallbacks in order.
-- In `send-all` mode, sends to all <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology> in parallel.
-- Handles <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachments</Terminology> as a separate PUT request per <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>.
+- In `send-once` mode, tries the <Terminology title="The ntfy server send-once tries first" to="/docs/reference/terminology#ntfy-servers-and-messages">primary server</Terminology> first, then fallbacks in order.
+- In `send-all` mode, sends to all <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">servers</Terminology> in parallel.
+- Handles <Terminology title="A file sent along with the notification" to="/docs/reference/terminology#ntfy-servers-and-messages">attachments</Terminology> as a separate PUT request per <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology>.
 - Checkpoints successful message parts and attachments so retries skip confirmed work.
 
 **Respond** — Builds the JSON response. Completed delivery returns HTTP 200. A notification that is safely saved but still waiting returns `"queued"` with HTTP 202.
 
-- Includes detailed <Terminology title="the show_response_output setting" to="/docs/reference/terminology#debug-mode">debug output</Terminology> if `show_response_output` is enabled.
+- Includes detailed <Terminology title="Shows what happened inside the proxy, secrets masked" to="/docs/reference/terminology#configuration">debug output</Terminology> if `show_response_output` is enabled.
 
 ## Email Pipeline
 
-The email <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology> processes messages from <Terminology title="Cloudflare feature that forwards email to the Worker" to="/docs/reference/terminology#cloudflare-email-routing">Cloudflare Email Routing</Terminology> through 9 stages.
+The email <Terminology title="The steps every webhook or email goes through, in order" to="/docs/reference/terminology#how-it-works">pipeline</Terminology> processes messages from <Terminology title="Lets an email address trigger the proxy like a webhook" to="/docs/reference/terminology#cloudflare-setup">Cloudflare Email Routing</Terminology> through 9 stages.
 
 ```mermaid
 graph TD
@@ -140,20 +144,20 @@ graph TD
     end
 ```
 
-**Parse Email** — Decodes the raw RFC 5322 email message. Extracts from, to, subject, and text body.
+**Parse Email** — Parses the raw RFC 5322 email message. Extracts from, to, subject, and text body.
 
 - Handles multipart/alternative MIME messages, preferring text/plain over HTML.
 
-**Route** — Matches the recipient's local part (before the `@`) to a <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> ID.
+**Route** — Matches the recipient's local part (before the `@`) to a <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> ID.
 
-**Authenticate** — Validates the sender address against the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s `allowed_from` field. Supports exact match and wildcard patterns (`*@domain.com`).
+**Authenticate** — Validates the sender address against the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>'s `allowed_from` field. Supports exact match and wildcard patterns (`*@domain.com`).
 
-The remaining stages (Interpret, Format, Split, Deliver, Send) work identically to the HTTP <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology>.
+The remaining stages (Interpret, Format, Split, Deliver, Send) work identically to the HTTP <Terminology title="The steps every webhook or email goes through, in order" to="/docs/reference/terminology#how-it-works">pipeline</Terminology>.
 
-**Log** — Outputs a debug JSON log with <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> name, <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>, <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> results, body size, and part count to Cloudflare's real-time logs.
+**Log** — Outputs a debug JSON log with <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> name, <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology>, <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> results, body size, and part count to Cloudflare's real-time logs.
 
 - Email processing is silent — there is no HTTP response to return.
-- Email routing failures (e.g., no matching <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> ID for the recipient address) are silent — no error notification is sent to `error_topic`.
+- Email routing failures (e.g., no matching <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> ID for the recipient address) are silent — no error notification is sent to `error_topic`.
 
 ## CLI Architecture
 
@@ -180,21 +184,21 @@ graph TD
 
 The CLI reads and writes `config.json` through a config I/O layer. All config mutations go through schema validation.
 
-- The generate command produces a `wrangler.toml` file from the config and writes it next to your `config.json`, plus the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> entry and a copy of the config in `.wrangler/ntfy-reverse-proxy/` beside it.
-- The deploy command chains validation, permission verification, KV provisioning, <Terminology title="Cloudflare Workers config file generated from config.json" to="/docs/reference/terminology#wranglertoml">wrangler.toml</Terminology> generation, and deployment into a single step.
+- The generate command produces a `wrangler.toml` file from the config and writes it next to your `config.json`, plus the <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology> entry and a copy of the config in `.wrangler/ntfy-reverse-proxy/` beside it.
+- The deploy command chains validation, permission verification, KV provisioning, <Terminology title="Generated from config.json for Wrangler to deploy" to="/docs/reference/terminology#cloudflare-setup">wrangler.toml</Terminology> generation, and deployment into a single step.
 
 ## Error Strategy
 
-| Layer              | Strategy                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-|--------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Worker entry point | Try/catch around entire <Terminology title="ordered stages a request passes through" to="/docs/reference/terminology#pipeline">pipeline</Terminology>. Returns JSON with HTTP status. Includes <Terminology title="the show_response_output setting" to="/docs/reference/terminology#debug-mode">debug details</Terminology> if `show_response_output` is on.                                                                                                                                                                                                                                                                      |
-| Pipeline stages    | Each stage returns a typed result or throws. The entry point identifies which stage failed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| Interpreters       | Manual payload extraction. The `ntfy-json` <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> and the `transmission-vpn`, `pfsense-actions`, `discord-stonker-bot`, and `outpost` <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreters</Terminology> use strict schema validation; all others use lenient field detection. Malformed JSON and schema failures throw. The entry point can forward the failure directly to `error_topic` if configured. |
-| Delivery outbox    | Persists before sending. Keeps a failed head in its context lane and retries it when the next notification for that context arrives.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| Error topics       | Sends `error-debug.json` directly as a one-shot diagnostic. A failed diagnostic is not retried and never enters or blocks the durable delivery lane.                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| Send/fallback      | Never throws. Collects per-<Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> results. Primary failure triggers fallback. Returns success/failure per <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>.                                                                                                                                                                                                                                                          |
-| CLI                | Try/catch at command level. Chalk-formatted errors. Non-zero exit code on failure.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| Config validation  | Schema validation on load. Checks orphaned <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> refs, duplicate <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> IDs, missing fields, invalid token format.                                                                                                                                                                                                                                                                   |
+| Layer              | Strategy                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+|--------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Worker entry point | Try/catch around entire <Terminology title="The steps every webhook or email goes through, in order" to="/docs/reference/terminology#how-it-works">pipeline</Terminology>. Returns JSON with HTTP status. Includes <Terminology title="Shows what happened inside the proxy, secrets masked" to="/docs/reference/terminology#configuration">debug details</Terminology> if `show_response_output` is on.                                                                                                                                                                                                                                       |
+| Pipeline stages    | Each stage returns a typed result or throws. The entry point identifies which stage failed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| Interpreters       | Manual payload extraction. The `ntfy-json` <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> and the `transmission-vpn`, `pfsense-actions`, `discord-stonker-bot`, `outpost`, and `mailmask` <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreters</Terminology> use non-strict schema checks; all others use lenient field detection. Malformed JSON and schema failures throw. The entry point can forward the failure directly to `error_topic` if configured. |
+| Delivery outbox    | Persists before sending. Retries transient failures through one exponential-backoff Durable Object alarm, preserves them for at least 24 hours, and requires at least three failed attempts before expiry. Permanent failures are discarded immediately. Both paths continue the lane after a discard.                                                                                                                                                                                                                                                                                                                                         |
+| Error topics       | Sends `error-debug.json` directly as a one-shot diagnostic. Authentication and interpretation failures use this path, as does an outbox discard when `error_topic` is configured. A failed diagnostic is not retried and never enters or blocks the durable delivery lane.                                                                                                                                                                                                                                                                                                                                                                     |
+| Send/fallback      | Never throws. Collects per-<Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> results. Primary failure triggers fallback. Returns success/failure per <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology>.                                                                                                                                                                                                                            |
+| CLI                | Try/catch at command level. Chalk-formatted errors. Non-zero exit code on failure.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Config validation  | Schema validation on load. Checks orphaned <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> refs, duplicate <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> IDs, missing fields, invalid token format.                                                                                                                                                                                                                                   |
 
 ## Source Structure
 
@@ -209,6 +213,7 @@ src/
       receive.ts             — Extract request metadata
       route.ts               — Match subdomain/email to context
       authenticate.ts        — Validate tokens and sender addresses
+      session.ts             — Issue and verify session tokens
       parse.ts               — Detect body type (text, JSON, binary)
       interpret.ts           — Dispatcher to interpreter modules
       accumulate.ts          — KV state management for Statuspage
@@ -232,6 +237,7 @@ src/
       pfsense-actions.ts     — pfSense Actions alerts
       discord-stonker-bot.ts — Discord Stonker Bot alerts
       outpost.ts             — Outpost alerts
+      mailmask.ts            — Mailmask refusal alerts
     landing/
       page.ts                — Landing page HTML
   cli/

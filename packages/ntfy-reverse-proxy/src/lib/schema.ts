@@ -20,6 +20,20 @@ const serverSchema = z.object({
 });
 
 /**
+ * Lib - Schema - Session Schema.
+ *
+ * Validates the signing secret, token lifetime, and per-address
+ * issue limit for contexts that hand out short-lived session tokens.
+ *
+ * @since 2.4.0
+ */
+const sessionSchema = z.object({
+  secret: z.string().min(32),
+  ttl_seconds: z.number().int().min(60).max(3600).optional(),
+  max_per_hour: z.number().int().min(1).max(1000).optional(),
+}).strict();
+
+/**
  * Lib - Schema - HTTP Context Schema.
  *
  * Validates routing and interpreter settings for inbound
@@ -43,6 +57,7 @@ const httpContextSchema = z.object({
     'pfsense-actions',
     'discord-stonker-bot',
     'outpost',
+    'mailmask',
   ]),
   topic: z.string().min(1),
   error_topic: z.string().min(1).optional(),
@@ -58,7 +73,11 @@ const httpContextSchema = z.object({
   primary_server: z.string().min(1),
   servers: z.array(z.string().min(1)).min(1),
   token: z.string().min(1).optional(),
-}).strict();
+  session: sessionSchema.optional(),
+}).strict().refine((context) => context['token'] === undefined || context['session'] === undefined, {
+  message: 'HTTP context cannot set both token and session',
+  path: ['session'],
+});
 
 /**
  * Lib - Schema - Email Context Schema.
@@ -84,6 +103,7 @@ const emailContextSchema = z.object({
     'pfsense-actions',
     'discord-stonker-bot',
     'outpost',
+    'mailmask',
   ]),
   topic: z.string().min(1),
   error_topic: z.string().min(1).optional(),
@@ -148,5 +168,6 @@ export {
   emailContextSchema,
   httpContextSchema,
   serverSchema,
+  sessionSchema,
   settingsSchema,
 };

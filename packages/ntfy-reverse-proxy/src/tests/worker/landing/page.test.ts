@@ -5,6 +5,9 @@ import { landingPage } from '../../../worker/landing/page.js';
 import type {
   Tests_Worker_Landing_Page_LandingPage_DoesNotShowDebugInfoWhenShowResponseOutputIsFalse_Html,
   Tests_Worker_Landing_Page_LandingPage_DoesNotShowDebugInfoWhenShowResponseOutputIsFalse_Response,
+  Tests_Worker_Landing_Page_LandingPage_EscapesConfigValuesInDebugOutput_DebugConfig,
+  Tests_Worker_Landing_Page_LandingPage_EscapesConfigValuesInDebugOutput_Html,
+  Tests_Worker_Landing_Page_LandingPage_EscapesConfigValuesInDebugOutput_Response,
   Tests_Worker_Landing_Page_LandingPage_IncludesGitHubLink_Html,
   Tests_Worker_Landing_Page_LandingPage_IncludesGitHubLink_Response,
   Tests_Worker_Landing_Page_LandingPage_ReturnsHTMLWithBranding_ContentType,
@@ -72,7 +75,17 @@ describe('landingPage', () => {
 
     expect(html).toContain('Reverse Proxy for ntfy');
 
-    expect(html).toContain('reverse proxy for ntfy');
+    expect(html).toContain('Routes webhooks and email to ntfy');
+
+    expect(html).toContain('Operational');
+
+    expect(html).toContain('class="logo"');
+
+    expect(html).toContain('https://nrp.cbnventures.io/');
+
+    expect(html).toContain('A CBN Ventures project');
+
+    expect(html).not.toContain('<script>');
 
     return;
   });
@@ -139,6 +152,30 @@ describe('landingPage', () => {
     const html: Tests_Worker_Landing_Page_LandingPage_ShowsFullNameInDebugOutput_Html = await response.text();
 
     expect(html).toContain('homebridge');
+
+    return;
+  });
+
+  it('escapes config values in debug output', async () => {
+    const debugConfig: Tests_Worker_Landing_Page_LandingPage_EscapesConfigValuesInDebugOutput_DebugConfig = {
+      settings: {
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: true,
+      },
+      servers: mockConfig['servers'],
+      contexts: [{
+        ...mockConfig['contexts'][0]!,
+        name: '<img src=x onerror=alert(1)>',
+      }],
+    };
+
+    const response: Tests_Worker_Landing_Page_LandingPage_EscapesConfigValuesInDebugOutput_Response = landingPage(debugConfig);
+    const html: Tests_Worker_Landing_Page_LandingPage_EscapesConfigValuesInDebugOutput_Html = await response.text();
+
+    expect(html).not.toContain('<img src=x onerror=alert(1)>');
+
+    expect(html).toContain('&lt;img src=x onerror=alert(1)&gt;');
 
     return;
   });

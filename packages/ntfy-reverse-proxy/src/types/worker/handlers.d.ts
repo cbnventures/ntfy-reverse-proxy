@@ -16,6 +16,10 @@ import type { Worker_Pipeline_Interpret_Result } from './pipeline/interpret.d.ts
 import type { Worker_Pipeline_Parse_Result } from './pipeline/parse.d.ts';
 import type { Worker_Pipeline_Receive_Result } from './pipeline/receive.d.ts';
 import type { Worker_Pipeline_Route_Result } from './pipeline/route.d.ts';
+import type {
+  Worker_Pipeline_Session_IssueSession_ReturnsResult,
+  Worker_Pipeline_Session_VerifySession_ReturnsResult,
+} from './pipeline/session.d.ts';
 import type { Worker_Pipeline_Split_MessagePart } from './pipeline/split.d.ts';
 
 /**
@@ -120,7 +124,13 @@ export type Worker_Handlers_HandleRequest_ResolvedServers = Array<Lib_Schema_Ser
 
 export type Worker_Handlers_HandleRequest_PrimaryServer = Lib_Schema_ServerConfig & {};
 
-export type Worker_Handlers_HandleRequest_AuthResult = Worker_Pipeline_Authenticate_Result & {};
+export type Worker_Handlers_HandleRequest_Pathname = string;
+
+export type Worker_Handlers_HandleRequest_ClientIp = string;
+
+export type Worker_Handlers_HandleRequest_Issued = Worker_Pipeline_Session_IssueSession_ReturnsResult & {};
+
+export type Worker_Handlers_HandleRequest_AuthResult = Worker_Pipeline_Authenticate_Result | Worker_Pipeline_Session_VerifySession_ReturnsResult;
 
 export type Worker_Handlers_HandleRequest_AuthErrorAttachmentHeaderEntries = string[][];
 

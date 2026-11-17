@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import type {
   Worker_Interpreters_AppPayload_InterpretAppPayload_App,
+  Worker_Interpreters_AppPayload_InterpretAppPayload_Body,
   Worker_Interpreters_AppPayload_InterpretAppPayload_DecodedBody,
   Worker_Interpreters_AppPayload_InterpretAppPayload_Decoder,
   Worker_Interpreters_AppPayload_InterpretAppPayload_Input,
@@ -26,6 +27,7 @@ const supportedApps: Worker_Interpreters_AppPayload_SupportedApps = [
   'pfsense-actions',
   'discord-stonker-bot',
   'outpost',
+  'mailmask',
 ];
 
 /**
@@ -41,8 +43,8 @@ const appPayloadTagsItem = z.string();
 /**
  * Worker - Interpreters - App Payload - App Payload Schema.
  *
- * Defines the alert body that Transmission VPN, pfSense Actions, Discord Stonker Bot,
- * and Outpost all send, so a payload of the wrong shape fails before delivery.
+ * Defines the alert body that Transmission VPN, pfSense Actions, Discord Stonker
+ * Bot, Outpost, and Mailmask send so invalid payloads fail before delivery.
  *
  * @since 2.3.0
  */
@@ -103,10 +105,16 @@ function interpretAppPayload(app: Worker_Interpreters_AppPayload_InterpretAppPay
     throw new Error(`This context reads ${app['name']} alerts, but the payload came from ${payload['app']}. Set the context's interpreter to ${payload['app']}.`);
   }
 
+  let body: Worker_Interpreters_AppPayload_InterpretAppPayload_Body = payload['message'];
+
+  if (app['formatBody'] !== undefined) {
+    body = app.formatBody(payload);
+  }
+
   return {
     notification: {
       title: `[${app['name']}] ${payload['title']}`,
-      body: payload['message'],
+      body,
       priority: payload['priority'],
       tags: [
         app['key'],

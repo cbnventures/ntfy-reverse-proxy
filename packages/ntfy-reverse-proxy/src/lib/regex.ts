@@ -171,6 +171,16 @@ const LIB_REGEX_WORKER_NAME = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/;
 const LIB_REGEX_BASE_DOMAIN = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/;
 
 /**
+ * Lib - Regex - Trailing Base64 Padding.
+ *
+ * Matches the trailing equals signs of a Base64 string.
+ * Used by session tokens, which drop padding like every JWT segment.
+ *
+ * @since 2.4.0
+ */
+const LIB_REGEX_TRAILING_BASE64_PADDING = /=+$/;
+
+/**
  * Lib - Regex - Email Angle Bracket.
  *
  * Captures the email address inside angle brackets so the
@@ -327,6 +337,7 @@ export {
   LIB_REGEX_UNIFI_DEVICE_NAME_LINE,
   LIB_REGEX_UNIFI_DEVICE_URL_LINE,
   LIB_REGEX_UNIFI_SUBJECT_PREFIX,
+  LIB_REGEX_TRAILING_BASE64_PADDING,
   LIB_REGEX_UNIFI_TIME_LINE,
   LIB_REGEX_WORKER_NAME,
   REGEX_EMAIL_ANGLE_BRACKET,

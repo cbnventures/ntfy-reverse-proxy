@@ -23,11 +23,11 @@ Diagnose and fix common issues when deploying and operating Reverse Proxy for nt
 
 **Symptom**: Browser or curl reports that the domain cannot be resolved.
 
-**Cause**: The <Terminology title="Workers route treating the hostname's first label as subdomain" to="/docs/reference/terminology#custom-domain-route">custom domain route</Terminology> was deployed but Cloudflare has not created the DNS record yet, or DNS has not propagated.
+**Cause**: The <Terminology title="Each context gets its own subdomain on Cloudflare" to="/docs/reference/terminology#cloudflare-setup">custom domain route</Terminology> was deployed but Cloudflare has not created the DNS record yet, or DNS has not propagated.
 
 **Solution**:
 
-- Wait a few minutes after deployment — Cloudflare auto-creates DNS records for <Terminology title="Workers route treating the hostname's first label as subdomain" to="/docs/reference/terminology#custom-domain-route">custom domain routes</Terminology>.
+- Wait a few minutes after deployment — Cloudflare auto-creates DNS records for <Terminology title="Each context gets its own subdomain on Cloudflare" to="/docs/reference/terminology#cloudflare-setup">custom domain routes</Terminology>.
 - Check **Dashboard > DNS > Records** for a record matching your subdomain.
 - Check **Dashboard > Workers & Pages > ntfy-reverse-proxy > Settings > Domains & Routes** for the custom domain entry.
 - Verify propagation with `dig {context-id}.ntfy.example.com`.
@@ -46,20 +46,20 @@ Diagnose and fix common issues when deploying and operating Reverse Proxy for nt
 
 ## 403 Forbidden (Cloudflare HTML Page)
 
-**Symptom**: POST requests return a Cloudflare "Sorry, you have been blocked" HTML page instead of the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology>'s JSON response.
+**Symptom**: POST requests return a Cloudflare "Sorry, you have been blocked" HTML page instead of the <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology>'s JSON response.
 
-**Cause**: <Terminology title="Cloudflare feature that can block automated webhook requests" to="/docs/reference/terminology#bot-fight-mode">Bot Fight Mode</Terminology> or WAF rules are blocking automated HTTP requests (webhooks, curl, etc.).
+**Cause**: <Terminology title="A Cloudflare setting that can 403 your webhooks" to="/docs/reference/terminology#cloudflare-setup">Bot Fight Mode</Terminology> or WAF rules are blocking automated HTTP requests (webhooks, curl, etc.).
 
 **Solution**:
 
-- Disable <Terminology title="Cloudflare feature that can block automated webhook requests" to="/docs/reference/terminology#bot-fight-mode">Bot Fight Mode</Terminology>: **Dashboard > Security > Bots > Bot Fight Mode > Off**.
+- Disable <Terminology title="A Cloudflare setting that can 403 your webhooks" to="/docs/reference/terminology#cloudflare-setup">Bot Fight Mode</Terminology>: **Dashboard > Security > Bots > Bot Fight Mode > Off**.
 - Or create a WAF skip rule: **Dashboard > Security > WAF > Custom Rules**:
   - If: `(http.host contains "ntfy.example.com")`
   - Then: Skip > All Super Bot Fight Mode Rules
   - Place at: First
 
 :::warning
-<Terminology title="Cloudflare feature that can block automated webhook requests" to="/docs/reference/terminology#bot-fight-mode">Bot Fight Mode</Terminology> cannot be skipped via WAF rules on any plan. The skip rule above targets <Terminology title="Pro-plan Bot Fight Mode variant that can be skipped" to="/docs/reference/terminology#bot-fight-mode">Super Bot Fight Mode</Terminology>, which is available on Pro plans and above. Free plan users will need to disable <Terminology title="Cloudflare feature that can block automated webhook requests" to="/docs/reference/terminology#bot-fight-mode">Bot Fight Mode</Terminology> entirely if it blocks webhook traffic. You can also use a `sec-fetch-mode` header check to distinguish browser traffic from API traffic (see [Security](/docs/features/security/)).
+<Terminology title="A Cloudflare setting that can 403 your webhooks" to="/docs/reference/terminology#cloudflare-setup">Bot Fight Mode</Terminology> cannot be skipped via WAF rules on any plan. The skip rule above targets <Terminology title="Bot Fight Mode's paid-plan variant, skippable by a WAF rule" to="/docs/reference/terminology#cloudflare-setup">Super Bot Fight Mode</Terminology>, which is available on Pro plans and above. Free plan users will need to disable <Terminology title="A Cloudflare setting that can 403 your webhooks" to="/docs/reference/terminology#cloudflare-setup">Bot Fight Mode</Terminology> entirely if it blocks webhook traffic. You can also use a `sec-fetch-mode` header check to distinguish browser traffic from API traffic (see [Security](/docs/features/security/)).
 :::
 
 ## TLS Handshake Failure from Docker Containers
@@ -80,39 +80,52 @@ On Synology NAS, the cert path is `/etc/ssl/certs/`. Add this volume mount and r
 
 **Symptom**: POST requests return a JSON error like `{"status": "error", "message": "No context found for http identifier: ..."}`.
 
-**Cause**: The request subdomain does not match any configured <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> ID.
+**Cause**: The request subdomain does not match any configured <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> ID.
 
 **Solution**:
 
-- Check that the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> ID matches the subdomain: a request to `abc123.ntfy.example.com` needs a <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> with `"id": "abc123"`.
+- Check that the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> ID matches the subdomain: a request to `abc123.ntfy.example.com` needs a <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> with `"id": "abc123"`.
 - Run `nrp validate` to check for config issues.
-- Re-deploy after config changes — the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> uses the copy of the config bundled into it at deploy time.
+- Re-deploy after config changes — the <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology> uses the copy of the config bundled into it at deploy time.
+- A `POST` to `/session` that answers `Sessions are not enabled for this context` means the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> has no `session` field yet.
 
 ## 403 Authentication Failed
 
-**Symptom**: POST requests return HTTP 403 from the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> with `{"status": "error", "message": "Unauthorized"}`.
+**Symptom**: POST requests return HTTP 403 from the <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology> with `{"status": "error", "message": "Unauthorized"}`.
 
-**Cause**: The <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> has a `token` configured and the request does not include a matching `Authorization` header.
+**Cause**: The <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> has a `token` or `session` configured and the request does not include a matching `Authorization` header, or its session token is expired, already used, tied to another address, or session storage is unavailable.
 
 **Solution**:
 
 - Include the header: `Authorization: Bearer {context-token}`.
 - Both `Bearer {token}` and raw `{token}` formats are accepted.
 - Check that the token matches exactly — it is case-sensitive.
+- With `session` set, get a fresh <Terminology title="A short-lived, one-use pass a sender gets from /session" to="/docs/reference/terminology#configuration">session token</Terminology> from `/session` for every message, and send both requests from the same IP address. The `error-debug.json` message names which check failed (see [Session Tokens](/docs/features/security#rejections)).
 
-## 422 Interpretation Failed
+## 429 Too Many Session Requests
 
-**Symptom**: POST requests return HTTP 422 with an error message from the <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>.
+**Symptom**: `POST /session` returns HTTP 429 with `{"status": "error", "message": "Too many session requests"}`.
 
-**Cause**: The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> could not parse the request body. The payload does not match the expected shape for the configured <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>.
+**Cause**: The IP address already got `max_per_hour` <Terminology title="A short-lived, one-use pass a sender gets from /session" to="/docs/reference/terminology#configuration">session tokens</Terminology> this hour.
 
 **Solution**:
 
-- Check that the correct <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> is configured for your webhook source.
+- Wait for the next hour, or raise `max_per_hour` on the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> and re-deploy.
+- Request a token only right before sending a message, rather than ahead of time.
+
+## 422 Interpretation Failed
+
+**Symptom**: POST requests return HTTP 422 with an error message from the <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology>.
+
+**Cause**: The <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> could not parse the request body. The payload does not match the expected shape for the configured <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology>.
+
+**Solution**:
+
+- Check that the correct <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> is configured for your webhook source.
 - For `ntfy-json`, verify the payload includes the required `body` field.
-- For service-specific <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreters</Terminology>, check that the payload matches the expected format (see individual [interpreter docs](/docs/interpreters/overview/)).
-- For `transmission-vpn`, `pfsense-actions`, `discord-stonker-bot`, and `outpost`, a message that starts with `This context reads` means the alert came from a different app. If the message names a supported interpreter, set the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s `interpreter` to it. If it says the app is unsupported, choose from the supported keys it lists or correct the producer's `app` field; do not configure the unknown key.
-- Read the `message` in the 422 response, which is the <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>'s error whether or not `show_response_output` is on. For the stack and the request as well, set an `error_topic` and keep `interpretation` in `error_events`.
+- For service-specific <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreters</Terminology>, check that the payload matches the expected format (see individual [interpreter docs](/docs/interpreters/overview/)).
+- For `transmission-vpn`, `pfsense-actions`, `discord-stonker-bot`, `outpost`, and `mailmask`, a message that starts with `This context reads` means the alert came from a different app. If the message names a supported interpreter, set the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>'s `interpreter` to it. If it says the app is unsupported, choose from the supported keys it lists or correct the producer's `app` field; do not configure the unknown key.
+- Read the `message` in the 422 response, which is the <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology>'s error whether or not `show_response_output` is on. For the stack and the request as well, set an `error_topic` and keep `interpretation` in `error_events`.
 
 ## Notifications Not Arriving
 
@@ -120,12 +133,23 @@ On Synology NAS, the cert path is `/etc/ssl/certs/`. Add this volume mount and r
 
 **Solution**:
 
-- Check that the ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> is reachable and the token is valid.
-- Verify the ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> has `behind-proxy` set to `true` and `base-url` configured.
-- If the response is `{"status": "ignored"}`, the <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> suppressed the notification on purpose, such as a duplicate or component-only Statuspage event (see [Notification Suppression](/docs/interpreters/limitations/#notification-suppression)). Malformed JSON instead returns HTTP 422.
-- Enable `show_response_output` to see per-<Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> delivery results in the response JSON.
-- Check ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> logs for authentication or <Terminology title="the ntfy channel a context publishes notifications to" to="/docs/reference/terminology#topic">topic</Terminology> permission errors.
-- For an <Terminology title="optional topic that receives failure notifications" to="/docs/reference/terminology#error-topic">error topic</Terminology>, verify `attachment-cache-dir` is configured on the ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>, because error details arrive as an `error-debug.json` <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology>. Error-topic delivery is one-shot and best-effort, so a rejected attachment is not retried; importantly, it also cannot block the context's durable notification lane. Large text messages are handled by the proxy's <Terminology title="splits message bodies over 4000 UTF-8 bytes into parts" to="/docs/reference/terminology#smart-split">message splitting</Terminology> and do not require this setting.
+- Check that the ntfy <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> is reachable and the token is valid.
+- Verify the ntfy <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> has `behind-proxy` set to `true` and `base-url` configured.
+- If the response is `{"status": "ignored"}`, the <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> suppressed the notification on purpose, such as a duplicate or component-only Statuspage event (see [Notification Suppression](/docs/interpreters/limitations/#notification-suppression)). Malformed JSON instead returns HTTP 422.
+- Enable `show_response_output` to see per-<Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> delivery results in the response JSON.
+- Check ntfy <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> logs for authentication or <Terminology title="The ntfy channel your phone subscribes to for alerts" to="/docs/reference/terminology#ntfy-servers-and-messages">topic</Terminology> permission errors.
+- For an <Terminology title="Where you hear about alerts the proxy couldn't handle" to="/docs/reference/terminology#ntfy-servers-and-messages">error topic</Terminology>, verify `attachment-cache-dir` is configured on the ntfy <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology>, because error details arrive as an `error-debug.json` <Terminology title="A file sent along with the notification" to="/docs/reference/terminology#ntfy-servers-and-messages">attachment</Terminology>. Error-topic delivery is one-shot and best-effort, so a rejected attachment is not retried; importantly, it also cannot block the context's durable notification lane. Large text messages are handled by the proxy's <Terminology title="Long messages arrive as (1/3), (2/3), (3/3)" to="/docs/reference/terminology#ntfy-servers-and-messages">message splitting</Terminology> and do not require this setting.
+
+## Queued or Discarded Durable Notifications
+
+**Symptom**: A request returns `{"status": "queued"}`, later notifications for the same context wait, or an expected notification never arrives after the lane resumes.
+
+**Solution**:
+
+- Look for a `delivery_outbox_retry` log event. It means the oldest notification had a transient network, HTTP 408, HTTP 429, or HTTP 5xx failure and remains queued. Its Durable Object alarm retries automatically with backoff; you do not need to post a dummy notification.
+- Look for a `delivery_outbox_discarded` log event. It means the row had a permanent failure or was still failing after it became at least 24 hours old and had at least three attempts. The event records `deliveryId`, `classification`, `reason`, `httpStatus`, `attemptCount`, and `ageMilliseconds`. A thrown configuration or JSON error has a `null` HTTP status.
+- Correct missing or renamed server entries and most HTTP 4xx responses before sending the notification again. Those failures are permanent and are discarded immediately so they cannot block the lane.
+- If the context has an `error_topic`, check it for a one-shot `error-debug.json` attachment titled "Durable Delivery Discarded." It contains `delivery_id`, `reason`, `http_status`, `attempt_count`, and `age_ms`. This diagnostic never enters the durable lane and is not retried if its own send fails.
 
 ## Email Notifications Not Working
 
@@ -133,35 +157,35 @@ On Synology NAS, the cert path is `/etc/ssl/certs/`. Add this volume mount and r
 
 **Solution**:
 
-- Verify <Terminology title="Cloudflare feature that forwards email to the Worker" to="/docs/reference/terminology#cloudflare-email-routing">Cloudflare Email Routing</Terminology> is enabled for your domain.
-- Check that a routing rule exists for the email address pointing to your <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology>.
-- Verify the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> type is `"email"` (not `"http"`).
+- Verify <Terminology title="Lets an email address trigger the proxy like a webhook" to="/docs/reference/terminology#cloudflare-setup">Cloudflare Email Routing</Terminology> is enabled for your domain.
+- Check that a routing rule exists for the email address pointing to your <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology>.
+- Verify the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> type is `"email"` (not `"http"`).
 - Check the `allowed_from` field — if set, the sender must match.
 - Email processing is silent — there are no HTTP error responses for failed email processing.
 
 :::tip
-If the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> has an `error_topic` configured, authentication and interpretation errors from email processing are forwarded there as debug <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachments</Terminology>. If the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> also has an `error_events` setting, only the listed categories are forwarded. Check that <Terminology title="optional topic that receives failure notifications" to="/docs/reference/terminology#error-topic">topic</Terminology> for diagnostic information.
+If the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> has an `error_topic` configured, authentication and interpretation errors from email processing are forwarded there as debug <Terminology title="A file sent along with the notification" to="/docs/reference/terminology#ntfy-servers-and-messages">attachments</Terminology>. If the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> also has an `error_events` setting, only the listed categories are forwarded. Check that <Terminology title="Where you hear about alerts the proxy couldn't handle" to="/docs/reference/terminology#ntfy-servers-and-messages">topic</Terminology> for diagnostic information.
 :::
 
 ## Duplicate Statuspage Notifications
 
 **Symptom**: You receive the same Statuspage.io notification multiple times.
 
-**Cause**: Without KV storage, the Statuspage <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> cannot deduplicate updates. The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> compares the ID of the incident's latest update (`incident.incident_updates[0].id`) with the one it stored to detect duplicates.
+**Cause**: Without KV storage, the Statuspage <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> cannot deduplicate updates. The <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> compares the ID of the incident's latest update (`incident.incident_updates[0].id`) with the one it stored to detect duplicates.
 
 **Solution**:
 
-- Run deploy (**Deploy** in the interactive menu or `nrp deploy`) — it automatically creates a <Terminology title="Cloudflare Workers KV store for dedup state" to="/docs/reference/terminology#kv-namespace">KV namespace</Terminology> named `{worker_name}-kv` and binds it to the <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology>.
+- Run deploy (**Deploy** in the interactive menu or `nrp deploy`) — it automatically creates a <Terminology title="Remembers Statuspage incidents so you aren't told twice" to="/docs/reference/terminology#cloudflare-setup">KV namespace</Terminology> named `{worker_name}-kv` and binds it to the <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology>.
 - If you deploy with Wrangler yourself, add a `[[kv_namespaces]]` block with `binding = "KV"` and your namespace ID to `wrangler.toml`, because `nrp generate` leaves it out.
-- The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> stores incident state with a 24-hour TTL and skips duplicate update IDs.
+- The <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> stores incident state with a 24-hour TTL and skips duplicate update IDs.
 
 ## 405 Method Not Allowed
 
 **Symptom**: Requests return HTTP 405 with a "Method not allowed" error.
 
-**Cause**: The <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> only accepts `GET`, `POST`, and `PUT` requests. Other HTTP methods (e.g., `DELETE`, `PATCH`) are rejected.
+**Cause**: The <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology> only accepts `GET`, `POST`, and `PUT` requests. Other HTTP methods (e.g., `DELETE`, `PATCH`) are rejected.
 
 **Solution**:
 
 - Verify the webhook source is sending `POST` or `PUT` requests.
-- `GET` requests return the <Terminology title="HTML status page returned on GET requests" to="/docs/reference/terminology#landing-page">landing page</Terminology>, so use `POST` or `PUT` for webhook delivery.
+- `GET` requests return the <Terminology title="Open a context's URL in a browser to see it's up" to="/docs/reference/terminology#configuration">landing page</Terminology>, so use `POST` or `PUT` for webhook delivery.

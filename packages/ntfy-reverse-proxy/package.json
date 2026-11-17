@@ -1,6 +1,6 @@
 {
   "name": "ntfy-reverse-proxy",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Notification gateway on Cloudflare Workers that routes webhooks and emails to ntfy with automatic server failover",
   "keywords": [
     "ntfy",
@@ -83,7 +83,7 @@
     "node": "^22 || ^24 || ^26"
   },
   "dependencies": {
-    "@cbnventures/nova": "0.38.0",
+    "@cbnventures/nova": "0.44.0",
     "chalk": "6.0.0",
     "commander": "15.0.0",
     "prompts": "2.4.2",

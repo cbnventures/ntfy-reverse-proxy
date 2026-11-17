@@ -34,6 +34,7 @@ import type {
   Cli_Commands_Context_GenerateRandomString_Lowercase,
   Cli_Commands_Context_GenerateRandomString_Result,
   Cli_Commands_Context_GenerateRandomString_Returns,
+  Cli_Commands_Context_GenerateSessionSecret_Returns,
   Cli_Commands_Context_GenerateToken_Returns,
   Cli_Commands_Context_ListContexts_ConfigPath,
   Cli_Commands_Context_ListContexts_Returns,
@@ -272,6 +273,20 @@ function generateId(): Cli_Commands_Context_GenerateId_Returns {
 }
 
 /**
+ * CLI - Commands - Context - Generate Session Secret.
+ *
+ * Creates the long random secret a context uses to sign and check
+ * its session tokens, so nobody has to type or paste one.
+ *
+ * @returns {Cli_Commands_Context_GenerateSessionSecret_Returns}
+ *
+ * @since 2.4.0
+ */
+function generateSessionSecret(): Cli_Commands_Context_GenerateSessionSecret_Returns {
+  return generateRandomString(64);
+}
+
+/**
  * CLI - Commands - Context - Generate Token.
  *
  * Creates a long mixed-case token used for authenticating incoming
@@ -289,6 +304,7 @@ export {
   addContext,
   editContext,
   generateId,
+  generateSessionSecret,
   generateToken,
   listContexts,
   removeContext,

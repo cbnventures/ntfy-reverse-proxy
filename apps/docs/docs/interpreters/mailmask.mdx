@@ -1,0 +1,156 @@
+---
+id: mailmask
+title: Mailmask
+description: Turn Mailmask refusal and test events into ntfy notifications that preserve priority, tags, alias, envelope sender, and refusal reason.
+sidebar_position: 7
+keywords:
+  - ntfy reverse proxy
+  - mailmask interpreter
+  - mailmask
+  - email aliases
+  - refusal notifications
+  - app alerts
+tags:
+  - interpreters
+  - mailmask
+---
+
+import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
+
+Turn Mailmask refusal and test events into ntfy notifications that retain the routing details needed to investigate an alert.
+
+## Input Handling
+
+The <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> reads the versioned JSON payload that Mailmask posts through its **ntfy-reverse-proxy** notifier. Every field below is required, and fields that aren't listed are ignored.
+
+| Field        | Type       | Description                                                        |
+|--------------|------------|--------------------------------------------------------------------|
+| `version`    | `1`        | Payload format. Any other version fails.                           |
+| `app`        | `mailmask` | App discriminator. Any other app fails with an interpreter hint.   |
+| `event`      | `string`   | Either `message-refused` for a refusal or `test` for a CLI test.   |
+| `title`      | `string`   | Notification title supplied by Mailmask.                           |
+| `message`    | `string`   | Human-readable refusal or test message.                            |
+| `priority`   | `1-5`      | Priority level (1 = min, 3 = default, 5 = max).                    |
+| `tags`       | `string[]` | ntfy tags: `email` for refusals and `email`, `test` for CLI tests. |
+| `occurredAt` | `string`   | When Mailmask created the notification.                            |
+| `details`    | `object`   | Stable routing details described below.                            |
+
+The `details` object has these required string fields:
+
+| Field            | Description                                                                 |
+|------------------|-----------------------------------------------------------------------------|
+| `alias`          | Resolved alias address without a subaddress tag.                            |
+| `envelopeSender` | SMTP envelope sender checked by Mailmask's sender rules.                    |
+| `recipient`      | Original SMTP envelope recipient, including a subaddress tag when present.  |
+| `reason`         | Stable refusal reason code or `test`; unknown version 1 codes are retained. |
+
+The notification uses `title`, `message`, `priority`, and `tags`, then adds `alias`, `envelopeSender`, and `reason` to the body. The `event` and `occurredAt` fields are validated but don't appear in the notification.
+
+## Supported Events
+
+Mailmask sends these two events:
+
+| Title                      | Event Key         | Priority    | Tags            |
+|----------------------------|-------------------|-------------|-----------------|
+| Mailmask refused a message | `message-refused` | 3 (default) | `email`         |
+| Mailmask test notification | `test`            | 3 (default) | `email`, `test` |
+
+Refusal reasons are `disabled`, `expired`, `filtered`, `misconfigured`, and the forward-compatible fallback `refused`. A CLI test uses `test`.
+
+## Context Setup
+
+1. **Add an HTTP <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>** — Run `nrp`, choose **Manage Contexts** > **Add**, pick **HTTP**, and choose **Mailmask** as the **Interpreter**. Answer no to **Use session tokens?**, because Mailmask sends a fixed token and can't request session tokens.
+2. **Deploy** — Choose **Deploy**, then copy the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>'s URL and token from the **Context reference** list it prints.
+3. **Add a Mailmask notifier** — Run `mm notifier add-reverse-proxy`, passing the context URL and its token when authentication is enabled.
+4. **Send a test** — Run `mm notifier test reverse-proxy`, and check that `[Mailmask] Mailmask test notification` arrives on the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>'s <Terminology title="The ntfy channel your phone subscribes to for alerts" to="/docs/reference/terminology#ntfy-servers-and-messages">topic</Terminology>.
+
+```bash
+mm notifier add-reverse-proxy reverse-proxy \
+  --url https://mailmask-example.ntfy.example.com \
+  --token replace_with_auth_token
+mm notifier test reverse-proxy
+```
+
+Set the context's `interpreter` to `mailmask`:
+
+```json
+{
+  "id": "mailmask-example",
+  "name": "Mailmask",
+  "type": "http",
+  "interpreter": "mailmask",
+  "topic": "mailmask",
+  "mode": "send-once",
+  "show_visitor_info": false,
+  "primary_server": "primary",
+  "servers": ["primary"],
+  "token": "replace_with_auth_token"
+}
+```
+
+With this <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>, Mailmask posts its notifications to `https://mailmask-example.ntfy.example.com` with optional bearer authentication.
+
+## Notification Output
+
+- **Title**: `[Mailmask]` and the payload's `title` (for example, `[Mailmask] Mailmask refused a message`).
+- **Body**: The payload's `message`, a blank line, and the alias, envelope sender, and reason. HTML tags are removed as for every <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> (see [HTML Stripping](/docs/interpreters/limitations/#html-stripping)).
+- **Priority**: The payload's `priority`, unchanged. Mailmask sends `3`.
+- **Tags**: `mailmask` first, then the payload's tags (`mailmask`, `email` for a refusal).
+
+The <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> sets no icon, actions, or Markdown, and it doesn't add `occurredAt` to the body.
+
+## Example
+
+Mailmask posts this payload when an expired alias refuses a message:
+
+```json
+{
+  "version": 1,
+  "app": "mailmask",
+  "event": "message-refused",
+  "title": "Mailmask refused a message",
+  "message": "Mail to old@example.com from sender@shop.test was rejected: Address has expired.",
+  "priority": 3,
+  "tags": ["email"],
+  "occurredAt": "2026-11-05T12:00:00.000Z",
+  "details": {
+    "alias": "old@example.com",
+    "envelopeSender": "sender@shop.test",
+    "recipient": "old@example.com",
+    "reason": "expired"
+  }
+}
+```
+
+The proxy publishes it to ntfy with these <Terminology title="The X-Title, X-Priority, and friends sent to ntfy" to="/docs/reference/terminology#ntfy-servers-and-messages">ntfy headers</Terminology> and body:
+
+```text
+X-Title: [Mailmask] Mailmask refused a message
+X-Priority: 3
+X-Tags: mailmask,email
+
+Mail to old@example.com from sender@shop.test was rejected: Address has expired.
+
+Alias: old@example.com
+Envelope sender: sender@shop.test
+Reason: expired
+```
+
+ntfy shows the `email` tag as an emoji and lists `mailmask` below the notification.
+
+## Wrong App Error
+
+A <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> reads alerts from one app, so a payload whose `app` names a different supported app fails with HTTP 422 and identifies the correct <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology>:
+
+```json
+{
+  "status": "error",
+  "message": "This context reads Mailmask alerts, but the payload came from outpost. Set the context's interpreter to outpost."
+}
+```
+
+A non-empty body that isn't JSON, JSON missing required fields, an unsupported `event`, or a `version` other than `1` also fails with HTTP 422.
+
+:::tip
+For notifier setup, delivery behavior, and the authoritative payload contract, see [Refusal Notifications](https://mailmask.cbnventures.io/docs/features/notifications/) in the Mailmask docs.
+:::

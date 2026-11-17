@@ -109,6 +109,13 @@ export type Cli_Commands_Context_GenerateRandomString_Chunk = string;
 /**
  * CLI - Commands - Context.
  *
+ * @since 2.4.0
+ */
+export type Cli_Commands_Context_GenerateSessionSecret_Returns = string;
+
+/**
+ * CLI - Commands - Context.
+ *
  * @since 2.0.0
  */
 export type Cli_Commands_Context_GenerateToken_Returns = string;

@@ -9,6 +9,11 @@ import { receive } from './pipeline/receive.js';
 import { respond } from './pipeline/respond.js';
 import { route } from './pipeline/route.js';
 import { send } from './pipeline/send.js';
+import {
+  issueSession,
+  SESSION_PATH,
+  verifySession,
+} from './pipeline/session.js';
 import { split } from './pipeline/split.js';
 
 import type {
@@ -55,6 +60,7 @@ import type {
   Worker_Handlers_HandleRequest_AuthErrorAttachmentParsed,
   Worker_Handlers_HandleRequest_AuthResult,
   Worker_Handlers_HandleRequest_Body,
+  Worker_Handlers_HandleRequest_ClientIp,
   Worker_Handlers_HandleRequest_Cloned,
   Worker_Handlers_HandleRequest_Config,
   Worker_Handlers_HandleRequest_Ctx,
@@ -77,11 +83,13 @@ import type {
   Worker_Handlers_HandleRequest_InterpretErrorMessage,
   Worker_Handlers_HandleRequest_InterpretErrorName,
   Worker_Handlers_HandleRequest_InterpretErrorStack,
+  Worker_Handlers_HandleRequest_Issued,
   Worker_Handlers_HandleRequest_Kv,
   Worker_Handlers_HandleRequest_LocalContext,
   Worker_Handlers_HandleRequest_Messages,
   Worker_Handlers_HandleRequest_Outbox,
   Worker_Handlers_HandleRequest_Parsed,
+  Worker_Handlers_HandleRequest_Pathname,
   Worker_Handlers_HandleRequest_PrimaryServer,
   Worker_Handlers_HandleRequest_RawBodyJsonStr,
   Worker_Handlers_HandleRequest_RawBodyText,
@@ -198,8 +206,58 @@ async function handleRequest(request: Worker_Handlers_HandleRequest_Request, con
     const resolvedServers: Worker_Handlers_HandleRequest_ResolvedServers = routed['resolvedServers'];
     const primaryServer: Worker_Handlers_HandleRequest_PrimaryServer = routed['primaryServer'];
 
-    // 3. Authenticate.
-    const authResult: Worker_Handlers_HandleRequest_AuthResult = authenticate(
+    // 3. Authenticate. A context with sessions hands out tokens on the session path and checks them everywhere else.
+    const pathname: Worker_Handlers_HandleRequest_Pathname = new URL(received['url']).pathname;
+    const clientIp: Worker_Handlers_HandleRequest_ClientIp = received['headers'].get('cf-connecting-ip') ?? 'unknown';
+
+    if (pathname === SESSION_PATH) {
+      if (ctx['session'] === undefined) {
+        return new Response(JSON.stringify({
+          status: 'error',
+          message: 'Sessions are not enabled for this context',
+        }, null, 2), {
+          status: 404,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+
+      const issued: Worker_Handlers_HandleRequest_Issued = await issueSession({
+        contextId: ctx['id'],
+        session: ctx['session'],
+        clientIp,
+        kv,
+      });
+
+      if (issued['issued'] === false) {
+        return new Response(JSON.stringify({
+          status: 'error',
+          message: issued['reason'],
+        }, null, 2), {
+          status: issued['status'],
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+
+      return new Response(JSON.stringify({
+        status: 'success',
+        token: issued['token'],
+        expires_in: issued['expiresIn'],
+      }, null, 2), {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-store',
+        },
+      });
+    }
+
+    const authResult: Worker_Handlers_HandleRequest_AuthResult = (ctx['session'] !== undefined) ? await verifySession({
+      contextId: ctx['id'],
+      session: ctx['session'],
+      authorization: received['headers'].get('authorization') ?? undefined,
+      clientIp,
+      kv,
+    }) : authenticate(
       {
         type: 'http',
         ...((ctx['token'] !== undefined) ? { token: ctx['token'] } : {}),
@@ -449,6 +507,9 @@ async function handleRequest(request: Worker_Handlers_HandleRequest_Request, con
       primaryServer,
       topic: ctx['topic'],
       mode: ctx['mode'],
+      contextName: ctx['name'],
+      interpreterName: ctx['interpreter'],
+      errorTopic: ctx['error_topic'],
       visitorIp: received['headers'].get('cf-connecting-ip') ?? undefined,
       attachment: interpreted['attachment'],
       filename: interpreted['notification']['filename'],
@@ -691,6 +752,9 @@ async function handleEmail(rawEmail: Worker_Handlers_HandleEmail_RawEmail, from:
       primaryServer,
       topic: ctx['topic'],
       mode: ctx['mode'],
+      contextName: ctx['name'],
+      interpreterName: ctx['interpreter'],
+      errorTopic: ctx['error_topic'],
       attachment: interpreted['attachment'],
       filename: interpreted['notification']['filename'],
     });

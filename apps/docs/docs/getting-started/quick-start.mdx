@@ -22,13 +22,13 @@ Set up Reverse Proxy for ntfy from scratch and send your first push notification
 
 Before you begin, make sure you have the following ready:
 
-- **Node.js** — v22 or v24 (LTS recommended for stability)
+- **Node.js** — v22, v24, or v26 (LTS recommended for stability)
 - **npm** — v10 or later, which ships with supported Node.js versions
 - **Cloudflare account** — A free or paid account with a registered domain (Workers and Email Routing are both available on the free plan)
-- **ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>** — At least one self-hosted ntfy instance with token authentication enabled
+- **ntfy <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology>** — At least one self-hosted ntfy instance with token authentication enabled
 
 :::info
-Your ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> needs `base-url` set to its public URL and `behind-proxy` set to `true`. If you plan to use an <Terminology title="optional topic that receives failure notifications" to="/docs/reference/terminology#error-topic">error topic</Terminology>, also configure `attachment-cache-dir`, because error details arrive as an `error-debug.json` <Terminology title="a binary file delivered alongside a notification" to="/docs/reference/terminology#attachment">attachment</Terminology>.
+Your ntfy <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> needs `base-url` set to its public URL and `behind-proxy` set to `true`. If you plan to use an <Terminology title="Where you hear about alerts the proxy couldn't handle" to="/docs/reference/terminology#ntfy-servers-and-messages">error topic</Terminology>, also configure `attachment-cache-dir`, because error details arrive as an `error-debug.json` <Terminology title="A file sent along with the notification" to="/docs/reference/terminology#ntfy-servers-and-messages">attachment</Terminology>.
 
 See the [ntfy self-hosting documentation](https://docs.ntfy.sh/config/) for details.
 :::
@@ -56,8 +56,8 @@ The first command that needs configuration copies the starter template included 
 The interactive config menu starts from the packaged template and guides you through everything you need for a working deployment.
 
 1. Run `nrp` to launch the interactive config menu.
-2. **Add at least one ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>.** Each <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> needs a name, a URL starting with `https://`, and a token starting with `tk_`.
-3. **Add at least one <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>.** Choose a name, <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>, <Terminology title="the ntfy channel a context publishes notifications to" to="/docs/reference/terminology#topic">topic</Terminology>, delivery mode, and assign one or more <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology>.
+2. **Add at least one ntfy <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology>.** Each <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> needs a name, a URL starting with `https://`, and a token starting with `tk_`.
+3. **Add at least one <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>.** Choose a name, <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology>, <Terminology title="The ntfy channel your phone subscribes to for alerts" to="/docs/reference/terminology#ntfy-servers-and-messages">topic</Terminology>, delivery mode, and assign one or more <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">servers</Terminology>.
 4. **Update settings.** Set the `worker_name` and `base_domain` to match your Cloudflare domain.
 5. **Run `nrp validate`** from the CLI to check config integrity. Validation also runs automatically as part of the deploy step. This catches missing fields and invalid references before deployment.
 6. **Run deploy** to generate `wrangler.toml` and deploy to Cloudflare Workers.
@@ -70,7 +70,7 @@ The CLI validates config against its schema on every load. You can also run the 
 
 ## Sending Your First Notification
 
-After deployment, each HTTP <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> gets a subdomain route in the format `{context-id}.{base_domain}`. Test it with a simple `curl` command.
+After deployment, each HTTP <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> gets a subdomain route in the format `{context-id}.{base_domain}`. Test it with a simple `curl` command.
 
 ### Plain Text Notification
 
@@ -82,7 +82,7 @@ curl -X POST https://{context-id}.ntfy.example.com \
 
 ### Authenticated Notification
 
-If the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> has a token configured, include the `Authorization` header:
+If the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> has a token configured, include the `Authorization` header:
 
 ```bash
 curl -X POST https://{context-id}.ntfy.example.com \
@@ -92,7 +92,7 @@ curl -X POST https://{context-id}.ntfy.example.com \
 
 ### Landing Page
 
-GET requests to any <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> URL return a <Terminology title="HTML status page returned on GET requests" to="/docs/reference/terminology#landing-page">landing page</Terminology> showing "Reverse Proxy for ntfy" with an operational status badge. When `show_response_output` is enabled, the page also includes a collapsible section with the full configuration, with sensitive values masked.
+GET requests to any <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> URL return a <Terminology title="Open a context's URL in a browser to see it's up" to="/docs/reference/terminology#configuration">landing page</Terminology> showing "Reverse Proxy for ntfy" with an operational status badge. When `show_response_output` is enabled, the page also includes a collapsible section with the full configuration, with sensitive values masked.
 
 ## If Something Goes Wrong
 
@@ -100,15 +100,15 @@ If deployment fails or notifications are not arriving, check [Troubleshooting](/
 
 - Cloudflare's bot protection blocking webhooks (403 errors)
 - DNS propagation delays after deployment
-- ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology> misconfiguration
+- ntfy <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> misconfiguration
 
 ## What Is Next
 
-- **[Configuration](/docs/getting-started/configuration/)** — Full config reference for <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">servers</Terminology>, <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">contexts</Terminology>, and settings.
+- **[Configuration](/docs/getting-started/configuration/)** — Full config reference for <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">servers</Terminology>, <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">contexts</Terminology>, and settings.
 - **[CLI Reference](/docs/reference/cli/)** — All commands and options available through the management CLI.
-- **[Interpreters](/docs/interpreters/overview/)** — Choose the right <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> for your webhook source.
-- **[Deployment](/docs/getting-started/deployment/)** — Cloudflare-specific setup details, including DNS and <Terminology title="Cloudflare-hosted entry point that runs the pipeline" to="/docs/reference/terminology#worker">worker</Terminology> configuration.
-- **[Email Routing](/docs/features/email-routing/)** — Receive notifications via email through <Terminology title="Cloudflare feature that forwards email to the Worker" to="/docs/reference/terminology#cloudflare-email-routing">Cloudflare Email Routing</Terminology>.
+- **[Interpreters](/docs/interpreters/overview/)** — Choose the right <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> for your webhook source.
+- **[Deployment](/docs/getting-started/deployment/)** — Cloudflare-specific setup details, including DNS and <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology> configuration.
+- **[Email Routing](/docs/features/email-routing/)** — Receive notifications via email through <Terminology title="Lets an email address trigger the proxy like a webhook" to="/docs/reference/terminology#cloudflare-setup">Cloudflare Email Routing</Terminology>.
 - **[Durable Delivery](/docs/features/durable-delivery/)** — Understand automatic retries, context isolation, and delivery guarantees.
 - **[Security](/docs/features/security/)** — Authentication, WAF configuration, and best practices.
 - **[Troubleshooting](/docs/reference/troubleshooting/)** — Common issues and solutions.

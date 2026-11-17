@@ -103,11 +103,17 @@ export type Cli_Menu_Interactive_AddContextFlow_ResolvedErrorTopic = string | un
 
 export type Cli_Menu_Interactive_AddContextFlow_TopicString = string;
 
-export type Cli_Menu_Interactive_AddContextFlow_TypedInterpreter = 'plain-text' | 'ntfy-json' | 'seerr' | 'synology' | 'statuspage' | 'pfsense' | 'unifi' | 'transmission-vpn' | 'pfsense-actions' | 'discord-stonker-bot' | 'outpost';
+export type Cli_Menu_Interactive_AddContextFlow_TypedInterpreter = 'plain-text' | 'ntfy-json' | 'seerr' | 'synology' | 'statuspage' | 'pfsense' | 'unifi' | 'transmission-vpn' | 'pfsense-actions' | 'discord-stonker-bot' | 'outpost' | 'mailmask';
 
 export type Cli_Menu_Interactive_AddContextFlow_TypedMode = 'send-once' | 'send-all';
 
 export type Cli_Menu_Interactive_AddContextFlow_TypedErrorEvents = Array<Lib_Schema_ContextConfigErrorEvent> | undefined;
+
+export type Cli_Menu_Interactive_AddContextFlow_UseSessionResponse = prompts.Answers<string>;
+
+export type Cli_Menu_Interactive_AddContextFlow_UseSession = boolean | undefined;
+
+export type Cli_Menu_Interactive_AddContextFlow_ResolvedToken = string | undefined;
 
 export type Cli_Menu_Interactive_AddContextFlow_AutoToken = string;
 
@@ -116,8 +122,6 @@ export type Cli_Menu_Interactive_AddContextFlow_TokenResponse = prompts.Answers<
 export type Cli_Menu_Interactive_AddContextFlow_RawToken = string | undefined;
 
 export type Cli_Menu_Interactive_AddContextFlow_TokenTrimmed = string;
-
-export type Cli_Menu_Interactive_AddContextFlow_ResolvedToken = string | undefined;
 
 export type Cli_Menu_Interactive_AddContextFlow_AllowedFromResponse = prompts.Answers<string>;
 
@@ -251,6 +255,10 @@ export type Cli_Menu_Interactive_ContextMenu_ErrorTopicValue = string | undefine
 export type Cli_Menu_Interactive_ContextMenu_ErrorTopicTrimmed = string;
 
 export type Cli_Menu_Interactive_ContextMenu_ResolvedErrorTopic = string | undefined;
+
+export type Cli_Menu_Interactive_ContextMenu_UseSession = boolean | undefined;
+
+export type Cli_Menu_Interactive_ContextMenu_UseSessionResponse = prompts.Answers<string>;
 
 export type Cli_Menu_Interactive_ContextMenu_KeepTokenResponse = prompts.Answers<string>;
 

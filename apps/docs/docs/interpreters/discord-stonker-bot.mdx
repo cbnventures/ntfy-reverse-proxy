@@ -21,7 +21,7 @@ Turn the alerts Discord Stonker Bot sends, such as a lost connection to Discord 
 
 ## Input Handling
 
-The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> reads the JSON alert that Discord Stonker Bot posts to a destination whose service is **ntfy-reverse-proxy**. Every field below is required, and fields that aren't listed are ignored.
+The <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> reads the JSON alert that Discord Stonker Bot posts to a destination whose service is **ntfy-reverse-proxy**. Every field below is required, and fields that aren't listed are ignored.
 
 | Field        | Type       | Description                                                               |
 |--------------|------------|---------------------------------------------------------------------------|
@@ -55,10 +55,10 @@ Discord Stonker Bot sends these alerts, each with a fixed priority and tags:
 
 ## Context Setup
 
-1. **Add an HTTP <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>** — Run `nrp`, choose **Manage Contexts** > **Add**, pick **HTTP**, and choose **Discord Stonker Bot** as the **Interpreter**.
-2. **Deploy** — Choose **Deploy**, then copy the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s URL and token from the **Context reference** list it prints.
-3. **Add a destination** — On Discord Stonker Bot's **Notifications** page, select **Add notification**, choose **ntfy-reverse-proxy** as the **Service**, and paste the URL into **Context URL**. Paste the token into **Context token** if the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> has one, enter a **Name**, and select **Add notification** to save it.
-4. **Send a test** — Select **Send test** on the destination, and check that `[Discord Stonker Bot] Test notification` arrives on the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s <Terminology title="the ntfy channel a context publishes notifications to" to="/docs/reference/terminology#topic">topic</Terminology>.
+1. **Add an HTTP <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>** — Run `nrp`, choose **Manage Contexts** > **Add**, pick **HTTP**, and choose **Discord Stonker Bot** as the **Interpreter**.
+2. **Deploy** — Choose **Deploy**, then copy the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>'s URL and token from the **Context reference** list it prints.
+3. **Add a destination** — On Discord Stonker Bot's **Notifications** page, select **Add notification**, choose **ntfy-reverse-proxy** as the **Service**, and paste the URL into **Context URL**. Paste the token into **Context token** if the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> has one, enter a **Name**, and select **Add notification** to save it.
+4. **Send a test** — Select **Send test** on the destination, and check that `[Discord Stonker Bot] Test notification` arrives on the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>'s <Terminology title="The ntfy channel your phone subscribes to for alerts" to="/docs/reference/terminology#ntfy-servers-and-messages">topic</Terminology>.
 
 Under **Context URL**, the dialog reminds you with `Set the context's interpreter to discord-stonker-bot.`
 
@@ -77,16 +77,16 @@ Under **Context URL**, the dialog reminds you with `Set the context's interprete
 }
 ```
 
-With this <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>, Discord Stonker Bot posts its alerts to `https://discord-stonker-bot-example.ntfy.example.com`.
+With this <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>, Discord Stonker Bot posts its alerts to `https://discord-stonker-bot-example.ntfy.example.com`.
 
 ## Notification Output
 
 - **Title**: `[Discord Stonker Bot]` and the alert's `title` (e.g., `[Discord Stonker Bot] Bot disconnected`).
-- **Body**: The alert's `message`, with HTML tags removed as for every <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> (see [HTML Stripping](/docs/interpreters/limitations/#html-stripping)).
+- **Body**: The alert's `message`, with HTML tags removed as for every <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> (see [HTML Stripping](/docs/interpreters/limitations/#html-stripping)).
 - **Priority**: The alert's `priority`, unchanged. Discord Stonker Bot sends `4` for high-priority events and `3` for the rest.
 - **Tags**: `discord-stonker-bot` first, then the alert's `tags` (e.g., `discord-stonker-bot`, `warning`).
 
-The <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> sets no icon, actions, or Markdown.
+The <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> sets no icon, actions, or Markdown.
 
 ## Example
 
@@ -108,7 +108,7 @@ Discord Stonker Bot posts this alert when it has been off Discord for a minute:
 }
 ```
 
-The proxy publishes it to ntfy with these <Terminology title="8 outgoing headers the proxy sets from the notification" to="/docs/reference/terminology#ntfy-headers">ntfy headers</Terminology> and body:
+The proxy publishes it to ntfy with these <Terminology title="The X-Title, X-Priority, and friends sent to ntfy" to="/docs/reference/terminology#ntfy-servers-and-messages">ntfy headers</Terminology> and body:
 
 ```text
 X-Title: [Discord Stonker Bot] Bot disconnected
@@ -122,7 +122,7 @@ ntfy shows the `warning` tag as an emoji and lists `discord-stonker-bot` below t
 
 ## Wrong App Error
 
-A <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> reads alerts from one app, so a payload whose `app` names a different app fails instead of arriving under the wrong name. When that app has a built-in <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>, the proxy answers with HTTP 422 and names the interpreter to use:
+A <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> reads alerts from one app, so a payload whose `app` names a different app fails instead of arriving under the wrong name. When that app has a built-in <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology>, the proxy answers with HTTP 422 and names the interpreter to use:
 
 ```json
 {
@@ -133,9 +133,9 @@ A <Terminology title="a notification source configuration" to="/docs/reference/t
 
 If `app` contains an unknown producer key, the error instead says the app is unsupported and lists the supported interpreter keys. It never recommends configuring the unknown value.
 
-- **Fix** — Set the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s `interpreter` to the key the message names, or point that app at a <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> that uses its own <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>.
+- **Fix** — Set the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>'s `interpreter` to the key the message names, or point that app at a <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> that uses its own <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology>.
 - **Send test** — The sending app reports that the test couldn't be sent, with `HTTP 422` and up to 120 characters of this message as the reason.
-- **Error topic** — If the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology> has an `error_topic` and `error_events` includes `interpretation` (or is omitted), the proxy also sends an `Interpretation Error` with `error-debug.json` to that <Terminology title="optional topic that receives failure notifications" to="/docs/reference/terminology#error-topic">topic</Terminology>.
+- **Error topic** — If the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> has an `error_topic` and `error_events` includes `interpretation` (or is omitted), the proxy also sends an `Interpretation Error` with `error-debug.json` to that <Terminology title="Where you hear about alerts the proxy couldn't handle" to="/docs/reference/terminology#ntfy-servers-and-messages">topic</Terminology>.
 - **Other payloads** — A non-empty body that isn't JSON, or JSON that isn't an alert (such as one without `title`, or with a `version` other than `1`), also fails with HTTP 422 before the app is checked.
 
 :::tip

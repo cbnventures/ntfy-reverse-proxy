@@ -15,7 +15,7 @@ tags:
 
 import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
 
-Pass the input through as the notification body with no transformation — the simplest <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> available.
+Pass the input through as the notification body with no transformation — the simplest <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> available.
 
 ## Behavior
 
@@ -23,10 +23,10 @@ Pass the input through as the notification body with no transformation — the s
 - **Binary input** — Preserved byte-for-byte and uploaded to ntfy as an attachment-only notification instead of being decoded as UTF-8 text.
 - **Object input** — Serialized as pretty-printed JSON (2-space indent).
 
-No title, priority, tags, or other notification fields are set by this <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>. The notification title falls back to the <Terminology title="a notification source configuration" to="/docs/reference/terminology#context">context</Terminology>'s `name` field.
+No title, priority, tags, or other notification fields are set by this <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology>. The notification title falls back to the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>'s `name` field.
 
 :::info
-<Terminology title="8 outgoing headers the proxy sets from the notification" to="/docs/reference/terminology#ntfy-headers">ntfy headers</Terminology> like `X-Title` or `X-Priority` on the incoming HTTP request are **not** forwarded to the ntfy <Terminology title="an ntfy instance defined by name, URL, and token" to="/docs/reference/terminology#server">server</Terminology>. The proxy builds outgoing headers from the <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology>'s <Terminology title="standardized result an interpreter returns" to="/docs/reference/terminology#notification-object">notification object</Terminology>, not from the incoming request. If you need control over title, priority, tags, and other ntfy fields, use the [`ntfy-json`](/docs/interpreters/ntfy-json/) <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> instead.
+<Terminology title="The X-Title, X-Priority, and friends sent to ntfy" to="/docs/reference/terminology#ntfy-servers-and-messages">ntfy headers</Terminology> like `X-Title` or `X-Priority` on the incoming HTTP request are **not** forwarded to the ntfy <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology>. The proxy builds outgoing headers from the <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology>'s <Terminology title="The title, body, and tags an interpreter hands back" to="/docs/reference/terminology#how-it-works">notification object</Terminology>, not from the incoming request. If you need control over title, priority, tags, and other ntfy fields, use the [`ntfy-json`](/docs/interpreters/ntfy-json/) <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> instead.
 :::
 
 ## Use Cases
@@ -42,7 +42,7 @@ curl -X POST https://{context-id}.ntfy.example.com \
   -d "Deployment to production finished successfully."
 ```
 
-To add a title and priority, use the `ntfy-json` <Terminology title="module that transforms a payload into a notification" to="/docs/reference/terminology#interpreter">interpreter</Terminology> with a JSON payload instead:
+To add a title and priority, use the `ntfy-json` <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> with a JSON payload instead:
 
 ```bash
 curl -X POST https://{context-id}.ntfy.example.com \

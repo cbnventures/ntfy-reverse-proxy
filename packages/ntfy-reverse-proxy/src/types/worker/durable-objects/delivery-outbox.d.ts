@@ -3,7 +3,49 @@ import type {
   Worker_Pipeline_Deliver_EnqueueOptions,
   Worker_Pipeline_Deliver_Result,
 } from '../pipeline/deliver.d.ts';
-import type { Worker_Pipeline_Send_Result } from '../pipeline/send.d.ts';
+import type {
+  Worker_Pipeline_DrainFifo_Action,
+  Worker_Pipeline_DrainFifo_DrainResult,
+} from '../pipeline/drain-fifo.d.ts';
+import type {
+  Worker_Pipeline_Send_Result,
+  Worker_Pipeline_Send_ServerResult,
+} from '../pipeline/send.d.ts';
+
+/**
+ * Worker - Durable Objects - Delivery Outbox - Delivery Attempt Minimum.
+ *
+ * @since 2.4.0
+ */
+export type Worker_DurableObjects_DeliveryOutbox_DeliveryAttemptMinimum = number;
+
+/**
+ * Worker - Durable Objects - Delivery Outbox - Delivery Failure Max Age Milliseconds.
+ *
+ * @since 2.4.0
+ */
+export type Worker_DurableObjects_DeliveryOutbox_DeliveryFailureMaxAgeMilliseconds = number;
+
+/**
+ * Worker - Durable Objects - Delivery Outbox - Delivery Retry Base Milliseconds.
+ *
+ * @since 2.4.0
+ */
+export type Worker_DurableObjects_DeliveryOutbox_DeliveryRetryBaseMilliseconds = number;
+
+/**
+ * Worker - Durable Objects - Delivery Outbox - Delivery Retry Max Milliseconds.
+ *
+ * @since 2.4.0
+ */
+export type Worker_DurableObjects_DeliveryOutbox_DeliveryRetryMaxMilliseconds = number;
+
+/**
+ * Worker - Durable Objects - Delivery Outbox - Missing Server Error Name.
+ *
+ * @since 2.4.0
+ */
+export type Worker_DurableObjects_DeliveryOutbox_MissingServerErrorName = string;
 
 /**
  * Worker - Durable Objects - Delivery Outbox - Attachment Chunk Bytes.
@@ -37,7 +79,18 @@ export type Worker_DurableObjects_DeliveryOutbox_DeliverySucceeded_Returns = boo
  */
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Env = Record<string, unknown>;
 
-export type Worker_DurableObjects_DeliveryOutbox_Runner_DrainPromise = Promise<Map<string, Worker_Pipeline_Send_Result>> | undefined;
+export type Worker_DurableObjects_DeliveryOutbox_Runner_DrainPromise = Promise<Worker_Pipeline_DrainFifo_DrainResult<Worker_Pipeline_Send_Result>> | undefined;
+
+/**
+ * Worker - Durable Objects - Delivery Outbox - Runner - Alarm.
+ *
+ * @since 2.4.0
+ */
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Alarm_Returns = Promise<void>;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Alarm_ActiveDrain = Promise<Worker_Pipeline_DrainFifo_DrainResult<Worker_Pipeline_Send_Result>> | undefined;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Alarm_StartedDrain = Promise<Worker_Pipeline_DrainFifo_DrainResult<Worker_Pipeline_Send_Result>>;
 
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Attempt.
@@ -117,11 +170,41 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Checkpoint_Returns = voi
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Constructor.
  *
- * @since 2.2.1
+ * @since 2.4.0
  */
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Constructor_Ctx = DurableObjectState;
 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Constructor_Env = Record<string, unknown>;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Constructor_NotificationColumnsItemName = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Constructor_NotificationColumnsItem = {
+  name: Worker_DurableObjects_DeliveryOutbox_Runner_Constructor_NotificationColumnsItemName;
+};
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Constructor_NotificationColumns = Worker_DurableObjects_DeliveryOutbox_Runner_Constructor_NotificationColumnsItem[];
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Constructor_AttemptCountColumn = Worker_DurableObjects_DeliveryOutbox_Runner_Constructor_NotificationColumnsItem | undefined;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Constructor_DiagnosticConfigColumn = Worker_DurableObjects_DeliveryOutbox_Runner_Constructor_NotificationColumnsItem | undefined;
+
+/**
+ * Worker - Durable Objects - Delivery Outbox - Runner - Continue Drain.
+ *
+ * @since 2.4.0
+ */
+export type Worker_DurableObjects_DeliveryOutbox_Runner_ContinueDrain_PreviousDrain = Worker_Pipeline_DrainFifo_DrainResult<Worker_Pipeline_Send_Result>;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_ContinueDrain_Returns = Promise<Worker_Pipeline_DrainFifo_DrainResult<Worker_Pipeline_Send_Result>>;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_ContinueDrain_CurrentDrainResults = Map<string, Worker_Pipeline_Send_Result>;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_ContinueDrain_CurrentDrainDiscardedIds = Set<string>;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_ContinueDrain_CurrentDrain = {
+  results: Worker_DurableObjects_DeliveryOutbox_Runner_ContinueDrain_CurrentDrainResults;
+  discardedIds: Worker_DurableObjects_DeliveryOutbox_Runner_ContinueDrain_CurrentDrainDiscardedIds;
+};
 
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Delete.
@@ -137,7 +220,22 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Delete_Returns = void;
  *
  * @since 2.2.1
  */
-export type Worker_DurableObjects_DeliveryOutbox_Runner_Drain_Returns = Promise<Map<string, Worker_Pipeline_Send_Result>>;
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Drain_Returns = Promise<Worker_Pipeline_DrainFifo_DrainResult<Worker_Pipeline_Send_Result>>;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Drain_DrainResultResults = Map<string, Worker_Pipeline_Send_Result>;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Drain_DrainResultDiscardedIds = Set<string>;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Drain_DrainResult = {
+  results: Worker_DurableObjects_DeliveryOutbox_Runner_Drain_DrainResultResults;
+  discardedIds: Worker_DurableObjects_DeliveryOutbox_Runner_Drain_DrainResultDiscardedIds;
+};
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Drain_PendingNotificationDeliveryId = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Drain_PendingNotification = {
+  deliveryId: Worker_DurableObjects_DeliveryOutbox_Runner_Drain_PendingNotificationDeliveryId;
+} | undefined;
 
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Enqueue.
@@ -149,6 +247,29 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_Options = Worker
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_Returns = Promise<Worker_Pipeline_Deliver_Result>;
 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_DeliveryId = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_DiagnosticConfigServerNames = string[];
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_DiagnosticConfigPrimaryServerName = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_DiagnosticConfigMode = 'send-once' | 'send-all';
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_DiagnosticConfigContextName = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_DiagnosticConfigInterpreterName = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_DiagnosticConfigErrorTopic = string | undefined;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_DiagnosticConfig = {
+  serverNames: Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_DiagnosticConfigServerNames;
+  primaryServerName: Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_DiagnosticConfigPrimaryServerName;
+  mode: Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_DiagnosticConfigMode;
+  contextName: Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_DiagnosticConfigContextName;
+  interpreterName: Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_DiagnosticConfigInterpreterName;
+  errorTopic?: Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_DiagnosticConfigErrorTopic;
+};
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_DiagnosticConfigJson = string;
 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_PayloadMessages = Worker_Pipeline_Deliver_EnqueueOptions['messages'];
 
@@ -190,9 +311,16 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_Offset = number;
 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_Chunk = ArrayBuffer;
 
-export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_StartedDrain = Promise<Map<string, Worker_Pipeline_Send_Result>>;
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_StartedDrain = Promise<Worker_Pipeline_DrainFifo_DrainResult<Worker_Pipeline_Send_Result>>;
 
-export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_AttemptResults = Map<string, Worker_Pipeline_Send_Result>;
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_AttemptResultsResults = Map<string, Worker_Pipeline_Send_Result>;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_AttemptResultsDiscardedIds = Set<string>;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_AttemptResults = {
+  results: Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_AttemptResultsResults;
+  discardedIds: Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_AttemptResultsDiscardedIds;
+};
 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_PendingRowPending = number;
 
@@ -208,6 +336,8 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_QueuedRow = {
 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_SendResult = Worker_Pipeline_Send_Result | undefined;
 
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_State = 'delivered' | 'discarded' | 'queued';
+
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Handle Error.
  *
@@ -219,17 +349,74 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_Notification
 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_NotificationPayload = string;
 
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_NotificationAttemptCount = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_NotificationDiagnosticConfig = string | null;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_NotificationCreatedAt = number;
+
 export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_Notification = {
   position: Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_NotificationPosition;
   deliveryId: Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_NotificationDeliveryId;
   payload: Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_NotificationPayload;
+  attemptCount: Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_NotificationAttemptCount;
+  diagnosticConfig: Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_NotificationDiagnosticConfig;
+  createdAt: Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_NotificationCreatedAt;
 };
 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_Err = unknown;
 
-export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_Returns = void;
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_Returns = Promise<Worker_Pipeline_DrainFifo_Action>;
 
-export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_ErrorMessage = string;
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_Classification = 'permanent' | 'transient';
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleError_Reason = string;
+
+/**
+ * Worker - Durable Objects - Delivery Outbox - Runner - Handle Failure.
+ *
+ * @since 2.4.0
+ */
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_NotificationPosition = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_NotificationDeliveryId = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_NotificationPayload = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_NotificationAttemptCount = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_NotificationDiagnosticConfig = string | null;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_NotificationCreatedAt = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_Notification = {
+  position: Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_NotificationPosition;
+  deliveryId: Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_NotificationDeliveryId;
+  payload: Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_NotificationPayload;
+  attemptCount: Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_NotificationAttemptCount;
+  diagnosticConfig: Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_NotificationDiagnosticConfig;
+  createdAt: Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_NotificationCreatedAt;
+};
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_SendResult = Worker_Pipeline_Send_Result;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_Returns = Promise<Worker_Pipeline_DrainFifo_Action>;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_SelectedResult = Worker_Pipeline_Send_ServerResult | undefined;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_Classification = 'permanent' | 'transient';
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_Status = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_Transient = boolean;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_Permanent = boolean;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_MissingResultReason = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_HttpStatus = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_HandleFailure_Reason = string;
 
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Peek.
@@ -242,10 +429,19 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Peek_ReturnsDeliveryId =
 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Peek_ReturnsPayload = string;
 
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Peek_ReturnsAttemptCount = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Peek_ReturnsDiagnosticConfig = string | null;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Peek_ReturnsCreatedAt = number;
+
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Peek_Returns = {
   position: Worker_DurableObjects_DeliveryOutbox_Runner_Peek_ReturnsPosition;
   deliveryId: Worker_DurableObjects_DeliveryOutbox_Runner_Peek_ReturnsDeliveryId;
   payload: Worker_DurableObjects_DeliveryOutbox_Runner_Peek_ReturnsPayload;
+  attemptCount: Worker_DurableObjects_DeliveryOutbox_Runner_Peek_ReturnsAttemptCount;
+  diagnosticConfig: Worker_DurableObjects_DeliveryOutbox_Runner_Peek_ReturnsDiagnosticConfig;
+  createdAt: Worker_DurableObjects_DeliveryOutbox_Runner_Peek_ReturnsCreatedAt;
 } | undefined;
 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Peek_RowsItemPosition = number;
@@ -254,10 +450,19 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Peek_RowsItemDeliveryId 
 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Peek_RowsItemPayload = string;
 
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Peek_RowsItemAttemptCount = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Peek_RowsItemDiagnosticConfig = string | null;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Peek_RowsItemCreatedAt = number;
+
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Peek_RowsItem = {
   position: Worker_DurableObjects_DeliveryOutbox_Runner_Peek_RowsItemPosition;
   deliveryId: Worker_DurableObjects_DeliveryOutbox_Runner_Peek_RowsItemDeliveryId;
   payload: Worker_DurableObjects_DeliveryOutbox_Runner_Peek_RowsItemPayload;
+  attemptCount: Worker_DurableObjects_DeliveryOutbox_Runner_Peek_RowsItemAttemptCount;
+  diagnosticConfig: Worker_DurableObjects_DeliveryOutbox_Runner_Peek_RowsItemDiagnosticConfig;
+  createdAt: Worker_DurableObjects_DeliveryOutbox_Runner_Peek_RowsItemCreatedAt;
 };
 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Peek_Rows = Worker_DurableObjects_DeliveryOutbox_Runner_Peek_RowsItem[];
@@ -314,6 +519,50 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_ReadCompletedStages_Comp
 export type Worker_DurableObjects_DeliveryOutbox_Runner_ReadCompletedStages_ServerStages = string[];
 
 /**
+ * Worker - Durable Objects - Delivery Outbox - Runner - Record Failure.
+ *
+ * @since 2.4.0
+ */
+export type Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_NotificationPosition = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_NotificationDeliveryId = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_NotificationPayload = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_NotificationAttemptCount = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_NotificationDiagnosticConfig = string | null;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_NotificationCreatedAt = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_Notification = {
+  position: Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_NotificationPosition;
+  deliveryId: Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_NotificationDeliveryId;
+  payload: Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_NotificationPayload;
+  attemptCount: Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_NotificationAttemptCount;
+  diagnosticConfig: Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_NotificationDiagnosticConfig;
+  createdAt: Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_NotificationCreatedAt;
+};
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_Classification = 'permanent' | 'transient';
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_Reason = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_HttpStatus = number | null;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_Returns = Promise<Worker_Pipeline_DrainFifo_Action>;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_CurrentTime = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_AttemptCount = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_AgeMilliseconds = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_Discarded = boolean;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_RecordFailure_Debug = 'delivery_outbox_discarded' | 'delivery_outbox_retry';
+
+/**
  * Worker - Durable Objects - Delivery Outbox - Runner - Remove.
  *
  * @since 2.2.1
@@ -359,7 +608,129 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_ResolvedS
 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_Server = Lib_Schema_ServerConfig | undefined;
 
+export type Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_ServerError = Error;
+
 export type Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_PrimaryServer = Lib_Schema_ServerConfig | undefined;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_ResolveServers_PrimaryServerError = Error;
+
+/**
+ * Worker - Durable Objects - Delivery Outbox - Runner - Schedule Retry.
+ *
+ * @since 2.4.0
+ */
+export type Worker_DurableObjects_DeliveryOutbox_Runner_ScheduleRetry_AttemptCount = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_ScheduleRetry_Returns = Promise<void>;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_ScheduleRetry_ExistingAlarm = number | null;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_ScheduleRetry_Exponent = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_ScheduleRetry_Delay = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_ScheduleRetry_ScheduledTime = number;
+
+/**
+ * Worker - Durable Objects - Delivery Outbox - Runner - Send Discard Diagnostic.
+ *
+ * @since 2.4.0
+ */
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_NotificationPosition = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_NotificationDeliveryId = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_NotificationPayload = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_NotificationAttemptCount = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_NotificationDiagnosticConfig = string | null;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_NotificationCreatedAt = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_Notification = {
+  position: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_NotificationPosition;
+  deliveryId: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_NotificationDeliveryId;
+  payload: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_NotificationPayload;
+  attemptCount: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_NotificationAttemptCount;
+  diagnosticConfig: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_NotificationDiagnosticConfig;
+  createdAt: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_NotificationCreatedAt;
+};
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_Reason = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_HttpStatus = number | null;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttemptCount = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AgeMilliseconds = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_Returns = Promise<void>;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_DiagnosticConfigServerNames = string[];
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_DiagnosticConfigPrimaryServerName = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_DiagnosticConfigMode = 'send-once' | 'send-all';
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_DiagnosticConfigContextName = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_DiagnosticConfigInterpreterName = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_DiagnosticConfigErrorTopic = string | undefined;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_DiagnosticConfig = {
+  serverNames: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_DiagnosticConfigServerNames;
+  primaryServerName: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_DiagnosticConfigPrimaryServerName;
+  mode: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_DiagnosticConfigMode;
+  contextName: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_DiagnosticConfigContextName;
+  interpreterName: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_DiagnosticConfigInterpreterName;
+  errorTopic?: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_DiagnosticConfigErrorTopic;
+};
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_ResolvedServers = Array<Lib_Schema_ServerConfig & {}>;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_Server = Lib_Schema_ServerConfig | undefined;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_PrimaryServer = Lib_Schema_ServerConfig | undefined;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentDataTimestamp = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentDataContextName = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentDataContextInterpreter = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentDataContextStage = 'delivery';
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentDataContext = {
+  name: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentDataContextName;
+  interpreter: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentDataContextInterpreter;
+  stage: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentDataContextStage;
+};
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentDataDeliveryId = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentDataReason = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentDataHttpStatus = number | null;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentDataAttemptCount = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentDataAgeMs = number;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentData = {
+  timestamp: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentDataTimestamp;
+  context: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentDataContext;
+  delivery_id: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentDataDeliveryId;
+  reason: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentDataReason;
+  http_status: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentDataHttpStatus;
+  attempt_count: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentDataAttemptCount;
+  age_ms: Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentDataAgeMs;
+};
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_AttachmentJson = string;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_SendDiscardDiagnostic_Attachment = ArrayBuffer;
 
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Succeeded.

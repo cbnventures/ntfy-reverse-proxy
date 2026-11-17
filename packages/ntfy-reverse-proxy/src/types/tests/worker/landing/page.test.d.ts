@@ -17,6 +17,17 @@ export type Tests_Worker_Landing_Page_LandingPage_DoesNotShowDebugInfoWhenShowRe
 export type Tests_Worker_Landing_Page_LandingPage_DoesNotShowDebugInfoWhenShowResponseOutputIsFalse_Html = string;
 
 /**
+ * Tests - Worker - Landing - Page - Landing Page - Escapes Config Values In Debug Output.
+ *
+ * @since 2.4.0
+ */
+export type Tests_Worker_Landing_Page_LandingPage_EscapesConfigValuesInDebugOutput_DebugConfig = Lib_Schema_ConfigSchema & {};
+
+export type Tests_Worker_Landing_Page_LandingPage_EscapesConfigValuesInDebugOutput_Response = Response;
+
+export type Tests_Worker_Landing_Page_LandingPage_EscapesConfigValuesInDebugOutput_Html = string;
+
+/**
  * Tests - Worker - Landing - Page - Landing Page - Includes GitHub Link.
  *
  * @since 2.0.0

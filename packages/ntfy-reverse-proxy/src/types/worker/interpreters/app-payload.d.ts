@@ -4,7 +4,7 @@ import type {
   Worker_Pipeline_Interpret_Result,
 } from '../pipeline/interpret.d.ts';
 
-export type Worker_Interpreters_AppPayload_SupportedApp = 'transmission-vpn' | 'pfsense-actions' | 'discord-stonker-bot' | 'outpost';
+export type Worker_Interpreters_AppPayload_SupportedApp = 'transmission-vpn' | 'pfsense-actions' | 'discord-stonker-bot' | 'outpost' | 'mailmask';
 
 export type Worker_Interpreters_AppPayload_SupportedApps = ReadonlyArray<Worker_Interpreters_AppPayload_SupportedApp>;
 
@@ -17,9 +17,16 @@ export type Worker_Interpreters_AppPayload_InterpretAppPayload_AppKey = string;
 
 export type Worker_Interpreters_AppPayload_InterpretAppPayload_AppName = string;
 
+export type Worker_Interpreters_AppPayload_InterpretAppPayload_AppFormatBody_Payload = unknown;
+
+export type Worker_Interpreters_AppPayload_InterpretAppPayload_AppFormatBody_Returns = string;
+
+export type Worker_Interpreters_AppPayload_InterpretAppPayload_AppFormatBody = ((payload: Worker_Interpreters_AppPayload_InterpretAppPayload_AppFormatBody_Payload) => Worker_Interpreters_AppPayload_InterpretAppPayload_AppFormatBody_Returns) | undefined;
+
 export type Worker_Interpreters_AppPayload_InterpretAppPayload_App = {
   key: Worker_Interpreters_AppPayload_InterpretAppPayload_AppKey;
   name: Worker_Interpreters_AppPayload_InterpretAppPayload_AppName;
+  formatBody?: Worker_Interpreters_AppPayload_InterpretAppPayload_AppFormatBody;
 };
 
 export type Worker_Interpreters_AppPayload_InterpretAppPayload_Input = Worker_Pipeline_Interpret_Input;
@@ -65,3 +72,5 @@ export type Worker_Interpreters_AppPayload_InterpretAppPayload_Payload = {
 export type Worker_Interpreters_AppPayload_InterpretAppPayload_IsSupportedApp = boolean;
 
 export type Worker_Interpreters_AppPayload_InterpretAppPayload_SupportedAppList = string;
+
+export type Worker_Interpreters_AppPayload_InterpretAppPayload_Body = string;

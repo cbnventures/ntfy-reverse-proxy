@@ -64,6 +64,8 @@ describe('deliver', () => {
       },
       topic: 'test-topic',
       mode: 'send-once',
+      contextName: 'Synology Context',
+      interpreterName: 'synology',
     };
     const result: Tests_Worker_Pipeline_Deliver_Deliver_UsesTheExplicitContextIDAsTheIsolatedLaneName_Result = await deliver('synology-context', outbox, options);
 
@@ -81,6 +83,10 @@ describe('deliver', () => {
     ]);
 
     expect(enqueueInput['primaryServerName']).toBe('beta');
+
+    expect(enqueueInput['contextName']).toBe('Synology Context');
+
+    expect(enqueueInput['interpreterName']).toBe('synology');
 
     expect(result['state']).toBe('delivered');
 

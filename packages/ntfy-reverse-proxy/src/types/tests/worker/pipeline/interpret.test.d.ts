@@ -5,6 +5,8 @@ import type { Worker_Pipeline_Interpret_Result } from '../../../worker/pipeline/
  *
  * @since 2.0.0
  */
+export type Tests_Worker_Pipeline_Interpret_Interpret_DispatchesToMailmaskInterpreter_Result = Worker_Pipeline_Interpret_Result | null;
+
 export type Tests_Worker_Pipeline_Interpret_Interpret_DispatchesToNtfyJsonInterpreter_Result = Worker_Pipeline_Interpret_Result | null;
 
 export type Tests_Worker_Pipeline_Interpret_Interpret_DispatchesToPlainTextInterpreter_Result = Worker_Pipeline_Interpret_Result | null;

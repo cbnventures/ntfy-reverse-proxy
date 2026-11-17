@@ -8,6 +8,10 @@ import { send } from '../../worker/pipeline/send.js';
 
 import type {
   Tests_Worker_Index_CloudflareWorkers_DurableObject,
+  Tests_Worker_Index_CreateMockKv_KvCast,
+  Tests_Worker_Index_CreateMockKv_Resolved,
+  Tests_Worker_Index_CreateMockKv_Returns,
+  Tests_Worker_Index_CreateMockKv_Store,
   Tests_Worker_Index_CreateWorker_IgnoresAnEmailWhenTheConfigIsInvalid_Message,
   Tests_Worker_Index_CreateWorker_IgnoresAnEmailWhenTheConfigIsInvalid_MockFetch,
   Tests_Worker_Index_CreateWorker_IgnoresAnEmailWhenTheConfigIsInvalid_RawEmail,
@@ -39,6 +43,14 @@ import type {
   Tests_Worker_Index_HandleEmail_SilentlyIgnoresEmailsWithNoMatchingContext_RawEmail,
   Tests_Worker_Index_HandleEmail_SuppressesAuthErrorNotificationWhenEmailErrorEventsExcludesAuthentication_MockFetch,
   Tests_Worker_Index_HandleEmail_SuppressesAuthErrorNotificationWhenEmailErrorEventsExcludesAuthentication_RawEmail,
+  Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_Kv,
+  Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_MessageRequest,
+  Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_MessageResponse,
+  Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_ReplayRequest,
+  Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_ReplayResponse,
+  Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_SessionBody,
+  Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_SessionRequest,
+  Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_SessionResponse,
   Tests_Worker_Index_HandleRequest_IgnoresTheContextHeaderOutsideLocalhost_Request,
   Tests_Worker_Index_HandleRequest_IgnoresTheContextHeaderOutsideLocalhost_Response,
   Tests_Worker_Index_HandleRequest_PassesThroughWhenNoTokenConfigured_Request,
@@ -57,6 +69,8 @@ import type {
   Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_MockFetch,
   Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_ValidRequest,
   Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_ValidResponse,
+  Tests_Worker_Index_HandleRequest_RejectsAMessageWithoutASessionTokenWhenSessionsAreOn_Request,
+  Tests_Worker_Index_HandleRequest_RejectsAMessageWithoutASessionTokenWhenSessionsAreOn_Response,
   Tests_Worker_Index_HandleRequest_Returns403WithNoAuthorizationHeaderWhenTokenRequired_Request,
   Tests_Worker_Index_HandleRequest_Returns403WithNoAuthorizationHeaderWhenTokenRequired_Response,
   Tests_Worker_Index_HandleRequest_Returns403WithWrongToken_Body,
@@ -64,6 +78,9 @@ import type {
   Tests_Worker_Index_HandleRequest_Returns403WithWrongToken_Response,
   Tests_Worker_Index_HandleRequest_Returns404ForUnmatchedSubdomain_Request,
   Tests_Worker_Index_HandleRequest_Returns404ForUnmatchedSubdomain_Response,
+  Tests_Worker_Index_HandleRequest_Returns404OnTheSessionPathWhenSessionsAreOff_Body,
+  Tests_Worker_Index_HandleRequest_Returns404OnTheSessionPathWhenSessionsAreOff_Request,
+  Tests_Worker_Index_HandleRequest_Returns404OnTheSessionPathWhenSessionsAreOff_Response,
   Tests_Worker_Index_HandleRequest_Returns405ForUnsupportedMethods_Request,
   Tests_Worker_Index_HandleRequest_Returns405ForUnsupportedMethods_Response,
   Tests_Worker_Index_HandleRequest_RoutesALocalhostRequestByItsContextHeader_Body,
@@ -84,6 +101,7 @@ import type {
   Tests_Worker_Index_MockConfig,
   Tests_Worker_Index_MockConfigWithErrorTopic,
   Tests_Worker_Index_MockConfigWithErrorTopicAndErrorEvents,
+  Tests_Worker_Index_MockConfigWithSession,
   Tests_Worker_Index_MockConfigWithToken,
   Tests_Worker_Index_MockEmailConfig,
   Tests_Worker_Index_MockEmailConfigWithAllowedFrom,
@@ -333,6 +351,66 @@ const mockConfigWithErrorTopicAndErrorEvents: Tests_Worker_Index_MockConfigWithE
     token: 'my-secret-token',
   }],
 };
+
+/**
+ * Tests - Worker - Mock Config With Session.
+ *
+ * @since 2.4.0
+ */
+const mockConfigWithSession: Tests_Worker_Index_MockConfigWithSession = {
+  settings: {
+    worker_name: 'test-worker',
+    base_domain: 'ntfy.example.com',
+    show_response_output: false,
+  },
+  servers: [{
+    name: 'alpha',
+    server: 'https://ntfy.alpha.example.com',
+    token: 'tk_abc',
+  }],
+  contexts: [{
+    id: 'sessioned',
+    name: 'session-context',
+    type: 'http' as const,
+    interpreter: 'plain-text' as const,
+    topic: 'session-topic',
+    error_topic: undefined,
+    mode: 'send-once' as const,
+    show_visitor_info: false,
+    primary_server: 'alpha',
+    servers: ['alpha'],
+    session: {
+      secret: 'test-secret-that-is-at-least-32-characters-long',
+    },
+  }],
+};
+
+/**
+ * Tests - Worker - Create Mock Kv.
+ *
+ * Map-backed stand-in for the KV namespace that session tokens use to
+ * count requests and remember spent tokens.
+ *
+ * @returns {Tests_Worker_Index_CreateMockKv_Returns}
+ *
+ * @since 2.4.0
+ */
+function createMockKv(): Tests_Worker_Index_CreateMockKv_Returns {
+  const store: Tests_Worker_Index_CreateMockKv_Store = new Map();
+
+  return {
+    get: vi.fn((key) => {
+      const resolved: Tests_Worker_Index_CreateMockKv_Resolved = store.get(key) ?? null;
+
+      return Promise.resolve(resolved);
+    }),
+    put: vi.fn((key, value) => {
+      store.set(key, value);
+
+      return Promise.resolve();
+    }),
+  } as Tests_Worker_Index_CreateMockKv_KvCast as KVNamespace;
+}
 
 /**
  * Tests - Worker - Outbox.
@@ -861,6 +939,92 @@ describe('handleRequest', () => {
     expect(response['status']).toBe(403);
 
     expect(mockFetch).not.toHaveBeenCalled();
+
+    return;
+  });
+
+  /**
+   * Tests - Worker.
+   *
+   * @since 2.4.0
+   */
+  it('accepts one message with a session token from the session path', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('ok', { status: 200 })));
+
+    const kv: Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_Kv = createMockKv();
+    const sessionRequest: Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_SessionRequest = new Request('https://sessioned.ntfy.example.com/session', {
+      method: 'POST',
+      headers: { 'CF-Connecting-IP': '203.0.113.10' },
+    });
+    const sessionResponse: Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_SessionResponse = await handleRequest(sessionRequest, mockConfigWithSession, kv, outbox);
+
+    expect(sessionResponse['status']).toBe(200);
+
+    const sessionBody: Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_SessionBody = await sessionResponse.json();
+
+    expect(sessionBody['expires_in']).toBe(300);
+
+    const messageRequest: Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_MessageRequest = new Request('https://sessioned.ntfy.example.com/', {
+      method: 'POST',
+      body: 'Session request',
+      headers: {
+        'Authorization': `Bearer ${sessionBody['token']}`,
+        'CF-Connecting-IP': '203.0.113.10',
+      },
+    });
+    const messageResponse: Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_MessageResponse = await handleRequest(messageRequest, mockConfigWithSession, kv, outbox);
+
+    expect(messageResponse['status']).toBe(200);
+
+    const replayRequest: Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_ReplayRequest = new Request('https://sessioned.ntfy.example.com/', {
+      method: 'POST',
+      body: 'Session request',
+      headers: {
+        'Authorization': `Bearer ${sessionBody['token']}`,
+        'CF-Connecting-IP': '203.0.113.10',
+      },
+    });
+    const replayResponse: Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_ReplayResponse = await handleRequest(replayRequest, mockConfigWithSession, kv, outbox);
+
+    expect(replayResponse['status']).toBe(403);
+
+    return;
+  });
+
+  /**
+   * Tests - Worker.
+   *
+   * @since 2.4.0
+   */
+  it('rejects a message without a session token when sessions are on', async () => {
+    const request: Tests_Worker_Index_HandleRequest_RejectsAMessageWithoutASessionTokenWhenSessionsAreOn_Request = new Request('https://sessioned.ntfy.example.com/', {
+      method: 'POST',
+      body: 'No session',
+      headers: { 'CF-Connecting-IP': '203.0.113.10' },
+    });
+    const response: Tests_Worker_Index_HandleRequest_RejectsAMessageWithoutASessionTokenWhenSessionsAreOn_Response = await handleRequest(request, mockConfigWithSession, createMockKv(), outbox);
+
+    expect(response['status']).toBe(403);
+
+    return;
+  });
+
+  /**
+   * Tests - Worker.
+   *
+   * @since 2.4.0
+   */
+  it('returns 404 on the session path when sessions are off', async () => {
+    const request: Tests_Worker_Index_HandleRequest_Returns404OnTheSessionPathWhenSessionsAreOff_Request = new Request('https://abc123.ntfy.example.com/session', {
+      method: 'POST',
+    });
+    const response: Tests_Worker_Index_HandleRequest_Returns404OnTheSessionPathWhenSessionsAreOff_Response = await handleRequest(request, mockConfig, createMockKv(), outbox);
+
+    expect(response['status']).toBe(404);
+
+    const body: Tests_Worker_Index_HandleRequest_Returns404OnTheSessionPathWhenSessionsAreOff_Body = await response.json();
+
+    expect(body['message']).toBe('Sessions are not enabled for this context');
 
     return;
   });

@@ -11,10 +11,16 @@ import type {
   Tests_Lib_Schema_ConfigSchema_AllowsOptionalErrorEventsOnEmailContext_Valid,
   Tests_Lib_Schema_ConfigSchema_AllowsOptionalErrorTopic_Result,
   Tests_Lib_Schema_ConfigSchema_AllowsOptionalErrorTopic_Valid,
+  Tests_Lib_Schema_ConfigSchema_AllowsOptionalSessionOnHTTPContext_Result,
+  Tests_Lib_Schema_ConfigSchema_AllowsOptionalSessionOnHTTPContext_Valid,
   Tests_Lib_Schema_ConfigSchema_AllowsOptionalTokenOnHTTPContext_Result,
   Tests_Lib_Schema_ConfigSchema_AllowsOptionalTokenOnHTTPContext_Valid,
+  Tests_Lib_Schema_ConfigSchema_RejectsAContextWithBothTokenAndSession_Invalid,
+  Tests_Lib_Schema_ConfigSchema_RejectsAContextWithBothTokenAndSession_Result,
   Tests_Lib_Schema_ConfigSchema_RejectsAllowedFromFieldOnHTTPContext_Invalid,
   Tests_Lib_Schema_ConfigSchema_RejectsAllowedFromFieldOnHTTPContext_Result,
+  Tests_Lib_Schema_ConfigSchema_RejectsASessionSecretShorterThan32Characters_Invalid,
+  Tests_Lib_Schema_ConfigSchema_RejectsASessionSecretShorterThan32Characters_Result,
   Tests_Lib_Schema_ConfigSchema_RejectsContextWithoutTypeDiscriminator_Invalid,
   Tests_Lib_Schema_ConfigSchema_RejectsContextWithoutTypeDiscriminator_Result,
   Tests_Lib_Schema_ConfigSchema_RejectsHTTPContextIDsThatCannotBeHostLabels_AssertInvalidId,
@@ -501,6 +507,114 @@ describe('configSchema', () => {
     const result: Tests_Lib_Schema_ConfigSchema_AllowsOptionalTokenOnHTTPContext_Result = configSchema.safeParse(valid);
 
     expect(result['success']).toBe(true);
+
+    return;
+  });
+
+  it('allows optional session on HTTP context', () => {
+    const valid: Tests_Lib_Schema_ConfigSchema_AllowsOptionalSessionOnHTTPContext_Valid = {
+      settings: {
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
+      },
+      servers: [{
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
+      }],
+      contexts: [{
+        name: 'homebridge',
+        type: 'http',
+        id: 'abcdefghijklmnopqrst',
+        interpreter: 'plain-text',
+        topic: 'homebridge',
+        mode: 'send-once',
+        show_visitor_info: true,
+        primary_server: 'primary',
+        servers: ['primary'],
+        session: {
+          secret: 'a-session-secret-that-is-at-least-32-characters',
+          ttl_seconds: 300,
+          max_per_hour: 10,
+        },
+      }],
+    };
+
+    const result: Tests_Lib_Schema_ConfigSchema_AllowsOptionalSessionOnHTTPContext_Result = configSchema.safeParse(valid);
+
+    expect(result['success']).toBe(true);
+
+    return;
+  });
+
+  it('rejects a context with both token and session', () => {
+    const invalid: Tests_Lib_Schema_ConfigSchema_RejectsAContextWithBothTokenAndSession_Invalid = {
+      settings: {
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
+      },
+      servers: [{
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
+      }],
+      contexts: [{
+        name: 'homebridge',
+        type: 'http',
+        id: 'abcdefghijklmnopqrst',
+        interpreter: 'plain-text',
+        topic: 'homebridge',
+        mode: 'send-once',
+        show_visitor_info: true,
+        primary_server: 'primary',
+        servers: ['primary'],
+        token: 'my_webhook_secret',
+        session: {
+          secret: 'a-session-secret-that-is-at-least-32-characters',
+        },
+      }],
+    };
+
+    const result: Tests_Lib_Schema_ConfigSchema_RejectsAContextWithBothTokenAndSession_Result = configSchema.safeParse(invalid);
+
+    expect(result['success']).toBe(false);
+
+    return;
+  });
+
+  it('rejects a session secret shorter than 32 characters', () => {
+    const invalid: Tests_Lib_Schema_ConfigSchema_RejectsASessionSecretShorterThan32Characters_Invalid = {
+      settings: {
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
+      },
+      servers: [{
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
+      }],
+      contexts: [{
+        name: 'homebridge',
+        type: 'http',
+        id: 'abcdefghijklmnopqrst',
+        interpreter: 'plain-text',
+        topic: 'homebridge',
+        mode: 'send-once',
+        show_visitor_info: true,
+        primary_server: 'primary',
+        servers: ['primary'],
+        session: {
+          secret: 'too-short',
+        },
+      }],
+    };
+
+    const result: Tests_Lib_Schema_ConfigSchema_RejectsASessionSecretShorterThan32Characters_Result = configSchema.safeParse(invalid);
+
+    expect(result['success']).toBe(false);
 
     return;
   });

@@ -23,7 +23,7 @@ const config: DocusaurusNovaConfig = {
 
   // Deployment.
   url: identity['url'] ?? '',
-  baseUrl: '/',
+  baseUrl: identity['baseUrl'] ?? '/',
   organizationName: identity['organizationName'],
   projectName: identity['projectName'],
   deploymentBranch: undefined,
@@ -163,9 +163,17 @@ const config: DocusaurusNovaConfig = {
         docs: {
           routeBasePath: 'docs',
           sidebarPath: './sidebars.ts',
-          editUrl: undefined,
+          editUrl: 'https://github.com/cbnventures/ntfy-reverse-proxy/tree/main/apps/docs/',
           showLastUpdateTime: true,
           showLastUpdateAuthor: true,
+          lastVersion: 'current',
+          versions: {
+            current: {
+              label: 'Current',
+              badge: false,
+              banner: 'none',
+            },
+          },
         },
         blog: {
           showReadingTime: true,
@@ -185,7 +193,11 @@ const config: DocusaurusNovaConfig = {
             description: 'Release notes, integration deep dives, and the occasional dispatch from the relay room.',
           },
         },
-        pages: undefined,
+        pages: {
+          editUrl: 'https://github.com/cbnventures/ntfy-reverse-proxy/tree/main/apps/docs/',
+          showLastUpdateTime: true,
+          showLastUpdateAuthor: true,
+        },
         sitemap: {
           lastmod: 'date',
           changefreq: 'weekly',
@@ -270,18 +282,41 @@ const config: DocusaurusNovaConfig = {
         {
           label: 'Docs',
           position: 'left',
-          type: undefined,
-          to: '/docs/overview/',
+          type: 'dropdown',
           icon: 'lucide:book-open',
-          activeBaseRegex: '^/docs/(?!interpreters)',
+          items: [
+            {
+              label: 'Overview',
+              to: '/docs/overview/',
+              icon: 'lucide:rocket',
+              activeBaseRegex: '^/docs/(overview/|getting-started/|category/getting-started/|tags/)',
+            },
+            {
+              label: 'Features',
+              to: '/docs/features/delivery-modes/',
+              icon: 'lucide:layers',
+              activeBaseRegex: '^/docs/(features/|category/features/)',
+            },
+            {
+              label: 'Interpreters',
+              to: '/docs/interpreters/overview/',
+              icon: 'lucide:cpu',
+              activeBaseRegex: '^/docs/(interpreters/|category/interpreters/)',
+            },
+            {
+              label: 'Reference',
+              to: '/docs/reference/cli/',
+              icon: 'lucide:library',
+              activeBaseRegex: '^/docs/(reference/|category/reference/)',
+            },
+          ],
         },
         {
-          label: 'Interpreters',
+          label: 'Quick Start',
           position: 'left',
           type: undefined,
-          to: '/docs/interpreters/overview/',
-          icon: 'lucide:cpu',
-          activeBasePath: '/docs/interpreters',
+          to: '/docs/getting-started/quick-start/',
+          icon: 'lucide:play',
         },
         {
           label: 'Blog',
@@ -291,11 +326,27 @@ const config: DocusaurusNovaConfig = {
           icon: 'lucide:pen-line',
         },
         {
-          label: 'GitHub',
-          position: 'right',
-          type: undefined,
-          href: 'https://github.com/cbnventures/ntfy-reverse-proxy',
-          icon: 'lucide:github',
+          label: 'Resources',
+          position: 'left',
+          type: 'dropdown',
+          icon: 'lucide:life-buoy',
+          items: [
+            {
+              label: 'Troubleshooting',
+              to: '/docs/reference/troubleshooting/',
+              icon: 'lucide:wrench',
+            },
+            {
+              label: 'Changelog',
+              href: 'https://github.com/cbnventures/ntfy-reverse-proxy/releases',
+              icon: 'lucide:history',
+            },
+            {
+              label: 'Report an Issue',
+              href: 'https://github.com/cbnventures/ntfy-reverse-proxy/issues',
+              icon: 'lucide:bug',
+            },
+          ],
         },
       ],
     },
@@ -348,7 +399,7 @@ const config: DocusaurusNovaConfig = {
         title: 'This route did not relay.',
         description: 'We could not find a handler for this URL. Head back to the docs index.',
         backHomeLabel: 'Back to the docs',
-        backHomeHref: undefined,
+        backHomeHref: '/docs/overview/',
       },
       errorPageContent: {
         title: 'Relay failed on this page.',
@@ -364,15 +415,19 @@ const config: DocusaurusNovaConfig = {
       sections: {
         docs: [
           {
-            label: 'Getting Started',
-            href: '/docs/getting-started/quick-start/',
+            label: 'Overview',
+            href: '/docs/overview/',
           },
           {
-            label: 'Configuration',
-            href: '/docs/getting-started/configuration/',
+            label: 'Features',
+            href: '/docs/features/delivery-modes/',
           },
           {
-            label: 'CLI Reference',
+            label: 'Interpreters',
+            href: '/docs/interpreters/overview/',
+          },
+          {
+            label: 'Reference',
             href: '/docs/reference/cli/',
           },
         ],
@@ -382,7 +437,19 @@ const config: DocusaurusNovaConfig = {
             href: '/blog/',
           },
           {
-            label: 'GitHub',
+            label: 'Troubleshooting',
+            href: '/docs/reference/troubleshooting/',
+          },
+          {
+            label: 'Changelog',
+            href: 'https://github.com/cbnventures/ntfy-reverse-proxy/releases',
+          },
+          {
+            label: 'Report an Issue',
+            href: 'https://github.com/cbnventures/ntfy-reverse-proxy/issues',
+          },
+          {
+            label: 'Source Code',
             href: 'https://github.com/cbnventures/ntfy-reverse-proxy',
           },
         ],
@@ -392,7 +459,19 @@ const config: DocusaurusNovaConfig = {
             href: 'https://www.cbnventures.io/',
           },
           {
-            label: 'Get In Touch',
+            label: 'Other Apps',
+            href: 'https://www.cbnventures.io/apps/',
+          },
+          {
+            label: 'Open Source',
+            href: 'https://www.cbnventures.io/open-source/',
+          },
+          {
+            label: 'Sponsor',
+            href: 'https://github.com/sponsors/cbnventures',
+          },
+          {
+            label: 'Get in Touch',
             href: 'https://www.cbnventures.io/get-in-touch/',
           },
         ],
@@ -464,7 +543,10 @@ const config: DocusaurusNovaConfig = {
       ],
       copyright: identity['copyright'],
       credit: true,
-      cta: undefined,
+      cta: {
+        label: 'Ready to never miss an alert?',
+        href: '/docs/getting-started/quick-start/',
+      },
     },
   },
 };

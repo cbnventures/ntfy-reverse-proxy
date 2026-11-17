@@ -57,6 +57,19 @@ export type Tests_Lib_Schema_ConfigSchema_AllowsOptionalErrorTopic_Result = {
 };
 
 /**
+ * Tests - Lib - Schema - Config Schema - Allows Optional Session On HTTP Context.
+ *
+ * @since 2.4.0
+ */
+export type Tests_Lib_Schema_ConfigSchema_AllowsOptionalSessionOnHTTPContext_Valid = Record<string, unknown>;
+
+export type Tests_Lib_Schema_ConfigSchema_AllowsOptionalSessionOnHTTPContext_ResultSuccess = boolean;
+
+export type Tests_Lib_Schema_ConfigSchema_AllowsOptionalSessionOnHTTPContext_Result = {
+  success: Tests_Lib_Schema_ConfigSchema_AllowsOptionalSessionOnHTTPContext_ResultSuccess;
+};
+
+/**
  * Tests - Lib - Schema - Config Schema - Allows Optional Token On HTTP Context.
  *
  * @since 2.0.0
@@ -70,6 +83,19 @@ export type Tests_Lib_Schema_ConfigSchema_AllowsOptionalTokenOnHTTPContext_Resul
 };
 
 /**
+ * Tests - Lib - Schema - Config Schema - Rejects A Context With Both Token And Session.
+ *
+ * @since 2.4.0
+ */
+export type Tests_Lib_Schema_ConfigSchema_RejectsAContextWithBothTokenAndSession_Invalid = Record<string, unknown>;
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsAContextWithBothTokenAndSession_ResultSuccess = boolean;
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsAContextWithBothTokenAndSession_Result = {
+  success: Tests_Lib_Schema_ConfigSchema_RejectsAContextWithBothTokenAndSession_ResultSuccess;
+};
+
+/**
  * Tests - Lib - Schema - Config Schema - Rejects Allowed From Field On HTTP Context.
  *
  * @since 2.0.0
@@ -80,6 +106,19 @@ export type Tests_Lib_Schema_ConfigSchema_RejectsAllowedFromFieldOnHTTPContext_R
 
 export type Tests_Lib_Schema_ConfigSchema_RejectsAllowedFromFieldOnHTTPContext_Result = {
   success: Tests_Lib_Schema_ConfigSchema_RejectsAllowedFromFieldOnHTTPContext_ResultSuccess;
+};
+
+/**
+ * Tests - Lib - Schema - Config Schema - Rejects A Session Secret Shorter Than 32 Characters.
+ *
+ * @since 2.4.0
+ */
+export type Tests_Lib_Schema_ConfigSchema_RejectsASessionSecretShorterThan32Characters_Invalid = Record<string, unknown>;
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsASessionSecretShorterThan32Characters_ResultSuccess = boolean;
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsASessionSecretShorterThan32Characters_Result = {
+  success: Tests_Lib_Schema_ConfigSchema_RejectsASessionSecretShorterThan32Characters_ResultSuccess;
 };
 
 /**

@@ -1,5 +1,18 @@
 # ntfy-reverse-proxy
 
+## 2.4.0 - 2026-11-17
+
+### UPDATED
+- Nova is now 0.44.0.
+- The root landing page uses the shared service card, with a documentation link and embedded project branding, and no longer loads Google Fonts.
+
+### FIXED
+- A notification that ntfy keeps rejecting no longer blocks its context's queue. Rejected notifications are dropped and reported to error_topic, while network errors and server outages keep retrying on a timer for up to 24 hours.
+
+### ADDED
+- Session tokens for HTTP contexts whose senders run public code, set with a context's session secret instead of its token, handed out at /session and spent once per message from the same address.
+- A Mailmask interpreter for its versioned refusal and test notifications.
+
 ## 2.3.0 - 2026-11-01
 
 ### UPDATED
@@ -17,21 +30,21 @@
 - Preserved binary plain-text payloads as attachments without adding an empty notification message.
 
 ### ADDED
-- Added app-mismatch diagnostics that identify the correct supported interpreter for each incoming alert.
-- Added Transmission VPN, pfSense Actions, Discord Stonker Bot, and Outpost interpreters that preserve source priorities and tags while labeling each notification by app.
-- Added the X-NRP-Context header for selecting a context during localhost development.
+- App-mismatch diagnostics that identify the correct supported interpreter for each incoming alert.
+- Transmission VPN, pfSense Actions, Discord Stonker Bot, and Outpost interpreters that preserve source priorities and tags while labeling each notification by app.
+- The X-NRP-Context header for selecting a context during localhost development.
 
 ## 2.2.1 - 2026-10-18
 
 ### UPDATED
 - Aligned the sample configuration and full documentation example with the CLI's canonical server, context, and settings ordering.
-- Updated the project toolchain to Nova 0.33.0, including native workspace orchestration and the dedicated custom-rule preset entry point.
+- The project toolchain moves to Nova 0.33.0, including native workspace orchestration and the dedicated custom-rule preset entry point.
 
 ## 2.2.0 - 2026-10-13
 
 ### UPDATED
 - Regenerated the bug-report template with sentence-aware pronoun capitalization.
-- Updated Nova and Docusaurus Preset Nova to 0.30.1.
+- Nova and Docusaurus Preset Nova are now 0.30.1.
 - Adopted role-based TypeScript preset layers.
 - Standardized root-owned tests under the shared project layout.
 - Aligned JSDoc hierarchies with the function-level contract.
@@ -40,51 +53,51 @@
 - Passed generated Cloudflare Pages project and branch values through the workflow environment so deployment commands remain shell-safe.
 
 ### ADDED
-- Added a SQLite-backed Durable Object delivery outbox with isolated FIFO lanes per context, automatic retries on the next notification, per-stage delivery checkpoints, and stable ntfy sequence IDs without Cloudflare Queues.
+- A SQLite-backed Durable Object delivery outbox with isolated FIFO lanes per context, automatic retries on the next notification, per-stage delivery checkpoints, and stable ntfy sequence IDs without Cloudflare Queues.
 
 ## 2.1.8 - 2026-10-11
 
 ### UPDATED
-- Updated Nova and the Docusaurus preset to 0.29.0 across the project, CLI package, and docs.
+- Nova and the Docusaurus preset are now 0.29.0 across the project, CLI package, and docs.
 - Completed JavaScript, TypeScript, browser, Node.js, Cloudflare Workers, and Docusaurus preset coverage, and consolidated custom Nova lint rules into the shared rule bundle while preserving workspace-specific overrides.
 - Declared the root workspace as ESM and expanded Vitest configuration and setup type-check coverage.
-- Updated Wrangler, Cloudflare Workers types, and TSX to their latest compatible releases and regenerated the Worker runtime declarations.
+- Wrangler, Cloudflare Workers types, and TSX are now on their latest compatible releases, and the Worker runtime declarations are regenerated.
 - Recorded README badge and Node.js bug-report settings explicitly in Nova configuration.
 
 ## 2.1.7 - 2026-10-03
 
 ### UPDATED
-- Updated Nova and the Docusaurus preset to 0.28.0 across the project, CLI package, and docs, including the runtime-only Vitest resolution fix.
+- Nova and the Docusaurus preset are now 0.28.0 across the project, CLI package, and docs, including the runtime-only Vitest resolution fix.
 - Assigned explicit child environments to development, production, build, and deployment script groups.
 
 ## 2.1.6 - 2026-09-23
 
 ### UPDATED
-- Updated Nova and the Docusaurus preset to 0.27.3 across the project, CLI package, and docs, granting the generated inactive-thread workflow write access to pull requests.
+- Nova and the Docusaurus preset are now 0.27.3 across the project, CLI package, and docs, granting the generated inactive-thread workflow write access to pull requests.
 
 ## 2.1.5 - 2026-09-18
 
 ### UPDATED
-- Updated Nova and the Docusaurus preset to 0.27.2 across the project, CLI package, and docs.
+- Nova and the Docusaurus preset are now 0.27.2 across the project, CLI package, and docs.
 
 ## 2.1.4 - 2026-09-16
 
 ### UPDATED
 - Scoped the Cloudflare Workers ESLint runtime preset to worker implementation files so the hybrid package keeps its Workers and Node.js lint boundaries explicit.
 - Approved fsevents for macOS file watching and exact-version node-pty for its native build while explicitly denying the other reviewed install scripts.
-- Updated node-pty to the official 1.2.0-beta.14 pre-release so clean macOS installs use executable upstream prebuilds.
-- Updated developer tooling to Nova 0.27.0, Wrangler 4.131.1, and Workers Types 5.20260911.1 while preserving CLI token generation compatibility and normalizing generated type output for repository checks.
+- The node-pty package is now the official 1.2.0-beta.14 pre-release so clean macOS installs use executable upstream prebuilds.
+- Developer tooling moves to Nova 0.27.0, Wrangler 4.131.1, and Workers Types 5.20260911.1 while preserving CLI token generation compatibility and normalizing generated type output for repository checks.
 - Upgraded Docusaurus to 3.10.2, React to 19.2.8, TypeScript to 6.0.3, ESLint to 9.39.5, and Vitest to 4.1.11, while aligning Node types to 24.9.1.
 - Disabled Turbo caching for build and check tasks so repository commands no longer accumulate persistent Turbo cache artifacts.
 
 ### FIXED
-- Fixed installed CLI setup and deployment by packaging a valid starter config, resolving the bundled Worker entry at runtime, reading the installed version, and keeping repository-only linting out of deploys.
-- Fixed interactive CLI integration tests to run in restricted environments and report child-process failures immediately.
+- Installed CLI setup and deployment work by packaging a valid starter config, resolving the bundled Worker entry at runtime, reading the installed version, and keeping repository-only linting out of deploys.
+- Interactive CLI integration tests run in restricted environments and report child-process failures immediately.
 
 ## 2.1.3 - 2026-08-20
 
 ### UPDATED
-- Updated @cbnventures/nova to 0.25.2 and @cbnventures/docusaurus-preset-nova to 0.25.2.
+- The @cbnventures/nova package is now 0.25.2 and @cbnventures/docusaurus-preset-nova is now 0.25.2.
 
 ## 2.1.2 - 2026-08-20
 
@@ -94,7 +107,7 @@
 ## 2.1.1 - 2026-08-19
 
 ### UPDATED
-- Updated @cbnventures/nova to 0.25.0 and @cbnventures/docusaurus-preset-nova to 0.25.0.
+- The @cbnventures/nova package is now 0.25.0 and @cbnventures/docusaurus-preset-nova is now 0.25.0.
 - Upgrade Wrangler from 4.123.0 to 4.124.0, @cloudflare/vitest-pool-workers from 0.21.3 to 0.22.0, tsx from 4.21.0 to 4.23.12, Chalk from 5.6.2 to 6.0.0, Commander from 14.0.3 to 15.0.0, and turbo from 2.10.6 to 2.10.11.
 
 ### FIXED
@@ -126,17 +139,17 @@
 ## 2.0.4 - 2026-05-04
 
 ### UPDATED
-- error_topic notifications now include the unauthorized request body (parsed as JSON or text, never both), structured Zod validation issues, error stack traces, response status, masked authorization header, and pipeline stage — enough detail to debug incoming traffic without keeping wrangler tail open
+- The error_topic notifications now include the unauthorized request body (parsed as JSON or text, never both), structured Zod validation issues, error stack traces, response status, masked authorization header, and pipeline stage — enough detail to debug incoming traffic without keeping wrangler tail open
 
 ## 2.0.3 - 2026-04-23
 
 ### UPDATED
-- Updated nova dependency to v0.17.0.
+- The nova dependency is now v0.17.0.
 
 ## 2.0.2 - 2026-04-21
 
 ### FIXED
-- Fix docs deployment silently failing to reach Cloudflare Pages — nova v0.16.2 workflow template update configures the download-artifact step with the correct workspace build path, so the generated site now lands at `apps/docs/build/` for the Pages upload to pick up, instead of being extracted to the repo root.
+- Docs deployment no longer silently fails to reach Cloudflare Pages — nova v0.16.2 workflow template update configures the download-artifact step with the correct workspace build path, so the generated site now lands at `apps/docs/build/` for the Pages upload to pick up, instead of being extracted to the repo root.
 
 ## 2.0.1 - 2026-04-19
 
@@ -153,8 +166,8 @@
 - HTTP-to-HTTPS automatic redirect for production requests
 
 ### ADDED
-- pfSense interpreter for firewall event notifications
-- ntfy JSON pass-through interpreter for native forwarding
+- The pfSense interpreter for firewall event notifications
+- The ntfy JSON pass-through interpreter for native forwarding
 - KV-backed accumulator for Statuspage incidents with 24-hour TTL for tracking component status changes
 - Automatic message splitting for notifications exceeding 4KB with numbered part headers
 - Synology DSM interpreter for NAS alert notifications
@@ -169,33 +182,33 @@
 - Context-based routing with per-context interpreter, authentication, target server, and delivery mode
 
 ### FIXED
-- Fix wrangler type generation failing on CI — committed worker-configuration.d.ts as a build dependency and wrapped the generate step to gracefully skip when wrangler.toml is not present
-- Fix GitHub Packages workflow failing to install cross-repo scoped dependencies — resolved by nova v0.15.2 workflow template update that configures the registry after npm install
+- Wrangler type generation no longer fails on CI — committed worker-configuration.d.ts as a build dependency and wrapped the generate step to gracefully skip when wrangler.toml is not present
+- The GitHub Packages workflow no longer fails to install cross-repo scoped dependencies — resolved by nova v0.15.2 workflow template update that configures the registry after npm install
 
 ### REMOVED
 - Old single-file source structure
-- @cloudflare/workers-types package (replaced by Wrangler 4 built-in types)
+- The @cloudflare/workers-types package (replaced by Wrangler 4 built-in types)
 - Subdomain-based routing replaced by context-based routing
 
 ## 1.2.2 - 2026-03-13
 
 ### UPDATED
-- Updated package dependencies.
+- Package dependencies are up to date.
 - Wrangler configuration migrated to v4 with built-in runtime type generation.
 - Enhanced TypeScript declaration linting rules.
 
 ### REMOVED
-- @cloudflare/workers-types package (replaced by Wrangler 4 built-in types)
+- The @cloudflare/workers-types package (replaced by Wrangler 4 built-in types)
 
 ## 1.2.1 - 2025-01-21
 
 ### UPDATED
-- Updated package dependencies.
+- Package dependencies are up to date.
 - ESLint configuration migrated to the new flat config format.
 - License changed from Apache License 2.0 to MIT.
 
 ### FIXED
-- Fix incorrect TypeScript type issues.
+- Incorrect TypeScript type issues are resolved.
 
 ## 1.2.0 - 2024-02-27
 
@@ -209,12 +222,12 @@
 
 ### UPDATED
 - Reverted the wrangler.toml split back to a single configuration file, restoring the `npm run deploy` script.
-- Updated development dependencies and the Cloudflare Workers compatibility date.
+- Development dependencies and the Cloudflare Workers compatibility date are current.
 
 ## 1.0.4 - 2024-01-19
 
 ### UPDATED
-- Updated package dependencies.
+- Package dependencies are up to date.
 - Deployment configuration split into wrangler-prod.toml and wrangler-test.toml instead of a single wrangler.toml.
 - ESLint now runs as part of the deployment process.
 - Revamped the TypeScript and ESLint configuration files.
@@ -222,8 +235,8 @@
 ## 1.0.3 - 2024-01-18
 
 ### UPDATED
-- `deploy` script now explicitly targets wrangler.toml.
-- .gitignore updated to track the wrangler-sample.toml template while ignoring generated wrangler*.toml files.
+- The `deploy` script now explicitly targets wrangler.toml.
+- The .gitignore file is updated to track the wrangler-sample.toml template while ignoring generated wrangler*.toml files.
 
 ## 1.0.2 - 2024-01-10
 
@@ -240,7 +253,7 @@
 ### ADDED
 - Reverse proxy for forwarding push notifications to one or more self-hosted ntfy server instances via Cloudflare Workers.
 - Subdomain-based routing to match incoming requests to configured local ntfy servers.
-- send-once and send-all delivery modes for redundant multi-server setups.
+- Send-once and send-all delivery modes for redundant multi-server setups.
 - Country, IP address, and user agent allow/disallow filtering for visitor access control.
 - Visitor info section with geolocation and ISP details attached to incoming requests.
 - Automatic HTTPS redirect enforcement.

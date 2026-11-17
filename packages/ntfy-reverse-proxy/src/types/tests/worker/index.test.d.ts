@@ -24,6 +24,8 @@ export type Tests_Worker_Index_MockEmailConfigWithErrorTopicAndErrorEvents = Lib
 
 export type Tests_Worker_Index_MockConfigWithErrorTopicAndErrorEvents = Lib_Schema_ConfigSchema & {};
 
+export type Tests_Worker_Index_MockConfigWithSession = Lib_Schema_ConfigSchema & {};
+
 export type Tests_Worker_Index_Outbox = Worker_Pipeline_Deliver_Namespace & {};
 
 export type Tests_Worker_Index_SendResult = Worker_Pipeline_Send_Result & {};
@@ -36,6 +38,19 @@ export type Tests_Worker_Index_Env = Record<string, string | KVNamespace | Worke
  * @since 2.3.0
  */
 export type Tests_Worker_Index_CloudflareWorkers_DurableObject = ReturnType<typeof vi['fn']>;
+
+/**
+ * Tests - Worker - Index - Create Mock Kv.
+ *
+ * @since 2.4.0
+ */
+export type Tests_Worker_Index_CreateMockKv_Returns = KVNamespace;
+
+export type Tests_Worker_Index_CreateMockKv_Store = Map<string, string>;
+
+export type Tests_Worker_Index_CreateMockKv_Resolved = string | null;
+
+export type Tests_Worker_Index_CreateMockKv_KvCast = unknown;
 
 /**
  * Tests - Worker - Index - Create Worker - Ignores An Email When The Config Is Invalid.
@@ -148,6 +163,27 @@ export type Tests_Worker_Index_HandleEmail_SuppressesAuthErrorNotificationWhenEm
 export type Tests_Worker_Index_HandleEmail_SuppressesAuthErrorNotificationWhenEmailErrorEventsExcludesAuthentication_RawEmail = string;
 
 /**
+ * Tests - Worker - Index - Handle Request - Accepts One Message With A Session Token From The Session Path.
+ *
+ * @since 2.4.0
+ */
+export type Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_Kv = KVNamespace;
+
+export type Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_SessionRequest = Request;
+
+export type Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_SessionResponse = Response;
+
+export type Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_SessionBody = Record<string, unknown>;
+
+export type Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_MessageRequest = Request;
+
+export type Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_MessageResponse = Response;
+
+export type Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_ReplayRequest = Request;
+
+export type Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_ReplayResponse = Response;
+
+/**
  * Tests - Worker - Index - Handle Request - Ignores The Context Header Outside Localhost.
  *
  * @since 2.3.0
@@ -209,6 +245,15 @@ export type Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnE
 export type Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_ValidResponse = Response;
 
 /**
+ * Tests - Worker - Index - Handle Request - Rejects A Message Without A Session Token When Sessions Are On.
+ *
+ * @since 2.4.0
+ */
+export type Tests_Worker_Index_HandleRequest_RejectsAMessageWithoutASessionTokenWhenSessionsAreOn_Request = Request;
+
+export type Tests_Worker_Index_HandleRequest_RejectsAMessageWithoutASessionTokenWhenSessionsAreOn_Response = Response;
+
+/**
  * Tests - Worker - Index - Handle Request - Returns 403 With No Authorization Header When Token Required.
  *
  * @since 2.0.0
@@ -236,6 +281,17 @@ export type Tests_Worker_Index_HandleRequest_Returns403WithWrongToken_Body = Rec
 export type Tests_Worker_Index_HandleRequest_Returns404ForUnmatchedSubdomain_Request = Request;
 
 export type Tests_Worker_Index_HandleRequest_Returns404ForUnmatchedSubdomain_Response = Response;
+
+/**
+ * Tests - Worker - Index - Handle Request - Returns 404 On The Session Path When Sessions Are Off.
+ *
+ * @since 2.4.0
+ */
+export type Tests_Worker_Index_HandleRequest_Returns404OnTheSessionPathWhenSessionsAreOff_Request = Request;
+
+export type Tests_Worker_Index_HandleRequest_Returns404OnTheSessionPathWhenSessionsAreOff_Response = Response;
+
+export type Tests_Worker_Index_HandleRequest_Returns404OnTheSessionPathWhenSessionsAreOff_Body = Record<string, unknown>;
 
 /**
  * Tests - Worker - Index - Handle Request - Returns 405 For Unsupported Methods.

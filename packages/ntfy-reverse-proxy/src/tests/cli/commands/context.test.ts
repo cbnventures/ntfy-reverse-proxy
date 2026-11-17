@@ -10,7 +10,7 @@ import {
 } from 'vitest';
 
 import {
-  addContext, editContext, generateId, listContexts, removeContext,
+  addContext, editContext, generateId, generateSessionSecret, listContexts, removeContext,
 } from '../../../cli/commands/context.js';
 
 import type {
@@ -20,6 +20,8 @@ import type {
   Tests_Cli_Commands_Context_ContextCommands_AutoRegeneratesDuplicateIds_Config,
   Tests_Cli_Commands_Context_ContextCommands_AutoRegeneratesDuplicateIds_ConfigJson,
   Tests_Cli_Commands_Context_ContextCommands_ConfigJson,
+  Tests_Cli_Commands_Context_ContextCommands_Generates64CharacterSessionSecrets_Secret1,
+  Tests_Cli_Commands_Context_ContextCommands_Generates64CharacterSessionSecrets_Secret2,
   Tests_Cli_Commands_Context_ContextCommands_GeneratesRandomIdStrings_Id1,
   Tests_Cli_Commands_Context_ContextCommands_GeneratesRandomIdStrings_Id2,
   Tests_Cli_Commands_Context_ContextCommands_ListsContexts_Contexts,
@@ -29,6 +31,8 @@ import type {
   Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateEmailIdsOnEdit_Config,
   Tests_Cli_Commands_Context_ContextCommands_RejectsRemovalOfAMissingContext_Contexts,
   Tests_Cli_Commands_Context_ContextCommands_RemovesAContext_Contexts,
+  Tests_Cli_Commands_Context_ContextCommands_SwitchesAContextFromATokenToSessionTokens_Context,
+  Tests_Cli_Commands_Context_ContextCommands_SwitchesAContextFromATokenToSessionTokens_Contexts,
   Tests_Cli_Commands_Context_TestConfigPath,
   Tests_Cli_Commands_Context_TestConfigPathFragment,
   Tests_Cli_Commands_Context_TestConfigTmpDir,
@@ -328,6 +332,49 @@ describe('context commands', () => {
     expect(id2['length']).toBe(20);
 
     expect(id1).not.toBe(id2);
+
+    return;
+  });
+
+  it('generates 64-character session secrets', () => {
+    const secret1: Tests_Cli_Commands_Context_ContextCommands_Generates64CharacterSessionSecrets_Secret1 = generateSessionSecret();
+
+    const secret2: Tests_Cli_Commands_Context_ContextCommands_Generates64CharacterSessionSecrets_Secret2 = generateSessionSecret();
+
+    expect(secret1['length']).toBe(64);
+
+    expect(secret1).not.toBe(secret2);
+
+    return;
+  });
+
+  it('switches a context from a token to session tokens', () => {
+    addContext(testConfigPath, {
+      id: 'abc123',
+      name: 'test',
+      type: 'http',
+      interpreter: 'plain-text',
+      topic: 'test',
+      mode: 'send-once',
+      show_visitor_info: false,
+      primary_server: 'alpha',
+      servers: ['alpha'],
+      token: 'old-static-token',
+    });
+
+    editContext(testConfigPath, 'test', {
+      session: { secret: generateSessionSecret() },
+      token: undefined,
+    });
+
+    const contexts: Tests_Cli_Commands_Context_ContextCommands_SwitchesAContextFromATokenToSessionTokens_Contexts = listContexts(testConfigPath);
+    const context: Tests_Cli_Commands_Context_ContextCommands_SwitchesAContextFromATokenToSessionTokens_Context = contexts[0];
+
+    expect(context).toBeDefined();
+
+    expect(context).not.toHaveProperty('token');
+
+    expect(context).toHaveProperty('session.secret');
 
     return;
   });

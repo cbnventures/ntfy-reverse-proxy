@@ -17,122 +17,65 @@ tags:
   - terminology
 ---
 
-Define the Context, Interpreter, Pipeline, and other domain-specific terms that appear throughout the Reverse Proxy for ntfy documentation.
+import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
 
-## Worker
+Short, practical definitions for the Context, Interpreter, Pipeline, delivery, and Cloudflare terms used throughout the Reverse Proxy for ntfy documentation. Tables list the term first, also known as, then the definition.
 
-The Worker is the Cloudflare-hosted entry point that receives incoming HTTP webhooks and emails and runs them through the pipeline. It is one of two runtimes in the project — the CLI is the other, managing `config.json` locally instead of processing traffic.
+:::tip[Glossary Terms]
+Throughout the docs, you will see <Terminology title="A quick reminder, right where you read it" to="/docs/reference/terminology">highlighted terms</Terminology> with a dotted underline. Hover over any of them for a quick reminder of what they mean, or click to jump to the full definition.
+:::
 
-## Pipeline
+## How It Works
 
-The pipeline is the ordered sequence of stages a request or email passes through inside the Worker, grouped into Ingress, Processing, and Delivery phases. The HTTP pipeline runs 10 stages (Receive, Route, Authenticate, Parse, Interpret, Format, Split, Deliver, Send, Respond); the email pipeline runs 9, replacing Receive with Parse Email and Respond with Log.
+| Term                         | Also known as     | Definition                                                                                                                                                                                                                                                                                                                       |
+|------------------------------|-------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Worker**                   | Cloudflare Worker | The Cloudflare-hosted entry point that receives incoming webhooks and emails and runs them through the pipeline. The CLI is the other runtime, managing `config.json` locally instead of processing traffic.                                                                                                                     |
+| **pipeline**                 | —                 | The ordered stages a request or email passes through inside the Worker, grouped into Ingress, Processing, and Delivery. HTTP runs 10 stages (Receive through Respond); email runs 9, swapping Receive for Parse Email and Respond for Log.                                                                                       |
+| **context**                  | `contexts` entry  | A notification source configuration: a subdomain or email address, an interpreter, a topic, a server list, and a delivery mode. Each context is either HTTP or email, and its ID also names its own delivery lane.                                                                                                               |
+| **interpreter**              | `interpreter`     | A module that turns a raw webhook payload or email into a notification object with a title, body, priority, tags, and other ntfy fields. Built-ins cover Statuspage.io, Synology DSM, Seerr, pfSense, UniFi, Transmission VPN, pfSense Actions, Discord Stonker Bot, Outpost, and Mailmask, plus plain-text and ntfy-JSON modes. |
+| **notification object**      | —                 | The standardized result an interpreter returns, with fields like title, body, priority, tags, icon, actions, and markdown. An optional attachment and its filename travel alongside it, not nested inside it.                                                                                                                    |
+| **notification suppression** | —                 | When an interpreter returns `null` instead of a notification object, intentionally dropping the event. An HTTP context responds with an `"ignored"` status; an email context drops the message with no reply.                                                                                                                    |
 
-## Context
+## ntfy Servers and Messages
 
-A context is a notification source configuration that defines a subdomain or email address, an interpreter, a topic, a server list, and a delivery mode. Each webhook source or email sender maps to one context, and a context is either the HTTP type or the email type.
+| Term               | Also known as     | Definition                                                                                                                                                                                                                                                                                                                                                         |
+|--------------------|-------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **ntfy**           | —                 | The open-source push notification service ([ntfy.sh](https://ntfy.sh)) this project delivers to. Reverse Proxy for ntfy sits in front of one or more self-hosted ntfy servers and prepares notifications for them.                                                                                                                                                 |
+| **server**         | `servers` entry   | An ntfy instance defined by a name, a URL, and an authentication token. Each server is defined once, and any number of contexts can reference it by name.                                                                                                                                                                                                          |
+| **primary server** | `primary_server`  | The preferred ntfy server for a context, which `send-once` tries first before the remaining servers in order.                                                                                                                                                                                                                                                      |
+| **topic**          | `topic`           | The ntfy channel a context publishes its notifications to.                                                                                                                                                                                                                                                                                                         |
+| **error topic**    | `error_topic`     | An optional ntfy topic that receives authentication, interpretation, and discarded-delivery details as JSON debug attachments. These one-shot, best-effort diagnostics bypass durable delivery. The `error_events` setting narrows authentication and interpretation categories, while outbox discard diagnostics remain visible whenever the topic is configured. |
+| **ntfy headers**   | —                 | The 8 outgoing headers the proxy sets from the notification object: `X-Title`, `X-Priority`, `X-Tags`, `X-Markdown`, `X-Icon`, `X-Actions`, `X-Attach`, and `X-Filename`. No other headers, like `X-Click` or incoming request headers, are forwarded.                                                                                                             |
+| **attachment**     | —                 | A binary file delivered alongside a notification, such as a binary `plain-text` body or an error topic's `error-debug.json`. It is sent as a PUT with its filename header, after any POSTs carrying text parts.                                                                                                                                                    |
+| **smart split**    | message splitting | Breaks a notification body over 4000 UTF-8 bytes into numbered parts labeled like "(1/3)". It never splits a multi-byte character mid-sequence.                                                                                                                                                                                                                    |
 
-Each context ID also names its own durable delivery lane. A failed normal notification blocks only later normal notifications from that same context; best-effort error-topic diagnostics do not enter the lane.
+## Delivery Modes and Reliability
 
-## Interpreter
+| Term                | Also known as | Definition                                                                                                                                                                                                                                                                         |
+|---------------------|---------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **send-once**       | `mode`        | A delivery mode that tries the primary server first, then the remaining servers in order, stopping at the first success. If a fallback delivers, a warning that the primary was unreachable is prepended to the body.                                                              |
+| **send-all**        | `mode`        | A delivery mode that sends to every server in the context's list at the same time, with no failover.                                                                                                                                                                               |
+| **delivery outbox** | —             | SQLite-backed Durable Object storage that saves a fully formatted notification before sending it to ntfy. Transient failures retry by alarm; permanent failures are discarded, and transient rows expire only after 24 hours with at least three failed attempts.                  |
+| **delivery lane**   | —             | One context's independent FIFO list of normal notifications inside the delivery outbox. A transiently failed oldest item leads until success or age-based expiry, while other contexts' lanes continue; error-topic diagnostics bypass it.                                         |
+| **bounded retry**   | —             | A transient notification retries with exponential backoff and remains eligible for at least 24 hours. It can expire only after the age limit and a three-attempt minimum. A crash after ntfy accepts a request but before the proxy records success can still produce a duplicate. |
+| **Durable Object**  | —             | Cloudflare's strongly consistent Worker storage and coordination primitive. The proxy uses one SQLite-backed Durable Object per context ID for its delivery lane, and the CLI adds its binding and migration to `wrangler.toml`.                                                   |
 
-An interpreter is a module that transforms a raw webhook payload or email into a standardized notification object with a title, body, priority, tags, and other ntfy fields. The project maintains built-in interpreters for Statuspage.io, Synology DSM, Seerr, pfSense, UniFi, and the alerts from Transmission VPN, pfSense Actions, Discord Stonker Bot, and Outpost, plus generic plain-text and ntfy-JSON modes.
+## Configuration
 
-## Notification Object
+| Term              | Also known as          | Definition                                                                                                                                                                                                                                         |
+|-------------------|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **`config.json`** | —                      | The single file holding the `settings`, `servers`, and `contexts` sections; deploy ships a copy inside the Worker. The CLI manages it and keeps it gitignored, committing only `config.sample.json`.                                               |
+| **debug mode**    | `show_response_output` | Adds context, interpreter, and per-server delivery details to responses and to the landing page's collapsible section. Server tokens and URLs always stay masked with `***`.                                                                       |
+| **landing page**  | —                      | The HTML page a context returns on GET requests, with the project logo and name, a short description, an "Operational" badge, and Documentation and GitHub links. With debug mode on, it adds a collapsible section with the masked configuration. |
+| **session token** | `session`              | A signed, short-lived token a sender gets from a context's `/session` path and spends on its next message. It is tied to the sender's IP address, works once, and expires after 5 minutes by default.                                              |
 
-The notification object is the standardized result an interpreter returns, carrying fields like title, body, priority, tags, icon, actions, and markdown. An optional attachment and its filename travel alongside the notification object at the same level, not nested inside it.
+## Cloudflare Setup
 
-## Notification Suppression
-
-Notification suppression occurs when an interpreter returns `null` instead of a notification object, intentionally dropping the event. An HTTP context responds with an `"ignored"` status, while an email context drops the message with no reply to the sender.
-
-## Server
-
-A server is an ntfy instance defined by a name, a URL, and an authentication token. The config defines each server once, and any number of contexts can reference it by name.
-
-## Primary Server
-
-The primary server is the preferred ntfy server for a context, and `send-once` tries it first. If it is unreachable, `send-once` tries the remaining servers in the context's list in order until one succeeds.
-
-## send-once
-
-`send-once` is a delivery mode that tries the primary server first, then falls through the remaining servers in order, stopping at the first success. When a fallback server ends up delivering the notification, the proxy prepends a warning to the message body noting that the primary was unreachable.
-
-## send-all
-
-`send-all` is a delivery mode that sends the notification to every server in the context's list at the same time, with no failover. Every server gets contacted regardless of whether the others succeed or fail.
-
-## Delivery Outbox
-
-The delivery outbox is the SQLite-backed Durable Object storage that saves a fully formatted notification before sending it to ntfy. It keeps the notification until the delivery mode's success condition is met.
-
-## Delivery Lane
-
-A delivery lane is one context's independent FIFO list of normal notifications inside the delivery outbox. The oldest item must finish before the next item can send, while lanes belonging to other context IDs continue independently. Error-topic diagnostics bypass it.
-
-## At-Least-Once Delivery
-
-At-least-once delivery means a saved notification is retried until delivery is confirmed, but an uncommon crash between ntfy accepting a request and the proxy saving that success can produce a duplicate. This is different from exactly-once delivery, which the proxy cannot guarantee across two independent systems.
-
-## Durable Object
-
-A Durable Object is Cloudflare's strongly consistent Worker storage and coordination primitive. Reverse Proxy for ntfy creates one logical SQLite-backed Durable Object per context ID for its delivery lane; the CLI adds the binding and migration to `wrangler.toml` automatically.
-
-## Smart Split
-
-Smart split automatically breaks a notification body exceeding 4000 UTF-8 bytes into numbered message parts, each labeled with a suffix like "(1/3)". It always respects UTF-8 character boundaries, so a multi-byte character never gets split mid-sequence.
-
-## Attachment
-
-An attachment is a binary file delivered alongside a notification. The `plain-text` interpreter preserves binary request bodies as attachments, and error topics send their details as an `error-debug.json` attachment. The proxy sends an attachment to each server as a PUT with its filename header, after any POST requests carrying text message parts.
-
-## ntfy
-
-[ntfy](https://ntfy.sh) is the open-source push notification service this project delivers formatted messages to. Reverse Proxy for ntfy does not replace ntfy — it sits in front of one or more self-hosted ntfy servers and prepares notifications for them.
-
-## Topic
-
-A topic is the ntfy channel a context publishes its notifications to. This differs from a context's error topic, which only receives interpreter and authentication failures, never the notification itself.
-
-## ntfy Headers
-
-ntfy headers are the 8 outgoing HTTP headers the proxy sets from the interpreter's notification object: `X-Title`, `X-Priority`, `X-Tags`, `X-Markdown`, `X-Icon`, `X-Actions`, `X-Attach`, and `X-Filename`. The proxy does not forward other ntfy-supported headers, like `X-Click` and `X-Delay`, or any headers from the incoming request.
-
-## Error Topic
-
-An error topic is an optional ntfy topic where the proxy forwards authentication and interpretation failures as JSON debug attachments. These diagnostics are one-shot and best-effort: they bypass durable delivery so their own failure cannot block later normal notifications. The `error_events` setting can narrow this down to just one failure category.
-
-## Base Domain
-
-The base domain is the single domain, such as `ntfy.example.com`, under which every context subdomain registers as a Cloudflare custom domain route. Global settings define it once, and every context in the config shares it.
-
-## config.json
-
-`config.json` is the single file holding the `settings`, `servers`, and `contexts` sections, and deploy ships a copy of it inside the Worker. The CLI manages this file and keeps it gitignored — only the `config.sample.json` template gets committed.
-
-## Debug Mode
-
-Debug mode is the `show_response_output` setting, and turning it on adds context, interpreter, and per-server delivery details to responses and to the landing page's collapsible section. Sensitive values, like server tokens and URLs, always stay masked with `***` in that output, even with debug mode on.
-
-## Landing Page
-
-The landing page is the HTML page a context returns on GET requests, showing an "Operational" badge, the Reverse Proxy for ntfy name, and a link to the GitHub repository. With debug mode enabled, it also includes a collapsible section with the masked configuration.
-
-## Cloudflare Email Routing
-
-Cloudflare Email Routing is the Cloudflare feature that forwards email sent to a context's address, like `pfsense@ntfy.example.com`, to the Worker for processing. The `deploy` command configures its routing rules automatically for every email context.
-
-## KV Namespace
-
-A KV namespace is a Cloudflare Workers KV store the Worker uses to track Statuspage.io incident and component state for deduplication, and entries expire after 24 hours. The `deploy` command creates and binds this namespace automatically; without one, the Statuspage interpreter can't skip updates it already sent or list affected components.
-
-## wrangler.toml
-
-`wrangler.toml` is the Cloudflare Workers configuration file the CLI generates from `config.json`, containing routes, the delivery outbox Durable Object binding, its SQLite migration, any KV binding, and a `main` entry that bundles the config into the Worker. It stays gitignored because it lists your context subdomains, and Wrangler (Cloudflare's deployment CLI) reads it to deploy the Worker.
-
-## Custom Domain Route
-
-A custom domain route is a Cloudflare Workers route configured with `custom_domain = true`, which treats the first label of the hostname as the routable subdomain. This lets the Worker match a request's subdomain directly against a context ID.
-
-## Bot Fight Mode
-
-Bot Fight Mode is a Cloudflare feature that can block automated requests, including legitimate webhooks, with a 403 response. Pro plans and above can selectively skip its Super Bot Fight Mode variant with a WAF rule, but the free plan can only turn it off entirely.
+| Term                         | Also known as          | Definition                                                                                                                                                                                                                               |
+|------------------------------|------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **base domain**              | `base_domain`          | The single domain, such as `ntfy.example.com`, under which every context subdomain registers as a custom domain route. It is set once in the global settings.                                                                            |
+| **custom domain route**      | `custom_domain = true` | A Cloudflare Workers route that treats the hostname's first label as the routable subdomain, letting the Worker match it directly against a context ID.                                                                                  |
+| **Cloudflare Email Routing** | —                      | The Cloudflare feature that forwards email sent to a context's address, like `pfsense@ntfy.example.com`, to the Worker. The `deploy` command configures its rules for every email context.                                               |
+| **KV namespace**             | Workers KV             | A Workers KV store the Worker uses to track Statuspage.io incident and component state for deduplication, and to count and spend session tokens. Every entry expires on its own, and `deploy` creates and binds the store automatically. |
+| **`wrangler.toml`**          | —                      | The Workers configuration file the CLI generates from `config.json`, with routes, the delivery outbox binding and migration, any KV binding, and a `main` entry. It stays gitignored, and Wrangler reads it to deploy.                   |
+| **Bot Fight Mode**           | Super Bot Fight Mode   | A Cloudflare feature that can block automated requests, including legitimate webhooks, with a 403. Pro plans and above can skip the Super Bot Fight Mode variant with a WAF rule; the free plan can only turn it off.                    |
