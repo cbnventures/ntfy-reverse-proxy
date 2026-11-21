@@ -155,3 +155,132 @@ export type Lib_Schema_ConfigSchema = {
   servers: Lib_Schema_ConfigSchemaServers;
   contexts: Lib_Schema_ConfigSchemaContexts;
 };
+
+export type Lib_Schema_CloudflareEnvelopeErrorCode = number;
+
+export type Lib_Schema_CloudflareEnvelopeErrorMessage = string;
+
+export type Lib_Schema_CloudflareEnvelopeError = {
+  code: Lib_Schema_CloudflareEnvelopeErrorCode;
+  message: Lib_Schema_CloudflareEnvelopeErrorMessage;
+};
+
+export type Lib_Schema_CloudflareEnvelopeSuccess = boolean;
+
+export type Lib_Schema_CloudflareEnvelopeErrors = Lib_Schema_CloudflareEnvelopeError[] | null | undefined;
+
+export type Lib_Schema_CloudflareEnvelopeResult = unknown;
+
+export type Lib_Schema_CloudflareEnvelopeResultInfoCursor = string | undefined;
+
+export type Lib_Schema_CloudflareEnvelopeResultInfo = {
+  cursor?: Lib_Schema_CloudflareEnvelopeResultInfoCursor;
+};
+
+export type Lib_Schema_CloudflareEnvelopeResultInfoOrNull = Lib_Schema_CloudflareEnvelopeResultInfo | null | undefined;
+
+export type Lib_Schema_CloudflareEnvelope = {
+  success: Lib_Schema_CloudflareEnvelopeSuccess;
+  errors?: Lib_Schema_CloudflareEnvelopeErrors;
+  result: Lib_Schema_CloudflareEnvelopeResult;
+  result_info?: Lib_Schema_CloudflareEnvelopeResultInfoOrNull;
+};
+
+export type Lib_Schema_CloudflareZoneId = string;
+
+export type Lib_Schema_CloudflareZoneName = string;
+
+export type Lib_Schema_CloudflareZoneAccountId = string;
+
+export type Lib_Schema_CloudflareZoneAccount = {
+  id: Lib_Schema_CloudflareZoneAccountId;
+};
+
+export type Lib_Schema_CloudflareZone = {
+  id: Lib_Schema_CloudflareZoneId;
+  name: Lib_Schema_CloudflareZoneName;
+  account: Lib_Schema_CloudflareZoneAccount;
+};
+
+export type Lib_Schema_CloudflareZones = Lib_Schema_CloudflareZone[];
+
+export type Lib_Schema_CloudflareKvNamespaceListItemId = string;
+
+export type Lib_Schema_CloudflareKvNamespaceListItemTitle = string;
+
+export type Lib_Schema_CloudflareKvNamespaceListItem = {
+  id: Lib_Schema_CloudflareKvNamespaceListItemId;
+  title: Lib_Schema_CloudflareKvNamespaceListItemTitle;
+};
+
+export type Lib_Schema_CloudflareKvNamespaceId = string;
+
+export type Lib_Schema_CloudflareKvNamespaces = Lib_Schema_CloudflareKvNamespaceListItem[];
+
+export type Lib_Schema_CloudflareKvNamespace = {
+  id: Lib_Schema_CloudflareKvNamespaceId;
+};
+
+export type Lib_Schema_CloudflareEmailRoutingRuleTag = string;
+
+export type Lib_Schema_CloudflareEmailRoutingRuleMatcherType = string;
+
+export type Lib_Schema_CloudflareEmailRoutingRuleMatcherField = string | undefined;
+
+export type Lib_Schema_CloudflareEmailRoutingRuleMatcherValue = string | undefined;
+
+export type Lib_Schema_CloudflareEmailRoutingRuleMatcher = {
+  type: Lib_Schema_CloudflareEmailRoutingRuleMatcherType;
+  field?: Lib_Schema_CloudflareEmailRoutingRuleMatcherField;
+  value?: Lib_Schema_CloudflareEmailRoutingRuleMatcherValue;
+};
+
+export type Lib_Schema_CloudflareEmailRoutingRuleMatchers = Lib_Schema_CloudflareEmailRoutingRuleMatcher[];
+
+export type Lib_Schema_CloudflareEmailRoutingRuleActionType = string;
+
+export type Lib_Schema_CloudflareEmailRoutingRuleActionValue = string[] | undefined;
+
+export type Lib_Schema_CloudflareEmailRoutingRuleAction = {
+  type: Lib_Schema_CloudflareEmailRoutingRuleActionType;
+  value?: Lib_Schema_CloudflareEmailRoutingRuleActionValue;
+};
+
+export type Lib_Schema_CloudflareEmailRoutingRuleActions = Lib_Schema_CloudflareEmailRoutingRuleAction[];
+
+export type Lib_Schema_CloudflareEmailRoutingRule = {
+  tag: Lib_Schema_CloudflareEmailRoutingRuleTag;
+  matchers: Lib_Schema_CloudflareEmailRoutingRuleMatchers;
+  actions: Lib_Schema_CloudflareEmailRoutingRuleActions;
+};
+
+export type Lib_Schema_CloudflareEmailRoutingRules = Lib_Schema_CloudflareEmailRoutingRule[];
+
+export type Lib_Schema_CloudflareWorkerDomainHostname = string;
+
+export type Lib_Schema_CloudflareWorkerDomainService = string;
+
+export type Lib_Schema_CloudflareWorkerDomain = {
+  hostname: Lib_Schema_CloudflareWorkerDomainHostname;
+  service: Lib_Schema_CloudflareWorkerDomainService;
+};
+
+export type Lib_Schema_CloudflareWorkerDomains = Lib_Schema_CloudflareWorkerDomain[];
+
+export type Lib_Schema_DnsOverHttpsAnswerStatus = number;
+
+export type Lib_Schema_DnsOverHttpsAnswerRecordType = number;
+
+export type Lib_Schema_DnsOverHttpsAnswerRecordData = string;
+
+export type Lib_Schema_DnsOverHttpsAnswerRecord = {
+  type: Lib_Schema_DnsOverHttpsAnswerRecordType;
+  data: Lib_Schema_DnsOverHttpsAnswerRecordData;
+};
+
+export type Lib_Schema_DnsOverHttpsAnswerRecords = Lib_Schema_DnsOverHttpsAnswerRecord[] | undefined;
+
+export type Lib_Schema_DnsOverHttpsAnswer = {
+  Status: Lib_Schema_DnsOverHttpsAnswerStatus;
+  Answer?: Lib_Schema_DnsOverHttpsAnswerRecords;
+};

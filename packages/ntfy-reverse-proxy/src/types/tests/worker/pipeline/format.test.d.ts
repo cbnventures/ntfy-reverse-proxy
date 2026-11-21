@@ -1,3 +1,5 @@
+import type { Shared_NtfyMessage } from '../../../shared.d.ts';
+
 /**
  * Tests - Worker - Pipeline - Format.
  *
@@ -48,23 +50,9 @@ export type Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_Cf
   asOrganization: Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_CfPropertiesAsOrganization;
 };
 
-export type Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_ResultBody = string;
+export type Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_Result = Shared_NtfyMessage & {};
 
-export type Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_ResultHeaders = Record<string, string>;
-
-export type Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_Result = {
-  body: Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_ResultBody;
-  headers: Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_ResultHeaders;
-};
-
-export type Tests_Worker_Pipeline_Format_Format_DoesNotIncludeVisitorInfoWhenDisabled_ResultBody = string;
-
-export type Tests_Worker_Pipeline_Format_Format_DoesNotIncludeVisitorInfoWhenDisabled_ResultHeaders = Record<string, string>;
-
-export type Tests_Worker_Pipeline_Format_Format_DoesNotIncludeVisitorInfoWhenDisabled_Result = {
-  body: Tests_Worker_Pipeline_Format_Format_DoesNotIncludeVisitorInfoWhenDisabled_ResultBody;
-  headers: Tests_Worker_Pipeline_Format_Format_DoesNotIncludeVisitorInfoWhenDisabled_ResultHeaders;
-};
+export type Tests_Worker_Pipeline_Format_Format_DoesNotIncludeVisitorInfoWhenDisabled_Result = Shared_NtfyMessage & {};
 
 export type Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_NotificationTitle = string;
 
@@ -90,29 +78,14 @@ export type Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsTo
   actions: Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_NotificationActions;
 };
 
-export type Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_ResultBody = string;
+export type Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_Result = Shared_NtfyMessage & {};
 
-export type Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_ResultHeaders = Record<string, string>;
+export type Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_Headers = Record<string, string>;
 
-export type Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_Result = {
-  body: Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_ResultBody;
-  headers: Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_ResultHeaders;
-};
+export type Tests_Worker_Pipeline_Format_Format_OmitsUndefinedOptionalHeaders_Result = Shared_NtfyMessage & {};
 
-export type Tests_Worker_Pipeline_Format_Format_OmitsUndefinedOptionalHeaders_ResultBody = string;
+export type Tests_Worker_Pipeline_Format_Format_OmitsUndefinedOptionalHeaders_Headers = Record<string, string>;
 
-export type Tests_Worker_Pipeline_Format_Format_OmitsUndefinedOptionalHeaders_ResultHeaders = Record<string, string>;
+export type Tests_Worker_Pipeline_Format_Format_ReturnsFormattedBodyAndNtfyHeaders_Result = Shared_NtfyMessage & {};
 
-export type Tests_Worker_Pipeline_Format_Format_OmitsUndefinedOptionalHeaders_Result = {
-  body: Tests_Worker_Pipeline_Format_Format_OmitsUndefinedOptionalHeaders_ResultBody;
-  headers: Tests_Worker_Pipeline_Format_Format_OmitsUndefinedOptionalHeaders_ResultHeaders;
-};
-
-export type Tests_Worker_Pipeline_Format_Format_ReturnsFormattedBodyAndNtfyHeaders_ResultBody = string;
-
-export type Tests_Worker_Pipeline_Format_Format_ReturnsFormattedBodyAndNtfyHeaders_ResultHeaders = Record<string, string>;
-
-export type Tests_Worker_Pipeline_Format_Format_ReturnsFormattedBodyAndNtfyHeaders_Result = {
-  body: Tests_Worker_Pipeline_Format_Format_ReturnsFormattedBodyAndNtfyHeaders_ResultBody;
-  headers: Tests_Worker_Pipeline_Format_Format_ReturnsFormattedBodyAndNtfyHeaders_ResultHeaders;
-};
+export type Tests_Worker_Pipeline_Format_Format_ReturnsFormattedBodyAndNtfyHeaders_Headers = Record<string, string>;

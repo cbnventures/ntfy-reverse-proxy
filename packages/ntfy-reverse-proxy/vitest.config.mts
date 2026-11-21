@@ -1,3 +1,4 @@
+import { VitestCoverage } from '@cbnventures/nova/toolkit';
 import { defineConfig } from 'vitest/config';
 
 /**
@@ -11,8 +12,6 @@ export default defineConfig({
     include: ['src/tests/**/*.test.ts'],
     globals: false,
     testTimeout: 30000, // 30 seconds.
-    sequence: {
-      concurrent: false,
-    },
+    coverage: VitestCoverage.options(),
   },
 });

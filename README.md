@@ -31,6 +31,9 @@
   <a href="https://github.com/cbnventures/ntfy-reverse-proxy/blob/HEAD/LICENSE">
     <img alt="GitHub License" src="https://img.shields.io/github/license/cbnventures/ntfy-reverse-proxy?style=for-the-badge&logo=googledocs&logoColor=%23ffffff&color=%2348a56a">
   </a>
+  <a href="https://github.com/cbnventures/ntfy-reverse-proxy/actions">
+    <img alt="Test Coverage" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fnrp.cbnventures.io%2Fbadges%2Fcoverage.json&style=for-the-badge&logo=vitest&logoColor=%23ffffff">
+  </a>
   <a href="https://github.com/sponsors/cbnventures">
     <img alt="Become a GitHub Sponsor" src="https://img.shields.io/badge/github-sponsor-gray?style=for-the-badge&logo=githubsponsors&logoColor=%23ffffff&color=%23eaaf41">
   </a>
@@ -43,7 +46,7 @@
 <!-- nova-region: introduction -->
 ## Introduction
 
-Webhook and email notification gateway with built-in interpreters (Statuspage.io, Synology DSM, Seerr, pfSense, UniFi, Transmission VPN, pfSense Actions, Discord Stonker Bot, Outpost, ntfy JSON, plain text), automatic primary/fallback server failover, and smart message splitting, powered by Cloudflare Workers and Cloudflare Email Routing. Interactive CLI for configuration, validation, and deployment.
+Route webhooks and emails from Statuspage.io, Synology DSM, Seerr, pfSense, UniFi, Outpost, Mailmask, and more into clean ntfy notifications. Long messages split cleanly, delivery fails over to a backup server, and an interactive CLI handles setup and deployment.
 <!-- nova-region-end: introduction -->
 
 <!-- nova-region: documentation -->

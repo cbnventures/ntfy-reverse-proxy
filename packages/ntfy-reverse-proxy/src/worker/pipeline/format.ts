@@ -2,7 +2,6 @@ import type {
   Worker_Pipeline_Format_Body,
   Worker_Pipeline_Format_Cf,
   Worker_Pipeline_Format_Format_Bold_Bold,
-  Worker_Pipeline_Format_Headers,
   Worker_Pipeline_Format_Ip,
   Worker_Pipeline_Format_IsMarkdown,
   Worker_Pipeline_Format_Lines,
@@ -15,8 +14,8 @@ import type {
 /**
  * Worker - Pipeline - Format - Format.
  *
- * Transforms a parsed notification object into the final request
- * body and ntfy-compatible headers for delivery to the server.
+ * Transforms a parsed notification object into the final message
+ * body and fields, which the ntfy client turns into its request.
  *
  * @returns {Worker_Pipeline_Format_Returns}
  *
@@ -57,43 +56,16 @@ function format(notification: Worker_Pipeline_Format_Notification, options: Work
     body = `${body}${separator}${lines.join('\n')}`;
   }
 
-  const headers: Worker_Pipeline_Format_Headers = {};
-
-  if (notification['title'] !== undefined) {
-    Reflect.set(headers, 'X-Title', notification['title']);
-  }
-
-  if (notification['priority'] !== undefined) {
-    Reflect.set(headers, 'X-Priority', String(notification['priority']));
-  }
-
-  if (notification['tags'] !== undefined) {
-    Reflect.set(headers, 'X-Tags', notification['tags'].join(','));
-  }
-
-  if (notification['markdown'] !== undefined) {
-    Reflect.set(headers, 'X-Markdown', String(notification['markdown']));
-  }
-
-  if (notification['icon'] !== undefined) {
-    Reflect.set(headers, 'X-Icon', notification['icon']);
-  }
-
-  if (notification['actions'] !== undefined) {
-    Reflect.set(headers, 'X-Actions', notification['actions']);
-  }
-
-  if (notification['attach'] !== undefined) {
-    Reflect.set(headers, 'X-Attach', notification['attach']);
-  }
-
-  if (notification['filename'] !== undefined) {
-    Reflect.set(headers, 'X-Filename', notification['filename']);
-  }
-
   return {
     body,
-    headers,
+    ...((notification['title'] !== undefined) ? { title: notification['title'] } : {}),
+    ...((notification['priority'] !== undefined) ? { priority: notification['priority'] } : {}),
+    ...((notification['tags'] !== undefined) ? { tags: notification['tags'] } : {}),
+    ...((notification['markdown'] !== undefined) ? { markdown: notification['markdown'] } : {}),
+    ...((notification['icon'] !== undefined) ? { icon: notification['icon'] } : {}),
+    ...((notification['actions'] !== undefined) ? { actions: notification['actions'] } : {}),
+    ...((notification['attach'] !== undefined) ? { attach: notification['attach'] } : {}),
+    ...((notification['filename'] !== undefined) ? { filename: notification['filename'] } : {}),
   };
 }
 

@@ -1,5 +1,16 @@
 # ntfy-reverse-proxy
 
+## 2.5.0 - 2026-11-21
+
+### UPDATED
+- The package's internal file layout now places compiled files in `build/cli/` and `build/worker/` instead of `build/src/`, and its test setup drops a `sequence` option that only repeated Vitest's default. The `ntfy-reverse-proxy` and `nrp` commands are unchanged.
+- Tests now report coverage through a `check:coverage` script, which fails when line, function, branch or statement coverage drops below the project minimum, and the README badges now include that coverage.
+- Nova 0.49.0, which keeps each Logger entry and error stack trace on one line in Cloudflare Workers logs and other non-interactive output instead of splitting it across several lines.
+- The package description now reads "Route webhooks and emails to ntfy through Cloudflare Workers, with automatic server failover".
+
+### ADDED
+- A readiness check at the end of `nrp deploy` confirms each HTTP context's custom domain is attached to the Worker and resolves on public DNS, waiting up to a minute and naming any host that is still pending, and warns when email contexts' base domain has no MX records for Cloudflare Email Routing.
+
 ## 2.4.0 - 2026-11-17
 
 ### UPDATED

@@ -48,7 +48,9 @@ packages/ntfy-reverse-proxy/src/
 │   ├── menu/                        — Interactive configuration interface
 │   └── index.ts                     — Commander entry point
 ├── lib/
-│   ├── schema.ts                    — Zod configuration schemas
+│   ├── schema.ts                    — Zod configuration and API response schemas
+│   ├── cloudflare.ts                — Cloudflare API client (token, zone, permissions, KV, Email Routing, custom domains)
+│   ├── public-dns.ts                — Public DNS over HTTPS adapter (deploy readiness)
 │   ├── package-runtime.ts           — Packaged CLI path and version resolution
 │   └── utility.ts                   — Shared configuration helpers
 ├── worker/
@@ -57,6 +59,7 @@ packages/ntfy-reverse-proxy/src/
 │   ├── landing/                     — Public landing page response
 │   ├── pipeline/                    — Request, email, formatting, and delivery stages
 │   ├── handlers.ts                  — HTTP and email pipeline orchestration
+│   ├── ntfy-client.ts               — ntfy client: owns every ntfy header, auth, and publish or upload request
 │   └── index.ts                     — Cloudflare Worker entry point
 ├── tests/                           — Tests mirroring package behavior
 └── types/                           — Declarations mirroring source and tests
@@ -130,6 +133,7 @@ Nova supplies `NODE_ENV`, `LOG_LEVEL`, and `LOG_TIME` in generated dotenv files.
 - Use Zod schemas for all external input validation (config, webhook payloads).
 - Mask sensitive values (tokens, URLs, subdomains) in any user-visible output. Tokens show as `tk_***`, server URLs as `*** name url ***`, subdomains as last 5 chars only.
 - Mirror package source structure in `packages/ntfy-reverse-proxy/src/types/` and `packages/ntfy-reverse-proxy/src/tests/` exactly.
+- Keep third-party API code (URLs, auth, headers, request and response shapes) inside its adapter: `lib/cloudflare.ts` for the Cloudflare API, `lib/public-dns.ts` for public DNS lookups, `worker/ntfy-client.ts` for ntfy, and `worker/interpreters/` for inbound payloads. The pipeline builds project-owned messages, and deploy only calls the Cloudflare client's methods.
 
 **Don't:**
 - Don't put Cloudflare-specific settings (compatibility_date, routes) in the user-facing config. Those are generated.

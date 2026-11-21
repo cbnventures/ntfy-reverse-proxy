@@ -1,16 +1,11 @@
+import type { Shared_NtfyMessage } from '../../shared.d.ts';
+
 /**
  * Worker - Pipeline - Split.
  *
  * @since 2.0.0
  */
-export type Worker_Pipeline_Split_MessagePartBody = string;
-
-export type Worker_Pipeline_Split_MessagePartHeaders = Record<string, string>;
-
-export type Worker_Pipeline_Split_MessagePart = {
-  body: Worker_Pipeline_Split_MessagePartBody;
-  headers: Worker_Pipeline_Split_MessagePartHeaders;
-};
+export type Worker_Pipeline_Split_MessagePart = Shared_NtfyMessage;
 
 export type Worker_Pipeline_Split_Returns = Worker_Pipeline_Split_MessagePart[];
 
@@ -19,9 +14,9 @@ export type Worker_Pipeline_Split_Returns = Worker_Pipeline_Split_MessagePart[];
  *
  * @since 2.0.0
  */
-export type Worker_Pipeline_Split_Split_Body = string;
+export type Worker_Pipeline_Split_Split_Message = Shared_NtfyMessage;
 
-export type Worker_Pipeline_Split_Split_Headers = Record<string, string>;
+export type Worker_Pipeline_Split_Split_Body = string;
 
 export type Worker_Pipeline_Split_Split_Encoder = TextEncoder;
 
@@ -36,5 +31,3 @@ export type Worker_Pipeline_Split_Split_CharBytes = number;
 export type Worker_Pipeline_Split_Split_Total = number;
 
 export type Worker_Pipeline_Split_Split_BaseTitle = string;
-
-export type Worker_Pipeline_Split_Split_PartHeaders = Record<string, string>;

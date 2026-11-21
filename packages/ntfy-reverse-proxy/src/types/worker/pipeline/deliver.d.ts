@@ -45,7 +45,7 @@ export type Worker_Pipeline_Deliver_EnqueueOptionsAttachment = Worker_Pipeline_S
 
 export type Worker_Pipeline_Deliver_EnqueueOptionsFilename = Worker_Pipeline_Send_Options['filename'];
 
-export type Worker_Pipeline_Deliver_EnqueueOptionsAttachmentHeaders = Worker_Pipeline_Send_Options['attachmentHeaders'];
+export type Worker_Pipeline_Deliver_EnqueueOptionsAttachmentTitle = Worker_Pipeline_Send_Options['attachmentTitle'];
 
 export type Worker_Pipeline_Deliver_EnqueueOptions = {
   messages: Worker_Pipeline_Deliver_EnqueueOptionsMessages;
@@ -59,7 +59,7 @@ export type Worker_Pipeline_Deliver_EnqueueOptions = {
   visitorIp?: Worker_Pipeline_Deliver_EnqueueOptionsVisitorIp;
   attachment?: Worker_Pipeline_Deliver_EnqueueOptionsAttachment;
   filename?: Worker_Pipeline_Deliver_EnqueueOptionsFilename;
-  attachmentHeaders?: Worker_Pipeline_Deliver_EnqueueOptionsAttachmentHeaders;
+  attachmentTitle?: Worker_Pipeline_Deliver_EnqueueOptionsAttachmentTitle;
 };
 
 export type Worker_Pipeline_Deliver_ResultDeliveryId = string;

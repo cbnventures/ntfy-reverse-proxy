@@ -5,8 +5,8 @@
       "slug": "ntfy-reverse-proxy"
     },
     "description": {
-      "short": "Notification gateway on Cloudflare Workers that routes webhooks and emails to ntfy with automatic server failover",
-      "long": "Webhook and email notification gateway with built-in interpreters (Statuspage.io, Synology DSM, Seerr, pfSense, UniFi, Transmission VPN, pfSense Actions, Discord Stonker Bot, Outpost, ntfy JSON, plain text), automatic primary/fallback server failover, and smart message splitting, powered by Cloudflare Workers and Cloudflare Email Routing. Interactive CLI for configuration, validation, and deployment."
+      "short": "Route webhooks and emails to ntfy through Cloudflare Workers, with automatic server failover",
+      "long": "Route webhooks and emails from Statuspage.io, Synology DSM, Seerr, pfSense, UniFi, Outpost, Mailmask, and more into clean ntfy notifications. Long messages split cleanly, delivery fails over to a backup server, and an interactive CLI handles setup and deployment."
     },
     "keywords": [
       "ntfy",
@@ -171,8 +171,161 @@
     ],
     "issueTemplate": {
       "bugReportFields": [
-        "nodejs"
-      ]
+        "nodejs",
+        "cloudflare-worker",
+        "web",
+        "screenshots"
+      ],
+      "customQuestions": {
+        "bug": [
+          {
+            "type": "dropdown",
+            "id": "interpreter",
+            "attributes": {
+              "label": "Interpreter",
+              "description": "Select the interpreter involved.",
+              "options": [
+                "ntfy JSON",
+                "pfSense",
+                "Seerr",
+                "Statuspage.io",
+                "Synology DSM",
+                "UniFi",
+                "Plain Text",
+                "Mailmask",
+                "Outpost",
+                "pfSense Actions",
+                "Transmission VPN",
+                "Stonker Bot for Discord",
+                "Other"
+              ]
+            },
+            "validations": {
+              "required": true
+            }
+          },
+          {
+            "type": "dropdown",
+            "id": "delivery-mode",
+            "attributes": {
+              "label": "Delivery Mode",
+              "description": "Select the configured delivery mode.",
+              "options": [
+                "Send Once",
+                "Send All",
+                "Not Sure"
+              ]
+            },
+            "validations": {
+              "required": false
+            }
+          },
+          {
+            "type": "dropdown",
+            "id": "request-source",
+            "attributes": {
+              "label": "Request Source",
+              "description": "Select how the request entered the worker.",
+              "options": [
+                "HTTP Webhook",
+                "Email",
+                "Not Sure"
+              ]
+            },
+            "validations": {
+              "required": false
+            }
+          }
+        ],
+        "feature": [
+          {
+            "type": "dropdown",
+            "id": "interpreter",
+            "attributes": {
+              "label": "Interpreter",
+              "description": "Select the interpreter involved.",
+              "options": [
+                "ntfy JSON",
+                "pfSense",
+                "Seerr",
+                "Statuspage.io",
+                "Synology DSM",
+                "UniFi",
+                "Plain Text",
+                "Mailmask",
+                "Outpost",
+                "pfSense Actions",
+                "Transmission VPN",
+                "Stonker Bot for Discord",
+                "Other"
+              ]
+            },
+            "validations": {
+              "required": true
+            }
+          }
+        ],
+        "support": [
+          {
+            "type": "dropdown",
+            "id": "interpreter",
+            "attributes": {
+              "label": "Interpreter",
+              "description": "Select the interpreter involved.",
+              "options": [
+                "ntfy JSON",
+                "pfSense",
+                "Seerr",
+                "Statuspage.io",
+                "Synology DSM",
+                "UniFi",
+                "Plain Text",
+                "Mailmask",
+                "Outpost",
+                "pfSense Actions",
+                "Transmission VPN",
+                "Stonker Bot for Discord",
+                "Other"
+              ]
+            },
+            "validations": {
+              "required": true
+            }
+          },
+          {
+            "type": "dropdown",
+            "id": "delivery-mode",
+            "attributes": {
+              "label": "Delivery Mode",
+              "description": "Select the configured delivery mode.",
+              "options": [
+                "Send Once",
+                "Send All",
+                "Not Sure"
+              ]
+            },
+            "validations": {
+              "required": false
+            }
+          },
+          {
+            "type": "dropdown",
+            "id": "request-source",
+            "attributes": {
+              "label": "Request Source",
+              "description": "Select how the request entered the worker.",
+              "options": [
+                "HTTP Webhook",
+                "Email",
+                "Not Sure"
+              ]
+            },
+            "validations": {
+              "required": false
+            }
+          }
+        ]
+      }
     }
   },
   "workflows": [
@@ -202,7 +355,7 @@
         "tag-push"
       ],
       "runsOn": "ubuntu-24.04",
-      "timeoutMinutes": 15,
+      "timeoutMinutes": 30,
       "build": [
         "./packages/ntfy-reverse-proxy",
         "./apps/docs"
@@ -248,6 +401,7 @@
       "github-release",
       "github-top-language",
       "github-license",
+      "coverage",
       "funding"
     ]
   },
@@ -391,6 +545,11 @@
         "enabled": true
       },
       "update-introduction": {
+        "enabled": true
+      }
+    },
+    "tsconfig": {
+      "sync-references": {
         "enabled": true
       }
     },
@@ -557,6 +716,9 @@
     }
   },
   "settings": {
+    "coverage": {
+      "minimum": 60
+    },
     "lockStepVersioning": true,
     "runWorkspaces": {
       "cache": {

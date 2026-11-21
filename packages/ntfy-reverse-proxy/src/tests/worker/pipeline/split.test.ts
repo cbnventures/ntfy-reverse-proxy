@@ -9,8 +9,8 @@ import type {
   Tests_Worker_Pipeline_Split_Split_CreatesTitleIfNoneExistsWhenSplitting_Result,
   Tests_Worker_Pipeline_Split_Split_DoesNotSplitOnMultiByteCharacterBoundaries_Body,
   Tests_Worker_Pipeline_Split_Split_DoesNotSplitOnMultiByteCharacterBoundaries_Result,
-  Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_Headers,
   Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_LongBody,
+  Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_Message,
   Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_Result,
   Tests_Worker_Pipeline_Split_Split_PreservesTheExactBodyAcrossSplitParts_Body,
   Tests_Worker_Pipeline_Split_Split_PreservesTheExactBodyAcrossSplitParts_ReconstructedBody,
@@ -27,7 +27,10 @@ import type {
  */
 describe('split', () => {
   it('returns single message when under limit', () => {
-    const result: Tests_Worker_Pipeline_Split_Split_ReturnsSingleMessageWhenUnderLimit_Result = split('Short message', { 'X-Title': 'Test' });
+    const result: Tests_Worker_Pipeline_Split_Split_ReturnsSingleMessageWhenUnderLimit_Result = split({
+      body: 'Short message',
+      title: 'Test',
+    });
 
     expect(result).toHaveLength(1);
 
@@ -38,7 +41,10 @@ describe('split', () => {
 
   it('splits message exceeding ~4000 bytes', () => {
     const longBody: Tests_Worker_Pipeline_Split_Split_SplitsMessageExceeding4000Bytes_LongBody = 'A'.repeat(5000);
-    const result: Tests_Worker_Pipeline_Split_Split_SplitsMessageExceeding4000Bytes_Result = split(longBody, { 'X-Title': 'Test' });
+    const result: Tests_Worker_Pipeline_Split_Split_SplitsMessageExceeding4000Bytes_Result = split({
+      body: longBody,
+      title: 'Test',
+    });
 
     expect(result.length).toBeGreaterThan(1);
 
@@ -47,28 +53,32 @@ describe('split', () => {
 
   it('adds part numbers to title', () => {
     const longBody: Tests_Worker_Pipeline_Split_Split_AddsPartNumbersToTitle_LongBody = 'A'.repeat(5000);
-    const result: Tests_Worker_Pipeline_Split_Split_AddsPartNumbersToTitle_Result = split(longBody, { 'X-Title': 'Test' });
+    const result: Tests_Worker_Pipeline_Split_Split_AddsPartNumbersToTitle_Result = split({
+      body: longBody,
+      title: 'Test',
+    });
 
-    expect(result[0]!['headers']['X-Title']).toContain('(1/');
+    expect(result[0]!['title']).toContain('(1/');
 
-    expect(result[result.length - 1]!['headers']['X-Title']).toContain(`(${result.length}/`);
+    expect(result[result.length - 1]!['title']).toContain(`(${result.length}/`);
 
     return;
   });
 
   it('preserves all headers on each part', () => {
     const longBody: Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_LongBody = 'A'.repeat(5000);
-    const headers: Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_Headers = {
-      'X-Title': 'Test',
-      'X-Tags': 'important',
-      'X-Priority': '4',
+    const message: Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_Message = {
+      body: longBody,
+      title: 'Test',
+      tags: ['important'],
+      priority: 4,
     };
-    const result: Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_Result = split(longBody, headers);
+    const result: Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_Result = split(message);
 
     for (const part of result) {
-      expect(part['headers']['X-Tags']).toBe('important');
+      expect(part['tags']).toEqual(['important']);
 
-      expect(part['headers']['X-Priority']).toBe('4');
+      expect(part['priority']).toBe(4);
     }
 
     return;
@@ -83,7 +93,10 @@ describe('split', () => {
       '🚨',
       'B'.repeat(1000),
     ].join('');
-    const result: Tests_Worker_Pipeline_Split_Split_PreservesTheExactBodyAcrossSplitParts_Result = split(body, { 'X-Title': 'Exact body' });
+    const result: Tests_Worker_Pipeline_Split_Split_PreservesTheExactBodyAcrossSplitParts_Result = split({
+      body,
+      title: 'Exact body',
+    });
     const reconstructedBody: Tests_Worker_Pipeline_Split_Split_PreservesTheExactBodyAcrossSplitParts_ReconstructedBody = result.map((part) => part['body']).join('');
 
     expect(result.length).toBeGreaterThan(1);
@@ -95,7 +108,10 @@ describe('split', () => {
 
   it('does not split on multi-byte character boundaries', () => {
     const body: Tests_Worker_Pipeline_Split_Split_DoesNotSplitOnMultiByteCharacterBoundaries_Body = 'Hello '.repeat(500);
-    const result: Tests_Worker_Pipeline_Split_Split_DoesNotSplitOnMultiByteCharacterBoundaries_Result = split(body, { 'X-Title': 'Emoji' });
+    const result: Tests_Worker_Pipeline_Split_Split_DoesNotSplitOnMultiByteCharacterBoundaries_Result = split({
+      body,
+      title: 'Emoji',
+    });
 
     for (const part of result) {
       expect(() => new TextEncoder().encode(part['body'])).not.toThrow();
@@ -106,9 +122,9 @@ describe('split', () => {
 
   it('creates title if none exists when splitting', () => {
     const longBody: Tests_Worker_Pipeline_Split_Split_CreatesTitleIfNoneExistsWhenSplitting_LongBody = 'A'.repeat(5000);
-    const result: Tests_Worker_Pipeline_Split_Split_CreatesTitleIfNoneExistsWhenSplitting_Result = split(longBody, {});
+    const result: Tests_Worker_Pipeline_Split_Split_CreatesTitleIfNoneExistsWhenSplitting_Result = split({ body: longBody });
 
-    expect(result[0]!['headers']['X-Title']).toContain('(1/');
+    expect(result[0]!['title']).toContain('(1/');
 
     return;
   });

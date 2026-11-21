@@ -7,8 +7,7 @@ import type {
   Worker_Pipeline_Split_Split_CurrentBytes,
   Worker_Pipeline_Split_Split_CurrentChunk,
   Worker_Pipeline_Split_Split_Encoder,
-  Worker_Pipeline_Split_Split_Headers,
-  Worker_Pipeline_Split_Split_PartHeaders,
+  Worker_Pipeline_Split_Split_Message,
   Worker_Pipeline_Split_Split_Total,
 } from '../../types/worker/pipeline/split.d.ts';
 
@@ -25,21 +24,19 @@ const MAX_BYTES = 4000;
 /**
  * Worker - Pipeline - Split - Split.
  *
- * Breaks a notification body into multiple parts when the
- * UTF-8 byte length exceeds the ntfy server size limit.
+ * Breaks a message body into multiple parts when the UTF-8 byte
+ * length exceeds the ntfy server size limit, numbering each title.
  *
  * @returns {Worker_Pipeline_Split_Returns}
  *
  * @since 2.0.0
  */
-function split(body: Worker_Pipeline_Split_Split_Body, headers: Worker_Pipeline_Split_Split_Headers): Worker_Pipeline_Split_Returns {
+function split(message: Worker_Pipeline_Split_Split_Message): Worker_Pipeline_Split_Returns {
+  const body: Worker_Pipeline_Split_Split_Body = message['body'];
   const encoder: Worker_Pipeline_Split_Split_Encoder = new TextEncoder();
 
   if (encoder.encode(body).length <= MAX_BYTES) {
-    return [{
-      body,
-      headers,
-    }];
+    return [message];
   }
 
   const chunks: Worker_Pipeline_Split_Split_Chunks = [];
@@ -64,19 +61,13 @@ function split(body: Worker_Pipeline_Split_Split_Body, headers: Worker_Pipeline_
   }
 
   const total: Worker_Pipeline_Split_Split_Total = chunks.length;
-  const baseTitle: Worker_Pipeline_Split_Split_BaseTitle = headers['X-Title'] ?? 'Message';
+  const baseTitle: Worker_Pipeline_Split_Split_BaseTitle = message['title'] ?? 'Message';
 
-  return chunks.map((chunkBody, index) => {
-    const partHeaders: Worker_Pipeline_Split_Split_PartHeaders = {
-      ...headers,
-      'X-Title': `${baseTitle} (${index + 1}/${total})`,
-    };
-
-    return {
-      body: chunkBody,
-      headers: partHeaders,
-    };
-  });
+  return chunks.map((chunkBody, index) => ({
+    ...message,
+    body: chunkBody,
+    title: `${baseTitle} (${index + 1}/${total})`,
+  }));
 }
 
 export {

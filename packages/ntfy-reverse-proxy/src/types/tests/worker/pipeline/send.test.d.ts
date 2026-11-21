@@ -24,11 +24,11 @@ export type Tests_Worker_Pipeline_Send_Servers = Tests_Worker_Pipeline_Send_Serv
 
 export type Tests_Worker_Pipeline_Send_Message_Body = string;
 
-export type Tests_Worker_Pipeline_Send_Message_Headers = Record<string, string>;
+export type Tests_Worker_Pipeline_Send_Message_Title = string;
 
 export type Tests_Worker_Pipeline_Send_Message = {
   body: Tests_Worker_Pipeline_Send_Message_Body;
-  headers: Tests_Worker_Pipeline_Send_Message_Headers;
+  title: Tests_Worker_Pipeline_Send_Message_Title;
 };
 
 export type Tests_Worker_Pipeline_Send_Messages = Tests_Worker_Pipeline_Send_Message[];

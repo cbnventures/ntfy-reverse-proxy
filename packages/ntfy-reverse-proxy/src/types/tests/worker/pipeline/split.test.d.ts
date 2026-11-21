@@ -34,7 +34,7 @@ export type Tests_Worker_Pipeline_Split_Split_DoesNotSplitOnMultiByteCharacterBo
  */
 export type Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_LongBody = string;
 
-export type Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_Headers = Record<string, string>;
+export type Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_Message = Worker_Pipeline_Split_MessagePart & {};
 
 export type Tests_Worker_Pipeline_Split_Split_PreservesAllHeadersOnEachPart_Result = readonly Worker_Pipeline_Split_MessagePart[];
 

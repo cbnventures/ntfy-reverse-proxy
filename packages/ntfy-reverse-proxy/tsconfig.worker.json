@@ -8,7 +8,7 @@
   "compilerOptions": {
     "noEmitOnError": false,
     "outDir": "./build",
-    "rootDir": "./",
+    "rootDir": "./src",
     "types": []
   },
   "include": [

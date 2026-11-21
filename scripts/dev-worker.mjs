@@ -12,6 +12,8 @@ import {
 } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { buildWindowsCommandLine } from './lib/windows-command.mjs';
+
 /**
  * Dev Worker - Toolkit.
  *
@@ -253,14 +255,14 @@ function resolveWranglerConfig() {
 const configPath = resolveWranglerConfig();
 
 /**
- * Dev Worker - Wrangler.
+ * Dev Worker - Wrangler Arguments.
  *
- * Child process running wrangler dev in local mode; its exit code is
- * propagated to the parent shell when the process closes.
+ * Arguments passed to npx so the local wrangler dev worker reads the generated
+ * config and picks a free inspector port.
  *
- * @since 2.0.0
+ * @since 0.0.0
  */
-const wrangler = spawn('npx', [
+const wranglerArguments = [
   'wrangler',
   'dev',
   '--config',
@@ -268,7 +270,21 @@ const wrangler = spawn('npx', [
   '--local-upstream',
   'localhost',
   '--inspector-port=0',
-], {
+];
+
+/**
+ * Dev Worker - Wrangler.
+ *
+ * Child process running wrangler dev in local mode; its exit code is
+ * propagated to the parent shell when the process closes. On Windows, npx is
+ * a command script only a shell can start, so the arguments are quoted there.
+ *
+ * @since 2.0.0
+ */
+const wrangler = (process.platform === 'win32') ? spawn(buildWindowsCommandLine('npx', wranglerArguments), {
+  stdio: 'inherit',
+  shell: true,
+}) : spawn('npx', wranglerArguments, {
   stdio: 'inherit',
 });
 

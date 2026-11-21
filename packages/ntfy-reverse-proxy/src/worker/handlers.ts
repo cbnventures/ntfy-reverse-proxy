@@ -331,7 +331,7 @@ async function handleRequest(request: Worker_Handlers_HandleRequest_Request, con
             visitorIp: received['headers'].get('cf-connecting-ip') ?? undefined,
             attachment: authErrorAttachmentBuffer,
             filename: 'error-debug.json',
-            attachmentHeaders: { 'X-Title': 'Authentication Error' },
+            attachmentTitle: 'Authentication Error',
           });
         } catch {
           // Best-effort error notification; ignore failures.
@@ -460,7 +460,7 @@ async function handleRequest(request: Worker_Handlers_HandleRequest_Request, con
             visitorIp: received['headers'].get('cf-connecting-ip') ?? undefined,
             attachment: interpretErrorAttachmentBuffer,
             filename: 'error-debug.json',
-            attachmentHeaders: { 'X-Title': 'Interpretation Error' },
+            attachmentTitle: 'Interpretation Error',
           });
         } catch {
           // Best-effort error notification; ignore failures.
@@ -498,7 +498,7 @@ async function handleRequest(request: Worker_Handlers_HandleRequest_Request, con
     });
 
     // 7. Split.
-    const messages: Worker_Handlers_HandleRequest_Messages = (interpreted['attachment'] !== undefined && formatted['body'].length === 0) ? [] : split(formatted['body'], formatted['headers']);
+    const messages: Worker_Handlers_HandleRequest_Messages = (interpreted['attachment'] !== undefined && formatted['body'].length === 0) ? [] : split(formatted);
 
     // 8. Persist and deliver.
     const deliveryResult: Worker_Handlers_HandleRequest_DeliveryResult = await deliver(ctx['id'], outbox, {
@@ -643,7 +643,7 @@ async function handleEmail(rawEmail: Worker_Handlers_HandleEmail_RawEmail, from:
             mode: ctx['mode'],
             attachment: authErrorAttachmentBuffer,
             filename: 'error-debug.json',
-            attachmentHeaders: { 'X-Title': 'Email Authentication Error' },
+            attachmentTitle: 'Email Authentication Error',
           });
         } catch {
           // Best-effort error notification; ignore failures.
@@ -717,7 +717,7 @@ async function handleEmail(rawEmail: Worker_Handlers_HandleEmail_RawEmail, from:
             mode: ctx['mode'],
             attachment: interpretErrorAttachmentBuffer,
             filename: 'error-debug.json',
-            attachmentHeaders: { 'X-Title': 'Email Interpretation Error' },
+            attachmentTitle: 'Email Interpretation Error',
           });
         } catch {
           // Best-effort error notification; ignore failures.
@@ -743,7 +743,7 @@ async function handleEmail(rawEmail: Worker_Handlers_HandleEmail_RawEmail, from:
     });
 
     // 6. Split.
-    const messages: Worker_Handlers_HandleEmail_Messages = (interpreted['attachment'] !== undefined && formatted['body'].length === 0) ? [] : split(formatted['body'], formatted['headers']);
+    const messages: Worker_Handlers_HandleEmail_Messages = (interpreted['attachment'] !== undefined && formatted['body'].length === 0) ? [] : split(formatted);
 
     // 7. Persist and deliver.
     const deliveryResult: Worker_Handlers_HandleEmail_DeliveryResult = await deliver(ctx['id'], outbox, {

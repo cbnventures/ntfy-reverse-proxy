@@ -440,7 +440,7 @@ const outbox: Tests_Worker_Index_Outbox = {
         visitorIp: options['visitorIp'],
         attachment: options['attachment'],
         filename: options['filename'],
-        attachmentHeaders: options['attachmentHeaders'],
+        attachmentTitle: options['attachmentTitle'],
         deliveryId: 'test-delivery',
       });
 

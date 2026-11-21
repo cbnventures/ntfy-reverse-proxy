@@ -37,7 +37,7 @@ async function deliver(contextId: Worker_Pipeline_Deliver_ContextId, outbox: Wor
     ...((options['visitorIp'] !== undefined) ? { visitorIp: options['visitorIp'] } : {}),
     ...((options['attachment'] !== undefined) ? { attachment: options['attachment'] } : {}),
     ...((options['filename'] !== undefined) ? { filename: options['filename'] } : {}),
-    ...((options['attachmentHeaders'] !== undefined) ? { attachmentHeaders: options['attachmentHeaders'] } : {}),
+    ...((options['attachmentTitle'] !== undefined) ? { attachmentTitle: options['attachmentTitle'] } : {}),
   };
 
   return stub.enqueue(enqueueInput);

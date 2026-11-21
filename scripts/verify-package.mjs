@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 
 import { getNpmPackFilePaths } from './lib/npm-pack-report.mjs';
+import { buildWindowsCommandLine } from './lib/windows-command.mjs';
 
 /**
  * Verify Package - Run.
@@ -49,26 +50,32 @@ function run() {
   const configHomeDirectory = join(temporaryDirectory, 'config-home');
   const consumerDirectory = join(temporaryDirectory, 'consumer');
   const commandLinePath = resolve(packageDirectory, commandLineRelativePath);
-  const workerRelativePath = 'build/src/worker/index.js';
+  const workerRelativePath = 'build/worker/index.js';
   const configSampleRelativePath = 'build/config.sample.json';
-  const npmCommand = (process.platform === 'win32') ? 'npm.cmd' : 'npm';
 
   mkdirSync(npmCacheDirectory, { recursive: true });
   mkdirSync(configHomeDirectory, { recursive: true });
   mkdirSync(consumerDirectory, { recursive: true });
 
   try {
-    const packResult = spawnSync(npmCommand, [
+    const packArguments = [
       'pack',
       '--dry-run',
       '--json',
       '--ignore-scripts',
       '--cache',
       npmCacheDirectory,
-    ], {
+    ];
+    const packOptions = {
       cwd: packageDirectory,
-      encoding: 'utf-8',
-    });
+      encoding: /** @type {'utf-8'} */ ('utf-8'),
+    };
+
+    // Windows ships npm as "npm.cmd", which only a shell can start, so the arguments are quoted into one command line.
+    const packResult = (process.platform === 'win32') ? spawnSync(buildWindowsCommandLine('npm', packArguments), {
+      ...packOptions,
+      shell: true,
+    }) : spawnSync('npm', packArguments, packOptions);
 
     if (packResult['status'] !== 0) {
       const packErrorLines = [

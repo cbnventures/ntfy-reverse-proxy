@@ -1,5 +1,6 @@
 import { DurableObject } from 'cloudflare:workers';
 
+import { Runner as NtfyClient } from '../ntfy-client.js';
 import { drainFifo } from '../pipeline/drain-fifo.js';
 import { send } from '../pipeline/send.js';
 
@@ -18,6 +19,7 @@ import type {
   Worker_DurableObjects_DeliveryOutbox_Runner_Alarm_Returns,
   Worker_DurableObjects_DeliveryOutbox_Runner_Alarm_StartedDrain,
   Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_Attachment,
+  Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_AttachmentTitle,
   Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_CompletedStages,
   Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_Notification,
   Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_Payload,
@@ -373,7 +375,7 @@ class Runner extends DurableObject<Worker_DurableObjects_DeliveryOutbox_Runner_E
       mode: options['mode'],
       ...((options['visitorIp'] !== undefined) ? { visitorIp: options['visitorIp'] } : {}),
       ...((options['filename'] !== undefined) ? { filename: options['filename'] } : {}),
-      ...((options['attachmentHeaders'] !== undefined) ? { attachmentHeaders: options['attachmentHeaders'] } : {}),
+      ...((options['attachmentTitle'] !== undefined) ? { attachmentTitle: options['attachmentTitle'] } : {}),
       hasAttachment: options['attachment'] !== undefined,
     };
     const payloadJson: Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_PayloadJson = JSON.stringify(payload);
@@ -719,9 +721,10 @@ class Runner extends DurableObject<Worker_DurableObjects_DeliveryOutbox_Runner_E
     const attachment: Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_Attachment = this.#readAttachment(notification['deliveryId'], payload['hasAttachment']);
     const completedStages: Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_CompletedStages = this.#readCompletedStages(notification['deliveryId']);
     const resolved: Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_Resolved = this.#resolveServers(payload);
+    const attachmentTitle: Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_AttachmentTitle = NtfyClient.readStoredTitle(payload['attachmentTitle'], payload['attachmentHeaders']);
 
     return await send({
-      messages: payload['messages'],
+      messages: payload['messages'].map((storedMessage) => NtfyClient.readStoredMessage(storedMessage)),
       servers: resolved['servers'],
       primaryServer: resolved['primaryServer'],
       topic: payload['topic'],
@@ -729,7 +732,7 @@ class Runner extends DurableObject<Worker_DurableObjects_DeliveryOutbox_Runner_E
       ...((payload['visitorIp'] !== undefined) ? { visitorIp: payload['visitorIp'] } : {}),
       ...((attachment !== undefined) ? { attachment } : {}),
       ...((payload['filename'] !== undefined) ? { filename: payload['filename'] } : {}),
-      ...((payload['attachmentHeaders'] !== undefined) ? { attachmentHeaders: payload['attachmentHeaders'] } : {}),
+      ...((attachmentTitle !== undefined) ? { attachmentTitle } : {}),
       deliveryId: notification['deliveryId'],
       completedStages,
       onStageSuccess: (serverName, stage) => {
@@ -977,7 +980,7 @@ class Runner extends DurableObject<Worker_DurableObjects_DeliveryOutbox_Runner_E
         mode: diagnosticConfig['mode'],
         attachment,
         filename: 'error-debug.json',
-        attachmentHeaders: { 'X-Title': 'Durable Delivery Discarded' },
+        attachmentTitle: 'Durable Delivery Discarded',
       });
     } catch {
       // Best-effort error notification; ignore failures.

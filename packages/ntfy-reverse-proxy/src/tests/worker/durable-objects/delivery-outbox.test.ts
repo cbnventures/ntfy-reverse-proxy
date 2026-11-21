@@ -416,7 +416,6 @@ function createOptions(body: Tests_Worker_DurableObjects_DeliveryOutbox_CreateOp
   return {
     messages: [{
       body,
-      headers: {},
     }],
     serverNames: ['alpha'],
     primaryServerName: 'alpha',
@@ -695,11 +694,9 @@ describe('DeliveryOutbox', () => {
       messages: [
         {
           body: 'part-1',
-          headers: {},
         },
         {
           body: 'part-2',
-          headers: {},
         },
       ],
       attachment,

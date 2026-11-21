@@ -43,7 +43,7 @@ describe('deliver', () => {
     const options: Tests_Worker_Pipeline_Deliver_Deliver_UsesTheExplicitContextIDAsTheIsolatedLaneName_Options = {
       messages: [{
         body: 'notification',
-        headers: { 'X-Title': 'Notification' },
+        title: 'Notification',
       }],
       servers: [
         {

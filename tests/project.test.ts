@@ -1,4 +1,4 @@
-import { registerPackageScriptsSuite } from '@cbnventures/nova/rules/vitest';
+import { registerPackageScriptsSuite, registerToolingCoverageSuite } from '@cbnventures/nova/rules/vitest';
 import * as vitest from 'vitest';
 import {
   describe,
@@ -28,5 +28,10 @@ describe('Project root', () => {
 registerPackageScriptsSuite({
   vitest,
   requireRootScripts: true,
+  enable: 'all',
+});
+
+registerToolingCoverageSuite({
+  vitest,
   enable: 'all',
 });

@@ -1,4 +1,5 @@
 import type { Lib_Schema_ServerConfig } from '../../lib/schema.d.ts';
+import type { Shared_NtfyDelivery, Shared_NtfyMessage } from '../../shared.d.ts';
 import type { Worker_Pipeline_Split_MessagePart } from './split.d.ts';
 
 /**
@@ -54,7 +55,7 @@ export type Worker_Pipeline_Send_OptionsAttachment = ArrayBuffer | undefined;
 
 export type Worker_Pipeline_Send_OptionsFilename = string | undefined;
 
-export type Worker_Pipeline_Send_OptionsAttachmentHeaders = Record<string, string> | undefined;
+export type Worker_Pipeline_Send_OptionsAttachmentTitle = string | undefined;
 
 export type Worker_Pipeline_Send_OptionsDeliveryId = string | undefined;
 
@@ -80,7 +81,7 @@ export type Worker_Pipeline_Send_Options = {
   visitorIp?: Worker_Pipeline_Send_OptionsVisitorIp;
   attachment?: Worker_Pipeline_Send_OptionsAttachment;
   filename?: Worker_Pipeline_Send_OptionsFilename;
-  attachmentHeaders?: Worker_Pipeline_Send_OptionsAttachmentHeaders;
+  attachmentTitle?: Worker_Pipeline_Send_OptionsAttachmentTitle;
   deliveryId?: Worker_Pipeline_Send_OptionsDeliveryId;
   completedStages?: Worker_Pipeline_Send_OptionsCompletedStages;
   onStageSuccess?: Worker_Pipeline_Send_OptionsOnStageSuccess;
@@ -104,7 +105,7 @@ export type Worker_Pipeline_Send_Attachment = Worker_Pipeline_Send_OptionsAttach
 
 export type Worker_Pipeline_Send_Filename = Worker_Pipeline_Send_OptionsFilename;
 
-export type Worker_Pipeline_Send_AttachmentHeaders = Worker_Pipeline_Send_OptionsAttachmentHeaders;
+export type Worker_Pipeline_Send_AttachmentTitle = Worker_Pipeline_Send_OptionsAttachmentTitle;
 
 export type Worker_Pipeline_Send_DeliveryId = Worker_Pipeline_Send_OptionsDeliveryId;
 
@@ -149,14 +150,7 @@ export type Worker_Pipeline_Send_Send_BaseTitle = string;
 
 export type Worker_Pipeline_Send_Send_NewTotal = number;
 
-export type Worker_Pipeline_Send_Send_RenumberedMessagesBody = string;
-
-export type Worker_Pipeline_Send_Send_RenumberedMessagesHeaders = Record<string, string>;
-
-export type Worker_Pipeline_Send_Send_RenumberedMessages = {
-  body: Worker_Pipeline_Send_Send_RenumberedMessagesBody;
-  headers: Worker_Pipeline_Send_Send_RenumberedMessagesHeaders;
-}[];
+export type Worker_Pipeline_Send_Send_RenumberedMessages = Array<Shared_NtfyMessage & {}>;
 
 /**
  * Worker - Pipeline - Send - Send To Server.
@@ -175,7 +169,7 @@ export type Worker_Pipeline_Send_SendToServer_Attachment = ArrayBuffer | undefin
 
 export type Worker_Pipeline_Send_SendToServer_Filename = string | undefined;
 
-export type Worker_Pipeline_Send_SendToServer_AttachmentHeaders = Record<string, string> | undefined;
+export type Worker_Pipeline_Send_SendToServer_AttachmentTitle = string | undefined;
 
 export type Worker_Pipeline_Send_SendToServer_DeliveryId = string | undefined;
 
@@ -196,8 +190,6 @@ export type Worker_Pipeline_Send_SendToServer_Stage = string;
 
 export type Worker_Pipeline_Send_SendToServer_Stages = Worker_Pipeline_Send_SendToServer_Stage[];
 
-export type Worker_Pipeline_Send_SendToServer_Url = string;
-
 export type Worker_Pipeline_Send_SendToServer_LastStatus = number;
 
 export type Worker_Pipeline_Send_SendToServer_TotalParts = number;
@@ -210,9 +202,7 @@ export type Worker_Pipeline_Send_SendToServer_StageKey = string;
 
 export type Worker_Pipeline_Send_SendToServer_StageCompleted = boolean;
 
-export type Worker_Pipeline_Send_SendToServer_Headers = Record<string, string>;
-
-export type Worker_Pipeline_Send_SendToServer_Response = Response;
+export type Worker_Pipeline_Send_SendToServer_Response = Shared_NtfyDelivery;
 
 export type Worker_Pipeline_Send_SendToServer_ErrorMessage = string;
 
@@ -220,8 +210,6 @@ export type Worker_Pipeline_Send_SendToServer_AttachmentStageKey = string;
 
 export type Worker_Pipeline_Send_SendToServer_AttachmentStageCompleted = boolean;
 
-export type Worker_Pipeline_Send_SendToServer_AttachmentRequestHeaders = Record<string, string>;
-
-export type Worker_Pipeline_Send_SendToServer_AttachmentResponse = Response;
+export type Worker_Pipeline_Send_SendToServer_AttachmentResponse = Shared_NtfyDelivery;
 
 export type Worker_Pipeline_Send_SendToServer_AttachmentErrorMessage = string;

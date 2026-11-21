@@ -11,7 +11,8 @@ import { dirname, join, resolve } from 'node:path';
 
 import prompts from 'prompts';
 
-import { PATTERN_CLOUDFLARE_API_TOKEN } from './lib/regex.mjs';
+import { PATTERN_CLOUDFLARE_API_TOKEN, PATTERN_LINE_BREAK } from './lib/regex.mjs';
+import { buildWindowsCommandLine } from './lib/windows-command.mjs';
 
 /**
  * Tail Logs - Toolkit.
@@ -840,12 +841,23 @@ async function startTail(token, accountId, scriptName) {
 
   writeFileSync(join(tailDir, 'wrangler.toml'), `name = "${scriptName}"\n`);
 
-  const tail = spawn('npx', [
+  const tailArguments = [
     'wrangler',
     'tail',
     '--format',
     'json',
-  ], {
+  ];
+
+  // Windows ships npx as "npx.cmd", which only a shell can start, so the arguments are quoted into one command line.
+  const tail = (process.platform === 'win32') ? spawn(buildWindowsCommandLine('npx', tailArguments), {
+    stdio: [
+      'ignore',
+      'pipe',
+      'pipe',
+    ],
+    cwd: tailDir,
+    shell: true,
+  }) : spawn('npx', tailArguments, {
     stdio: [
       'ignore',
       'pipe',
@@ -942,7 +954,7 @@ async function startTail(token, accountId, scriptName) {
   function processChunk(chunk) {
     lineBuffer += chunk.toString();
 
-    const lines = lineBuffer.split('\n');
+    const lines = lineBuffer.split(PATTERN_LINE_BREAK);
 
     lineBuffer = lines.pop() ?? '';
 

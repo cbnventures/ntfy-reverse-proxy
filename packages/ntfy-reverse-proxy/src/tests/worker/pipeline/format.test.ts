@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { Runner as NtfyClient } from '../../../worker/ntfy-client.js';
 import { format } from '../../../worker/pipeline/format.js';
 
 import type {
@@ -7,9 +8,12 @@ import type {
   Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_CfProperties,
   Tests_Worker_Pipeline_Format_Format_AppendsVisitorInfoWhenEnabled_Result,
   Tests_Worker_Pipeline_Format_Format_DoesNotIncludeVisitorInfoWhenDisabled_Result,
+  Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_Headers,
   Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_Notification,
   Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_Result,
+  Tests_Worker_Pipeline_Format_Format_OmitsUndefinedOptionalHeaders_Headers,
   Tests_Worker_Pipeline_Format_Format_OmitsUndefinedOptionalHeaders_Result,
+  Tests_Worker_Pipeline_Format_Format_ReturnsFormattedBodyAndNtfyHeaders_Headers,
   Tests_Worker_Pipeline_Format_Format_ReturnsFormattedBodyAndNtfyHeaders_Result,
 } from '../../../types/tests/worker/pipeline/format.test.d.ts';
 
@@ -29,16 +33,17 @@ describe('format', () => {
 
   it('returns formatted body and ntfy headers', () => {
     const result: Tests_Worker_Pipeline_Format_Format_ReturnsFormattedBodyAndNtfyHeaders_Result = format(baseNotification, { showVisitorInfo: false });
+    const headers: Tests_Worker_Pipeline_Format_Format_ReturnsFormattedBodyAndNtfyHeaders_Headers = NtfyClient.buildMessageHeaders(result);
 
     expect(result['body']).toBe('Test body message');
 
-    expect(result['headers']['X-Title']).toBe('Test Title');
+    expect(headers['X-Title']).toBe('Test Title');
 
-    expect(result['headers']['X-Priority']).toBe('3');
+    expect(headers['X-Priority']).toBe('3');
 
-    expect(result['headers']['X-Tags']).toBe('test');
+    expect(headers['X-Tags']).toBe('test');
 
-    expect(result['headers']['X-Markdown']).toBe('true');
+    expect(headers['X-Markdown']).toBe('true');
 
     return;
   });
@@ -88,18 +93,20 @@ describe('format', () => {
     };
 
     const result: Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_Result = format(notification, { showVisitorInfo: false });
+    const headers: Tests_Worker_Pipeline_Format_Format_MapsOptionalNotificationFieldsToHeaders_Headers = NtfyClient.buildMessageHeaders(result);
 
-    expect(result['headers']['X-Icon']).toBe('https://example.com/icon.png');
+    expect(headers['X-Icon']).toBe('https://example.com/icon.png');
 
-    expect(result['headers']['X-Actions']).toBe('view, Open, https://example.com');
+    expect(headers['X-Actions']).toBe('view, Open, https://example.com');
 
     return;
   });
 
   it('omits undefined optional headers', () => {
     const result: Tests_Worker_Pipeline_Format_Format_OmitsUndefinedOptionalHeaders_Result = format(baseNotification, { showVisitorInfo: false });
+    const headers: Tests_Worker_Pipeline_Format_Format_OmitsUndefinedOptionalHeaders_Headers = NtfyClient.buildMessageHeaders(result);
 
-    expect(result['headers']['X-Icon']).toBeUndefined();
+    expect(headers['X-Icon']).toBeUndefined();
 
     return;
   });

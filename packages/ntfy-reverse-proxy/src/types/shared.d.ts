@@ -83,3 +83,137 @@ export type Shared_StatusPage_StoredState = {
   updateId: Shared_StatusPage_StoredState_UpdateId;
   components: Shared_StatusPage_StoredState_Components;
 };
+
+/**
+ * Shared - Cloudflare Zone.
+ *
+ * @since 2.5.0
+ */
+export type Shared_CloudflareZone_ZoneId = string;
+
+export type Shared_CloudflareZone_AccountId = string;
+
+export type Shared_CloudflareZone_ZoneName = string;
+
+export type Shared_CloudflareZone = {
+  zoneId: Shared_CloudflareZone_ZoneId;
+  accountId: Shared_CloudflareZone_AccountId;
+  zoneName: Shared_CloudflareZone_ZoneName;
+};
+
+/**
+ * Shared - Cloudflare Kv Namespace.
+ *
+ * @since 2.5.0
+ */
+export type Shared_CloudflareKvNamespace_Id = string;
+
+export type Shared_CloudflareKvNamespace_Title = string;
+
+export type Shared_CloudflareKvNamespace = {
+  id: Shared_CloudflareKvNamespace_Id;
+  title: Shared_CloudflareKvNamespace_Title;
+};
+
+/**
+ * Shared - Cloudflare Email Routing Rule.
+ *
+ * @since 2.5.0
+ */
+export type Shared_CloudflareEmailRoutingRule_Id = string;
+
+export type Shared_CloudflareEmailRoutingRule_ToAddress = string;
+
+export type Shared_CloudflareEmailRoutingRule_ToAddresses = Shared_CloudflareEmailRoutingRule_ToAddress[];
+
+export type Shared_CloudflareEmailRoutingRule_WorkerName = string;
+
+export type Shared_CloudflareEmailRoutingRule_WorkerNames = Shared_CloudflareEmailRoutingRule_WorkerName[];
+
+export type Shared_CloudflareEmailRoutingRule = {
+  id: Shared_CloudflareEmailRoutingRule_Id;
+  toAddresses: Shared_CloudflareEmailRoutingRule_ToAddresses;
+  workerNames: Shared_CloudflareEmailRoutingRule_WorkerNames;
+};
+
+/**
+ * Shared - Cloudflare Worker Domain.
+ *
+ * @since 2.5.0
+ */
+export type Shared_CloudflareWorkerDomain_Hostname = string;
+
+export type Shared_CloudflareWorkerDomain_WorkerName = string;
+
+export type Shared_CloudflareWorkerDomain = {
+  hostname: Shared_CloudflareWorkerDomain_Hostname;
+  workerName: Shared_CloudflareWorkerDomain_WorkerName;
+};
+
+/**
+ * Shared - Public DNS Record.
+ *
+ * @since 2.5.0
+ */
+export type Shared_PublicDnsRecord_Type = string;
+
+export type Shared_PublicDnsRecord_Name = string;
+
+export type Shared_PublicDnsRecord_Content = string | undefined;
+
+export type Shared_PublicDnsRecord = {
+  type: Shared_PublicDnsRecord_Type;
+  name: Shared_PublicDnsRecord_Name;
+  content: Shared_PublicDnsRecord_Content;
+};
+
+/**
+ * Shared - Ntfy Message.
+ *
+ * @since 2.5.0
+ */
+export type Shared_NtfyMessage_Body = string;
+
+export type Shared_NtfyMessage_Title = string | undefined;
+
+export type Shared_NtfyMessage_Priority = number | undefined;
+
+export type Shared_NtfyMessage_Tag = string;
+
+export type Shared_NtfyMessage_Tags = Shared_NtfyMessage_Tag[] | undefined;
+
+export type Shared_NtfyMessage_Markdown = boolean | undefined;
+
+export type Shared_NtfyMessage_Icon = string | undefined;
+
+export type Shared_NtfyMessage_Actions = string | undefined;
+
+export type Shared_NtfyMessage_Attach = string | undefined;
+
+export type Shared_NtfyMessage_Filename = string | undefined;
+
+export type Shared_NtfyMessage = {
+  body: Shared_NtfyMessage_Body;
+  title?: Shared_NtfyMessage_Title;
+  priority?: Shared_NtfyMessage_Priority;
+  tags?: Shared_NtfyMessage_Tags;
+  markdown?: Shared_NtfyMessage_Markdown;
+  icon?: Shared_NtfyMessage_Icon;
+  actions?: Shared_NtfyMessage_Actions;
+  attach?: Shared_NtfyMessage_Attach;
+  filename?: Shared_NtfyMessage_Filename;
+};
+
+/**
+ * Shared - Ntfy Delivery.
+ *
+ * @since 2.5.0
+ */
+export type Shared_NtfyDelivery_Ok = boolean;
+
+export type Shared_NtfyDelivery_Status = number;
+
+export type Shared_NtfyDelivery = {
+  ok: Shared_NtfyDelivery_Ok;
+  status: Shared_NtfyDelivery_Status;
+};

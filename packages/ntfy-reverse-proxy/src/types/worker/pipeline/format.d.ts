@@ -1,3 +1,4 @@
+import type { Shared_NtfyMessage } from '../../shared.d.ts';
 import type { Worker_Pipeline_Interpret_NotificationObject } from './interpret.d.ts';
 
 /**
@@ -19,14 +20,7 @@ export type Worker_Pipeline_Format_Options = {
   cfProperties?: Worker_Pipeline_Format_OptionsCfProperties;
 };
 
-export type Worker_Pipeline_Format_ResultBody = string;
-
-export type Worker_Pipeline_Format_ResultHeaders = Record<string, string>;
-
-export type Worker_Pipeline_Format_Result = {
-  body: Worker_Pipeline_Format_ResultBody;
-  headers: Worker_Pipeline_Format_ResultHeaders;
-};
+export type Worker_Pipeline_Format_Result = Shared_NtfyMessage;
 
 export type Worker_Pipeline_Format_Returns = Worker_Pipeline_Format_Result;
 
@@ -41,14 +35,6 @@ export type Worker_Pipeline_Format_Separator = string;
 export type Worker_Pipeline_Format_IsMarkdown = boolean;
 
 export type Worker_Pipeline_Format_Lines = string[];
-
-export type Worker_Pipeline_Format_Headers = Record<string, string>;
-
-export type Worker_Pipeline_Format_PriorityString = string;
-
-export type Worker_Pipeline_Format_TagsString = string;
-
-export type Worker_Pipeline_Format_MarkdownString = string;
 
 export type Worker_Pipeline_Format_Format_Bold_Bold_Returns = string;
 

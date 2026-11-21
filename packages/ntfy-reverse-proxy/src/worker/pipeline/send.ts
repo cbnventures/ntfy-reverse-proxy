@@ -1,8 +1,9 @@
 import { REGEX_TITLE_PART_SUFFIX } from '../../lib/regex.js';
+import { Runner as NtfyClient } from '../ntfy-client.js';
 
 import type {
   Worker_Pipeline_Send_Attachment,
-  Worker_Pipeline_Send_AttachmentHeaders,
+  Worker_Pipeline_Send_AttachmentTitle,
   Worker_Pipeline_Send_CompletedStages,
   Worker_Pipeline_Send_DeliveryId,
   Worker_Pipeline_Send_FallbackDeliveryNote,
@@ -31,16 +32,14 @@ import type {
   Worker_Pipeline_Send_Send_RenumberedMessages,
   Worker_Pipeline_Send_SendToServer_Attachment,
   Worker_Pipeline_Send_SendToServer_AttachmentErrorMessage,
-  Worker_Pipeline_Send_SendToServer_AttachmentHeaders,
-  Worker_Pipeline_Send_SendToServer_AttachmentRequestHeaders,
   Worker_Pipeline_Send_SendToServer_AttachmentResponse,
   Worker_Pipeline_Send_SendToServer_AttachmentStageCompleted,
   Worker_Pipeline_Send_SendToServer_AttachmentStageKey,
+  Worker_Pipeline_Send_SendToServer_AttachmentTitle,
   Worker_Pipeline_Send_SendToServer_CompletedStages,
   Worker_Pipeline_Send_SendToServer_DeliveryId,
   Worker_Pipeline_Send_SendToServer_ErrorMessage,
   Worker_Pipeline_Send_SendToServer_Filename,
-  Worker_Pipeline_Send_SendToServer_Headers,
   Worker_Pipeline_Send_SendToServer_LastStatus,
   Worker_Pipeline_Send_SendToServer_Messages,
   Worker_Pipeline_Send_SendToServer_OnStageSuccess,
@@ -53,7 +52,6 @@ import type {
   Worker_Pipeline_Send_SendToServer_Stages,
   Worker_Pipeline_Send_SendToServer_Topic,
   Worker_Pipeline_Send_SendToServer_TotalParts,
-  Worker_Pipeline_Send_SendToServer_Url,
   Worker_Pipeline_Send_SendToServer_VisitorIp,
   Worker_Pipeline_Send_ServerResult,
   Worker_Pipeline_Send_Servers,
@@ -89,13 +87,12 @@ async function sendToServer(
   visitorIp?: Worker_Pipeline_Send_SendToServer_VisitorIp,
   attachment?: Worker_Pipeline_Send_SendToServer_Attachment,
   filename?: Worker_Pipeline_Send_SendToServer_Filename,
-  attachmentHeaders?: Worker_Pipeline_Send_SendToServer_AttachmentHeaders,
+  attachmentTitle?: Worker_Pipeline_Send_SendToServer_AttachmentTitle,
   deliveryId?: Worker_Pipeline_Send_SendToServer_DeliveryId,
   completedStages?: Worker_Pipeline_Send_SendToServer_CompletedStages,
   onStageSuccess?: Worker_Pipeline_Send_SendToServer_OnStageSuccess,
 ): Worker_Pipeline_Send_ToServerReturns {
   const stages: Worker_Pipeline_Send_SendToServer_Stages = [];
-  const url: Worker_Pipeline_Send_SendToServer_Url = `${server['server']}/${topic}`;
   let lastStatus: Worker_Pipeline_Send_SendToServer_LastStatus = 0;
 
   const totalParts: Worker_Pipeline_Send_SendToServer_TotalParts = messages.length;
@@ -115,24 +112,10 @@ async function sendToServer(
       continue;
     }
 
-    const headers: Worker_Pipeline_Send_SendToServer_Headers = {
-      ...message['headers'],
-      Authorization: `Bearer ${server['token']}`,
-    };
-
-    if (deliveryId !== undefined) {
-      Reflect.set(headers, 'X-Sequence-ID', `${deliveryId}-message-${String(partIndex + 1)}`);
-    }
-
-    if (visitorIp !== undefined) {
-      Reflect.set(headers, 'X-Forwarded-For', visitorIp);
-    }
-
     try {
-      const response: Worker_Pipeline_Send_SendToServer_Response = await fetch(url, {
-        method: 'POST',
-        headers,
-        body: message['body'],
+      const response: Worker_Pipeline_Send_SendToServer_Response = await NtfyClient.publish(server, topic, message, {
+        ...((deliveryId !== undefined) ? { sequenceId: `${deliveryId}-message-${String(partIndex + 1)}` } : {}),
+        ...((visitorIp !== undefined) ? { forwardedFor: visitorIp } : {}),
       });
 
       lastStatus = response['status'];
@@ -186,28 +169,12 @@ async function sendToServer(
       };
     }
 
-    const attachmentRequestHeaders: Worker_Pipeline_Send_SendToServer_AttachmentRequestHeaders = {
-      Authorization: `Bearer ${server['token']}`,
-      ...attachmentHeaders,
-    };
-
-    if (deliveryId !== undefined) {
-      Reflect.set(attachmentRequestHeaders, 'X-Sequence-ID', `${deliveryId}-attachment`);
-    }
-
-    if (visitorIp !== undefined) {
-      Reflect.set(attachmentRequestHeaders, 'X-Forwarded-For', visitorIp);
-    }
-
-    if (filename !== undefined) {
-      Reflect.set(attachmentRequestHeaders, 'X-Filename', filename);
-    }
-
     try {
-      const attachmentResponse: Worker_Pipeline_Send_SendToServer_AttachmentResponse = await fetch(url, {
-        method: 'PUT',
-        headers: attachmentRequestHeaders,
-        body: attachment,
+      const attachmentResponse: Worker_Pipeline_Send_SendToServer_AttachmentResponse = await NtfyClient.upload(server, topic, attachment, {
+        ...((attachmentTitle !== undefined) ? { title: attachmentTitle } : {}),
+        ...((deliveryId !== undefined) ? { sequenceId: `${deliveryId}-attachment` } : {}),
+        ...((visitorIp !== undefined) ? { forwardedFor: visitorIp } : {}),
+        ...((filename !== undefined) ? { filename } : {}),
       });
 
       lastStatus = attachmentResponse['status'];
@@ -271,13 +238,13 @@ async function send(options: Worker_Pipeline_Send_Options): Worker_Pipeline_Send
   const visitorIp: Worker_Pipeline_Send_VisitorIp = options['visitorIp'];
   const attachment: Worker_Pipeline_Send_Attachment = options['attachment'];
   const filename: Worker_Pipeline_Send_Filename = options['filename'];
-  const attachmentHeaders: Worker_Pipeline_Send_AttachmentHeaders = options['attachmentHeaders'];
+  const attachmentTitle: Worker_Pipeline_Send_AttachmentTitle = options['attachmentTitle'];
   const deliveryId: Worker_Pipeline_Send_DeliveryId = options['deliveryId'];
   const completedStages: Worker_Pipeline_Send_CompletedStages = options['completedStages'];
   const onStageSuccess: Worker_Pipeline_Send_OnStageSuccess = options['onStageSuccess'];
 
   if (mode === 'send-all') {
-    const results: Worker_Pipeline_Send_Results = await Promise.all(servers.map((server) => sendToServer(server, messages, topic, visitorIp, attachment, filename, attachmentHeaders, deliveryId, completedStages, onStageSuccess)));
+    const results: Worker_Pipeline_Send_Results = await Promise.all(servers.map((server) => sendToServer(server, messages, topic, visitorIp, attachment, filename, attachmentTitle, deliveryId, completedStages, onStageSuccess)));
 
     return {
       results,
@@ -318,30 +285,23 @@ async function send(options: Worker_Pipeline_Send_Options): Worker_Pipeline_Send
         }
 
         const overflowChunk: Worker_Pipeline_Send_Send_OverflowChunk = combinedBody.slice(currentChunk.length);
-        const baseTitle: Worker_Pipeline_Send_Send_BaseTitle = (messages[0]!['headers']['X-Title'] ?? 'Message').replace(new RegExp(REGEX_TITLE_PART_SUFFIX), '');
+        const baseTitle: Worker_Pipeline_Send_Send_BaseTitle = (messages[0]!['title'] ?? 'Message').replace(new RegExp(REGEX_TITLE_PART_SUFFIX), '');
         const newTotal: Worker_Pipeline_Send_Send_NewTotal = messages.length + 1;
 
         const renumberedMessages: Worker_Pipeline_Send_Send_RenumberedMessages = [
           {
+            ...messages[0]!,
             body: currentChunk,
-            headers: {
-              ...messages[0]!['headers'],
-              'X-Title': `${baseTitle} (1/${newTotal})`,
-            },
+            title: `${baseTitle} (1/${newTotal})`,
           },
           {
+            ...messages[0]!,
             body: overflowChunk,
-            headers: {
-              ...messages[0]!['headers'],
-              'X-Title': `${baseTitle} (2/${newTotal})`,
-            },
+            title: `${baseTitle} (2/${newTotal})`,
           },
           ...messages.slice(1).map((msg, index) => ({
-            body: msg['body'],
-            headers: {
-              ...msg['headers'],
-              'X-Title': `${baseTitle} (${index + 3}/${newTotal})`,
-            },
+            ...msg,
+            title: `${baseTitle} (${index + 3}/${newTotal})`,
           })),
         ];
 
@@ -349,15 +309,15 @@ async function send(options: Worker_Pipeline_Send_Options): Worker_Pipeline_Send
       } else {
         messagesToSend = [
           {
+            ...messages[0]!,
             body: combinedBody,
-            headers: messages[0]!['headers'],
           },
           ...messages.slice(1),
         ];
       }
     }
 
-    const serverResult: Worker_Pipeline_Send_ServerResult = await sendToServer(server, messagesToSend, topic, visitorIp, attachment, filename, attachmentHeaders, deliveryId, completedStages, onStageSuccess);
+    const serverResult: Worker_Pipeline_Send_ServerResult = await sendToServer(server, messagesToSend, topic, visitorIp, attachment, filename, attachmentTitle, deliveryId, completedStages, onStageSuccess);
 
     fallbackResults.push(serverResult);
 

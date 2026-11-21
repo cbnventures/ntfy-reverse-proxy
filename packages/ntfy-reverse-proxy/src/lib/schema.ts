@@ -162,9 +162,127 @@ const configSchema = z.object({
   settings: settingsSchema,
 });
 
+/**
+ * Lib - Schema - Cloudflare Envelope Schema.
+ *
+ * Validates the envelope that wraps every Cloudflare v4 API answer, including
+ * the cursor some lists use to page, so deploy reads every endpoint the same way.
+ *
+ * @since 2.5.0
+ */
+const cloudflareEnvelopeSchema = z.object({
+  success: z.boolean(),
+  errors: z.array(z.object({
+    code: z.number(),
+    message: z.string(),
+  })).nullish(),
+  result: z.unknown(),
+  result_info: z.object({
+    cursor: z.string().optional(),
+  }).nullish(),
+});
+
+/**
+ * Lib - Schema - Cloudflare Zones Schema.
+ *
+ * Validates the zone list returned when deploy looks up the zone, and the
+ * account that owns it, for the base domain.
+ *
+ * @since 2.5.0
+ */
+const cloudflareZonesSchema = z.array(z.object({
+  id: z.string(),
+  name: z.string(),
+  account: z.object({
+    id: z.string(),
+  }),
+}));
+
+/**
+ * Lib - Schema - Cloudflare Kv Namespaces Schema.
+ *
+ * Validates the account's KV namespaces, so deploy can reuse the Worker's
+ * namespace instead of creating a second one.
+ *
+ * @since 2.5.0
+ */
+const cloudflareKvNamespacesSchema = z.array(z.object({
+  id: z.string(),
+  title: z.string(),
+}));
+
+/**
+ * Lib - Schema - Cloudflare Kv Namespace Schema.
+ *
+ * Validates the namespace Cloudflare returns after creating one, of which only
+ * its ID matters to the generated wrangler.toml.
+ *
+ * @since 2.5.0
+ */
+const cloudflareKvNamespaceSchema = z.object({
+  id: z.string(),
+});
+
+/**
+ * Lib - Schema - Cloudflare Email Routing Rules Schema.
+ *
+ * Validates the zone's Email Routing rules, so deploy can tell which ones send
+ * a context address to this Worker.
+ *
+ * @since 2.5.0
+ */
+const cloudflareEmailRoutingRulesSchema = z.array(z.object({
+  tag: z.string(),
+  matchers: z.array(z.object({
+    type: z.string(),
+    field: z.string().optional(),
+    value: z.string().optional(),
+  })),
+  actions: z.array(z.object({
+    type: z.string(),
+    value: z.array(z.string()).optional(),
+  })),
+}));
+
+/**
+ * Lib - Schema - Cloudflare Worker Domains Schema.
+ *
+ * Validates the Workers custom domains on a zone, so deploy can confirm each
+ * HTTP context's host is attached to the Worker after publishing.
+ *
+ * @since 2.5.0
+ */
+const cloudflareWorkerDomainsSchema = z.array(z.object({
+  hostname: z.string(),
+  service: z.string(),
+}));
+
+/**
+ * Lib - Schema - DNS Over HTTPS Answer Schema.
+ *
+ * Validates a public resolver's JSON answer, of which the response code and each
+ * answer's type and data matter, so deploy can see the records the world sees.
+ *
+ * @since 2.5.0
+ */
+const dnsOverHttpsAnswerSchema = z.object({
+  Status: z.number(),
+  Answer: z.array(z.object({
+    type: z.number(),
+    data: z.string(),
+  })).optional(),
+});
+
 export {
+  cloudflareEmailRoutingRulesSchema,
+  cloudflareEnvelopeSchema,
+  cloudflareKvNamespaceSchema,
+  cloudflareKvNamespacesSchema,
+  cloudflareWorkerDomainsSchema,
+  cloudflareZonesSchema,
   configSchema,
   contextSchema,
+  dnsOverHttpsAnswerSchema,
   emailContextSchema,
   httpContextSchema,
   serverSchema,

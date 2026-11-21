@@ -3,6 +3,8 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { trimLineEnds } from './lib/line-endings.mjs';
+
 /**
  * Generate Wrangler Types - Project Root.
  *
@@ -107,10 +109,7 @@ function pointDurableObjectsAtSource() {
  */
 function stripTrailingWhitespace() {
   const content = readFileSync(outputFile, 'utf-8');
-  const stripped = content
-    .split('\n')
-    .map((line) => line.trimEnd())
-    .join('\n');
+  const stripped = trimLineEnds(content);
 
   if (stripped !== content) {
     writeFileSync(outputFile, stripped);

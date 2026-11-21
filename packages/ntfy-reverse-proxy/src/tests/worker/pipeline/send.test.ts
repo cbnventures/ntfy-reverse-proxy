@@ -55,7 +55,7 @@ const servers: Tests_Worker_Pipeline_Send_Servers = [
  */
 const messages: Tests_Worker_Pipeline_Send_Messages = [{
   body: 'Test message',
-  headers: { 'X-Title': 'Test' },
+  title: 'Test',
 }];
 
 /**

@@ -1,5 +1,9 @@
 import type { Lib_Schema_ServerConfig } from '../../lib/schema.d.ts';
 import type {
+  Worker_NtfyClient_Runner_ReadStoredMessage_Stored,
+  Worker_NtfyClient_Runner_ReadStoredTitle_AttachmentHeaders,
+} from '../ntfy-client.d.ts';
+import type {
   Worker_Pipeline_Deliver_EnqueueOptions,
   Worker_Pipeline_Deliver_Result,
 } from '../pipeline/deliver.d.ts';
@@ -111,7 +115,7 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_Notification = {
 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_Returns = Promise<Worker_Pipeline_Send_Result>;
 
-export type Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_PayloadMessages = Worker_Pipeline_Deliver_EnqueueOptions['messages'];
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_PayloadMessages = Worker_NtfyClient_Runner_ReadStoredMessage_Stored[];
 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_PayloadServerNames = string[];
 
@@ -125,7 +129,9 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_PayloadVisitorIp
 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_PayloadFilename = string | undefined;
 
-export type Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_PayloadAttachmentHeaders = Record<string, string> | undefined;
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_PayloadAttachmentTitle = string | undefined;
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_PayloadAttachmentHeaders = Worker_NtfyClient_Runner_ReadStoredTitle_AttachmentHeaders;
 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_PayloadHasAttachment = boolean;
 
@@ -137,6 +143,7 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_Payload = {
   mode: Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_PayloadMode;
   visitorIp?: Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_PayloadVisitorIp;
   filename?: Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_PayloadFilename;
+  attachmentTitle?: Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_PayloadAttachmentTitle;
   attachmentHeaders?: Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_PayloadAttachmentHeaders;
   hasAttachment: Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_PayloadHasAttachment;
 };
@@ -153,6 +160,8 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_Resolved = {
   servers: Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_ResolvedServers;
   primaryServer: Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_ResolvedPrimaryServer;
 };
+
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Attempt_AttachmentTitle = string | undefined;
 
 /**
  * Worker - Durable Objects - Delivery Outbox - Runner - Checkpoint.
@@ -285,7 +294,7 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_PayloadVisitorIp
 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_PayloadFilename = string | undefined;
 
-export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_PayloadAttachmentHeaders = Record<string, string> | undefined;
+export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_PayloadAttachmentTitle = string | undefined;
 
 export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_PayloadHasAttachment = boolean;
 
@@ -297,7 +306,7 @@ export type Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_Payload = {
   mode: Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_PayloadMode;
   visitorIp?: Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_PayloadVisitorIp;
   filename?: Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_PayloadFilename;
-  attachmentHeaders?: Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_PayloadAttachmentHeaders;
+  attachmentTitle?: Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_PayloadAttachmentTitle;
   hasAttachment: Worker_DurableObjects_DeliveryOutbox_Runner_Enqueue_PayloadHasAttachment;
 };
 
