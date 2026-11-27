@@ -3,6 +3,10 @@ import { describe, expect, it } from 'vitest';
 import { configSchema } from '../../lib/schema.js';
 
 import type {
+  Tests_Lib_Schema_ConfigSchema_AllowsAListOfAllowedFromSendersOnEmailContext_Result,
+  Tests_Lib_Schema_ConfigSchema_AllowsAListOfAllowedFromSendersOnEmailContext_Valid,
+  Tests_Lib_Schema_ConfigSchema_AllowsASecretPathAlongsideATokenOnHTTPContext_Result,
+  Tests_Lib_Schema_ConfigSchema_AllowsASecretPathAlongsideATokenOnHTTPContext_Valid,
   Tests_Lib_Schema_ConfigSchema_AllowsOptionalAllowedFromOnEmailContext_Result,
   Tests_Lib_Schema_ConfigSchema_AllowsOptionalAllowedFromOnEmailContext_Valid,
   Tests_Lib_Schema_ConfigSchema_AllowsOptionalErrorEvents_Result,
@@ -15,10 +19,16 @@ import type {
   Tests_Lib_Schema_ConfigSchema_AllowsOptionalSessionOnHTTPContext_Valid,
   Tests_Lib_Schema_ConfigSchema_AllowsOptionalTokenOnHTTPContext_Result,
   Tests_Lib_Schema_ConfigSchema_AllowsOptionalTokenOnHTTPContext_Valid,
+  Tests_Lib_Schema_ConfigSchema_RejectsAContextWithBothSecretPathAndSession_Invalid,
+  Tests_Lib_Schema_ConfigSchema_RejectsAContextWithBothSecretPathAndSession_Result,
   Tests_Lib_Schema_ConfigSchema_RejectsAContextWithBothTokenAndSession_Invalid,
   Tests_Lib_Schema_ConfigSchema_RejectsAContextWithBothTokenAndSession_Result,
   Tests_Lib_Schema_ConfigSchema_RejectsAllowedFromFieldOnHTTPContext_Invalid,
   Tests_Lib_Schema_ConfigSchema_RejectsAllowedFromFieldOnHTTPContext_Result,
+  Tests_Lib_Schema_ConfigSchema_RejectsAnEmptyAllowedFromListOrEmptyEntries_AssertInvalidAllowedFrom,
+  Tests_Lib_Schema_ConfigSchema_RejectsAnEmptyAllowedFromListOrEmptyEntries_AssertInvalidAllowedFrom_Invalid,
+  Tests_Lib_Schema_ConfigSchema_RejectsAnEmptyAllowedFromListOrEmptyEntries_AssertInvalidAllowedFrom_Result,
+  Tests_Lib_Schema_ConfigSchema_RejectsAnEmptyAllowedFromListOrEmptyEntries_InvalidAllowedFroms,
   Tests_Lib_Schema_ConfigSchema_RejectsASessionSecretShorterThan32Characters_Invalid,
   Tests_Lib_Schema_ConfigSchema_RejectsASessionSecretShorterThan32Characters_Result,
   Tests_Lib_Schema_ConfigSchema_RejectsContextWithoutTypeDiscriminator_Invalid,
@@ -35,6 +45,10 @@ import type {
   Tests_Lib_Schema_ConfigSchema_RejectsInvalidModeValues_Result,
   Tests_Lib_Schema_ConfigSchema_RejectsInvalidTypeDiscriminatorValue_Invalid,
   Tests_Lib_Schema_ConfigSchema_RejectsInvalidTypeDiscriminatorValue_Result,
+  Tests_Lib_Schema_ConfigSchema_RejectsSecretPathsThatAreNot32To128LowercaseLettersAndDigits_AssertInvalidSecretPath,
+  Tests_Lib_Schema_ConfigSchema_RejectsSecretPathsThatAreNot32To128LowercaseLettersAndDigits_AssertInvalidSecretPath_Invalid,
+  Tests_Lib_Schema_ConfigSchema_RejectsSecretPathsThatAreNot32To128LowercaseLettersAndDigits_AssertInvalidSecretPath_Result,
+  Tests_Lib_Schema_ConfigSchema_RejectsSecretPathsThatAreNot32To128LowercaseLettersAndDigits_InvalidSecretPaths,
   Tests_Lib_Schema_ConfigSchema_RejectsServerURLsNotStartingWithHttps_Invalid,
   Tests_Lib_Schema_ConfigSchema_RejectsServerURLsNotStartingWithHttps_Result,
   Tests_Lib_Schema_ConfigSchema_RejectsTokenFieldOnEmailContext_Invalid,
@@ -619,6 +633,124 @@ describe('configSchema', () => {
     return;
   });
 
+  it('allows a secret_path alongside a token on HTTP context', () => {
+    const valid: Tests_Lib_Schema_ConfigSchema_AllowsASecretPathAlongsideATokenOnHTTPContext_Valid = {
+      settings: {
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
+      },
+      servers: [{
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
+      }],
+      contexts: [{
+        name: 'statuspage',
+        type: 'http',
+        id: 'abcdefghijklmnopqrst',
+        interpreter: 'statuspage',
+        topic: 'statuspage',
+        mode: 'send-once',
+        show_visitor_info: false,
+        primary_server: 'primary',
+        servers: ['primary'],
+        token: 'my_webhook_secret',
+        secret_path: 'k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4',
+      }],
+    };
+
+    const result: Tests_Lib_Schema_ConfigSchema_AllowsASecretPathAlongsideATokenOnHTTPContext_Result = configSchema.safeParse(valid);
+
+    expect(result['success']).toBe(true);
+
+    return;
+  });
+
+  it('rejects secret paths that are not 32 to 128 lowercase letters and digits', () => {
+    const invalidSecretPaths: Tests_Lib_Schema_ConfigSchema_RejectsSecretPathsThatAreNot32To128LowercaseLettersAndDigits_InvalidSecretPaths = [
+      'K3J9X0Q2M7V4B8N1C6Z5L0P9W2E7R4T1Y8U3I6O0A5S2D9F4',
+      'short1234',
+      'k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1-y8u3i6o0a5s2d9f4',
+      'k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1/y8u3i6o0a5s2d9f4',
+      'a'.repeat(129),
+    ];
+
+    const assertInvalidSecretPath: Tests_Lib_Schema_ConfigSchema_RejectsSecretPathsThatAreNot32To128LowercaseLettersAndDigits_AssertInvalidSecretPath = (invalidSecretPath) => {
+      const invalid: Tests_Lib_Schema_ConfigSchema_RejectsSecretPathsThatAreNot32To128LowercaseLettersAndDigits_AssertInvalidSecretPath_Invalid = {
+        settings: {
+          worker_name: 'test-worker',
+          base_domain: 'ntfy.example.com',
+          show_response_output: false,
+        },
+        servers: [{
+          name: 'primary',
+          server: 'https://ntfy.example.com',
+          token: 'tk_abc',
+        }],
+        contexts: [{
+          name: 'statuspage',
+          type: 'http',
+          id: 'abcdefghijklmnopqrst',
+          interpreter: 'statuspage',
+          topic: 'statuspage',
+          mode: 'send-once',
+          show_visitor_info: false,
+          primary_server: 'primary',
+          servers: ['primary'],
+          secret_path: invalidSecretPath,
+        }],
+      };
+      const result: Tests_Lib_Schema_ConfigSchema_RejectsSecretPathsThatAreNot32To128LowercaseLettersAndDigits_AssertInvalidSecretPath_Result = configSchema.safeParse(invalid);
+
+      expect(result['success']).toBe(false);
+
+      return;
+    };
+
+    invalidSecretPaths.forEach(assertInvalidSecretPath);
+
+    return;
+  });
+
+  it('rejects a context with both secret_path and session', () => {
+    const invalid: Tests_Lib_Schema_ConfigSchema_RejectsAContextWithBothSecretPathAndSession_Invalid = {
+      settings: {
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
+      },
+      servers: [{
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
+      }],
+      contexts: [{
+        name: 'homebridge',
+        type: 'http',
+        id: 'abcdefghijklmnopqrst',
+        interpreter: 'plain-text',
+        topic: 'homebridge',
+        mode: 'send-once',
+        show_visitor_info: true,
+        primary_server: 'primary',
+        servers: ['primary'],
+        secret_path: 'k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4',
+        session: {
+          secret: 'a-session-secret-that-is-at-least-32-characters',
+        },
+      }],
+    };
+
+    const result: Tests_Lib_Schema_ConfigSchema_RejectsAContextWithBothSecretPathAndSession_Result = configSchema.safeParse(invalid);
+
+    expect(result['success']).toBe(false);
+
+    expect(JSON.stringify(result['error'])).toContain('HTTP context cannot set both secret_path and session');
+
+    return;
+  });
+
   it('allows optional allowed_from on email context', () => {
     const valid: Tests_Lib_Schema_ConfigSchema_AllowsOptionalAllowedFromOnEmailContext_Valid = {
       settings: {
@@ -648,6 +780,90 @@ describe('configSchema', () => {
     const result: Tests_Lib_Schema_ConfigSchema_AllowsOptionalAllowedFromOnEmailContext_Result = configSchema.safeParse(valid);
 
     expect(result['success']).toBe(true);
+
+    return;
+  });
+
+  it('allows a list of allowed_from senders on email context', () => {
+    const valid: Tests_Lib_Schema_ConfigSchema_AllowsAListOfAllowedFromSendersOnEmailContext_Valid = {
+      settings: {
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: false,
+      },
+      servers: [{
+        name: 'primary',
+        server: 'https://ntfy.example.com',
+        token: 'tk_abc',
+      }],
+      contexts: [{
+        name: 'status',
+        type: 'email',
+        id: 'status',
+        interpreter: 'statuspage',
+        topic: 'status',
+        mode: 'send-once',
+        show_visitor_info: false,
+        primary_server: 'primary',
+        servers: ['primary'],
+        allowed_from: [
+          '*@githubstatus.com',
+          'noreply@example.com',
+        ],
+      }],
+    };
+
+    const result: Tests_Lib_Schema_ConfigSchema_AllowsAListOfAllowedFromSendersOnEmailContext_Result = configSchema.safeParse(valid);
+
+    expect(result['success']).toBe(true);
+
+    return;
+  });
+
+  it('rejects an empty allowed_from list or empty entries', () => {
+    const invalidAllowedFroms: Tests_Lib_Schema_ConfigSchema_RejectsAnEmptyAllowedFromListOrEmptyEntries_InvalidAllowedFroms = [
+      [],
+      [''],
+      [
+        '*@githubstatus.com',
+        '',
+      ],
+      '',
+    ];
+
+    const assertInvalidAllowedFrom: Tests_Lib_Schema_ConfigSchema_RejectsAnEmptyAllowedFromListOrEmptyEntries_AssertInvalidAllowedFrom = (invalidAllowedFrom) => {
+      const invalid: Tests_Lib_Schema_ConfigSchema_RejectsAnEmptyAllowedFromListOrEmptyEntries_AssertInvalidAllowedFrom_Invalid = {
+        settings: {
+          worker_name: 'test-worker',
+          base_domain: 'ntfy.example.com',
+          show_response_output: false,
+        },
+        servers: [{
+          name: 'primary',
+          server: 'https://ntfy.example.com',
+          token: 'tk_abc',
+        }],
+        contexts: [{
+          name: 'status',
+          type: 'email',
+          id: 'status',
+          interpreter: 'statuspage',
+          topic: 'status',
+          mode: 'send-once',
+          show_visitor_info: false,
+          primary_server: 'primary',
+          servers: ['primary'],
+          allowed_from: invalidAllowedFrom,
+        }],
+      };
+      const result: Tests_Lib_Schema_ConfigSchema_RejectsAnEmptyAllowedFromListOrEmptyEntries_AssertInvalidAllowedFrom_Result = configSchema.safeParse(invalid);
+
+      expect(result['success']).toBe(false);
+
+      return;
+    };
+
+    invalidAllowedFroms.forEach(assertInvalidAllowedFrom);
 
     return;
   });

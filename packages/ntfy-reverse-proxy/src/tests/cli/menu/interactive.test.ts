@@ -17,9 +17,12 @@ import type {
   Tests_Cli_Menu_Interactive_ChalkIdentity_S,
   Tests_Cli_Menu_Interactive_CliCommandsContextJs_AddContext,
   Tests_Cli_Menu_Interactive_CliCommandsContextJs_EditContext,
+  Tests_Cli_Menu_Interactive_CliCommandsContextJs_FormatAllowedFrom,
   Tests_Cli_Menu_Interactive_CliCommandsContextJs_GenerateId,
+  Tests_Cli_Menu_Interactive_CliCommandsContextJs_GenerateSecretPath,
   Tests_Cli_Menu_Interactive_CliCommandsContextJs_GenerateToken,
   Tests_Cli_Menu_Interactive_CliCommandsContextJs_ListContexts,
+  Tests_Cli_Menu_Interactive_CliCommandsContextJs_ParseAllowedFrom,
   Tests_Cli_Menu_Interactive_CliCommandsContextJs_RemoveContext,
   Tests_Cli_Menu_Interactive_CliCommandsDeployJs_Deploy,
   Tests_Cli_Menu_Interactive_CliCommandsServerJs_AddServer,
@@ -65,10 +68,30 @@ import type {
   Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_MockPrompts,
   Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_Prompts,
   Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_PromptsDefaultUnknown,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_Call,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_ContextModule,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_ContextModuleUnknown,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_EditContext,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_FormatAllowedFrom,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_ListContexts,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_MockPrompts,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_ParseAllowedFrom,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_Prompts,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_PromptsDefaultUnknown,
   Tests_Cli_Menu_Interactive_InteractiveMenu_ExitsOnCtrlCAtConfigDirSelection_MockPrompts,
   Tests_Cli_Menu_Interactive_InteractiveMenu_ExitsOnCtrlCAtConfigDirSelection_Prompts,
   Tests_Cli_Menu_Interactive_InteractiveMenu_ExitsOnCtrlCAtConfigDirSelection_PromptsDefaultUnknown,
   Tests_Cli_Menu_Interactive_InteractiveMenu_ExportsTheInteractiveMenuFunction_ExportedType,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_Call,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_ContextModule,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_ContextModuleUnknown,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_EditContext,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_Logger,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_MockPrompts,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_Prompts,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_PromptsDefaultUnknown,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_ToolkitModule,
+  Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_ToolkitModuleUnknown,
   Tests_Cli_Menu_Interactive_InteractiveMenu_OsTmpDir,
   Tests_Cli_Menu_Interactive_InteractiveMenu_SelectsConfigFromMultipleDirectories_Call,
   Tests_Cli_Menu_Interactive_InteractiveMenu_SelectsConfigFromMultipleDirectories_MockPrompts,
@@ -137,7 +160,9 @@ vi.mock('@cbnventures/nova/toolkit', () => {
 vi.mock('../../../cli/commands/context.js', () => {
   const addContext: Tests_Cli_Menu_Interactive_CliCommandsContextJs_AddContext = vi.fn();
   const editContext: Tests_Cli_Menu_Interactive_CliCommandsContextJs_EditContext = vi.fn();
+  const formatAllowedFrom: Tests_Cli_Menu_Interactive_CliCommandsContextJs_FormatAllowedFrom = vi.fn().mockReturnValue('');
   const generateId: Tests_Cli_Menu_Interactive_CliCommandsContextJs_GenerateId = vi.fn().mockReturnValue('test-id');
+  const generateSecretPath: Tests_Cli_Menu_Interactive_CliCommandsContextJs_GenerateSecretPath = vi.fn().mockReturnValue('abcdefghijklmnopqrstuvwxyz0123456789abcdefghijkl');
   const generateToken: Tests_Cli_Menu_Interactive_CliCommandsContextJs_GenerateToken = vi.fn().mockReturnValue('tk_test');
   const listContexts: Tests_Cli_Menu_Interactive_CliCommandsContextJs_ListContexts = vi.fn().mockReturnValue([{
     name: 'Test Context',
@@ -153,14 +178,18 @@ vi.mock('../../../cli/commands/context.js', () => {
     servers: ['Server A'],
     token: 'tk_ctx',
   }]);
+  const parseAllowedFrom: Tests_Cli_Menu_Interactive_CliCommandsContextJs_ParseAllowedFrom = vi.fn().mockReturnValue(undefined);
   const removeContext: Tests_Cli_Menu_Interactive_CliCommandsContextJs_RemoveContext = vi.fn();
 
   return {
     addContext,
     editContext,
+    formatAllowedFrom,
     generateId,
+    generateSecretPath,
     generateToken,
     listContexts,
+    parseAllowedFrom,
     removeContext,
   };
 });
@@ -492,6 +521,124 @@ describe('interactiveMenu', () => {
     const call: Tests_Cli_Menu_Interactive_InteractiveMenu_CtrlCAtServerEditSelectReturnsToServerMenu_Call = mockPrompts.mock.calls[3]![0] as Tests_Cli_Menu_Interactive_InteractiveMenu_CtrlCAtServerEditSelectReturnsToServerMenu_Call;
 
     expect(call['message']).toContain('Manage Servers');
+
+    return;
+  });
+
+  it('email context edit saves the parsed sender list', async () => {
+    const prompts: Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_Prompts = await import('prompts');
+    const promptsDefaultUnknown: Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_PromptsDefaultUnknown = prompts['default'];
+    const mockPrompts: Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_MockPrompts = promptsDefaultUnknown as Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_MockPrompts;
+    const contextModuleUnknown: Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_ContextModuleUnknown = await import('../../../cli/commands/context.js');
+    const contextModule: Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_ContextModule = contextModuleUnknown as Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_ContextModule;
+    const listContexts: Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_ListContexts = contextModule['listContexts'] as Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_ListContexts;
+    const editContext: Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_EditContext = contextModule['editContext'] as Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_EditContext;
+    const formatAllowedFrom: Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_FormatAllowedFrom = contextModule['formatAllowedFrom'] as Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_FormatAllowedFrom;
+    const parseAllowedFrom: Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_ParseAllowedFrom = contextModule['parseAllowedFrom'] as Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_ParseAllowedFrom;
+
+    listContexts.mockReturnValueOnce([{
+      name: 'Test Email',
+      type: 'email',
+      id: 'status',
+      interpreter: 'statuspage',
+      topic: 'email-topic',
+      error_topic: undefined,
+      error_events: undefined,
+      mode: 'send-once',
+      show_visitor_info: false,
+      primary_server: 'Server A',
+      servers: ['Server A'],
+      allowed_from: [
+        'alerts@example.com',
+        '*@example.org',
+      ],
+    }]);
+
+    formatAllowedFrom.mockReturnValueOnce('alerts@example.com, *@example.org');
+
+    parseAllowedFrom.mockReturnValueOnce([
+      'alerts@example.com',
+      '*@example.org',
+      '*@example.net',
+    ]);
+
+    mockPrompts
+      .mockResolvedValueOnce({ action: 'contexts' })
+      .mockResolvedValueOnce({ action: 'edit' })
+      .mockResolvedValueOnce({ name: 'Test Email' })
+      .mockResolvedValueOnce({ keepId: true })
+      .mockResolvedValueOnce({ interpreter: 'statuspage' })
+      .mockResolvedValueOnce({ topic: 'email-topic' })
+      .mockResolvedValueOnce({ error_topic: '' })
+      .mockResolvedValueOnce({ error_events: [] })
+      .mockResolvedValueOnce({ mode: 'send-once' })
+      .mockResolvedValueOnce({ show_visitor_info: false })
+      .mockResolvedValueOnce({ primary_server: 'Server A' })
+      .mockResolvedValueOnce({ selectedServers: ['Server A'] })
+      .mockResolvedValueOnce({ allowed_from: 'alerts@example.com, *@example.org, *@example.net' })
+      .mockResolvedValueOnce({ action: 'back' })
+      .mockResolvedValueOnce({ action: 'exit' });
+
+    await interactiveMenu([tempDir1!]);
+
+    const call: Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_Call = mockPrompts.mock.calls[12]![0] as Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_Call;
+
+    expect(call['initial']).toBe('alerts@example.com, *@example.org');
+
+    expect(parseAllowedFrom).toHaveBeenCalledWith('alerts@example.com, *@example.org, *@example.net');
+
+    expect(editContext).toHaveBeenCalledWith(expect.any(String), 'Test Email', expect.objectContaining({
+      allowed_from: [
+        'alerts@example.com',
+        '*@example.org',
+        '*@example.net',
+      ],
+    }));
+
+    return;
+  });
+
+  it('http context edit adds a secret path and logs its URL', async () => {
+    const prompts: Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_Prompts = await import('prompts');
+    const promptsDefaultUnknown: Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_PromptsDefaultUnknown = prompts['default'];
+    const mockPrompts: Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_MockPrompts = promptsDefaultUnknown as Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_MockPrompts;
+    const contextModuleUnknown: Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_ContextModuleUnknown = await import('../../../cli/commands/context.js');
+    const contextModule: Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_ContextModule = contextModuleUnknown as Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_ContextModule;
+    const editContext: Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_EditContext = contextModule['editContext'] as Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_EditContext;
+    const toolkitModuleUnknown: Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_ToolkitModuleUnknown = await import('@cbnventures/nova/toolkit');
+    const toolkitModule: Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_ToolkitModule = toolkitModuleUnknown as Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_ToolkitModule;
+    const logger: Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_Logger = toolkitModule['Logger'] as Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_Logger;
+
+    mockPrompts
+      .mockResolvedValueOnce({ action: 'contexts' })
+      .mockResolvedValueOnce({ action: 'edit' })
+      .mockResolvedValueOnce({ name: 'Test Context' })
+      .mockResolvedValueOnce({ keepId: true })
+      .mockResolvedValueOnce({ interpreter: 'statuspage' })
+      .mockResolvedValueOnce({ topic: 'test-topic' })
+      .mockResolvedValueOnce({ error_topic: '' })
+      .mockResolvedValueOnce({ error_events: [] })
+      .mockResolvedValueOnce({ mode: 'send-once' })
+      .mockResolvedValueOnce({ show_visitor_info: false })
+      .mockResolvedValueOnce({ primary_server: 'Server A' })
+      .mockResolvedValueOnce({ selectedServers: ['Server A'] })
+      .mockResolvedValueOnce({ useSession: false })
+      .mockResolvedValueOnce({ keepToken: true })
+      .mockResolvedValueOnce({ addSecretPath: true })
+      .mockResolvedValueOnce({ action: 'back' })
+      .mockResolvedValueOnce({ action: 'exit' });
+
+    await interactiveMenu([tempDir1!]);
+
+    const call: Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_Call = mockPrompts.mock.calls[14]![0] as Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_Call;
+
+    expect(call['message']).toBe('Use a secret URL path? (for senders that cannot send headers, such as Statuspage)');
+
+    expect(call['initial']).toBe(false);
+
+    expect(editContext).toHaveBeenCalledWith(expect.any(String), 'Test Context', expect.objectContaining({ secret_path: 'abcdefghijklmnopqrstuvwxyz0123456789abcdefghijkl' }));
+
+    expect(logger['info']).toHaveBeenCalledWith('  Secret URL: https://ctx-1.test.example.com/abcdefghijklmnopqrstuvwxyz0123456789abcdefghijkl');
 
     return;
   });

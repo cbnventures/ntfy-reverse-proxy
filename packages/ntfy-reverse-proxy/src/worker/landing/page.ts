@@ -91,6 +91,7 @@ function landingPage(config: Worker_Landing_Page_Config): Worker_Landing_Page_La
           ...base,
           ...((context['token'] !== undefined) ? { token: '***' } : {}),
           ...((context['session'] !== undefined) ? { session: '***' } : {}),
+          ...((context['secret_path'] !== undefined) ? { secret_path: '***' } : {}),
         };
       }
 

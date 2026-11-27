@@ -37,6 +37,17 @@ export type Tests_Worker_Landing_Page_LandingPage_IncludesGitHubLink_Response = 
 export type Tests_Worker_Landing_Page_LandingPage_IncludesGitHubLink_Html = string;
 
 /**
+ * Tests - Worker - Landing - Page - Landing Page - Masks The Secret Path In Debug Output.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Worker_Landing_Page_LandingPage_MasksTheSecretPathInDebugOutput_DebugConfig = Lib_Schema_ConfigSchema & {};
+
+export type Tests_Worker_Landing_Page_LandingPage_MasksTheSecretPathInDebugOutput_Response = Response;
+
+export type Tests_Worker_Landing_Page_LandingPage_MasksTheSecretPathInDebugOutput_Html = string;
+
+/**
  * Tests - Worker - Landing - Page - Landing Page - Returns HTML With Branding.
  *
  * @since 2.0.0

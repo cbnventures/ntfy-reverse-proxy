@@ -83,6 +83,26 @@ export type Tests_Cli_Commands_Context_ContextCommands_AutoRegeneratesDuplicateI
 };
 
 /**
+ * Tests - CLI - Commands - Context - Context Commands - Formats Allowed Senders For Display.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Cli_Commands_Context_ContextCommands_FormatsAllowedSendersForDisplay_Listed = string;
+
+export type Tests_Cli_Commands_Context_ContextCommands_FormatsAllowedSendersForDisplay_Single = string;
+
+export type Tests_Cli_Commands_Context_ContextCommands_FormatsAllowedSendersForDisplay_Blank = string;
+
+/**
+ * Tests - CLI - Commands - Context - Context Commands - Generates 48 Character Lowercase Secret Paths.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Cli_Commands_Context_ContextCommands_Generates48CharacterLowercaseSecretPaths_SecretPath1 = string;
+
+export type Tests_Cli_Commands_Context_ContextCommands_Generates48CharacterLowercaseSecretPaths_SecretPath2 = string;
+
+/**
  * Tests - CLI - Commands - Context - Context Commands - Generates 64 Character Session Secrets.
  *
  * @since 2.4.0
@@ -106,6 +126,17 @@ export type Tests_Cli_Commands_Context_ContextCommands_GeneratesRandomIdStrings_
  * @since 2.0.0
  */
 export type Tests_Cli_Commands_Context_ContextCommands_ListsContexts_Contexts = unknown[];
+
+/**
+ * Tests - CLI - Commands - Context - Context Commands - Parses Comma Separated Allowed Senders.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Cli_Commands_Context_ContextCommands_ParsesCommaSeparatedAllowedSenders_Listed = string | string[] | undefined;
+
+export type Tests_Cli_Commands_Context_ContextCommands_ParsesCommaSeparatedAllowedSenders_Single = string | string[] | undefined;
+
+export type Tests_Cli_Commands_Context_ContextCommands_ParsesCommaSeparatedAllowedSenders_Blank = string | string[] | undefined;
 
 /**
  * Tests - CLI - Commands - Context.

@@ -1,7 +1,7 @@
 ---
 id: security
 title: Security
-description: Secure Reverse Proxy for ntfy with per-context tokens, session tokens, sender authentication, sensitive value masking, WAF rules, and Cloudflare edge protection.
+description: Secure Reverse Proxy for ntfy with per-context tokens, session tokens, secret paths, sender authentication, sensitive value masking, WAF rules, and Cloudflare edge protection.
 sidebar_position: 4
 keywords:
   - ntfy reverse proxy
@@ -34,7 +34,8 @@ flowchart TD
     subgraph AuthLayer [Context Authentication]
         direction TB
         Type{HTTP or Email?}
-        Type --> Token[Token or Session Token Validation]
+        Type --> SecretPath[Secret Path Check]
+        SecretPath --> Token[Token or Session Token Validation]
         Type --> Sender[Sender Address Filtering]
     end
 
@@ -59,7 +60,7 @@ Supported header formats:
 - `Authorization: Bearer {token}` — The standard bearer token format. The `Bearer` prefix is case-sensitive (lowercase `bearer` will not match).
 - `Authorization: {token}` — A raw token without the `Bearer` prefix.
 
-If the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> has neither a `token` nor a `session` field, all requests are allowed without authentication.
+If the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> has neither a `token` nor a `session` field, all requests are allowed without authentication. For senders that can't send headers, a [secret path](#secret-paths) keeps the URL itself private.
 
 :::danger
 On authentication failure, the <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology> returns HTTP 403. If the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> has an `error_topic` configured and `error_events` includes `"authentication"` (or is omitted), an `error-debug.json` <Terminology title="A file sent along with the notification" to="/docs/reference/terminology#ntfy-servers-and-messages">attachment</Terminology> is sent to that <Terminology title="Where you hear about alerts the proxy couldn't handle" to="/docs/reference/terminology#ntfy-servers-and-messages">topic</Terminology> containing the timestamp, error, <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> name and <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology>, request details (method, URL, headers with the Authorization header value redacted, and Cloudflare properties), response status, and request body.
@@ -160,12 +161,34 @@ A <Terminology title="One alert source: its address, interpreter, and topic" to=
 If a Cloudflare custom rule blocks every path except `/` on your proxy's hostnames, add `/session` to the allowed paths, as the [block rule](#block-rule) below does. Otherwise Cloudflare answers `/session` with HTTP 403 before the request reaches the <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology>, and senders never get a token.
 :::
 
+## Secret Paths
+
+A <Terminology title="An unguessable URL path only your sender knows" to="/docs/reference/terminology#configuration">secret path</Terminology> protects a <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> whose sender can't send headers or signatures, such as Statuspage, so it can't use a `token`. Every <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> hostname shows up in public certificate logs, and the <Terminology title="An unguessable URL path only your sender knows" to="/docs/reference/terminology#configuration">secret path</Terminology> keeps scanners that find it from posting.
+
+### How It Works
+
+1. Set `secret_path` on the HTTP <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>, or answer yes to **Use a secret URL path?** in the CLI, which generates a 48-character one and prints the full URL.
+2. Give the sender the full URL, `https://{id}.ntfy.example.com/{secret_path}`. One trailing slash is accepted.
+3. The <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology> compares the path in constant time before it checks a token, reads the body, or sends anything.
+
+### Behavior
+
+- **Format** — 32 to 128 lowercase letters and digits. Lowercase keeps the URL working when a sender stores it in lowercase.
+- **Wrong paths** — Any other path, including `/` and `/session`, gets the same HTTP 404 and body as a hostname with no <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>. No error notification goes out, so a probe can't tell the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> exists.
+- **Error notifications** — When a request on the <Terminology title="An unguessable URL path only your sender knows" to="/docs/reference/terminology#configuration">secret path</Terminology> later fails, the `error-debug.json` <Terminology title="A file sent along with the notification" to="/docs/reference/terminology#ntfy-servers-and-messages">attachment</Terminology> shows the path as `/REDACTED`.
+- **With a token** — `secret_path` and `token` can be combined, so a sender that can send headers needs both.
+
+:::warning
+A <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> can't set both `secret_path` and `session`, because <Terminology title="A short-lived, one-use pass a sender gets from /session" to="/docs/reference/terminology#configuration">session tokens</Terminology> are issued on their own path.
+:::
+
 ## Email Authentication
 
 Email <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">contexts</Terminology> use the `allowed_from` field to control which senders can trigger notifications.
 
 - **Exact match** — `user@example.com` allows only that address.
 - **Wildcard** — `*@example.com` allows any sender from that domain.
+- **List** — `["*@githubstatus.com", "alerts@example.com"]` allows a sender that matches any entry.
 - **Not set** — All senders are allowed.
 
 Matching is case-insensitive. If the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> has an `error_topic` configured and `error_events` includes `"authentication"` (or is omitted), unauthorized emails send an `error-debug.json` <Terminology title="A file sent along with the notification" to="/docs/reference/terminology#ntfy-servers-and-messages">attachment</Terminology> to that <Terminology title="Where you hear about alerts the proxy couldn't handle" to="/docs/reference/terminology#ntfy-servers-and-messages">topic</Terminology>.
@@ -194,7 +217,7 @@ Matching is case-insensitive. If the <Terminology title="One alert source: its a
 }
 ```
 
-The `error.message` is `Sender domain not allowed` for a wildcard rule, `Sender not allowed` for an exact address, or `Missing sender address`. Email interpretation errors use the same `email` object and also add the error's `name`, `stack`, and any schema `issues`.
+The `error.message` is `Sender domain not allowed` when every entry is a wildcard, `Sender not allowed` when any entry is an exact address, or `Missing sender address`. Email interpretation errors use the same `email` object and also add the error's `name`, `stack`, and any schema `issues`.
 
 </details>
 
@@ -206,7 +229,7 @@ The <Terminology title="The proxy itself, running on your Cloudflare account" to
 - **<Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">Server</Terminology> URLs** — Replaced with `***`.
 - **<Terminology title="The domain every context subdomain lives under" to="/docs/reference/terminology#cloudflare-setup">Base domain</Terminology>** — Replaced with `***`.
 - **<Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">Context</Terminology> IDs and <Terminology title="The ntfy channel your phone subscribes to for alerts" to="/docs/reference/terminology#ntfy-servers-and-messages">topics</Terminology>** — Replaced with `***`.
-- **<Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">Context</Terminology> tokens, `session`, and `allowed_from`** — Replaced with `***` when present.
+- **<Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">Context</Terminology> tokens, `session`, `secret_path`, and `allowed_from`** — Replaced with `***` when present.
 - **<Terminology title="Where you hear about alerts the proxy couldn't handle" to="/docs/reference/terminology#ntfy-servers-and-messages">Error topics</Terminology>** — Replaced with `***` when present.
 
 This masking applies to the collapsible debug section on the GET <Terminology title="Open a context's URL in a browser to see it's up" to="/docs/reference/terminology#configuration">landing page</Terminology>. The POST/PUT JSON response includes <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> name, <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology>, and <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> results only when `show_response_output` is enabled.
@@ -246,7 +269,7 @@ Cloudflare's bot protection can block legitimate webhooks. You may need to adjus
 
 ### Block Rule
 
-The proxy only answers on `/` and, for <Terminology title="A short-lived, one-use pass a sender gets from /session" to="/docs/reference/terminology#configuration">session tokens</Terminology>, on `/session`. A custom rule that blocks everything else stops scanners at Cloudflare's edge, so they never use up <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology> requests. The rule works on the free plan.
+The proxy only answers on `/`, on `/session` for <Terminology title="A short-lived, one-use pass a sender gets from /session" to="/docs/reference/terminology#configuration">session tokens</Terminology>, and on each <Terminology title="An unguessable URL path only your sender knows" to="/docs/reference/terminology#configuration">secret path</Terminology>. A custom rule that blocks everything else stops scanners at Cloudflare's edge, so they never use up <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology> requests. The rule works on the free plan.
 
 1. Open **Dashboard > your domain > Security > Security rules** and select **Create rule > Custom rules**.
 2. Name the rule, for example `Reverse Proxy for ntfy`.
@@ -268,6 +291,10 @@ Each line blocks one kind of request on your proxy's hostnames:
 - **Query strings** — Any URL with `?` parameters, which no sender needs.
 - **`next-action` header** — Probes aimed at Next.js server actions, which the proxy doesn't use.
 
+:::tip
+If a <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> uses a <Terminology title="An unguessable URL path only your sender knows" to="/docs/reference/terminology#configuration">secret path</Terminology>, add it to the allowed paths, such as `{"/" "/session" "/your-secret-path"}`. Otherwise Cloudflare blocks the sender's requests before they reach the <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology>.
+:::
+
 To check the rule, send a `POST` to `https://{id}.ntfy.example.com/session` and to any other path, such as `/test`. The `/session` request should get an answer from the <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology>, and `/test` should get Cloudflare's HTTP 403 block page.
 
 ## HTTPS Enforcement
@@ -278,6 +305,7 @@ The <Terminology title="The proxy itself, running on your Cloudflare account" to
 
 - Set a unique `token` on each HTTP <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> that receives traffic from the public internet.
 - Use `session` instead of `token` when the sender's code is public, so a token copied from that code can't be used to post.
+- Use `secret_path` for senders that can't send headers, such as Statuspage, so scanners that find the hostname get a plain HTTP 404.
 - Use `allowed_from` wildcards on email <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">contexts</Terminology> to restrict senders to expected domains.
 - Disable `show_response_output` in production to minimize information exposure.
 - Disable `show_visitor_info` unless you need IP and location details in notifications.

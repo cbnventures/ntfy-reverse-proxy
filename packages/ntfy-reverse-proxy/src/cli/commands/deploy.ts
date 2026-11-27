@@ -11,7 +11,7 @@ import { APP_NAME } from '../../lib/item.js';
 import { getWranglerCliPath } from '../../lib/package-runtime.js';
 import { Runner as PublicDnsAdapter } from '../../lib/public-dns.js';
 import { LIB_REGEX_SURROUNDING_QUOTES } from '../../lib/regex.js';
-import { listContexts } from './context.js';
+import { formatAllowedFrom, listContexts } from './context.js';
 import { generateWranglerToml, getWranglerTomlPath } from './generate.js';
 import { listServers } from './server.js';
 import { getSettings } from './settings.js';
@@ -67,9 +67,11 @@ import type {
   Cli_Commands_Deploy_LoadEnvToken_Match,
   Cli_Commands_Deploy_LoadEnvToken_Returns,
   Cli_Commands_Deploy_LoadEnvToken_Value,
+  Cli_Commands_Deploy_PrintContextSummary_AllowedFromText,
   Cli_Commands_Deploy_PrintContextSummary_ConfigPath,
   Cli_Commands_Deploy_PrintContextSummary_Contexts,
   Cli_Commands_Deploy_PrintContextSummary_Returns,
+  Cli_Commands_Deploy_PrintContextSummary_SecretPathSuffix,
   Cli_Commands_Deploy_PrintContextSummary_Settings,
   Cli_Commands_Deploy_PromptForApiToken_PromptResult,
   Cli_Commands_Deploy_PromptForApiToken_Returns,
@@ -709,7 +711,9 @@ function printContextSummary(configPath: Cli_Commands_Deploy_PrintContextSummary
     process.stdout.write(`  ${chalk.cyan(context['name'])}\n`);
 
     if (context['type'] === 'http') {
-      process.stdout.write(`    URL:   ${chalk.green(`https://${context['id']}.${settings['base_domain']}`)}\n`);
+      const secretPathSuffix: Cli_Commands_Deploy_PrintContextSummary_SecretPathSuffix = (context['secret_path'] !== undefined) ? `/${context['secret_path']}` : '';
+
+      process.stdout.write(`    URL:   ${chalk.green(`https://${context['id']}.${settings['base_domain']}${secretPathSuffix}`)}\n`);
 
       if (context['token'] !== undefined) {
         process.stdout.write(`    Token: ${chalk.gray(context['token'])}\n`);
@@ -718,7 +722,9 @@ function printContextSummary(configPath: Cli_Commands_Deploy_PrintContextSummary
       process.stdout.write(`    Email: ${chalk.green(`${context['id']}@${settings['base_domain']}`)}\n`);
 
       if (context['allowed_from'] !== undefined) {
-        process.stdout.write(`    Allow: ${chalk.gray(context['allowed_from'])}\n`);
+        const allowedFromText: Cli_Commands_Deploy_PrintContextSummary_AllowedFromText = formatAllowedFrom(context['allowed_from']);
+
+        process.stdout.write(`    Allow: ${chalk.gray(allowedFromText)}\n`);
       }
     }
 

@@ -28,12 +28,15 @@ import type {
   Cli_Commands_Context_EditContext_Returns,
   Cli_Commands_Context_EditContext_UpdatedUpdates,
   Cli_Commands_Context_EditContext_Updates,
+  Cli_Commands_Context_FormatAllowedFrom_AllowedFrom,
+  Cli_Commands_Context_FormatAllowedFrom_Returns,
   Cli_Commands_Context_GenerateId_Returns,
   Cli_Commands_Context_GenerateRandomString_Chunk,
   Cli_Commands_Context_GenerateRandomString_Length,
   Cli_Commands_Context_GenerateRandomString_Lowercase,
   Cli_Commands_Context_GenerateRandomString_Result,
   Cli_Commands_Context_GenerateRandomString_Returns,
+  Cli_Commands_Context_GenerateSecretPath_Returns,
   Cli_Commands_Context_GenerateSessionSecret_Returns,
   Cli_Commands_Context_GenerateToken_Returns,
   Cli_Commands_Context_ListContexts_ConfigPath,
@@ -44,6 +47,9 @@ import type {
   Cli_Commands_Context_OrderContextKeys_Rest,
   Cli_Commands_Context_OrderContextKeys_Returns,
   Cli_Commands_Context_OrderContextKeys_Type,
+  Cli_Commands_Context_ParseAllowedFrom_Entries,
+  Cli_Commands_Context_ParseAllowedFrom_Input,
+  Cli_Commands_Context_ParseAllowedFrom_Returns,
   Cli_Commands_Context_RemoveContext_Config,
   Cli_Commands_Context_RemoveContext_ConfigPath,
   Cli_Commands_Context_RemoveContext_Filtered,
@@ -237,6 +243,52 @@ function orderContextKeys(context: Cli_Commands_Context_OrderContextKeys_Context
 }
 
 /**
+ * CLI - Commands - Context - Parse Allowed From.
+ *
+ * Turns comma-separated sender input into the allowed_from value an email context
+ * saves: one string for a single entry, a list for several, or nothing when blank.
+ *
+ * @param {Cli_Commands_Context_ParseAllowedFrom_Input} input - Input.
+ *
+ * @returns {Cli_Commands_Context_ParseAllowedFrom_Returns}
+ *
+ * @since 2.6.0
+ */
+function parseAllowedFrom(input: Cli_Commands_Context_ParseAllowedFrom_Input): Cli_Commands_Context_ParseAllowedFrom_Returns {
+  const entries: Cli_Commands_Context_ParseAllowedFrom_Entries = input.split(',').map((entry) => entry.trim()).filter((entry) => entry !== '');
+
+  if (entries.length === 0) {
+    return undefined;
+  }
+
+  if (entries.length === 1) {
+    return entries[0];
+  }
+
+  return entries;
+}
+
+/**
+ * CLI - Commands - Context - Format Allowed From.
+ *
+ * Joins an email context's allowed senders with commas, so prompts and summaries
+ * show every entry whether the config holds one string or a list.
+ *
+ * @param {Cli_Commands_Context_FormatAllowedFrom_AllowedFrom} allowedFrom - Allowed from.
+ *
+ * @returns {Cli_Commands_Context_FormatAllowedFrom_Returns}
+ *
+ * @since 2.6.0
+ */
+function formatAllowedFrom(allowedFrom: Cli_Commands_Context_FormatAllowedFrom_AllowedFrom): Cli_Commands_Context_FormatAllowedFrom_Returns {
+  if (allowedFrom === undefined) {
+    return '';
+  }
+
+  return [allowedFrom].flat().join(', ');
+}
+
+/**
  * CLI - Commands - Context - Generate Random String.
  *
  * Produces a random alphanumeric string of the requested length using
@@ -273,6 +325,20 @@ function generateId(): Cli_Commands_Context_GenerateId_Returns {
 }
 
 /**
+ * CLI - Commands - Context - Generate Secret Path.
+ *
+ * Creates the unguessable lowercase path a context accepts requests on, for
+ * senders such as Statuspage that cannot send an auth header.
+ *
+ * @returns {Cli_Commands_Context_GenerateSecretPath_Returns}
+ *
+ * @since 2.6.0
+ */
+function generateSecretPath(): Cli_Commands_Context_GenerateSecretPath_Returns {
+  return generateRandomString(48, true);
+}
+
+/**
  * CLI - Commands - Context - Generate Session Secret.
  *
  * Creates the long random secret a context uses to sign and check
@@ -303,9 +369,12 @@ function generateToken(): Cli_Commands_Context_GenerateToken_Returns {
 export {
   addContext,
   editContext,
+  formatAllowedFrom,
   generateId,
+  generateSecretPath,
   generateSessionSecret,
   generateToken,
   listContexts,
+  parseAllowedFrom,
   removeContext,
 };

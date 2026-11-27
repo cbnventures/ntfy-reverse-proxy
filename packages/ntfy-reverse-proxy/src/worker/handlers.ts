@@ -1,5 +1,5 @@
 import { landingPage } from './landing/page.js';
-import { authenticate } from './pipeline/authenticate.js';
+import { authenticate, timingSafeEqual } from './pipeline/authenticate.js';
 import { deliver } from './pipeline/deliver.js';
 import { parseEmail } from './pipeline/email.js';
 import { format } from './pipeline/format.js';
@@ -50,6 +50,7 @@ import type {
   Worker_Handlers_HandleEmail_ResolvedServers,
   Worker_Handlers_HandleEmail_Returns,
   Worker_Handlers_HandleEmail_Routed,
+  Worker_Handlers_HandleRequest_AttachmentUrl,
   Worker_Handlers_HandleRequest_AuthEntryName,
   Worker_Handlers_HandleRequest_AuthEntryValue,
   Worker_Handlers_HandleRequest_AuthErrorAttachmentBuffer,
@@ -95,11 +96,14 @@ import type {
   Worker_Handlers_HandleRequest_RawBodyText,
   Worker_Handlers_HandleRequest_Received,
   Worker_Handlers_HandleRequest_Request,
+  Worker_Handlers_HandleRequest_RequestUrl,
   Worker_Handlers_HandleRequest_ResolvedServers,
   Worker_Handlers_HandleRequest_Response,
   Worker_Handlers_HandleRequest_ResponseBody,
   Worker_Handlers_HandleRequest_Returns,
   Worker_Handlers_HandleRequest_Routed,
+  Worker_Handlers_HandleRequest_SecretPath,
+  Worker_Handlers_HandleRequest_SecretPathCandidate,
   Worker_Handlers_HandleRequest_Subdomain,
   Worker_Handlers_HandleRequest_VisitorIpHeader,
   Worker_Handlers_ShouldNotifyError_Category,
@@ -206,8 +210,30 @@ async function handleRequest(request: Worker_Handlers_HandleRequest_Request, con
     const resolvedServers: Worker_Handlers_HandleRequest_ResolvedServers = routed['resolvedServers'];
     const primaryServer: Worker_Handlers_HandleRequest_PrimaryServer = routed['primaryServer'];
 
+    // A context with a secret path answers every other path like an unknown host, so a probe cannot tell it exists.
+    const requestUrl: Worker_Handlers_HandleRequest_RequestUrl = new URL(received['url']);
+    const pathname: Worker_Handlers_HandleRequest_Pathname = requestUrl.pathname;
+    const secretPath: Worker_Handlers_HandleRequest_SecretPath = ctx['secret_path'];
+
+    if (secretPath !== undefined) {
+      const secretPathCandidate: Worker_Handlers_HandleRequest_SecretPathCandidate = (pathname.endsWith('/') === true) ? pathname.slice(0, -1) : pathname;
+
+      // Same body the route step gives a hostname with no context.
+      if (timingSafeEqual(secretPathCandidate, `/${secretPath}`) === false) {
+        return new Response(JSON.stringify({
+          status: 'error',
+          message: `No context found for http identifier: ${subdomain}`,
+        }, null, 2), {
+          status: 404,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
+    // Error notifications show the secret path as REDACTED, so the secret never lands on an ntfy topic.
+    const attachmentUrl: Worker_Handlers_HandleRequest_AttachmentUrl = (secretPath !== undefined) ? `${requestUrl.origin}/REDACTED${requestUrl.search}` : received['url'];
+
     // 3. Authenticate. A context with sessions hands out tokens on the session path and checks them everywhere else.
-    const pathname: Worker_Handlers_HandleRequest_Pathname = new URL(received['url']).pathname;
     const clientIp: Worker_Handlers_HandleRequest_ClientIp = received['headers'].get('cf-connecting-ip') ?? 'unknown';
 
     if (pathname === SESSION_PATH) {
@@ -306,7 +332,7 @@ async function handleRequest(request: Worker_Handlers_HandleRequest_Request, con
             },
             request: {
               method: received['method'],
-              url: received['url'],
+              url: attachmentUrl,
               headers: authErrorAttachmentHeaders,
               ...((received['cfProperties'] !== undefined) ? { cf: received['cfProperties'] } : {}),
             },
@@ -435,7 +461,7 @@ async function handleRequest(request: Worker_Handlers_HandleRequest_Request, con
             },
             request: {
               method: received['method'],
-              url: received['url'],
+              url: attachmentUrl,
               headers: interpretErrorAttachmentHeaders,
               ...((received['cfProperties'] !== undefined) ? { cf: received['cfProperties'] } : {}),
             },

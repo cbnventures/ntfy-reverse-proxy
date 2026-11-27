@@ -5,6 +5,32 @@
  */
 
 /**
+ * Tests - Lib - Schema - Config Schema - Allows A List Of Allowed From Senders On Email Context.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Lib_Schema_ConfigSchema_AllowsAListOfAllowedFromSendersOnEmailContext_Valid = Record<string, unknown>;
+
+export type Tests_Lib_Schema_ConfigSchema_AllowsAListOfAllowedFromSendersOnEmailContext_ResultSuccess = boolean;
+
+export type Tests_Lib_Schema_ConfigSchema_AllowsAListOfAllowedFromSendersOnEmailContext_Result = {
+  success: Tests_Lib_Schema_ConfigSchema_AllowsAListOfAllowedFromSendersOnEmailContext_ResultSuccess;
+};
+
+/**
+ * Tests - Lib - Schema - Config Schema - Allows A Secret Path Alongside A Token On HTTP Context.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Lib_Schema_ConfigSchema_AllowsASecretPathAlongsideATokenOnHTTPContext_Valid = Record<string, unknown>;
+
+export type Tests_Lib_Schema_ConfigSchema_AllowsASecretPathAlongsideATokenOnHTTPContext_ResultSuccess = boolean;
+
+export type Tests_Lib_Schema_ConfigSchema_AllowsASecretPathAlongsideATokenOnHTTPContext_Result = {
+  success: Tests_Lib_Schema_ConfigSchema_AllowsASecretPathAlongsideATokenOnHTTPContext_ResultSuccess;
+};
+
+/**
  * Tests - Lib - Schema - Config Schema - Allows Optional Allowed From On Email Context.
  *
  * @since 2.0.0
@@ -83,6 +109,22 @@ export type Tests_Lib_Schema_ConfigSchema_AllowsOptionalTokenOnHTTPContext_Resul
 };
 
 /**
+ * Tests - Lib - Schema - Config Schema - Rejects A Context With Both Secret Path And Session.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Lib_Schema_ConfigSchema_RejectsAContextWithBothSecretPathAndSession_Invalid = Record<string, unknown>;
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsAContextWithBothSecretPathAndSession_ResultSuccess = boolean;
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsAContextWithBothSecretPathAndSession_ResultError = unknown;
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsAContextWithBothSecretPathAndSession_Result = {
+  success: Tests_Lib_Schema_ConfigSchema_RejectsAContextWithBothSecretPathAndSession_ResultSuccess;
+  error?: Tests_Lib_Schema_ConfigSchema_RejectsAContextWithBothSecretPathAndSession_ResultError;
+};
+
+/**
  * Tests - Lib - Schema - Config Schema - Rejects A Context With Both Token And Session.
  *
  * @since 2.4.0
@@ -106,6 +148,25 @@ export type Tests_Lib_Schema_ConfigSchema_RejectsAllowedFromFieldOnHTTPContext_R
 
 export type Tests_Lib_Schema_ConfigSchema_RejectsAllowedFromFieldOnHTTPContext_Result = {
   success: Tests_Lib_Schema_ConfigSchema_RejectsAllowedFromFieldOnHTTPContext_ResultSuccess;
+};
+
+/**
+ * Tests - Lib - Schema - Config Schema - Rejects An Empty Allowed From List Or Empty Entries.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Lib_Schema_ConfigSchema_RejectsAnEmptyAllowedFromListOrEmptyEntries_InvalidAllowedFrom = string | string[];
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsAnEmptyAllowedFromListOrEmptyEntries_InvalidAllowedFroms = Tests_Lib_Schema_ConfigSchema_RejectsAnEmptyAllowedFromListOrEmptyEntries_InvalidAllowedFrom[];
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsAnEmptyAllowedFromListOrEmptyEntries_AssertInvalidAllowedFrom = (invalidAllowedFrom: Tests_Lib_Schema_ConfigSchema_RejectsAnEmptyAllowedFromListOrEmptyEntries_InvalidAllowedFrom) => void;
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsAnEmptyAllowedFromListOrEmptyEntries_AssertInvalidAllowedFrom_Invalid = Record<string, unknown>;
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsAnEmptyAllowedFromListOrEmptyEntries_AssertInvalidAllowedFrom_ResultSuccess = boolean;
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsAnEmptyAllowedFromListOrEmptyEntries_AssertInvalidAllowedFrom_Result = {
+  success: Tests_Lib_Schema_ConfigSchema_RejectsAnEmptyAllowedFromListOrEmptyEntries_AssertInvalidAllowedFrom_ResultSuccess;
 };
 
 /**
@@ -203,6 +264,25 @@ export type Tests_Lib_Schema_ConfigSchema_RejectsInvalidTypeDiscriminatorValue_R
 
 export type Tests_Lib_Schema_ConfigSchema_RejectsInvalidTypeDiscriminatorValue_Result = {
   success: Tests_Lib_Schema_ConfigSchema_RejectsInvalidTypeDiscriminatorValue_ResultSuccess;
+};
+
+/**
+ * Tests - Lib - Schema - Config Schema - Rejects Secret Paths That Are Not 32 To 128 Lowercase Letters And Digits.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Lib_Schema_ConfigSchema_RejectsSecretPathsThatAreNot32To128LowercaseLettersAndDigits_InvalidSecretPaths = string[];
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsSecretPathsThatAreNot32To128LowercaseLettersAndDigits_InvalidSecretPath = string;
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsSecretPathsThatAreNot32To128LowercaseLettersAndDigits_AssertInvalidSecretPath = (invalidSecretPath: Tests_Lib_Schema_ConfigSchema_RejectsSecretPathsThatAreNot32To128LowercaseLettersAndDigits_InvalidSecretPath) => void;
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsSecretPathsThatAreNot32To128LowercaseLettersAndDigits_AssertInvalidSecretPath_Invalid = Record<string, unknown>;
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsSecretPathsThatAreNot32To128LowercaseLettersAndDigits_AssertInvalidSecretPath_ResultSuccess = boolean;
+
+export type Tests_Lib_Schema_ConfigSchema_RejectsSecretPathsThatAreNot32To128LowercaseLettersAndDigits_AssertInvalidSecretPath_Result = {
+  success: Tests_Lib_Schema_ConfigSchema_RejectsSecretPathsThatAreNot32To128LowercaseLettersAndDigits_AssertInvalidSecretPath_ResultSuccess;
 };
 
 /**

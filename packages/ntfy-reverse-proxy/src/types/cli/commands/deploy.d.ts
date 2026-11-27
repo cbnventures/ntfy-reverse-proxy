@@ -200,6 +200,10 @@ export type Cli_Commands_Deploy_PrintContextSummary_Settings = {
   show_response_output: Cli_Commands_Deploy_PrintContextSummary_Settings_ShowResponseOutput;
 };
 
+export type Cli_Commands_Deploy_PrintContextSummary_SecretPathSuffix = string;
+
+export type Cli_Commands_Deploy_PrintContextSummary_AllowedFromText = string;
+
 /**
  * CLI - Commands - Deploy - Prompt For Api Token.
  *

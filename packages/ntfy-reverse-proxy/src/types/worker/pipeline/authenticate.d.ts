@@ -9,7 +9,9 @@ export type Worker_Pipeline_Authenticate_AuthConfigToken = string;
 
 export type Worker_Pipeline_Authenticate_AuthConfigTypeEmail = 'email';
 
-export type Worker_Pipeline_Authenticate_AuthConfigAllowedFrom = string;
+export type Worker_Pipeline_Authenticate_AuthConfigAllowedFromEntry = string;
+
+export type Worker_Pipeline_Authenticate_AuthConfigAllowedFrom = Worker_Pipeline_Authenticate_AuthConfigAllowedFromEntry | Worker_Pipeline_Authenticate_AuthConfigAllowedFromEntry[];
 
 export type Worker_Pipeline_Authenticate_AuthConfig = {
   type: Worker_Pipeline_Authenticate_AuthConfigTypeHttp;
@@ -53,19 +55,25 @@ export type Worker_Pipeline_Authenticate_IsBearerMatch = boolean;
 
 export type Worker_Pipeline_Authenticate_IsRawMatch = boolean;
 
-export type Worker_Pipeline_Authenticate_AllowedFrom = string | undefined;
+export type Worker_Pipeline_Authenticate_AllowedFrom = Worker_Pipeline_Authenticate_AuthConfigAllowedFrom | undefined;
+
+export type Worker_Pipeline_Authenticate_AllowedFromEntries = string[];
 
 export type Worker_Pipeline_Authenticate_From = string | undefined;
 
-export type Worker_Pipeline_Authenticate_NormalizedAllowedFrom = string;
+export type Worker_Pipeline_Authenticate_NormalizedAllowedFromEntries = string[];
 
 export type Worker_Pipeline_Authenticate_NormalizedFrom = string;
-
-export type Worker_Pipeline_Authenticate_AllowedDomain = string;
 
 export type Worker_Pipeline_Authenticate_AtIndex = number;
 
 export type Worker_Pipeline_Authenticate_FromDomain = string;
+
+export type Worker_Pipeline_Authenticate_IsSenderMatch = boolean;
+
+export type Worker_Pipeline_Authenticate_AllowedDomain = string;
+
+export type Worker_Pipeline_Authenticate_IsDomainOnly = boolean;
 
 /**
  * Worker - Pipeline - Authenticate - Authenticate.

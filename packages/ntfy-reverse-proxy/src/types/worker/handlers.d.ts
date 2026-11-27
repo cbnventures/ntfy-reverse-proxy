@@ -124,7 +124,15 @@ export type Worker_Handlers_HandleRequest_ResolvedServers = Array<Lib_Schema_Ser
 
 export type Worker_Handlers_HandleRequest_PrimaryServer = Lib_Schema_ServerConfig & {};
 
+export type Worker_Handlers_HandleRequest_RequestUrl = URL;
+
 export type Worker_Handlers_HandleRequest_Pathname = string;
+
+export type Worker_Handlers_HandleRequest_SecretPath = string | undefined;
+
+export type Worker_Handlers_HandleRequest_SecretPathCandidate = string;
+
+export type Worker_Handlers_HandleRequest_AttachmentUrl = string;
 
 export type Worker_Handlers_HandleRequest_ClientIp = string;
 

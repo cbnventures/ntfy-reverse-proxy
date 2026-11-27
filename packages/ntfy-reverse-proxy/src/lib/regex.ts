@@ -181,6 +181,16 @@ const LIB_REGEX_BASE_DOMAIN = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9
 const LIB_REGEX_TRAILING_BASE64_PADDING = /=+$/;
 
 /**
+ * Lib - Regex - Secret Path.
+ *
+ * Matches a secret URL path of 32 to 128 lowercase letters and digits, which
+ * stays the same even when a sender such as Statuspage lowercases stored URLs.
+ *
+ * @since 2.6.0
+ */
+const LIB_REGEX_SECRET_PATH = /^[a-z0-9]{32,128}$/;
+
+/**
  * Lib - Regex - Email Angle Bracket.
  *
  * Captures the email address inside angle brackets so the
@@ -330,6 +340,7 @@ export {
   LIB_REGEX_NON_ALPHANUMERIC_ID,
   LIB_REGEX_NON_LOWERCASE_ALPHANUMERIC,
   LIB_REGEX_REFERENCED,
+  LIB_REGEX_SECRET_PATH,
   LIB_REGEX_SINGLE_QUOTE,
   LIB_REGEX_STATUSPAGE_LEADING_WWW,
   LIB_REGEX_SURROUNDING_QUOTES,

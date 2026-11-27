@@ -109,6 +109,8 @@ export type Cli_Menu_Interactive_AddContextFlow_TypedMode = 'send-once' | 'send-
 
 export type Cli_Menu_Interactive_AddContextFlow_TypedErrorEvents = Array<Lib_Schema_ContextConfigErrorEvent> | undefined;
 
+export type Cli_Menu_Interactive_AddContextFlow_ResolvedSecretPath = string | undefined;
+
 export type Cli_Menu_Interactive_AddContextFlow_UseSessionResponse = prompts.Answers<string>;
 
 export type Cli_Menu_Interactive_AddContextFlow_UseSession = boolean | undefined;
@@ -123,13 +125,19 @@ export type Cli_Menu_Interactive_AddContextFlow_RawToken = string | undefined;
 
 export type Cli_Menu_Interactive_AddContextFlow_TokenTrimmed = string;
 
+export type Cli_Menu_Interactive_AddContextFlow_UseSecretPathResponse = prompts.Answers<string>;
+
+export type Cli_Menu_Interactive_AddContextFlow_UseSecretPath = boolean | undefined;
+
 export type Cli_Menu_Interactive_AddContextFlow_AllowedFromResponse = prompts.Answers<string>;
 
 export type Cli_Menu_Interactive_AddContextFlow_RawAllowedFrom = string | undefined;
 
-export type Cli_Menu_Interactive_AddContextFlow_AllowedFromTrimmed = string;
+export type Cli_Menu_Interactive_AddContextFlow_ResolvedAllowedFrom = string | string[] | undefined;
 
-export type Cli_Menu_Interactive_AddContextFlow_ResolvedAllowedFrom = string | undefined;
+export type Cli_Menu_Interactive_AddContextFlow_AddedContext = Lib_Schema_ContextConfig | undefined;
+
+export type Cli_Menu_Interactive_AddContextFlow_AddSettings = Lib_Schema_SettingsConfig & {};
 
 /**
  * CLI - Menu - Interactive - Context Menu.
@@ -278,15 +286,27 @@ export type Cli_Menu_Interactive_ContextMenu_AllowedFromResponse = prompts.Answe
 
 export type Cli_Menu_Interactive_ContextMenu_AllowedFrom = string | undefined;
 
-export type Cli_Menu_Interactive_ContextMenu_AllowedFromTrimmed = string;
+export type Cli_Menu_Interactive_ContextMenu_ResolvedAllowedFrom = string | string[] | undefined;
 
-export type Cli_Menu_Interactive_ContextMenu_ResolvedAllowedFrom = string | undefined;
+export type Cli_Menu_Interactive_ContextMenu_NewSecretPath = string | undefined;
+
+export type Cli_Menu_Interactive_ContextMenu_SecretPathActionResponse = prompts.Answers<string>;
+
+export type Cli_Menu_Interactive_ContextMenu_SecretPathAction = string | undefined;
+
+export type Cli_Menu_Interactive_ContextMenu_AddSecretPathResponse = prompts.Answers<string>;
+
+export type Cli_Menu_Interactive_ContextMenu_AddSecretPath = boolean | undefined;
 
 export type Cli_Menu_Interactive_ContextMenu_EditImportEditContext = (configPath: string, name: string, updates: Partial<Lib_Schema_ContextConfig>) => void;
 
 export type Cli_Menu_Interactive_ContextMenu_EditImport = {
   editContext: Cli_Menu_Interactive_ContextMenu_EditImportEditContext;
 };
+
+export type Cli_Menu_Interactive_ContextMenu_EditedContext = Lib_Schema_ContextConfig | undefined;
+
+export type Cli_Menu_Interactive_ContextMenu_EditSettings = Lib_Schema_SettingsConfig & {};
 
 export type Cli_Menu_Interactive_ContextMenu_EditErrorMessage = string;
 

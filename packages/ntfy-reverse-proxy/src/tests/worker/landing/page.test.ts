@@ -10,6 +10,9 @@ import type {
   Tests_Worker_Landing_Page_LandingPage_EscapesConfigValuesInDebugOutput_Response,
   Tests_Worker_Landing_Page_LandingPage_IncludesGitHubLink_Html,
   Tests_Worker_Landing_Page_LandingPage_IncludesGitHubLink_Response,
+  Tests_Worker_Landing_Page_LandingPage_MasksTheSecretPathInDebugOutput_DebugConfig,
+  Tests_Worker_Landing_Page_LandingPage_MasksTheSecretPathInDebugOutput_Html,
+  Tests_Worker_Landing_Page_LandingPage_MasksTheSecretPathInDebugOutput_Response,
   Tests_Worker_Landing_Page_LandingPage_ReturnsHTMLWithBranding_ContentType,
   Tests_Worker_Landing_Page_LandingPage_ReturnsHTMLWithBranding_Html,
   Tests_Worker_Landing_Page_LandingPage_ReturnsHTMLWithBranding_Response,
@@ -133,6 +136,38 @@ describe('landingPage', () => {
     expect(html).not.toContain('abcdefghijklmnopqrst');
 
     expect(html).toContain('***');
+
+    return;
+  });
+
+  it('masks the secret path in debug output', async () => {
+    const debugConfig: Tests_Worker_Landing_Page_LandingPage_MasksTheSecretPathInDebugOutput_DebugConfig = {
+      settings: {
+        worker_name: 'test-worker',
+        base_domain: 'ntfy.example.com',
+        show_response_output: true,
+      },
+      servers: mockConfig['servers'],
+      contexts: [{
+        id: 'abcdefghijklmnopqrst',
+        name: 'statuspage',
+        type: 'http',
+        interpreter: 'statuspage',
+        topic: 'status-alerts',
+        mode: 'send-once',
+        show_visitor_info: false,
+        primary_server: 'alpha',
+        servers: ['alpha'],
+        secret_path: 'k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4',
+      }],
+    };
+
+    const response: Tests_Worker_Landing_Page_LandingPage_MasksTheSecretPathInDebugOutput_Response = landingPage(debugConfig);
+    const html: Tests_Worker_Landing_Page_LandingPage_MasksTheSecretPathInDebugOutput_Html = await response.text();
+
+    expect(html).toContain('secret_path');
+
+    expect(html).not.toContain('k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4');
 
     return;
   });

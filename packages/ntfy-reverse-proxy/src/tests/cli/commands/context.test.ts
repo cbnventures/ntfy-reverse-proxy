@@ -10,8 +10,9 @@ import {
 } from 'vitest';
 
 import {
-  addContext, editContext, generateId, generateSessionSecret, listContexts, removeContext,
+  addContext, editContext, formatAllowedFrom, generateId, generateSecretPath, generateSessionSecret, listContexts, parseAllowedFrom, removeContext,
 } from '../../../cli/commands/context.js';
+import { LIB_REGEX_SECRET_PATH } from '../../../lib/regex.js';
 
 import type {
   Tests_Cli_Commands_Context_BaseConfig,
@@ -20,11 +21,19 @@ import type {
   Tests_Cli_Commands_Context_ContextCommands_AutoRegeneratesDuplicateIds_Config,
   Tests_Cli_Commands_Context_ContextCommands_AutoRegeneratesDuplicateIds_ConfigJson,
   Tests_Cli_Commands_Context_ContextCommands_ConfigJson,
+  Tests_Cli_Commands_Context_ContextCommands_FormatsAllowedSendersForDisplay_Blank,
+  Tests_Cli_Commands_Context_ContextCommands_FormatsAllowedSendersForDisplay_Listed,
+  Tests_Cli_Commands_Context_ContextCommands_FormatsAllowedSendersForDisplay_Single,
+  Tests_Cli_Commands_Context_ContextCommands_Generates48CharacterLowercaseSecretPaths_SecretPath1,
+  Tests_Cli_Commands_Context_ContextCommands_Generates48CharacterLowercaseSecretPaths_SecretPath2,
   Tests_Cli_Commands_Context_ContextCommands_Generates64CharacterSessionSecrets_Secret1,
   Tests_Cli_Commands_Context_ContextCommands_Generates64CharacterSessionSecrets_Secret2,
   Tests_Cli_Commands_Context_ContextCommands_GeneratesRandomIdStrings_Id1,
   Tests_Cli_Commands_Context_ContextCommands_GeneratesRandomIdStrings_Id2,
   Tests_Cli_Commands_Context_ContextCommands_ListsContexts_Contexts,
+  Tests_Cli_Commands_Context_ContextCommands_ParsesCommaSeparatedAllowedSenders_Blank,
+  Tests_Cli_Commands_Context_ContextCommands_ParsesCommaSeparatedAllowedSenders_Listed,
+  Tests_Cli_Commands_Context_ContextCommands_ParsesCommaSeparatedAllowedSenders_Single,
   Tests_Cli_Commands_Context_ContextCommands_RejectsContextReferencingNonExistentServer_Config,
   Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateContextNames_Config,
   Tests_Cli_Commands_Context_ContextCommands_RejectsDuplicateEmailIds_Config,
@@ -344,6 +353,60 @@ describe('context commands', () => {
     expect(secret1['length']).toBe(64);
 
     expect(secret1).not.toBe(secret2);
+
+    return;
+  });
+
+  it('generates 48-character lowercase secret paths', () => {
+    const secretPath1: Tests_Cli_Commands_Context_ContextCommands_Generates48CharacterLowercaseSecretPaths_SecretPath1 = generateSecretPath();
+
+    const secretPath2: Tests_Cli_Commands_Context_ContextCommands_Generates48CharacterLowercaseSecretPaths_SecretPath2 = generateSecretPath();
+
+    expect(secretPath1['length']).toBe(48);
+
+    expect(secretPath1).toMatch(LIB_REGEX_SECRET_PATH);
+
+    expect(secretPath2).toMatch(LIB_REGEX_SECRET_PATH);
+
+    expect(secretPath1).not.toBe(secretPath2);
+
+    return;
+  });
+
+  it('parses comma-separated allowed senders', () => {
+    const listed: Tests_Cli_Commands_Context_ContextCommands_ParsesCommaSeparatedAllowedSenders_Listed = parseAllowedFrom(' alerts@example.com , *@githubstatus.com,, ');
+
+    const single: Tests_Cli_Commands_Context_ContextCommands_ParsesCommaSeparatedAllowedSenders_Single = parseAllowedFrom(' alerts@example.com ');
+
+    const blank: Tests_Cli_Commands_Context_ContextCommands_ParsesCommaSeparatedAllowedSenders_Blank = parseAllowedFrom(' , ');
+
+    expect(listed).toEqual([
+      'alerts@example.com',
+      '*@githubstatus.com',
+    ]);
+
+    expect(single).toBe('alerts@example.com');
+
+    expect(blank).toBeUndefined();
+
+    return;
+  });
+
+  it('formats allowed senders for display', () => {
+    const listed: Tests_Cli_Commands_Context_ContextCommands_FormatsAllowedSendersForDisplay_Listed = formatAllowedFrom([
+      'alerts@example.com',
+      '*@githubstatus.com',
+    ]);
+
+    const single: Tests_Cli_Commands_Context_ContextCommands_FormatsAllowedSendersForDisplay_Single = formatAllowedFrom('alerts@example.com');
+
+    const blank: Tests_Cli_Commands_Context_ContextCommands_FormatsAllowedSendersForDisplay_Blank = formatAllowedFrom(undefined);
+
+    expect(listed).toBe('alerts@example.com, *@githubstatus.com');
+
+    expect(single).toBe('alerts@example.com');
+
+    expect(blank).toBe('');
 
     return;
   });

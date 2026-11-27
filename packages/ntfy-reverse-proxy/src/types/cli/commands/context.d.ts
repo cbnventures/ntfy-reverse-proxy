@@ -8,6 +8,8 @@ import type { Lib_Schema_ContextConfig } from '../../lib/schema.d.ts';
 
 import type { Lib_Schema_EmailContextConfig } from '../../lib/schema.d.ts';
 
+import type { Lib_Schema_EmailContextConfigAllowedFrom } from '../../lib/schema.d.ts';
+
 import type { Lib_Schema_HttpContextConfig } from '../../lib/schema.d.ts';
 
 /**
@@ -87,6 +89,15 @@ export type Cli_Commands_Context_EditContext_Ordered = Lib_Schema_HttpContextCon
 /**
  * CLI - Commands - Context.
  *
+ * @since 2.6.0
+ */
+export type Cli_Commands_Context_FormatAllowedFrom_AllowedFrom = Lib_Schema_EmailContextConfigAllowedFrom;
+
+export type Cli_Commands_Context_FormatAllowedFrom_Returns = string;
+
+/**
+ * CLI - Commands - Context.
+ *
  * @since 2.0.0
  */
 export type Cli_Commands_Context_GenerateId_Returns = string;
@@ -105,6 +116,13 @@ export type Cli_Commands_Context_GenerateRandomString_Returns = string;
 export type Cli_Commands_Context_GenerateRandomString_Result = string;
 
 export type Cli_Commands_Context_GenerateRandomString_Chunk = string;
+
+/**
+ * CLI - Commands - Context.
+ *
+ * @since 2.6.0
+ */
+export type Cli_Commands_Context_GenerateSecretPath_Returns = string;
 
 /**
  * CLI - Commands - Context.
@@ -149,6 +167,17 @@ export type Cli_Commands_Context_OrderContextKeys_Id = string;
 export type Cli_Commands_Context_OrderContextKeys_Rest = Record<string, unknown>;
 
 export type Cli_Commands_Context_OrderContextKeys_Result = Lib_Schema_ContextConfig;
+
+/**
+ * CLI - Commands - Context.
+ *
+ * @since 2.6.0
+ */
+export type Cli_Commands_Context_ParseAllowedFrom_Input = string;
+
+export type Cli_Commands_Context_ParseAllowedFrom_Returns = Lib_Schema_EmailContextConfigAllowedFrom;
+
+export type Cli_Commands_Context_ParseAllowedFrom_Entries = string[];
 
 /**
  * CLI - Commands - Context.

@@ -1,5 +1,11 @@
 # ntfy-reverse-proxy
 
+## 2.6.0 - 2026-11-27
+
+### ADDED
+- A `secret_path` setting for HTTP contexts, which turns away any request that doesn't use the context's secret URL path with the same 404 as an unknown host, for senders such as Statuspage that can't send an auth header.
+- Lists in `allowed_from`, so an email context can accept several sender addresses or `*@domain` wildcards.
+
 ## 2.5.1 - 2026-11-27
 
 ### UPDATED

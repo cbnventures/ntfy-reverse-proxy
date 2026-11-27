@@ -26,6 +26,8 @@ export type Tests_Worker_Index_MockConfigWithErrorTopicAndErrorEvents = Lib_Sche
 
 export type Tests_Worker_Index_MockConfigWithSession = Lib_Schema_ConfigSchema & {};
 
+export type Tests_Worker_Index_MockConfigWithSecretPath = Lib_Schema_ConfigSchema & {};
+
 export type Tests_Worker_Index_Outbox = Worker_Pipeline_Deliver_Namespace & {};
 
 export type Tests_Worker_Index_SendResult = Worker_Pipeline_Send_Result & {};
@@ -163,6 +165,17 @@ export type Tests_Worker_Index_HandleEmail_SuppressesAuthErrorNotificationWhenEm
 export type Tests_Worker_Index_HandleEmail_SuppressesAuthErrorNotificationWhenEmailErrorEventsExcludesAuthentication_RawEmail = string;
 
 /**
+ * Tests - Worker - Index - Handle Request - Accepts A Request On The Secret Path.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Worker_Index_HandleRequest_AcceptsARequestOnTheSecretPath_Request = Request;
+
+export type Tests_Worker_Index_HandleRequest_AcceptsARequestOnTheSecretPath_Response = Response;
+
+export type Tests_Worker_Index_HandleRequest_AcceptsARequestOnTheSecretPath_Body = Record<string, unknown>;
+
+/**
  * Tests - Worker - Index - Handle Request - Accepts One Message With A Session Token From The Session Path.
  *
  * @since 2.4.0
@@ -184,6 +197,34 @@ export type Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenF
 export type Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_ReplayResponse = Response;
 
 /**
+ * Tests - Worker - Index - Handle Request - Accepts The Secret Path With One Trailing Slash.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Worker_Index_HandleRequest_AcceptsTheSecretPathWithOneTrailingSlash_Request = Request;
+
+export type Tests_Worker_Index_HandleRequest_AcceptsTheSecretPathWithOneTrailingSlash_Response = Response;
+
+/**
+ * Tests - Worker - Index - Handle Request - Answers A Wrong Secret Path Exactly Like An Unknown Host Without Notifying.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_MockFetch = ReturnType<typeof vi['fn']>;
+
+export type Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_Paths = string[];
+
+export type Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_Responses = Response[];
+
+export type Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_NotFoundRequest = Request;
+
+export type Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_NotFoundResponse = Response;
+
+export type Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_NotFoundBody = string;
+
+export type Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_Bodies = string[];
+
+/**
  * Tests - Worker - Index - Handle Request - Ignores The Context Header Outside Localhost.
  *
  * @since 2.3.0
@@ -191,6 +232,15 @@ export type Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenF
 export type Tests_Worker_Index_HandleRequest_IgnoresTheContextHeaderOutsideLocalhost_Request = Request;
 
 export type Tests_Worker_Index_HandleRequest_IgnoresTheContextHeaderOutsideLocalhost_Response = Response;
+
+/**
+ * Tests - Worker - Index - Handle Request - Keeps Every Path Open For A Context Without A Secret Path.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Worker_Index_HandleRequest_KeepsEveryPathOpenForAContextWithoutASecretPath_Request = Request;
+
+export type Tests_Worker_Index_HandleRequest_KeepsEveryPathOpenForAContextWithoutASecretPath_Response = Response;
 
 /**
  * Tests - Worker - Index - Handle Request - Passes Through When No Token Configured.
@@ -243,6 +293,40 @@ export type Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnE
 export type Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_ValidRequest = Request;
 
 export type Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_ValidResponse = Response;
+
+/**
+ * Tests - Worker - Index - Handle Request - Redacts The Secret Path In Authentication Error Attachments.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInAuthenticationErrorAttachments_MockFetch = ReturnType<typeof vi['fn']>;
+
+export type Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInAuthenticationErrorAttachments_Request = Request;
+
+export type Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInAuthenticationErrorAttachments_Response = Response;
+
+export type Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInAuthenticationErrorAttachments_AttachmentInit = RequestInit;
+
+export type Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInAuthenticationErrorAttachments_AttachmentText = string;
+
+export type Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInAuthenticationErrorAttachments_AttachmentBody = ArrayBuffer;
+
+/**
+ * Tests - Worker - Index - Handle Request - Redacts The Secret Path In Interpretation Error Attachments.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInInterpretationErrorAttachments_MockFetch = ReturnType<typeof vi['fn']>;
+
+export type Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInInterpretationErrorAttachments_Request = Request;
+
+export type Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInInterpretationErrorAttachments_Response = Response;
+
+export type Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInInterpretationErrorAttachments_AttachmentInit = RequestInit;
+
+export type Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInInterpretationErrorAttachments_AttachmentText = string;
+
+export type Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInInterpretationErrorAttachments_AttachmentBody = ArrayBuffer;
 
 /**
  * Tests - Worker - Index - Handle Request - Rejects A Message Without A Session Token When Sessions Are On.

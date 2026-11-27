@@ -10,15 +10,16 @@ import {
   LIB_REGEX_WORKER_NAME,
 } from '../../lib/regex.js';
 import {
-  addContext, generateId, generateSessionSecret, generateToken, listContexts, removeContext,
+  addContext, formatAllowedFrom, generateId, generateSecretPath, generateSessionSecret, generateToken, listContexts, parseAllowedFrom, removeContext,
 } from '../commands/context.js';
 import { deploy } from '../commands/deploy.js';
 import { addServer, listServers, removeServer } from '../commands/server.js';
 import { getSettings, updateSettings } from '../commands/settings.js';
 
 import type {
+  Cli_Menu_Interactive_AddContextFlow_AddedContext,
+  Cli_Menu_Interactive_AddContextFlow_AddSettings,
   Cli_Menu_Interactive_AddContextFlow_AllowedFromResponse,
-  Cli_Menu_Interactive_AddContextFlow_AllowedFromTrimmed,
   Cli_Menu_Interactive_AddContextFlow_AutoId,
   Cli_Menu_Interactive_AddContextFlow_AutoToken,
   Cli_Menu_Interactive_AddContextFlow_ConfigPath,
@@ -50,6 +51,7 @@ import type {
   Cli_Menu_Interactive_AddContextFlow_ResolvedAllowedFrom,
   Cli_Menu_Interactive_AddContextFlow_ResolvedErrorTopic,
   Cli_Menu_Interactive_AddContextFlow_ResolvedId,
+  Cli_Menu_Interactive_AddContextFlow_ResolvedSecretPath,
   Cli_Menu_Interactive_AddContextFlow_ResolvedToken,
   Cli_Menu_Interactive_AddContextFlow_Returns,
   Cli_Menu_Interactive_AddContextFlow_SelectedServers,
@@ -67,15 +69,18 @@ import type {
   Cli_Menu_Interactive_AddContextFlow_TypedInterpreter,
   Cli_Menu_Interactive_AddContextFlow_TypedMode,
   Cli_Menu_Interactive_AddContextFlow_TypeResponse,
+  Cli_Menu_Interactive_AddContextFlow_UseSecretPath,
+  Cli_Menu_Interactive_AddContextFlow_UseSecretPathResponse,
   Cli_Menu_Interactive_AddContextFlow_UseSession,
   Cli_Menu_Interactive_AddContextFlow_UseSessionResponse,
   Cli_Menu_Interactive_ContextMenu_Action,
   Cli_Menu_Interactive_ContextMenu_AddNewToken,
+  Cli_Menu_Interactive_ContextMenu_AddSecretPath,
+  Cli_Menu_Interactive_ContextMenu_AddSecretPathResponse,
   Cli_Menu_Interactive_ContextMenu_AddToken,
   Cli_Menu_Interactive_ContextMenu_AddTokenResponse,
   Cli_Menu_Interactive_ContextMenu_AllowedFrom,
   Cli_Menu_Interactive_ContextMenu_AllowedFromResponse,
-  Cli_Menu_Interactive_ContextMenu_AllowedFromTrimmed,
   Cli_Menu_Interactive_ContextMenu_ConfigPath,
   Cli_Menu_Interactive_ContextMenu_Confirmed,
   Cli_Menu_Interactive_ContextMenu_ConfirmResponse,
@@ -84,9 +89,11 @@ import type {
   Cli_Menu_Interactive_ContextMenu_CurrentAllowedFrom,
   Cli_Menu_Interactive_ContextMenu_CurrentErrorEvents,
   Cli_Menu_Interactive_ContextMenu_CurrentErrorTopic,
+  Cli_Menu_Interactive_ContextMenu_EditedContext,
   Cli_Menu_Interactive_ContextMenu_EditErrorMessage,
   Cli_Menu_Interactive_ContextMenu_EditImport,
   Cli_Menu_Interactive_ContextMenu_EditServers,
+  Cli_Menu_Interactive_ContextMenu_EditSettings,
   Cli_Menu_Interactive_ContextMenu_EmailChoices,
   Cli_Menu_Interactive_ContextMenu_EmailValues,
   Cli_Menu_Interactive_ContextMenu_ErrorEvents,
@@ -117,6 +124,7 @@ import type {
   Cli_Menu_Interactive_ContextMenu_ModeInitial,
   Cli_Menu_Interactive_ContextMenu_ModeResponse,
   Cli_Menu_Interactive_ContextMenu_Name,
+  Cli_Menu_Interactive_ContextMenu_NewSecretPath,
   Cli_Menu_Interactive_ContextMenu_NewToken,
   Cli_Menu_Interactive_ContextMenu_PrimaryServer,
   Cli_Menu_Interactive_ContextMenu_PrimaryServerIdx,
@@ -131,6 +139,8 @@ import type {
   Cli_Menu_Interactive_ContextMenu_ResolvedErrorTopic,
   Cli_Menu_Interactive_ContextMenu_Response,
   Cli_Menu_Interactive_ContextMenu_Returns,
+  Cli_Menu_Interactive_ContextMenu_SecretPathAction,
+  Cli_Menu_Interactive_ContextMenu_SecretPathActionResponse,
   Cli_Menu_Interactive_ContextMenu_SelectedServers,
   Cli_Menu_Interactive_ContextMenu_SelectedServersResponse,
   Cli_Menu_Interactive_ContextMenu_SelectResponse,
@@ -1016,10 +1026,11 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
                   continue;
                 }
 
-                // Session tokens replace the static token, so turning them on drops it.
+                // Session tokens replace the static token and the secret path, so turning them on drops both.
                 if (useSession === true && current['session'] === undefined) {
                   Reflect.set(updates, 'session', { secret: generateSessionSecret() });
                   Reflect.set(updates, 'token', undefined);
+                  Reflect.set(updates, 'secret_path', undefined);
                 }
 
                 if (useSession === false && current['session'] !== undefined) {
@@ -1079,12 +1090,12 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
                   Logger.info(`  New token: ${addNewToken}`);
                 }
               } else if (current['type'] === 'email') {
-                const currentAllowedFrom: Cli_Menu_Interactive_ContextMenu_CurrentAllowedFrom = (current['allowed_from'] !== undefined) ? current['allowed_from'] : '';
+                const currentAllowedFrom: Cli_Menu_Interactive_ContextMenu_CurrentAllowedFrom = formatAllowedFrom(current['allowed_from']);
 
                 const allowedFromResponse: Cli_Menu_Interactive_ContextMenu_AllowedFromResponse = await prompts({
                   type: 'text',
                   name: 'allowed_from',
-                  message: 'Allowed from email (blank to clear):',
+                  message: 'Allowed senders, comma-separated addresses or *@domain (blank to clear):',
                   initial: currentAllowedFrom,
                 });
 
@@ -1094,11 +1105,77 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
                   continue;
                 }
 
-                const allowedFromTrimmed: Cli_Menu_Interactive_ContextMenu_AllowedFromTrimmed = (allowedFrom !== undefined) ? allowedFrom.trim() : '';
-                const resolvedAllowedFrom: Cli_Menu_Interactive_ContextMenu_ResolvedAllowedFrom = (allowedFromTrimmed !== '') ? allowedFromTrimmed : undefined;
+                const resolvedAllowedFrom: Cli_Menu_Interactive_ContextMenu_ResolvedAllowedFrom = parseAllowedFrom(allowedFrom);
 
-                if (allowedFrom !== undefined) {
-                  Reflect.set(updates, 'allowed_from', resolvedAllowedFrom);
+                Reflect.set(updates, 'allowed_from', resolvedAllowedFrom);
+              }
+
+              let newSecretPath: Cli_Menu_Interactive_ContextMenu_NewSecretPath = undefined;
+
+              // With session tokens on, the secret path prompts do not apply.
+              if (
+                current['type'] === 'http'
+                && useSession === false
+                && current['secret_path'] !== undefined
+              ) {
+                const secretPathActionResponse: Cli_Menu_Interactive_ContextMenu_SecretPathActionResponse = await prompts({
+                  type: 'select',
+                  name: 'secretPathAction',
+                  message: 'Secret URL path:',
+                  choices: [
+                    {
+                      title: 'Keep current secret path',
+                      value: 'keep',
+                    },
+                    {
+                      title: 'Regenerate secret path',
+                      value: 'regenerate',
+                    },
+                    {
+                      title: 'Remove secret path',
+                      value: 'remove',
+                    },
+                  ],
+                  initial: 0,
+                });
+
+                const secretPathAction: Cli_Menu_Interactive_ContextMenu_SecretPathAction = secretPathActionResponse['secretPathAction'];
+
+                if (secretPathAction === undefined) {
+                  continue;
+                }
+
+                if (secretPathAction === 'regenerate') {
+                  newSecretPath = generateSecretPath();
+
+                  Reflect.set(updates, 'secret_path', newSecretPath);
+                }
+
+                if (secretPathAction === 'remove') {
+                  Reflect.set(updates, 'secret_path', undefined);
+                }
+              } else if (
+                current['type'] === 'http'
+                && useSession === false
+                && current['secret_path'] === undefined
+              ) {
+                const addSecretPathResponse: Cli_Menu_Interactive_ContextMenu_AddSecretPathResponse = await prompts({
+                  type: 'confirm',
+                  name: 'addSecretPath',
+                  message: 'Use a secret URL path? (for senders that cannot send headers, such as Statuspage)',
+                  initial: false,
+                });
+
+                const addSecretPath: Cli_Menu_Interactive_ContextMenu_AddSecretPath = addSecretPathResponse['addSecretPath'];
+
+                if (addSecretPath === undefined) {
+                  continue;
+                }
+
+                if (addSecretPath === true) {
+                  newSecretPath = generateSecretPath();
+
+                  Reflect.set(updates, 'secret_path', newSecretPath);
                 }
               }
 
@@ -1107,6 +1184,16 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
               editImport.editContext(configPath, name, updates);
 
               Logger.info(`Context "${name}" updated.`);
+
+              // Read the saved context back, because saving can still change its ID.
+              if (newSecretPath !== undefined) {
+                const editedContext: Cli_Menu_Interactive_ContextMenu_EditedContext = listContexts(configPath).find((context) => context['name'] === name);
+                const editSettings: Cli_Menu_Interactive_ContextMenu_EditSettings = getSettings(configPath);
+
+                if (editedContext !== undefined) {
+                  Logger.info(`  Secret URL: https://${editedContext['id']}.${editSettings['base_domain']}/${newSecretPath}`);
+                }
+              }
             }
           }
         }
@@ -1462,6 +1549,7 @@ async function addContextFlow(configPath: Cli_Menu_Interactive_AddContextFlow_Co
   const typedInterpreter: Cli_Menu_Interactive_AddContextFlow_TypedInterpreter = interpreter as Cli_Menu_Interactive_AddContextFlow_TypedInterpreter;
   const typedMode: Cli_Menu_Interactive_AddContextFlow_TypedMode = mode as Cli_Menu_Interactive_AddContextFlow_TypedMode;
   const typedErrorEvents: Cli_Menu_Interactive_AddContextFlow_TypedErrorEvents = errorEvents as Cli_Menu_Interactive_AddContextFlow_TypedErrorEvents;
+  let resolvedSecretPath: Cli_Menu_Interactive_AddContextFlow_ResolvedSecretPath = undefined;
 
   if (contextType === 'http') {
     const useSessionResponse: Cli_Menu_Interactive_AddContextFlow_UseSessionResponse = await prompts({
@@ -1501,6 +1589,24 @@ async function addContextFlow(configPath: Cli_Menu_Interactive_AddContextFlow_Co
       resolvedToken = (tokenTrimmed !== '') ? tokenTrimmed : undefined;
     }
 
+    // Session tokens are issued on their own path, so the secret path prompt only appears without them.
+    if (useSession === false) {
+      const useSecretPathResponse: Cli_Menu_Interactive_AddContextFlow_UseSecretPathResponse = await prompts({
+        type: 'confirm',
+        name: 'useSecretPath',
+        message: 'Use a secret URL path? (for senders that cannot send headers, such as Statuspage)',
+        initial: false,
+      });
+
+      const useSecretPath: Cli_Menu_Interactive_AddContextFlow_UseSecretPath = useSecretPathResponse['useSecretPath'];
+
+      if (useSecretPath === undefined) {
+        return;
+      }
+
+      resolvedSecretPath = (useSecretPath === true) ? generateSecretPath() : undefined;
+    }
+
     addContext(configPath, {
       name,
       type: 'http',
@@ -1515,12 +1621,13 @@ async function addContextFlow(configPath: Cli_Menu_Interactive_AddContextFlow_Co
       servers: selectedServers,
       token: resolvedToken,
       session: (useSession === true) ? { secret: generateSessionSecret() } : undefined,
+      secret_path: resolvedSecretPath,
     });
   } else {
     const allowedFromResponse: Cli_Menu_Interactive_AddContextFlow_AllowedFromResponse = await prompts({
       type: 'text',
       name: 'allowed_from',
-      message: 'Allowed from email (blank to skip):',
+      message: 'Allowed senders, comma-separated addresses or *@domain (blank to skip):',
     });
 
     const rawAllowedFrom: Cli_Menu_Interactive_AddContextFlow_RawAllowedFrom = allowedFromResponse['allowed_from'];
@@ -1529,8 +1636,7 @@ async function addContextFlow(configPath: Cli_Menu_Interactive_AddContextFlow_Co
       return;
     }
 
-    const allowedFromTrimmed: Cli_Menu_Interactive_AddContextFlow_AllowedFromTrimmed = (rawAllowedFrom !== undefined) ? rawAllowedFrom.trim() : '';
-    const resolvedAllowedFrom: Cli_Menu_Interactive_AddContextFlow_ResolvedAllowedFrom = (allowedFromTrimmed !== '') ? allowedFromTrimmed : undefined;
+    const resolvedAllowedFrom: Cli_Menu_Interactive_AddContextFlow_ResolvedAllowedFrom = parseAllowedFrom(rawAllowedFrom);
 
     addContext(configPath, {
       name,
@@ -1549,6 +1655,16 @@ async function addContextFlow(configPath: Cli_Menu_Interactive_AddContextFlow_Co
   }
 
   Logger.info(`Context "${name}" added.`);
+
+  // Read the saved context back, because saving can still change its ID.
+  if (resolvedSecretPath !== undefined) {
+    const addedContext: Cli_Menu_Interactive_AddContextFlow_AddedContext = listContexts(configPath).find((context) => context['name'] === name);
+    const addSettings: Cli_Menu_Interactive_AddContextFlow_AddSettings = getSettings(configPath);
+
+    if (addedContext !== undefined) {
+      Logger.info(`  Secret URL: https://${addedContext['id']}.${addSettings['base_domain']}/${resolvedSecretPath}`);
+    }
+  }
 
   return;
 }

@@ -4,9 +4,14 @@ import { authenticate } from '../../../worker/pipeline/authenticate.js';
 
 import type {
   Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_CaseInsensitiveEmailComparison_Result,
+  Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_FailsAMixedListWithTheSenderReason_Result,
+  Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_FailsAWildcardOnlyListWithTheDomainReason_Result,
   Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_FailsDomainWildcardWithWrongDomain_Result,
   Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_FailsWithWrongSender_Result,
+  Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesAMixedListOfExactAndWildcardEntriesCaseInsensitively_Result,
   Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesWhenNoAllowedFromConfigured_Result,
+  Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesWhenTheAllowedFromListIsEmpty_Result,
+  Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesWhenTheSenderMatchesTheSecondListedEntry_Result,
   Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesWithDomainWildcardMatch_Result,
   Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesWithExactFromMatch_Result,
   Tests_Worker_Pipeline_Authenticate_Authenticate_HTTPAuth_FailsWithMissingAuthorizationHeader_Result,
@@ -181,6 +186,92 @@ describe('authenticate', () => {
       });
 
       expect(result['authenticated']).toBe(true);
+
+      return;
+    });
+
+    it('passes when the sender matches the second listed entry', () => {
+      const result: Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesWhenTheSenderMatchesTheSecondListedEntry_Result = authenticate({
+        type: 'email',
+        allowed_from: [
+          'admin@pfsense.local',
+          'noreply@example.com',
+        ],
+      }, {
+        authorization: undefined,
+        from: 'noreply@example.com',
+      });
+
+      expect(result['authenticated']).toBe(true);
+
+      return;
+    });
+
+    it('passes a mixed list of exact and wildcard entries case-insensitively', () => {
+      const result: Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesAMixedListOfExactAndWildcardEntriesCaseInsensitively_Result = authenticate({
+        type: 'email',
+        allowed_from: [
+          'admin@pfsense.local',
+          '*@GitHubStatus.com',
+        ],
+      }, {
+        authorization: undefined,
+        from: 'Noreply@githubstatus.COM',
+      });
+
+      expect(result['authenticated']).toBe(true);
+
+      return;
+    });
+
+    it('passes when the allowed_from list is empty', () => {
+      const result: Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesWhenTheAllowedFromListIsEmpty_Result = authenticate({
+        type: 'email',
+        allowed_from: [],
+      }, {
+        authorization: undefined,
+        from: 'anyone@example.com',
+      });
+
+      expect(result['authenticated']).toBe(true);
+
+      return;
+    });
+
+    it('fails a wildcard-only list with the domain reason', () => {
+      const result: Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_FailsAWildcardOnlyListWithTheDomainReason_Result = authenticate({
+        type: 'email',
+        allowed_from: [
+          '*@githubstatus.com',
+          '*@cloudflarestatus.com',
+        ],
+      }, {
+        authorization: undefined,
+        from: 'scanner@evil.com',
+      });
+
+      expect(result['authenticated']).toBe(false);
+
+      expect(result['reason']).toBe('Sender domain not allowed');
+
+      return;
+    });
+
+    it('fails a mixed list with the sender reason', () => {
+      const result: Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_FailsAMixedListWithTheSenderReason_Result = authenticate({
+        type: 'email',
+        allowed_from: [
+          'admin@pfsense.local',
+          '*@githubstatus.com',
+        ],
+      }, {
+        authorization: undefined,
+        from: 'scanner@evil.com',
+      });
+
+      expect(result['authenticated']).toBe(false);
+
+      expect(result['reason']).toBe('Sender not allowed');
 
       return;
     });

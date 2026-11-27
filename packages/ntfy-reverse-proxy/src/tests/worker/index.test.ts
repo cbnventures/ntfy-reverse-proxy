@@ -43,6 +43,9 @@ import type {
   Tests_Worker_Index_HandleEmail_SilentlyIgnoresEmailsWithNoMatchingContext_RawEmail,
   Tests_Worker_Index_HandleEmail_SuppressesAuthErrorNotificationWhenEmailErrorEventsExcludesAuthentication_MockFetch,
   Tests_Worker_Index_HandleEmail_SuppressesAuthErrorNotificationWhenEmailErrorEventsExcludesAuthentication_RawEmail,
+  Tests_Worker_Index_HandleRequest_AcceptsARequestOnTheSecretPath_Body,
+  Tests_Worker_Index_HandleRequest_AcceptsARequestOnTheSecretPath_Request,
+  Tests_Worker_Index_HandleRequest_AcceptsARequestOnTheSecretPath_Response,
   Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_Kv,
   Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_MessageRequest,
   Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_MessageResponse,
@@ -51,8 +54,19 @@ import type {
   Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_SessionBody,
   Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_SessionRequest,
   Tests_Worker_Index_HandleRequest_AcceptsOneMessageWithASessionTokenFromTheSessionPath_SessionResponse,
+  Tests_Worker_Index_HandleRequest_AcceptsTheSecretPathWithOneTrailingSlash_Request,
+  Tests_Worker_Index_HandleRequest_AcceptsTheSecretPathWithOneTrailingSlash_Response,
+  Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_Bodies,
+  Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_MockFetch,
+  Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_NotFoundBody,
+  Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_NotFoundRequest,
+  Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_NotFoundResponse,
+  Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_Paths,
+  Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_Responses,
   Tests_Worker_Index_HandleRequest_IgnoresTheContextHeaderOutsideLocalhost_Request,
   Tests_Worker_Index_HandleRequest_IgnoresTheContextHeaderOutsideLocalhost_Response,
+  Tests_Worker_Index_HandleRequest_KeepsEveryPathOpenForAContextWithoutASecretPath_Request,
+  Tests_Worker_Index_HandleRequest_KeepsEveryPathOpenForAContextWithoutASecretPath_Response,
   Tests_Worker_Index_HandleRequest_PassesThroughWhenNoTokenConfigured_Request,
   Tests_Worker_Index_HandleRequest_PassesThroughWhenNoTokenConfigured_Response,
   Tests_Worker_Index_HandleRequest_PreservesBinaryRequestBodiesAsAttachments_Bytes,
@@ -69,6 +83,18 @@ import type {
   Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_MockFetch,
   Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_ValidRequest,
   Tests_Worker_Index_HandleRequest_ProcessesLaterNotificationsAfterAnErrorTopicAttachmentFails_ValidResponse,
+  Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInAuthenticationErrorAttachments_AttachmentBody,
+  Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInAuthenticationErrorAttachments_AttachmentInit,
+  Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInAuthenticationErrorAttachments_AttachmentText,
+  Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInAuthenticationErrorAttachments_MockFetch,
+  Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInAuthenticationErrorAttachments_Request,
+  Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInAuthenticationErrorAttachments_Response,
+  Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInInterpretationErrorAttachments_AttachmentBody,
+  Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInInterpretationErrorAttachments_AttachmentInit,
+  Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInInterpretationErrorAttachments_AttachmentText,
+  Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInInterpretationErrorAttachments_MockFetch,
+  Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInInterpretationErrorAttachments_Request,
+  Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInInterpretationErrorAttachments_Response,
   Tests_Worker_Index_HandleRequest_RejectsAMessageWithoutASessionTokenWhenSessionsAreOn_Request,
   Tests_Worker_Index_HandleRequest_RejectsAMessageWithoutASessionTokenWhenSessionsAreOn_Response,
   Tests_Worker_Index_HandleRequest_Returns403WithNoAuthorizationHeaderWhenTokenRequired_Request,
@@ -101,6 +127,7 @@ import type {
   Tests_Worker_Index_MockConfig,
   Tests_Worker_Index_MockConfigWithErrorTopic,
   Tests_Worker_Index_MockConfigWithErrorTopicAndErrorEvents,
+  Tests_Worker_Index_MockConfigWithSecretPath,
   Tests_Worker_Index_MockConfigWithSession,
   Tests_Worker_Index_MockConfigWithToken,
   Tests_Worker_Index_MockEmailConfig,
@@ -383,6 +410,69 @@ const mockConfigWithSession: Tests_Worker_Index_MockConfigWithSession = {
       secret: 'test-secret-that-is-at-least-32-characters-long',
     },
   }],
+};
+
+/**
+ * Tests - Worker - Mock Config With Secret Path.
+ *
+ * Holds contexts that only answer on a secret path, one open, one with a token,
+ * and one whose interpreter rejects unknown payloads.
+ *
+ * @since 2.6.0
+ */
+const mockConfigWithSecretPath: Tests_Worker_Index_MockConfigWithSecretPath = {
+  settings: {
+    worker_name: 'test-worker',
+    base_domain: 'ntfy.example.com',
+    show_response_output: false,
+  },
+  servers: [{
+    name: 'alpha',
+    server: 'https://ntfy.alpha.example.com',
+    token: 'tk_abc',
+  }],
+  contexts: [
+    {
+      id: 'statushook',
+      name: 'secret-path-context',
+      type: 'http' as const,
+      interpreter: 'plain-text' as const,
+      topic: 'status-topic',
+      error_topic: 'error-notifications',
+      mode: 'send-once' as const,
+      show_visitor_info: false,
+      primary_server: 'alpha',
+      servers: ['alpha'],
+      secret_path: 'k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4',
+    },
+    {
+      id: 'statusauth',
+      name: 'secret-path-token-context',
+      type: 'http' as const,
+      interpreter: 'plain-text' as const,
+      topic: 'status-topic',
+      error_topic: 'error-notifications',
+      mode: 'send-once' as const,
+      show_visitor_info: false,
+      primary_server: 'alpha',
+      servers: ['alpha'],
+      token: 'my-secret-token',
+      secret_path: 'k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4',
+    },
+    {
+      id: 'statusjson',
+      name: 'secret-path-statuspage-context',
+      type: 'http' as const,
+      interpreter: 'statuspage' as const,
+      topic: 'status-topic',
+      error_topic: 'error-notifications',
+      mode: 'send-once' as const,
+      show_visitor_info: false,
+      primary_server: 'alpha',
+      servers: ['alpha'],
+      secret_path: 'k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4',
+    },
+  ],
 };
 
 /**
@@ -1025,6 +1115,171 @@ describe('handleRequest', () => {
     const body: Tests_Worker_Index_HandleRequest_Returns404OnTheSessionPathWhenSessionsAreOff_Body = await response.json();
 
     expect(body['message']).toBe('Sessions are not enabled for this context');
+
+    return;
+  });
+
+  /**
+   * Tests - Worker.
+   *
+   * @since 2.6.0
+   */
+  it('accepts a request on the secret path', async () => {
+    const request: Tests_Worker_Index_HandleRequest_AcceptsARequestOnTheSecretPath_Request = new Request('https://statushook.ntfy.example.com/k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4', {
+      method: 'POST',
+      body: 'Status update',
+    });
+    const response: Tests_Worker_Index_HandleRequest_AcceptsARequestOnTheSecretPath_Response = await handleRequest(request, mockConfigWithSecretPath, undefined, outbox);
+
+    expect(response['status']).toBe(200);
+
+    const body: Tests_Worker_Index_HandleRequest_AcceptsARequestOnTheSecretPath_Body = await response.json();
+
+    expect(body['status']).toBe('success');
+
+    return;
+  });
+
+  /**
+   * Tests - Worker.
+   *
+   * @since 2.6.0
+   */
+  it('accepts the secret path with one trailing slash', async () => {
+    const request: Tests_Worker_Index_HandleRequest_AcceptsTheSecretPathWithOneTrailingSlash_Request = new Request('https://statushook.ntfy.example.com/k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4/', {
+      method: 'POST',
+      body: 'Status update',
+    });
+    const response: Tests_Worker_Index_HandleRequest_AcceptsTheSecretPathWithOneTrailingSlash_Response = await handleRequest(request, mockConfigWithSecretPath, undefined, outbox);
+
+    expect(response['status']).toBe(200);
+
+    return;
+  });
+
+  /**
+   * Tests - Worker.
+   *
+   * @since 2.6.0
+   */
+  it('answers a wrong secret path exactly like an unknown host without notifying', async () => {
+    const mockFetch: Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_MockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
+
+    vi.stubGlobal('fetch', mockFetch);
+
+    const paths: Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_Paths = [
+      '/',
+      '/wrong',
+      '/k3j9x0q2m7v4b8n1',
+      '/k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4/extra',
+      '/k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4//',
+      '/K3J9X0Q2M7V4B8N1C6Z5L0P9W2E7R4T1Y8U3I6O0A5S2D9F4',
+      '/session',
+    ];
+    const responses: Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_Responses = await Promise.all(paths.map((path) => handleRequest(new Request(`https://statushook.ntfy.example.com${path}`, {
+      method: 'POST',
+      body: '<?xml version="1.0"?><probe/>',
+      headers: { 'Content-Type': 'application/xml' },
+    }), mockConfigWithSecretPath, undefined, outbox)));
+    const notFoundRequest: Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_NotFoundRequest = new Request('https://statushook.ntfy.example.com/', {
+      method: 'POST',
+      body: '<?xml version="1.0"?><probe/>',
+      headers: { 'Content-Type': 'application/xml' },
+    });
+    const notFoundResponse: Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_NotFoundResponse = await handleRequest(notFoundRequest, mockConfig, undefined, outbox);
+    const notFoundBody: Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_NotFoundBody = await notFoundResponse.text();
+    const bodies: Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_Bodies = await Promise.all(responses.map((response) => response.text()));
+
+    for (const response of responses) {
+      expect(response['status']).toBe(404);
+
+      expect([...response['headers'].entries()]).toEqual([...notFoundResponse['headers'].entries()]);
+    }
+
+    expect(bodies).toEqual(paths.map(() => notFoundBody));
+
+    expect(notFoundBody).toContain('No context found for http identifier: statushook');
+
+    expect(mockFetch).not.toHaveBeenCalled();
+
+    return;
+  });
+
+  /**
+   * Tests - Worker.
+   *
+   * @since 2.6.0
+   */
+  it('redacts the secret path in authentication error attachments', async () => {
+    const mockFetch: Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInAuthenticationErrorAttachments_MockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
+
+    vi.stubGlobal('fetch', mockFetch);
+
+    const request: Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInAuthenticationErrorAttachments_Request = new Request('https://statusauth.ntfy.example.com/k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4?source=test', {
+      method: 'POST',
+      body: 'Bad auth',
+      headers: { Authorization: 'Bearer wrong' },
+    });
+    const response: Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInAuthenticationErrorAttachments_Response = await handleRequest(request, mockConfigWithSecretPath, undefined, outbox);
+
+    expect(response['status']).toBe(403);
+
+    expect(mockFetch).toHaveBeenCalledOnce();
+
+    const attachmentInit: Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInAuthenticationErrorAttachments_AttachmentInit = mockFetch.mock.calls[0]![1];
+    const attachmentText: Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInAuthenticationErrorAttachments_AttachmentText = new TextDecoder().decode(attachmentInit['body'] as Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInAuthenticationErrorAttachments_AttachmentBody);
+
+    expect(attachmentText).toContain('"url": "https://statusauth.ntfy.example.com/REDACTED?source=test"');
+
+    expect(attachmentText).not.toContain('k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4');
+
+    return;
+  });
+
+  /**
+   * Tests - Worker.
+   *
+   * @since 2.6.0
+   */
+  it('redacts the secret path in interpretation error attachments', async () => {
+    const mockFetch: Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInInterpretationErrorAttachments_MockFetch = vi.fn().mockResolvedValue(new Response('ok', { status: 200 }));
+
+    vi.stubGlobal('fetch', mockFetch);
+
+    const request: Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInInterpretationErrorAttachments_Request = new Request('https://statusjson.ntfy.example.com/k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4', {
+      method: 'POST',
+      body: JSON.stringify({ unexpected: true }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const response: Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInInterpretationErrorAttachments_Response = await handleRequest(request, mockConfigWithSecretPath, undefined, outbox);
+
+    expect(response['status']).toBe(422);
+
+    expect(mockFetch).toHaveBeenCalledOnce();
+
+    const attachmentInit: Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInInterpretationErrorAttachments_AttachmentInit = mockFetch.mock.calls[0]![1];
+    const attachmentText: Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInInterpretationErrorAttachments_AttachmentText = new TextDecoder().decode(attachmentInit['body'] as Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInInterpretationErrorAttachments_AttachmentBody);
+
+    expect(attachmentText).toContain('"url": "https://statusjson.ntfy.example.com/REDACTED"');
+
+    expect(attachmentText).not.toContain('k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4');
+
+    return;
+  });
+
+  /**
+   * Tests - Worker.
+   *
+   * @since 2.6.0
+   */
+  it('keeps every path open for a context without a secret path', async () => {
+    const request: Tests_Worker_Index_HandleRequest_KeepsEveryPathOpenForAContextWithoutASecretPath_Request = new Request('https://abc123.ntfy.example.com/any/path', {
+      method: 'POST',
+      body: 'Hello world',
+    });
+    const response: Tests_Worker_Index_HandleRequest_KeepsEveryPathOpenForAContextWithoutASecretPath_Response = await handleRequest(request, mockConfig, undefined, outbox);
+
+    expect(response['status']).toBe(200);
 
     return;
   });

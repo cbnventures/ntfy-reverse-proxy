@@ -1,6 +1,6 @@
 {
   "name": "ntfy-reverse-proxy",
-  "version": "2.5.1",
+  "version": "2.6.0",
   "description": "Route webhooks and emails to ntfy through Cloudflare Workers, with automatic server failover",
   "keywords": [
     "ntfy",

@@ -56,11 +56,17 @@ export type Tests_Cli_Menu_Interactive_CliCommandsContextJs_AddContext = ReturnT
 
 export type Tests_Cli_Menu_Interactive_CliCommandsContextJs_EditContext = ReturnType<typeof vi['fn']>;
 
+export type Tests_Cli_Menu_Interactive_CliCommandsContextJs_FormatAllowedFrom = ReturnType<typeof vi['fn']>;
+
 export type Tests_Cli_Menu_Interactive_CliCommandsContextJs_GenerateId = ReturnType<typeof vi['fn']>;
+
+export type Tests_Cli_Menu_Interactive_CliCommandsContextJs_GenerateSecretPath = ReturnType<typeof vi['fn']>;
 
 export type Tests_Cli_Menu_Interactive_CliCommandsContextJs_GenerateToken = ReturnType<typeof vi['fn']>;
 
 export type Tests_Cli_Menu_Interactive_CliCommandsContextJs_ListContexts = ReturnType<typeof vi['fn']>;
+
+export type Tests_Cli_Menu_Interactive_CliCommandsContextJs_ParseAllowedFrom = ReturnType<typeof vi['fn']>;
 
 export type Tests_Cli_Menu_Interactive_CliCommandsContextJs_RemoveContext = ReturnType<typeof vi['fn']>;
 
@@ -237,6 +243,35 @@ export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsFo
 export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditPromptsForAReplacementId_GenerateId = ReturnType<typeof vi['fn']>;
 
 /**
+ * Tests - CLI - Menu - Interactive - Interactive Menu - Email Context Edit Saves The Parsed Sender List.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_Prompts_Default = typeof prompts;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_Prompts = {
+  default: Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_Prompts_Default;
+};
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_PromptsDefaultUnknown = unknown;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_MockPrompts = ReturnType<typeof vi['fn']>;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_ContextModuleUnknown = unknown;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_ContextModule = Record<string, unknown>;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_ListContexts = ReturnType<typeof vi['fn']>;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_EditContext = ReturnType<typeof vi['fn']>;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_FormatAllowedFrom = ReturnType<typeof vi['fn']>;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_ParseAllowedFrom = ReturnType<typeof vi['fn']>;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_EmailContextEditSavesTheParsedSenderList_Call = Record<string, unknown>;
+
+/**
  * Tests - CLI - Menu - Interactive - Interactive Menu - Exits On Ctrl C At Config Dir Selection.
  *
  * @since 2.0.0
@@ -257,6 +292,35 @@ export type Tests_Cli_Menu_Interactive_InteractiveMenu_ExitsOnCtrlCAtConfigDirSe
  * @since 2.0.0
  */
 export type Tests_Cli_Menu_Interactive_InteractiveMenu_ExportsTheInteractiveMenuFunction_ExportedType = string;
+
+/**
+ * Tests - CLI - Menu - Interactive - Interactive Menu - Http Context Edit Adds A Secret Path And Logs Its URL.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_Prompts_Default = typeof prompts;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_Prompts = {
+  default: Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_Prompts_Default;
+};
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_PromptsDefaultUnknown = unknown;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_MockPrompts = ReturnType<typeof vi['fn']>;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_ContextModuleUnknown = unknown;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_ContextModule = Record<string, unknown>;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_EditContext = ReturnType<typeof vi['fn']>;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_ToolkitModuleUnknown = unknown;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_ToolkitModule = Record<string, unknown>;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_Logger = Record<string, ReturnType<typeof vi['fn']>>;
+
+export type Tests_Cli_Menu_Interactive_InteractiveMenu_HttpContextEditAddsASecretPathAndLogsItsURL_Call = Record<string, unknown>;
 
 /**
  * Tests - CLI - Menu - Interactive - Interactive Menu - Selects Config From Multiple Directories.

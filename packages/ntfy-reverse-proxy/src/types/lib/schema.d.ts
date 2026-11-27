@@ -47,7 +47,9 @@ export type Lib_Schema_EmailContextConfigPrimaryServer = string;
 
 export type Lib_Schema_EmailContextConfigServers = string[];
 
-export type Lib_Schema_EmailContextConfigAllowedFrom = string | undefined;
+export type Lib_Schema_EmailContextConfigAllowedFromEntry = string;
+
+export type Lib_Schema_EmailContextConfigAllowedFrom = Lib_Schema_EmailContextConfigAllowedFromEntry | Lib_Schema_EmailContextConfigAllowedFromEntry[] | undefined;
 
 export type Lib_Schema_EmailContextConfig = {
   name: Lib_Schema_EmailContextConfigName;
@@ -90,6 +92,8 @@ export type Lib_Schema_HttpContextConfigToken = string | undefined;
 
 export type Lib_Schema_HttpContextConfigSession = Lib_Schema_SessionConfig | undefined;
 
+export type Lib_Schema_HttpContextConfigSecretPath = string | undefined;
+
 export type Lib_Schema_HttpContextConfig = {
   name: Lib_Schema_HttpContextConfigName;
   type: Lib_Schema_HttpContextConfigType;
@@ -104,6 +108,7 @@ export type Lib_Schema_HttpContextConfig = {
   servers: Lib_Schema_HttpContextConfigServers;
   token?: Lib_Schema_HttpContextConfigToken;
   session?: Lib_Schema_HttpContextConfigSession;
+  secret_path?: Lib_Schema_HttpContextConfigSecretPath;
 };
 
 export type Lib_Schema_ContextConfig = Lib_Schema_HttpContextConfig | Lib_Schema_EmailContextConfig;

@@ -13,6 +13,34 @@ export type Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_CaseInsens
 };
 
 /**
+ * Tests - Worker - Pipeline - Authenticate - Authenticate - Email Auth - Fails A Mixed List With The Sender Reason.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_FailsAMixedListWithTheSenderReason_Result_Authenticated = boolean;
+
+export type Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_FailsAMixedListWithTheSenderReason_Result_Reason = string;
+
+export type Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_FailsAMixedListWithTheSenderReason_Result = {
+  authenticated: Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_FailsAMixedListWithTheSenderReason_Result_Authenticated;
+  reason?: Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_FailsAMixedListWithTheSenderReason_Result_Reason;
+};
+
+/**
+ * Tests - Worker - Pipeline - Authenticate - Authenticate - Email Auth - Fails A Wildcard Only List With The Domain Reason.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_FailsAWildcardOnlyListWithTheDomainReason_Result_Authenticated = boolean;
+
+export type Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_FailsAWildcardOnlyListWithTheDomainReason_Result_Reason = string;
+
+export type Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_FailsAWildcardOnlyListWithTheDomainReason_Result = {
+  authenticated: Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_FailsAWildcardOnlyListWithTheDomainReason_Result_Authenticated;
+  reason?: Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_FailsAWildcardOnlyListWithTheDomainReason_Result_Reason;
+};
+
+/**
  * Tests - Worker - Pipeline - Authenticate - Authenticate - Email Auth - Fails Domain Wildcard With Wrong Domain.
  *
  * @since 2.0.0
@@ -41,6 +69,20 @@ export type Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_FailsWithW
 };
 
 /**
+ * Tests - Worker - Pipeline - Authenticate - Authenticate - Email Auth - Passes A Mixed List Of Exact And Wildcard Entries Case Insensitively.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesAMixedListOfExactAndWildcardEntriesCaseInsensitively_Result_Authenticated = boolean;
+
+export type Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesAMixedListOfExactAndWildcardEntriesCaseInsensitively_Result_Reason = string;
+
+export type Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesAMixedListOfExactAndWildcardEntriesCaseInsensitively_Result = {
+  authenticated: Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesAMixedListOfExactAndWildcardEntriesCaseInsensitively_Result_Authenticated;
+  reason?: Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesAMixedListOfExactAndWildcardEntriesCaseInsensitively_Result_Reason;
+};
+
+/**
  * Tests - Worker - Pipeline - Authenticate - Authenticate - Email Auth - Passes When No Allowed From Configured.
  *
  * @since 2.0.0
@@ -52,6 +94,34 @@ export type Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesWhen
 export type Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesWhenNoAllowedFromConfigured_Result = {
   authenticated: Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesWhenNoAllowedFromConfigured_Result_Authenticated;
   reason?: Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesWhenNoAllowedFromConfigured_Result_Reason;
+};
+
+/**
+ * Tests - Worker - Pipeline - Authenticate - Authenticate - Email Auth - Passes When The Allowed From List Is Empty.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesWhenTheAllowedFromListIsEmpty_Result_Authenticated = boolean;
+
+export type Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesWhenTheAllowedFromListIsEmpty_Result_Reason = string;
+
+export type Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesWhenTheAllowedFromListIsEmpty_Result = {
+  authenticated: Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesWhenTheAllowedFromListIsEmpty_Result_Authenticated;
+  reason?: Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesWhenTheAllowedFromListIsEmpty_Result_Reason;
+};
+
+/**
+ * Tests - Worker - Pipeline - Authenticate - Authenticate - Email Auth - Passes When The Sender Matches The Second Listed Entry.
+ *
+ * @since 2.6.0
+ */
+export type Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesWhenTheSenderMatchesTheSecondListedEntry_Result_Authenticated = boolean;
+
+export type Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesWhenTheSenderMatchesTheSecondListedEntry_Result_Reason = string;
+
+export type Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesWhenTheSenderMatchesTheSecondListedEntry_Result = {
+  authenticated: Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesWhenTheSenderMatchesTheSecondListedEntry_Result_Authenticated;
+  reason?: Tests_Worker_Pipeline_Authenticate_Authenticate_EmailAuth_PassesWhenTheSenderMatchesTheSecondListedEntry_Result_Reason;
 };
 
 /**

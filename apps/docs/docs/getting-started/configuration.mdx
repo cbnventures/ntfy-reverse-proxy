@@ -75,7 +75,8 @@ Each <Terminology title="One of your ntfy instances: a name, URL, and token" to=
 | `primary_server`    | `string`   | Yes      | Name of the preferred <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology>, which must match a <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology>'s `name` and appear in `servers`. Tried first in `send-once` mode.                                   |
 | `servers`           | `string[]` | Yes      | Ordered list of <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> names. At least one required.                                                                                                                                                                                                                                     |
 | `token`             | `string`   | No       | Optional authentication token for this <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>. When set, incoming requests must include `Authorization: Bearer {token}` (or the raw token as the header value).                                                                                                                                     |
-| `session` | `object` | No | Turns on <Terminology title="A short-lived, one-use pass a sender gets from /session" to="/docs/reference/terminology#configuration">session tokens</Terminology> for senders whose code is public. Cannot be combined with `token`; see [Session Tokens](/docs/features/security#session-tokens). |
+| `session` | `object` | No | Turns on <Terminology title="A short-lived, one-use pass a sender gets from /session" to="/docs/reference/terminology#configuration">session tokens</Terminology> for senders whose code is public. Cannot be combined with `token` or `secret_path`; see [Session Tokens](/docs/features/security#session-tokens). |
+| `secret_path` | `string` | No | A <Terminology title="An unguessable URL path only your sender knows" to="/docs/reference/terminology#configuration">secret path</Terminology> of 32 to 128 lowercase letters and digits, for senders that can't send headers, such as Statuspage. Requests must use `https://{id}.ntfy.example.com/{secret_path}` (one trailing slash is fine), and any other path gets the same HTTP 404 as a hostname with no <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>. Works alongside `token`, but cannot be combined with `session`; see [Secret Paths](/docs/features/security#secret-paths). |
 
 #### Session
 
@@ -100,7 +101,13 @@ Each <Terminology title="One of your ntfy instances: a name, URL, and token" to=
 | `show_visitor_info` | `boolean`  | Yes      | For email <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">contexts</Terminology>, this setting has no effect — visitor details are only available for HTTP requests.      |
 | `primary_server`    | `string`   | Yes      | Preferred <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> name, which must also appear in `servers`.                                     |
 | `servers`           | `string[]` | Yes      | Ordered <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">server</Terminology> name list.                                                                       |
-| `allowed_from`      | `string`   | No       | Sender filter. Supports exact match (`user@example.com`) or wildcard (`*@example.com`). Case-insensitive.                                                                                                                   |
+| `allowed_from`      | `string` or `string[]` | No | Sender filter, as one entry or a list of entries. Each entry is an exact address (`user@example.com`) or a domain wildcard (`*@example.com`), and a sender that matches any entry passes. Case-insensitive. |
+
+A list lets one email <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> accept mail from several senders:
+
+```json title="allowed_from as a list"
+"allowed_from": ["*@githubstatus.com", "*@cloudflarestatus.com", "alerts@example.com"]
+```
 
 ## Full Example
 
@@ -132,7 +139,8 @@ This example shows a complete `config.json` with two <Terminology title="One of 
       "mode": "send-once",
       "show_visitor_info": false,
       "primary_server": "primary",
-      "servers": ["primary", "fallback"]
+      "servers": ["primary", "fallback"],
+      "secret_path": "replacewithageneratedsecretpathoflowercaselettersanddigits"
     },
     {
       "id": "seerr-example",
@@ -214,6 +222,8 @@ The CLI checks the config against its schema whenever it loads it. `nrp validate
 - **Duplicate <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> IDs** — No two <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">contexts</Terminology> can share the same `id`.
 - **HTTP context IDs** — IDs are valid DNS host labels: 1–63 lowercase alphanumeric or hyphen characters, with no leading or trailing hyphen.
 - **Token or session** — An HTTP <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> can set `token` or `session`, not both, and a session `secret` needs at least 32 characters.
+- **Secret path** — A `secret_path` is 32 to 128 lowercase letters and digits, and it can't be set alongside `session`.
+- **Allowed senders** — `allowed_from` is a non-empty string or a non-empty list of non-empty strings.
 - **Token format** — <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">Server</Terminology> tokens must start with `tk_`.
 - **URL format** — <Terminology title="One of your ntfy instances: a name, URL, and token" to="/docs/reference/terminology#ntfy-servers-and-messages">Server</Terminology> URLs must be valid and start with `https://`.
 - **Settings format** — `worker_name` and `base_domain` must follow the formats in [Settings](#settings).

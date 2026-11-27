@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import {
   LIB_REGEX_BASE_DOMAIN,
+  LIB_REGEX_SECRET_PATH,
   LIB_REGEX_WORKER_NAME,
 } from './regex.js';
 
@@ -74,9 +75,13 @@ const httpContextSchema = z.object({
   servers: z.array(z.string().min(1)).min(1),
   token: z.string().min(1).optional(),
   session: sessionSchema.optional(),
+  secret_path: z.string().regex(LIB_REGEX_SECRET_PATH, { message: 'Secret path must be 32 to 128 lowercase letters and digits' }).optional(),
 }).strict().refine((context) => context['token'] === undefined || context['session'] === undefined, {
   message: 'HTTP context cannot set both token and session',
   path: ['session'],
+}).refine((context) => context['secret_path'] === undefined || context['session'] === undefined, {
+  message: 'HTTP context cannot set both secret_path and session',
+  path: ['secret_path'],
 });
 
 /**
@@ -118,7 +123,10 @@ const emailContextSchema = z.object({
   show_visitor_info: z.boolean(),
   primary_server: z.string().min(1),
   servers: z.array(z.string().min(1)).min(1),
-  allowed_from: z.string().min(1).optional(),
+  allowed_from: z.union([
+    z.string().min(1),
+    z.array(z.string().min(1)).min(1),
+  ]).optional(),
 }).strict();
 
 /**

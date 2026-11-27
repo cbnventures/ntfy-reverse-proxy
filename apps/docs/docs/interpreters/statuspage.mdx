@@ -18,6 +18,24 @@ import { Terminology } from '@cbnventures/docusaurus-preset-nova/blocks';
 
 Process Statuspage.io incident webhooks with automatic deduplication and component state tracking.
 
+## Setup
+
+Statuspage.io can't send an auth header or signature, and its webhooks come from changing IP addresses. A <Terminology title="An unguessable URL path only your sender knows" to="/docs/reference/terminology#configuration">secret path</Terminology> keeps the webhook URL private instead, and it's recommended for every Statuspage <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>:
+
+1. Add or edit the HTTP <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> with the `statuspage` <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology>, and answer yes to **Use a secret URL path?**
+2. Copy the full URL the CLI prints, `https://{id}.ntfy.example.com/{secret_path}`. The **Context reference** list that **Deploy** prints shows it too.
+3. Paste that full URL as the webhook URL in the status page's subscription settings.
+
+Requests that leave out the <Terminology title="An unguessable URL path only your sender knows" to="/docs/reference/terminology#configuration">secret path</Terminology> get a plain HTTP 404; see [Secret Paths](/docs/features/security#secret-paths).
+
+### Email Notifications
+
+A status page can also send updates by email to an email <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>. It's recommended to list each status page's sender domain in `allowed_from` so other senders can't post:
+
+```json title="Email context allowed_from"
+"allowed_from": ["*@githubstatus.com", "*@cloudflarestatus.com"]
+```
+
 ## Supported Input
 
 Statuspage.io sends webhook payloads for incident updates and component status changes. The <Terminology title="Turns one app's raw alert into a clean ntfy message" to="/docs/reference/terminology#how-it-works">interpreter</Terminology> handles both and rejects other payloads:

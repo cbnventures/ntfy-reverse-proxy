@@ -1,6 +1,7 @@
 import type {
   Worker_Pipeline_Authenticate_AllowedDomain,
   Worker_Pipeline_Authenticate_AllowedFrom,
+  Worker_Pipeline_Authenticate_AllowedFromEntries,
   Worker_Pipeline_Authenticate_AtIndex,
   Worker_Pipeline_Authenticate_AuthConfig,
   Worker_Pipeline_Authenticate_Authenticate_Returns,
@@ -9,8 +10,10 @@ import type {
   Worker_Pipeline_Authenticate_From,
   Worker_Pipeline_Authenticate_FromDomain,
   Worker_Pipeline_Authenticate_IsBearerMatch,
+  Worker_Pipeline_Authenticate_IsDomainOnly,
   Worker_Pipeline_Authenticate_IsRawMatch,
-  Worker_Pipeline_Authenticate_NormalizedAllowedFrom,
+  Worker_Pipeline_Authenticate_IsSenderMatch,
+  Worker_Pipeline_Authenticate_NormalizedAllowedFromEntries,
   Worker_Pipeline_Authenticate_NormalizedFrom,
   Worker_Pipeline_Authenticate_TimingSafeEqual_A,
   Worker_Pipeline_Authenticate_TimingSafeEqual_B,
@@ -112,7 +115,10 @@ function authenticate(authConfig: Worker_Pipeline_Authenticate_AuthConfig, crede
 
   const allowedFrom: Worker_Pipeline_Authenticate_AllowedFrom = authConfig['allowed_from'];
 
-  if (allowedFrom === undefined) {
+  // A single entry and a list of entries are checked the same way.
+  const allowedFromEntries: Worker_Pipeline_Authenticate_AllowedFromEntries = (allowedFrom !== undefined) ? [allowedFrom].flat() : [];
+
+  if (allowedFromEntries.length === 0) {
     return { authenticated: true };
   }
 
@@ -125,26 +131,32 @@ function authenticate(authConfig: Worker_Pipeline_Authenticate_AuthConfig, crede
     };
   }
 
-  const normalizedAllowedFrom: Worker_Pipeline_Authenticate_NormalizedAllowedFrom = allowedFrom.toLowerCase();
+  const normalizedAllowedFromEntries: Worker_Pipeline_Authenticate_NormalizedAllowedFromEntries = allowedFromEntries.map((allowedFromEntry) => allowedFromEntry.toLowerCase());
   const normalizedFrom: Worker_Pipeline_Authenticate_NormalizedFrom = from.toLowerCase();
+  const atIndex: Worker_Pipeline_Authenticate_AtIndex = normalizedFrom.indexOf('@');
+  const fromDomain: Worker_Pipeline_Authenticate_FromDomain = normalizedFrom.slice(atIndex);
 
-  if (normalizedAllowedFrom.startsWith('*@') === true) {
-    const allowedDomain: Worker_Pipeline_Authenticate_AllowedDomain = normalizedAllowedFrom.slice(1);
-    const atIndex: Worker_Pipeline_Authenticate_AtIndex = normalizedFrom.indexOf('@');
-    const fromDomain: Worker_Pipeline_Authenticate_FromDomain = normalizedFrom.slice(atIndex);
+  // The sender passes when it matches any entry, either exactly or by a "*@domain" wildcard.
+  const isSenderMatch: Worker_Pipeline_Authenticate_IsSenderMatch = normalizedAllowedFromEntries.some((normalizedAllowedFromEntry) => {
+    if (normalizedAllowedFromEntry.startsWith('*@') === true) {
+      const allowedDomain: Worker_Pipeline_Authenticate_AllowedDomain = normalizedAllowedFromEntry.slice(1);
 
-    if (fromDomain === allowedDomain) {
-      return { authenticated: true };
+      return fromDomain === allowedDomain;
     }
 
+    return normalizedFrom === normalizedAllowedFromEntry;
+  });
+  const isDomainOnly: Worker_Pipeline_Authenticate_IsDomainOnly = normalizedAllowedFromEntries.every((normalizedAllowedFromEntry) => normalizedAllowedFromEntry.startsWith('*@') === true);
+
+  if (isSenderMatch === true) {
+    return { authenticated: true };
+  }
+
+  if (isDomainOnly === true) {
     return {
       authenticated: false,
       reason: 'Sender domain not allowed',
     };
-  }
-
-  if (normalizedFrom === normalizedAllowedFrom) {
-    return { authenticated: true };
   }
 
   return {
@@ -155,4 +167,5 @@ function authenticate(authConfig: Worker_Pipeline_Authenticate_AuthConfig, crede
 
 export {
   authenticate,
+  timingSafeEqual,
 };

@@ -67,6 +67,7 @@ Throughout the docs, you will see <Terminology title="A quick reminder, right wh
 | **`config.json`** | —                      | The single file holding the `settings`, `servers`, and `contexts` sections; deploy ships a copy inside the Worker. The CLI manages it and keeps it gitignored, committing only `config.sample.json`.                                               |
 | **debug mode**    | `show_response_output` | Adds context, interpreter, and per-server delivery details to responses and to the landing page's collapsible section. Server tokens and URLs always stay masked with `***`.                                                                       |
 | **landing page**  | —                      | The HTML page a context returns on GET requests, with the project logo and name, a short description, an "Operational" badge, and Documentation and GitHub links. With debug mode on, it adds a collapsible section with the masked configuration. |
+| **secret path**   | `secret_path`          | An unguessable path of 32 to 128 lowercase letters and digits that an HTTP context answers on, for senders like Statuspage that can't send headers. Any other path gets the same HTTP 404 as a hostname with no context.                           |
 | **session token** | `session`              | A signed, short-lived token a sender gets from a context's `/session` path and spends on its next message. It is tied to the sender's IP address, works once, and expires after 5 minutes by default.                                              |
 
 ## Cloudflare Setup
