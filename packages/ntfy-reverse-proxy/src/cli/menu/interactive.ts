@@ -4,6 +4,7 @@ import { Bootstrap, CLIHeader, Logger } from '@cbnventures/nova/toolkit';
 import chalk from 'chalk';
 import prompts from 'prompts';
 
+import { SECRET_PATH_PREFIX } from '../../lib/item.js';
 import { getPackageVersion } from '../../lib/package-runtime.js';
 import {
   LIB_REGEX_NON_ALPHANUMERIC_ID,
@@ -1191,7 +1192,7 @@ async function contextMenu(configPath: Cli_Menu_Interactive_ContextMenu_ConfigPa
                 const editSettings: Cli_Menu_Interactive_ContextMenu_EditSettings = getSettings(configPath);
 
                 if (editedContext !== undefined) {
-                  Logger.info(`  Secret URL: https://${editedContext['id']}.${editSettings['base_domain']}/${newSecretPath}`);
+                  Logger.info(`  Secret URL: https://${editedContext['id']}.${editSettings['base_domain']}${SECRET_PATH_PREFIX}${newSecretPath}`);
                 }
               }
             }
@@ -1662,7 +1663,7 @@ async function addContextFlow(configPath: Cli_Menu_Interactive_AddContextFlow_Co
     const addSettings: Cli_Menu_Interactive_AddContextFlow_AddSettings = getSettings(configPath);
 
     if (addedContext !== undefined) {
-      Logger.info(`  Secret URL: https://${addedContext['id']}.${addSettings['base_domain']}/${resolvedSecretPath}`);
+      Logger.info(`  Secret URL: https://${addedContext['id']}.${addSettings['base_domain']}${SECRET_PATH_PREFIX}${resolvedSecretPath}`);
     }
   }
 

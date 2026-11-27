@@ -1,5 +1,10 @@
 # ntfy-reverse-proxy
 
+## 2.6.1 - 2026-11-27
+
+### UPDATED
+- Secret paths sit under `/inbound/`, so one Cloudflare block rule can let every secret path through without listing them.
+
 ## 2.6.0 - 2026-11-27
 
 ### ADDED

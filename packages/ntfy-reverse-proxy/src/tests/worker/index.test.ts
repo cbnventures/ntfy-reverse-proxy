@@ -1125,7 +1125,7 @@ describe('handleRequest', () => {
    * @since 2.6.0
    */
   it('accepts a request on the secret path', async () => {
-    const request: Tests_Worker_Index_HandleRequest_AcceptsARequestOnTheSecretPath_Request = new Request('https://statushook.ntfy.example.com/k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4', {
+    const request: Tests_Worker_Index_HandleRequest_AcceptsARequestOnTheSecretPath_Request = new Request('https://statushook.ntfy.example.com/inbound/k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4', {
       method: 'POST',
       body: 'Status update',
     });
@@ -1146,7 +1146,7 @@ describe('handleRequest', () => {
    * @since 2.6.0
    */
   it('accepts the secret path with one trailing slash', async () => {
-    const request: Tests_Worker_Index_HandleRequest_AcceptsTheSecretPathWithOneTrailingSlash_Request = new Request('https://statushook.ntfy.example.com/k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4/', {
+    const request: Tests_Worker_Index_HandleRequest_AcceptsTheSecretPathWithOneTrailingSlash_Request = new Request('https://statushook.ntfy.example.com/inbound/k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4/', {
       method: 'POST',
       body: 'Status update',
     });
@@ -1175,6 +1175,11 @@ describe('handleRequest', () => {
       '/k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4//',
       '/K3J9X0Q2M7V4B8N1C6Z5L0P9W2E7R4T1Y8U3I6O0A5S2D9F4',
       '/session',
+      '/inbound/',
+      '/inbound/wrong',
+      '/inbound/k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4/extra',
+      '/inbound/K3J9X0Q2M7V4B8N1C6Z5L0P9W2E7R4T1Y8U3I6O0A5S2D9F4',
+      '/other/k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4',
     ];
     const responses: Tests_Worker_Index_HandleRequest_AnswersAWrongSecretPathExactlyLikeAnUnknownHostWithoutNotifying_Responses = await Promise.all(paths.map((path) => handleRequest(new Request(`https://statushook.ntfy.example.com${path}`, {
       method: 'POST',
@@ -1215,7 +1220,7 @@ describe('handleRequest', () => {
 
     vi.stubGlobal('fetch', mockFetch);
 
-    const request: Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInAuthenticationErrorAttachments_Request = new Request('https://statusauth.ntfy.example.com/k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4?source=test', {
+    const request: Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInAuthenticationErrorAttachments_Request = new Request('https://statusauth.ntfy.example.com/inbound/k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4?source=test', {
       method: 'POST',
       body: 'Bad auth',
       headers: { Authorization: 'Bearer wrong' },
@@ -1246,7 +1251,7 @@ describe('handleRequest', () => {
 
     vi.stubGlobal('fetch', mockFetch);
 
-    const request: Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInInterpretationErrorAttachments_Request = new Request('https://statusjson.ntfy.example.com/k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4', {
+    const request: Tests_Worker_Index_HandleRequest_RedactsTheSecretPathInInterpretationErrorAttachments_Request = new Request('https://statusjson.ntfy.example.com/inbound/k3j9x0q2m7v4b8n1c6z5l0p9w2e7r4t1y8u3i6o0a5s2d9f4', {
       method: 'POST',
       body: JSON.stringify({ unexpected: true }),
       headers: { 'Content-Type': 'application/json' },

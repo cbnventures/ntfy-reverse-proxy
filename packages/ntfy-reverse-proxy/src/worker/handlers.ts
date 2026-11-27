@@ -1,3 +1,4 @@
+import { SECRET_PATH_PREFIX } from '../lib/item.js';
 import { landingPage } from './landing/page.js';
 import { authenticate, timingSafeEqual } from './pipeline/authenticate.js';
 import { deliver } from './pipeline/deliver.js';
@@ -219,7 +220,7 @@ async function handleRequest(request: Worker_Handlers_HandleRequest_Request, con
       const secretPathCandidate: Worker_Handlers_HandleRequest_SecretPathCandidate = (pathname.endsWith('/') === true) ? pathname.slice(0, -1) : pathname;
 
       // Same body the route step gives a hostname with no context.
-      if (timingSafeEqual(secretPathCandidate, `/${secretPath}`) === false) {
+      if (timingSafeEqual(secretPathCandidate, `${SECRET_PATH_PREFIX}${secretPath}`) === false) {
         return new Response(JSON.stringify({
           status: 'error',
           message: `No context found for http identifier: ${subdomain}`,

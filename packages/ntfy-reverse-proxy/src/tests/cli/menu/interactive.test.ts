@@ -638,7 +638,7 @@ describe('interactiveMenu', () => {
 
     expect(editContext).toHaveBeenCalledWith(expect.any(String), 'Test Context', expect.objectContaining({ secret_path: 'abcdefghijklmnopqrstuvwxyz0123456789abcdefghijkl' }));
 
-    expect(logger['info']).toHaveBeenCalledWith('  Secret URL: https://ctx-1.test.example.com/abcdefghijklmnopqrstuvwxyz0123456789abcdefghijkl');
+    expect(logger['info']).toHaveBeenCalledWith('  Secret URL: https://ctx-1.test.example.com/inbound/abcdefghijklmnopqrstuvwxyz0123456789abcdefghijkl');
 
     return;
   });

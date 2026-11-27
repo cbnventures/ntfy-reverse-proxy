@@ -168,13 +168,13 @@ A <Terminology title="An unguessable URL path only your sender knows" to="/docs/
 ### How It Works
 
 1. Set `secret_path` on the HTTP <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>, or answer yes to **Use a secret URL path?** in the CLI, which generates a 48-character one and prints the full URL.
-2. Give the sender the full URL, `https://{id}.ntfy.example.com/{secret_path}`. One trailing slash is accepted.
+2. Give the sender the full URL, `https://{id}.ntfy.example.com/inbound/{secret_path}`. Every <Terminology title="An unguessable URL path only your sender knows" to="/docs/reference/terminology#configuration">secret path</Terminology> sits under `/inbound/`, so one [block rule](#block-rule) covers all of them. One trailing slash is accepted.
 3. The <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology> compares the path in constant time before it checks a token, reads the body, or sends anything.
 
 ### Behavior
 
 - **Format** — 32 to 128 lowercase letters and digits. Lowercase keeps the URL working when a sender stores it in lowercase.
-- **Wrong paths** — Any other path, including `/` and `/session`, gets the same HTTP 404 and body as a hostname with no <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>. No error notification goes out, so a probe can't tell the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> exists.
+- **Wrong paths** — Any other path, including `/`, `/session`, and another `/inbound/` path, gets the same HTTP 404 and body as a hostname with no <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology>. No error notification goes out, so a probe can't tell the <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> exists.
 - **Error notifications** — When a request on the <Terminology title="An unguessable URL path only your sender knows" to="/docs/reference/terminology#configuration">secret path</Terminology> later fails, the `error-debug.json` <Terminology title="A file sent along with the notification" to="/docs/reference/terminology#ntfy-servers-and-messages">attachment</Terminology> shows the path as `/REDACTED`.
 - **With a token** — `secret_path` and `token` can be combined, so a sender that can send headers needs both.
 
@@ -269,7 +269,7 @@ Cloudflare's bot protection can block legitimate webhooks. You may need to adjus
 
 ### Block Rule
 
-The proxy only answers on `/`, on `/session` for <Terminology title="A short-lived, one-use pass a sender gets from /session" to="/docs/reference/terminology#configuration">session tokens</Terminology>, and on each <Terminology title="An unguessable URL path only your sender knows" to="/docs/reference/terminology#configuration">secret path</Terminology>. A custom rule that blocks everything else stops scanners at Cloudflare's edge, so they never use up <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology> requests. The rule works on the free plan.
+The proxy only answers on `/`, on `/session` for <Terminology title="A short-lived, one-use pass a sender gets from /session" to="/docs/reference/terminology#configuration">session tokens</Terminology>, and under `/inbound/` for <Terminology title="An unguessable URL path only your sender knows" to="/docs/reference/terminology#configuration">secret paths</Terminology>. A custom rule that blocks everything else stops scanners at Cloudflare's edge, so they never use up <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology> requests. The rule works on the free plan.
 
 1. Open **Dashboard > your domain > Security > Security rules** and select **Create rule > Custom rules**.
 2. Name the rule, for example `Reverse Proxy for ntfy`.
@@ -279,7 +279,7 @@ The proxy only answers on `/`, on `/session` for <Terminology title="A short-liv
 
 ```text title="Expression"
 ends_with(http.host, "ntfy.example.com") and (
-  (not http.request.uri.path in {"/" "/session"})
+  (not http.request.uri.path in {"/" "/session"} and not starts_with(http.request.uri.path, "/inbound/"))
   or (len(http.request.uri.query) > 0)
   or (len(http.request.headers["next-action"]) > 0)
 )
@@ -287,13 +287,9 @@ ends_with(http.host, "ntfy.example.com") and (
 
 Each line blocks one kind of request on your proxy's hostnames:
 
-- **Other paths** — Any path besides `/` and `/session`, such as `/wp-login.php` or `/.env`.
+- **Other paths** — Any path besides `/`, `/session`, and paths under `/inbound/`, such as `/wp-login.php` or `/.env`. Requests under `/inbound/` reach the <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology>, which answers HTTP 404 unless the full path matches a <Terminology title="An unguessable URL path only your sender knows" to="/docs/reference/terminology#configuration">secret path</Terminology>.
 - **Query strings** — Any URL with `?` parameters, which no sender needs.
 - **`next-action` header** — Probes aimed at Next.js server actions, which the proxy doesn't use.
-
-:::tip
-If a <Terminology title="One alert source: its address, interpreter, and topic" to="/docs/reference/terminology#how-it-works">context</Terminology> uses a <Terminology title="An unguessable URL path only your sender knows" to="/docs/reference/terminology#configuration">secret path</Terminology>, add it to the allowed paths, such as `{"/" "/session" "/your-secret-path"}`. Otherwise Cloudflare blocks the sender's requests before they reach the <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology>.
-:::
 
 To check the rule, send a `POST` to `https://{id}.ntfy.example.com/session` and to any other path, such as `/test`. The `/session` request should get an answer from the <Terminology title="The proxy itself, running on your Cloudflare account" to="/docs/reference/terminology#how-it-works">worker</Terminology>, and `/test` should get Cloudflare's HTTP 403 block page.
 

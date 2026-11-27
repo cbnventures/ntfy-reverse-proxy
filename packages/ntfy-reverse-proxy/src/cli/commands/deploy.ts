@@ -7,7 +7,7 @@ import chalk from 'chalk';
 import prompts from 'prompts';
 
 import { Runner as CloudflareClient } from '../../lib/cloudflare.js';
-import { APP_NAME } from '../../lib/item.js';
+import { APP_NAME, SECRET_PATH_PREFIX } from '../../lib/item.js';
 import { getWranglerCliPath } from '../../lib/package-runtime.js';
 import { Runner as PublicDnsAdapter } from '../../lib/public-dns.js';
 import { LIB_REGEX_SURROUNDING_QUOTES } from '../../lib/regex.js';
@@ -711,7 +711,7 @@ function printContextSummary(configPath: Cli_Commands_Deploy_PrintContextSummary
     process.stdout.write(`  ${chalk.cyan(context['name'])}\n`);
 
     if (context['type'] === 'http') {
-      const secretPathSuffix: Cli_Commands_Deploy_PrintContextSummary_SecretPathSuffix = (context['secret_path'] !== undefined) ? `/${context['secret_path']}` : '';
+      const secretPathSuffix: Cli_Commands_Deploy_PrintContextSummary_SecretPathSuffix = (context['secret_path'] !== undefined) ? `${SECRET_PATH_PREFIX}${context['secret_path']}` : '';
 
       process.stdout.write(`    URL:   ${chalk.green(`https://${context['id']}.${settings['base_domain']}${secretPathSuffix}`)}\n`);
 
