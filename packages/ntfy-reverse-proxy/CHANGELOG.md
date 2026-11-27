@@ -1,5 +1,10 @@
 # ntfy-reverse-proxy
 
+## 2.6.2 - 2026-11-27
+
+### FIXED
+- Deploy skips the custom domain and email routing checks with a warning when public DNS can't be reached, such as on a network that blocks DNS over HTTPS, instead of waiting about a minute and reporting the domains as not resolving.
+
 ## 2.6.1 - 2026-11-27
 
 ### UPDATED

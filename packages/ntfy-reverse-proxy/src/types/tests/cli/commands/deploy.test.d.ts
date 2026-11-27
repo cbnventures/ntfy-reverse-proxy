@@ -26,6 +26,13 @@ export type Tests_Cli_Commands_Deploy_CheckReadiness_ConfirmsCustomDomainsAndEma
 export type Tests_Cli_Commands_Deploy_CheckReadiness_ConfirmsCustomDomainsAndEmailRouting_InfoSpy = MockInstance<typeof Logger['info']>;
 
 /**
+ * Tests - CLI - Commands - Deploy - Check Readiness - Skips The Dns Checks When Public Dns Cannot Be Reached.
+ *
+ * @since 2.6.2
+ */
+export type Tests_Cli_Commands_Deploy_CheckReadiness_SkipsTheDnsChecksWhenPublicDnsCannotBeReached_WarnSpy = MockInstance<typeof Logger['warn']>;
+
+/**
  * Tests - CLI - Commands - Deploy - Check Readiness - Warns About Pending Domains And Missing Email Routing.
  *
  * @since 2.5.0

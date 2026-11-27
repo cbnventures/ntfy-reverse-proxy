@@ -9,6 +9,7 @@ import prompts from 'prompts';
 import { Runner as CloudflareClient } from '../../lib/cloudflare.js';
 import { APP_NAME, SECRET_PATH_PREFIX } from '../../lib/item.js';
 import { getWranglerCliPath } from '../../lib/package-runtime.js';
+import { Runner as PublicDnsUnreachableError } from '../../lib/public-dns-unreachable-error.js';
 import { Runner as PublicDnsAdapter } from '../../lib/public-dns.js';
 import { LIB_REGEX_SURROUNDING_QUOTES } from '../../lib/regex.js';
 import { formatAllowedFrom, listContexts } from './context.js';
@@ -625,6 +626,7 @@ async function setupEmailRouting(configPath: Cli_Commands_Deploy_SetupEmailRouti
  *
  * Confirms each HTTP context's custom domain is attached to the Worker and
  * resolves on public DNS, and that email contexts' domain uses Email Routing.
+ * Each DNS check is skipped with a warning when public DNS can't be reached.
  *
  * @param {Cli_Commands_Deploy_CheckReadiness_Token}    token    - Token.
  * @param {Cli_Commands_Deploy_CheckReadiness_ZoneInfo} zoneInfo - Zone info.
@@ -663,21 +665,33 @@ async function checkReadiness(token: Cli_Commands_Deploy_CheckReadiness_Token, z
         Logger.info('Custom domains are attached to the Worker and resolve publicly.');
       }
     } catch (error) {
-      const errorMessage: Cli_Commands_Deploy_CheckReadiness_ErrorMessage = (error instanceof Error) ? error['message'] : String(error);
+      if (error instanceof PublicDnsUnreachableError) {
+        Logger.warn(`${error['message']}, so the custom domain check was skipped.`);
+      } else {
+        const errorMessage: Cli_Commands_Deploy_CheckReadiness_ErrorMessage = (error instanceof Error) ? error['message'] : String(error);
 
-      Logger.warn(`Could not read the Worker's custom domains from Cloudflare, so whether they are ready is unknown. (${errorMessage})`);
+        Logger.warn(`Could not read the Worker's custom domains from Cloudflare, so whether they are ready is unknown. (${errorMessage})`);
+      }
     }
   }
 
   if (hasEmailContexts === true) {
     Logger.info('Checking email routing...');
 
-    const mxHosts: Cli_Commands_Deploy_CheckReadiness_MxHosts = await PublicDnsAdapter.lookup(settings['base_domain'], 'MX');
+    try {
+      const mxHosts: Cli_Commands_Deploy_CheckReadiness_MxHosts = await PublicDnsAdapter.lookup(settings['base_domain'], 'MX');
 
-    if (mxHosts.some((mxHost) => CloudflareClient.isEmailRoutingMxHost(mxHost.split(' ').at(-1) ?? '') === true) === true) {
-      Logger.info(`"${settings['base_domain']}" receives mail through Cloudflare Email Routing.`);
-    } else {
-      Logger.warn(`"${settings['base_domain']}" has no MX records pointing at Cloudflare Email Routing on public DNS, so email contexts won't receive mail. Turn on Email Routing for it in the Cloudflare dashboard.`);
+      if (mxHosts.some((mxHost) => CloudflareClient.isEmailRoutingMxHost(mxHost.split(' ').at(-1) ?? '') === true) === true) {
+        Logger.info(`"${settings['base_domain']}" receives mail through Cloudflare Email Routing.`);
+      } else {
+        Logger.warn(`"${settings['base_domain']}" has no MX records pointing at Cloudflare Email Routing on public DNS, so email contexts won't receive mail. Turn on Email Routing for it in the Cloudflare dashboard.`);
+      }
+    } catch (error) {
+      if (error instanceof PublicDnsUnreachableError) {
+        Logger.warn(`${error['message']}, so the email routing check was skipped.`);
+      } else {
+        throw error;
+      }
     }
   }
 

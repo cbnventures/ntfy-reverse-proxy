@@ -4,11 +4,13 @@ import {
 } from 'vitest';
 
 import { checkReadiness } from '../../../cli/commands/deploy.js';
+import { Runner as PublicDnsUnreachableError } from '../../../lib/public-dns-unreachable-error.js';
 import { Runner as PublicDnsAdapter } from '../../../lib/public-dns.js';
 
 import type {
   Tests_Cli_Commands_Deploy_CheckReadiness_ConfirmsCustomDomainsAndEmailRouting_InfoSpy,
   Tests_Cli_Commands_Deploy_CheckReadiness_ConfirmsCustomDomainsAndEmailRouting_PendingSpy,
+  Tests_Cli_Commands_Deploy_CheckReadiness_SkipsTheDnsChecksWhenPublicDnsCannotBeReached_WarnSpy,
   Tests_Cli_Commands_Deploy_CheckReadiness_WarnsAboutPendingDomainsAndMissingEmailRouting_WarnSpy,
   Tests_Cli_Commands_Deploy_Contexts,
   Tests_Cli_Commands_Deploy_Settings,
@@ -129,6 +131,35 @@ describe('checkReadiness', () => {
     expect(warnSpy).toHaveBeenCalledWith('"alerts.example.com" is not attached to the "ntfy" Worker. Check Workers & Pages > ntfy > Settings > Domains & Routes in the Cloudflare dashboard.');
 
     expect(warnSpy).toHaveBeenCalledWith('"example.com" has no MX records pointing at Cloudflare Email Routing on public DNS, so email contexts won\'t receive mail. Turn on Email Routing for it in the Cloudflare dashboard.');
+
+    return;
+  });
+
+  it('skips the dns checks when public dns cannot be reached', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify({
+      success: true,
+      errors: [],
+      result: [{
+        hostname: 'alerts.example.com',
+        service: 'ntfy',
+      }],
+    })));
+
+    vi.spyOn(PublicDnsAdapter, 'lookup').mockRejectedValue(new PublicDnsUnreachableError('cloudflare-dns.com'));
+
+    vi.spyOn(PublicDnsAdapter, 'findPendingRecords').mockRejectedValue(new PublicDnsUnreachableError('cloudflare-dns.com'));
+
+    vi.spyOn(Logger, 'info').mockImplementation(() => undefined);
+
+    const warnSpy: Tests_Cli_Commands_Deploy_CheckReadiness_SkipsTheDnsChecksWhenPublicDnsCannotBeReached_WarnSpy = vi.spyOn(Logger, 'warn').mockImplementation(() => undefined);
+
+    await checkReadiness('token', zoneInfo, settings, contexts);
+
+    expect(warnSpy).toHaveBeenCalledWith('Couldn\'t reach public DNS (cloudflare-dns.com), so the custom domain check was skipped.');
+
+    expect(warnSpy).toHaveBeenCalledWith('Couldn\'t reach public DNS (cloudflare-dns.com), so the email routing check was skipped.');
+
+    expect(warnSpy).toHaveBeenCalledTimes(2);
 
     return;
   });

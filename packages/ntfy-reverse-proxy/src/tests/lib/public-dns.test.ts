@@ -2,14 +2,24 @@ import {
   afterEach, describe, expect, it, vi,
 } from 'vitest';
 
+import { Runner as PublicDnsUnreachableError } from '../../lib/public-dns-unreachable-error.js';
 import { Runner as PublicDnsAdapter } from '../../lib/public-dns.js';
 
 import type {
   Tests_Lib_PublicDns_Adapter_AsksTheResolverForJson_FetchSpy,
   Tests_Lib_PublicDns_Adapter_AsksTheResolverForJson_Url,
+  Tests_Lib_PublicDns_Adapter_KeepsRetryingWhileTheAnswersAreEmpty_FetchSpy,
+  Tests_Lib_PublicDns_Adapter_KeepsRetryingWhileTheAnswersAreEmpty_Pending,
   Tests_Lib_PublicDns_Adapter_ReportsRecordsStillMissingAfterTheLastAttempt_FetchSpy,
   Tests_Lib_PublicDns_Adapter_ReportsRecordsStillMissingAfterTheLastAttempt_Pending,
-  Tests_Lib_PublicDns_Adapter_TreatsAMissingNameOrAFailedLookupAsNoRecords_Values,
+  Tests_Lib_PublicDns_Adapter_StopsAfterOneRoundWhenTheResolverCannotBeReached_FetchSpy,
+  Tests_Lib_PublicDns_Adapter_StopsAfterOneRoundWhenTheResolverCannotBeReached_SetTimeoutSpy,
+  Tests_Lib_PublicDns_Adapter_ThrowsAnUnreachableErrorWhenTheRequestFails_Lookup,
+  Tests_Lib_PublicDns_Adapter_ThrowsAnUnreachableErrorWhenTheRequestTimesOut_FetchSpy,
+  Tests_Lib_PublicDns_Adapter_ThrowsAnUnreachableErrorWhenTheRequestTimesOut_StalledBody,
+  Tests_Lib_PublicDns_Adapter_ThrowsAnUnreachableErrorWhenTheRequestTimesOut_TimeoutSignal,
+  Tests_Lib_PublicDns_Adapter_ThrowsAnUnreachableErrorWhenTheRequestTimesOut_TimeoutSpy,
+  Tests_Lib_PublicDns_Adapter_TreatsAMissingNameAnHttpErrorOrABadBodyAsNoRecords_Values,
   Tests_Lib_PublicDns_Adapter_WaitsUntilEveryRecordResolves_Answers,
   Tests_Lib_PublicDns_Adapter_WaitsUntilEveryRecordResolves_Pending,
   Tests_Lib_PublicDns_Adapter_WaitsUntilEveryRecordResolves_Round,
@@ -81,14 +91,48 @@ describe('adapter', () => {
     return;
   });
 
-  it('treats a missing name or a failed lookup as no records', async () => {
-    vi.spyOn(globalThis, 'fetch').mockImplementationOnce(async () => dnsResponse([], 3)).mockRejectedValueOnce(new Error('network down'));
+  it('treats a missing name, an http error, or a bad body as no records', async () => {
+    vi.spyOn(globalThis, 'fetch').mockImplementationOnce(async () => dnsResponse([], 3)).mockResolvedValueOnce(new Response('Bad Gateway', { status: 502 })).mockResolvedValueOnce(new Response('{"Status":"bad"}', { status: 200 }));
 
-    const values: Tests_Lib_PublicDns_Adapter_TreatsAMissingNameOrAFailedLookupAsNoRecords_Values = await PublicDnsAdapter.lookup('missing.example.com', 'TXT');
+    const values: Tests_Lib_PublicDns_Adapter_TreatsAMissingNameAnHttpErrorOrABadBodyAsNoRecords_Values = await PublicDnsAdapter.lookup('missing.example.com', 'TXT');
 
     expect(values).toEqual([]);
 
     await expect(PublicDnsAdapter.lookup('missing.example.com', 'TXT')).resolves.toEqual([]);
+
+    await expect(PublicDnsAdapter.lookup('missing.example.com', 'TXT')).resolves.toEqual([]);
+
+    return;
+  });
+
+  it('throws an unreachable error when the request fails', async () => {
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new TypeError('fetch failed', { cause: new Error('connect ECONNREFUSED 0.0.0.0:443') }));
+
+    const lookup: Tests_Lib_PublicDns_Adapter_ThrowsAnUnreachableErrorWhenTheRequestFails_Lookup = PublicDnsAdapter.lookup('alerts.example.com', 'A');
+
+    await expect(lookup).rejects.toBeInstanceOf(PublicDnsUnreachableError);
+
+    await expect(lookup).rejects.toThrow('Couldn\'t reach public DNS (cloudflare-dns.com)');
+
+    return;
+  });
+
+  it('throws an unreachable error when the request times out', async () => {
+    const timeoutSignal: Tests_Lib_PublicDns_Adapter_ThrowsAnUnreachableErrorWhenTheRequestTimesOut_TimeoutSignal = AbortSignal.abort(new DOMException('The operation was aborted due to timeout', 'TimeoutError'));
+    const timeoutSpy: Tests_Lib_PublicDns_Adapter_ThrowsAnUnreachableErrorWhenTheRequestTimesOut_TimeoutSpy = vi.spyOn(AbortSignal, 'timeout').mockReturnValue(timeoutSignal);
+    const stalledBody: Tests_Lib_PublicDns_Adapter_ThrowsAnUnreachableErrorWhenTheRequestTimesOut_StalledBody = new Response('{}');
+
+    vi.spyOn(stalledBody, 'json').mockRejectedValue(new DOMException('The operation was aborted due to timeout', 'TimeoutError'));
+
+    const fetchSpy: Tests_Lib_PublicDns_Adapter_ThrowsAnUnreachableErrorWhenTheRequestTimesOut_FetchSpy = vi.spyOn(globalThis, 'fetch').mockRejectedValueOnce(new DOMException('The operation was aborted due to timeout', 'TimeoutError')).mockResolvedValueOnce(stalledBody);
+
+    await expect(PublicDnsAdapter.lookup('alerts.example.com', 'A')).rejects.toBeInstanceOf(PublicDnsUnreachableError);
+
+    await expect(PublicDnsAdapter.lookup('alerts.example.com', 'A')).rejects.toBeInstanceOf(PublicDnsUnreachableError);
+
+    expect(timeoutSpy).toHaveBeenCalledWith(5000);
+
+    expect(fetchSpy.mock.calls[0]![1]!['signal']).toBe(timeoutSignal);
 
     return;
   });
@@ -168,6 +212,46 @@ describe('adapter', () => {
     expect(pending).toEqual(['TXT cf-bounce.example.com']);
 
     expect(fetchSpy).toHaveBeenCalledTimes(2);
+
+    return;
+  });
+
+  it('keeps retrying while the answers are empty', async () => {
+    const fetchSpy: Tests_Lib_PublicDns_Adapter_KeepsRetryingWhileTheAnswersAreEmpty_FetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(async () => dnsResponse([]));
+
+    const pending: Tests_Lib_PublicDns_Adapter_KeepsRetryingWhileTheAnswersAreEmpty_Pending = await PublicDnsAdapter.findPendingRecords([{
+      type: 'A',
+      name: 'alerts.example.com',
+      content: undefined,
+    }], 3, 0);
+
+    expect(pending).toEqual(['A alerts.example.com']);
+
+    expect(fetchSpy).toHaveBeenCalledTimes(3);
+
+    return;
+  });
+
+  it('stops after one round when the resolver cannot be reached', async () => {
+    const fetchSpy: Tests_Lib_PublicDns_Adapter_StopsAfterOneRoundWhenTheResolverCannotBeReached_FetchSpy = vi.spyOn(globalThis, 'fetch').mockRejectedValue(new TypeError('fetch failed'));
+    const setTimeoutSpy: Tests_Lib_PublicDns_Adapter_StopsAfterOneRoundWhenTheResolverCannotBeReached_SetTimeoutSpy = vi.spyOn(globalThis, 'setTimeout');
+
+    await expect(PublicDnsAdapter.findPendingRecords([
+      {
+        type: 'A',
+        name: 'alerts.example.com',
+        content: undefined,
+      },
+      {
+        type: 'A',
+        name: 'status.example.com',
+        content: undefined,
+      },
+    ])).rejects.toBeInstanceOf(PublicDnsUnreachableError);
+
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+
+    expect(setTimeoutSpy).not.toHaveBeenCalled();
 
     return;
   });

@@ -1,3 +1,4 @@
+import { Runner as PublicDnsUnreachableError } from './public-dns-unreachable-error.js';
 import { dnsOverHttpsAnswerSchema } from './schema.js';
 
 import type {
@@ -30,6 +31,16 @@ import type {
 } from '../types/lib/public-dns.d.ts';
 
 /**
+ * Lib - Public DNS - DNS Over HTTPS Host.
+ *
+ * The resolver's host name from the URL below, which the unreachable error names
+ * so a warning says which host deploy tried to reach.
+ *
+ * @since 2.6.2
+ */
+const DNS_OVER_HTTPS_HOST = 'cloudflare-dns.com';
+
+/**
  * Lib - Public DNS - DNS Over HTTPS URL.
  *
  * Cloudflare's public resolver (1.1.1.1) in its JSON form, which answers the way
@@ -38,6 +49,16 @@ import type {
  * @since 2.5.0
  */
 const DNS_OVER_HTTPS_URL = 'https://cloudflare-dns.com/dns-query';
+
+/**
+ * Lib - Public DNS - DNS Over HTTPS Timeout Milliseconds.
+ *
+ * How long one lookup waits for the resolver before giving up, so a network that
+ * drops the request doesn't leave deploy waiting with no end.
+ *
+ * @since 2.6.2
+ */
+const DNS_OVER_HTTPS_TIMEOUT_MILLISECONDS = 5000;
 
 /**
  * Lib - Public DNS - Record Type Codes.
@@ -68,7 +89,8 @@ export class Runner {
    * Lib - Public DNS - Find Pending Records.
    *
    * Looks each record up until all of them resolve publicly or the attempts run out,
-   * and returns the ones that still don't, as "TYPE name".
+   * and returns the ones that still don't, as "TYPE name". An unreachable resolver
+   * throws on the first round instead of being retried.
    *
    * @param {Lib_PublicDns_Runner_FindPendingRecords_Records}              records                - Records.
    * @param {Lib_PublicDns_Runner_FindPendingRecords_Attempts}             [attempts]             - Attempts.
@@ -101,7 +123,8 @@ export class Runner {
    * Lib - Public DNS - Lookup.
    *
    * Asks the public resolver for one name and type, and returns each answer's data.
-   * A missing name, an error answer, or a failed request gives an empty list.
+   * A missing name, an error answer, or a bad response gives an empty list, and a
+   * request that fails or times out throws a public DNS unreachable error.
    *
    * @param {Lib_PublicDns_Runner_Lookup_Name} name - Name.
    * @param {Lib_PublicDns_Runner_Lookup_Type} type - Type.
@@ -113,11 +136,18 @@ export class Runner {
   public static async lookup(name: Lib_PublicDns_Runner_Lookup_Name, type: Lib_PublicDns_Runner_Lookup_Type): Lib_PublicDns_Runner_Lookup_Returns {
     const url: Lib_PublicDns_Runner_Lookup_Url = `${DNS_OVER_HTTPS_URL}?name=${encodeURIComponent(name)}&type=${encodeURIComponent(type)}`;
     const typeCode: Lib_PublicDns_Runner_Lookup_TypeCode = recordTypeCodes[type.toUpperCase()];
+    let response: Lib_PublicDns_Runner_Lookup_Response = undefined;
 
     try {
-      const response: Lib_PublicDns_Runner_Lookup_Response = await fetch(url, {
+      response = await fetch(url, {
         headers: { Accept: 'application/dns-json' },
+        signal: AbortSignal.timeout(DNS_OVER_HTTPS_TIMEOUT_MILLISECONDS),
       });
+    } catch {
+      throw new PublicDnsUnreachableError(DNS_OVER_HTTPS_HOST);
+    }
+
+    try {
       const responseData: Lib_PublicDns_Runner_Lookup_ResponseData = await response.json();
       const answer: Lib_PublicDns_Runner_Lookup_Answer = dnsOverHttpsAnswerSchema.safeParse(responseData);
 
@@ -130,7 +160,15 @@ export class Runner {
       }
 
       return (answer['data']['Answer'] ?? []).filter((answerRecord) => typeCode === undefined || answerRecord['type'] === typeCode).map((answerRecord) => answerRecord['data']);
-    } catch {
+    } catch (error) {
+      // The timeout also covers reading the body, so a resolver that stalls mid-answer is unreachable too.
+      if (
+        error instanceof Error
+        && error['name'] === 'TimeoutError'
+      ) {
+        throw new PublicDnsUnreachableError(DNS_OVER_HTTPS_HOST);
+      }
+
       return [];
     }
   }

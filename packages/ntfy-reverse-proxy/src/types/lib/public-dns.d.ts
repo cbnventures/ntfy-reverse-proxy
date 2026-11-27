@@ -52,7 +52,7 @@ export type Lib_PublicDns_Runner_Lookup_Url = string;
 
 export type Lib_PublicDns_Runner_Lookup_TypeCode = number | undefined;
 
-export type Lib_PublicDns_Runner_Lookup_Response = Response;
+export type Lib_PublicDns_Runner_Lookup_Response = Response | undefined;
 
 export type Lib_PublicDns_Runner_Lookup_ResponseData = unknown;
 
