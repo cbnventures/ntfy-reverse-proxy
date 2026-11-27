@@ -129,26 +129,3 @@
     width: 100%;
   }
 }
-
-
-/* Line colors for the CLI output inside the TerminalFrame block. */
-.terminalLineInfo {
-  color: #8aa0b4;
-}
-
-.terminalLinePrompt {
-  color: #7ad67a;
-}
-
-.terminalLineFrame {
-  color: #6f7f8f;
-}
-
-.terminalLineHeading {
-  color: #ffffff;
-  font-weight: 700;
-}
-
-.terminalLineBody {
-  color: #d4d4d4;
-}

@@ -464,7 +464,6 @@
         "nova"
       ],
       "patterns": [
-        "/assets/",
         "!worker-configuration.d.ts",
         "wrangler.toml",
         "config.json",
@@ -716,6 +715,11 @@
     }
   },
   "settings": {
+    "changelog": {
+      "workspaceOrder": [
+        "ntfy-reverse-proxy"
+      ]
+    },
     "coverage": {
       "minimum": 60
     },

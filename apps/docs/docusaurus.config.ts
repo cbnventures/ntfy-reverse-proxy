@@ -144,10 +144,26 @@ const config: DocusaurusNovaConfig = {
             light: '#D97706',
             dark: '#D97706',
           },
-          text: undefined,
-          border: undefined,
-          warning: undefined,
-          danger: undefined,
+          text: {
+            light: '#1D2F2E',
+            dark: '#DDE9E8',
+          },
+          border: {
+            light: '#C8DAD9',
+            dark: '#384D4B',
+          },
+          warning: {
+            light: '#B08B11',
+            dark: '#F1C841',
+          },
+          danger: {
+            light: '#B83223',
+            dark: '#EF6B5D',
+          },
+          success: {
+            light: '#1F8452',
+            dark: '#4ED08F',
+          },
         },
         fonts: {
           display: 'Outfit',
@@ -209,8 +225,14 @@ const config: DocusaurusNovaConfig = {
 
       // Analytics.
       analytics: {
-        gtm: {
-          containerId: 'GTM-KGQ8Z23R',
+        googleAnalytics: {
+          measurementId: 'G-8BMHBMPN6G',
+        },
+        metaPixel: {
+          pixelId: '4921448871467524',
+        },
+        clarity: {
+          projectId: 'zid2g7c4ez',
         },
       },
 

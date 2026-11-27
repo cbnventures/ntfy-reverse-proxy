@@ -66,28 +66,28 @@ const frameMarkers: Pages_Index_FrameMarkers = [
  */
 function terminalLineTone(line: Pages_Index_TerminalLineTone_Line): Pages_Index_TerminalLineTone_Returns {
   if (line.startsWith('INFO') === true) {
-    return 'terminalLineInfo';
+    return 'nova-terminal-frame-line-info';
   }
 
   const firstCharacter: Pages_Index_TerminalLineTone_FirstCharacter = line.slice(0, 1);
 
   if (promptMarkers.includes(firstCharacter) === true) {
-    return 'terminalLinePrompt';
+    return 'nova-terminal-frame-line-prompt';
   }
 
   if (frameMarkers.includes(firstCharacter) === true) {
-    return 'terminalLineFrame';
+    return 'nova-terminal-frame-line-muted';
   }
 
   if (line.startsWith(' ⛅️') === true) {
-    return 'terminalLineFrame';
+    return 'nova-terminal-frame-line-muted';
   }
 
   if (line.endsWith(':') === true) {
-    return 'terminalLineHeading';
+    return 'nova-terminal-frame-line-heading';
   }
 
-  return 'terminalLineBody';
+  return 'nova-terminal-frame-line-body';
 }
 
 /**
@@ -323,7 +323,7 @@ function Home() {
               content: (
                 <TerminalFrame title={shot['terminalTitle']} label={shot['alt']}>
                   {shot['output'].split('\n').map((line, index) => (
-                    <span key={`${shot['key']}-${String(index)}`} className={styles[terminalLineTone(line)]}>
+                    <span key={`${shot['key']}-${String(index)}`} className={terminalLineTone(line)}>
                       {(line === '') ? ' ' : line}
                     </span>
                   ))}
